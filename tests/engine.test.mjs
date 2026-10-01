@@ -86,6 +86,25 @@ test('a Flock contract filed under police moves from services to red flags', () 
   assert.equal(scoreTown(town).components.find((c) => c.key === 'redFlags').available, true);
 });
 
+test('documented red flags without dollar amounts still cost points', () => {
+  const town = base();
+  delete town.spending.surveillance;
+  delete town.spending.corporateDeals;
+  town.redFlags = [];
+  const clean = scoreTown(town).components.find((c) => c.key === 'redFlags');
+  assert.equal(clean.available, true, 'an empty list means checked, none found');
+  assert.equal(clean.points, 10);
+  town.redFlags = [
+    { kind: 'surveillance', label: 'License-plate readers', date: '2023-04-28' },
+    { kind: 'surveillance', label: 'License-plate readers', date: '2025-01-02' },
+    { kind: 'dataCenter', label: 'Data center tax break (PILOT)' },
+    { kind: 'surveillance', label: 'Police drones', scored: false },
+  ];
+  const s = scoreTown(town);
+  assert.equal(s.totals.documentedRedFlags, 2, 'same program counted once; unscored records skipped');
+  assert.equal(s.components.find((c) => c.key === 'redFlags').points, 5);
+});
+
 test('corporate ties match donors and lobbyists the town also pays', () => {
   const town = base();
   town.influence.corporateLobbying = 25_000;

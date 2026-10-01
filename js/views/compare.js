@@ -13,6 +13,7 @@ const ROWS = [
   { label: 'Share of spending on services', get: (e) => e.s.totals.directShare, fmt: (v) => `${Math.round(v * 100)}%`, better: 'high' },
   { label: 'Administration & consultants', get: (e) => e.s.totals.adminShare, fmt: (v) => `${Math.round(v * 100)}%`, better: 'low' },
   { label: 'Surveillance & corporate giveaways per resident', get: (e) => (e.s.totals.redFlagKnown ? e.s.totals.redFlagPerResident : null), fmt: (v) => (v == null ? 'Not checked' : `$${v.toFixed(2)}`), better: 'low' },
+  { label: 'Red flags (surveillance programs, corporate deals)', get: (e) => (e.s.totals.redFlagKnown ? e.s.totals.redFlagCount : null), fmt: (v) => (v == null ? 'Not checked' : String(v)), better: 'low' },
   { label: 'Corporate tax breaks', get: (e) => e.s.totals.taxBreaks, fmt: (v) => money(v, { compact: true }), better: 'low' },
   { label: 'Corporate lobbying & business donations', get: (e) => e.s.totals.corporateMoney, fmt: (v) => money(v, { compact: true }), better: 'low' },
   { label: 'Political money per resident', get: (e) => e.s.totals.influencePerResident, fmt: (v) => `$${v.toFixed(2)}`, better: 'low' },

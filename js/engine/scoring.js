@@ -33,6 +33,7 @@ export function totals(town) {
   const redFlagSpending = SPENDING_CATEGORIES.filter((c) => c.redFlag)
     .reduce((a, c) => a + (town.spending?.[c.key] || 0), 0) + flaggedInDirect;
   const taxBreaks = sum(town.taxBreaks);
+  const documented = documentedRedFlags(town);
   const corporateMoney = (town.influence?.corporateLobbying || 0) + (town.influence?.developerContributions || 0);
   const pop = Math.max(1, town.population || 1);
   return {
@@ -50,6 +51,12 @@ export function totals(town) {
     redFlagShare: spending ? (redFlagSpending + taxBreaks) / spending : 0,
     redFlagPerResident: (redFlagSpending + taxBreaks) / pop,
     redFlagKnown: hasRedFlagData(town),
+    documentedRedFlags: documented.length,
+    // Everything flagged: documented programs and deals, plus each red-flag
+    // spending line or tax break with money in it.
+    redFlagCount: documented.length
+      + RED_FLAG_KEYS.filter((k) => town.spending?.[k] > 0).length
+      + Object.values(town.taxBreaks || {}).filter((v) => v > 0).length,
     corporateMoney,
     corporateShareOfInfluence: influence ? corporateMoney / influence : 0,
     directShare: spending ? directNet / spending : 0,
@@ -88,11 +95,15 @@ export const COMPONENTS = [
     label: 'No surveillance or corporate giveaways',
     max: 10,
     available: (_t, town) => hasRedFlagData(town),
-    measure: (t) => scale(t.redFlagShare, 0.05, 0),
-    detail: (t) =>
-      t.redFlagSpending + t.taxBreaks > 0
-        ? `$${Math.round(t.redFlagPerResident).toLocaleString('en-US')} per resident on surveillance, corporate deals and tax breaks (${pct(t.redFlagShare, 1)} of spending)`
-        : 'No surveillance contracts, data center deals or corporate tax breaks found',
+    // Dollars and documented programs are both checked; the worse one counts.
+    // Each documented program or deal (most records carry no dollar figure) costs a quarter of the points.
+    measure: (t) => Math.min(scale(t.redFlagShare, 0.05, 0), Math.max(0, 1 - 0.25 * t.documentedRedFlags)),
+    detail: (t) => {
+      const parts = [];
+      if (t.redFlagSpending + t.taxBreaks > 0) parts.push(`$${Math.round(t.redFlagPerResident).toLocaleString('en-US')} per resident on surveillance, corporate deals and tax breaks (${pct(t.redFlagShare, 1)} of spending)`);
+      if (t.documentedRedFlags) parts.push(`${t.documentedRedFlags} documented surveillance program${t.documentedRedFlags === 1 ? '' : 's'} or corporate deal${t.documentedRedFlags === 1 ? '' : 's'}`);
+      return parts.length ? parts.join('; ') : 'No surveillance programs, data center deals or corporate tax breaks found';
+    },
   },
   {
     key: 'influence',
@@ -147,10 +158,25 @@ export function redFlagEntries(town) {
   );
 }
 
+// Documented red flags from public records (`town.redFlags`), counted once per
+// kind of program: three news stories about the same plate readers are one flag.
+export function documentedRedFlags(town) {
+  const seen = new Map();
+  for (const f of town.redFlags || []) {
+    if (f.scored === false) continue;
+    const k = `${f.kind}|${f.label}`;
+    if (!seen.has(k)) seen.set(k, { ...f, records: [] });
+    seen.get(k).records.push(f);
+  }
+  return [...seen.values()];
+}
+
 // The part is scored only when someone has checked for red flags: a red-flag
-// spending line (even 0), a tax-break record, or a flagged ledger payment.
+// spending line (even 0), a tax-break record, a `redFlags` list (even empty),
+// or a flagged ledger payment.
 function hasRedFlagData(town) {
-  return RED_FLAG_KEYS.some((k) => typeof town.spending?.[k] === 'number') || hasData(town.taxBreaks) || redFlagEntries(town).length > 0;
+  return RED_FLAG_KEYS.some((k) => typeof town.spending?.[k] === 'number') || hasData(town.taxBreaks)
+    || Array.isArray(town.redFlags) || redFlagEntries(town).length > 0;
 }
 
 const normName = (s) =>
@@ -263,5 +289,6 @@ export const MAP_METRICS = [
   { key: 'directPerResident', label: 'Service dollars per resident', higherIsBetter: true, value: (s) => s.totals.directPerResident, format: (v) => `$${Math.round(v).toLocaleString('en-US')}` },
   { key: 'directShare', label: 'Share of spending on services', higherIsBetter: true, value: (s) => s.totals.directShare, format: (v) => pct(v) },
   { key: 'influencePerResident', label: 'Outside political money per resident', higherIsBetter: false, value: (s) => s.totals.influencePerResident, format: (v) => `$${v.toFixed(2)}` },
+  { key: 'redFlagCount', label: 'Red flags: surveillance & corporate deals', higherIsBetter: false, value: (s) => s.totals.redFlagCount, format: (v) => `${Math.round(v)}` },
   { key: 'nonPropertyShare', label: 'Revenue not from property tax', higherIsBetter: null, value: (s) => s.totals.nonPropertyShare, format: (v) => pct(v) },
 ];

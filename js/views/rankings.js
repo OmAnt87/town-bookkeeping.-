@@ -9,7 +9,7 @@ const COLS = [
   { key: 'directShare', label: 'To services', get: (t) => t.s.totals.directShare, fmt: (v) => `${Math.round(v * 100)}%` },
   { key: 'nonProp', label: 'Not property tax', get: (t) => t.s.totals.nonPropertyShare, fmt: (v) => `${Math.round(v * 100)}%` },
   // -1 marks towns nobody has checked yet; it sorts below every real value and shows as a dash.
-  { key: 'redFlags', label: 'Surveillance & giveaways / resident', get: (t) => (t.s.totals.redFlagKnown ? t.s.totals.redFlagPerResident : -1), fmt: (v) => (v < 0 ? '—' : `$${v.toFixed(2)}`) },
+  { key: 'redFlags', label: 'Red flags', get: (t) => (t.s.totals.redFlagKnown ? t.s.totals.redFlagCount : -1), fmt: (v) => (v < 0 ? '—' : String(v)) },
   { key: 'corporate', label: 'Corporate lobbying & donations', get: (t) => t.s.totals.corporateMoney, fmt: (v) => money(v, { compact: true }) },
   { key: 'influence', label: 'Political $ / resident', get: (t) => t.s.totals.influencePerResident, fmt: (v) => `$${v.toFixed(2)}` },
   { key: 'debt', label: 'Debt / resident', get: (t) => t.s.totals.debtPerResident, fmt: (v) => money(v) },
