@@ -51,26 +51,25 @@ export function resetToDemo() {
   return loadDemo();
 }
 
-// Real towns live in data/real/, listed in data/real/index.json. They are
-// shown alongside the demo towns and replace any demo town with the same id.
-async function loadRealTowns() {
-  try {
-    const res = await fetch('data/real/index.json');
-    if (!res.ok) return [];
-    const { files = [] } = await res.json();
-    const sets = await Promise.all(files.map((f) => fetch(`data/real/${f}`).then((r) => (r.ok ? r.json() : { towns: [] }))));
-    return sets.flatMap((d) => d.towns || []).map((t) => ({ ...t, demo: false }));
-  } catch {
-    return [];
-  }
+// The site loads data/lite/all.json (built by scripts/build-lite.mjs): every
+// town without its transaction ledger. Ledgers are fetched per town on demand.
+async function fetchJSON(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Could not load ${url} (${res.status})`);
+  return res.json();
+}
+
+// Resolves to a town's ledger entries, fetching them once if they are not inline.
+export async function loadLedger(town) {
+  if (town.ledger) return town.ledger;
+  if (!town.ledgerCount) return (town.ledger = []);
+  town.ledger = await fetchJSON(`data/lite/ledger/${encodeURIComponent(town.id)}.json`);
+  return town.ledger;
 }
 
 async function loadDemo() {
-  const [res, real] = await Promise.all([fetch('data/towns.json'), loadRealTowns()]);
-  if (!res.ok) throw new Error(`Could not load data/towns.json (${res.status})`);
-  const demo = await res.json();
-  const realIds = new Set(real.map((t) => t.id));
-  const errors = setDataset({ towns: [...real, ...demo.towns.filter((t) => !realIds.has(t.id))] }, real.length ? 'mixed' : 'demo');
+  const { towns } = await fetchJSON('data/lite/all.json');
+  const errors = setDataset({ towns }, towns.some((t) => t.demo === false) ? 'mixed' : 'demo');
   if (errors.length) throw new Error(errors.join(' '));
 }
 

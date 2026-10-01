@@ -1,4 +1,4 @@
-import { setDataset, persistDataset, resetToDemo } from '../app.js';
+import { setDataset, persistDataset, resetToDemo, loadLedger } from '../app.js';
 import { downloadFile, ICONS } from '../charts.js';
 import { escapeHTML } from '../engine/format.js';
 
@@ -76,7 +76,10 @@ export function renderData(root, state) {
   drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('over'); });
   drop.addEventListener('dragleave', () => drop.classList.remove('over'));
   drop.addEventListener('drop', (e) => { e.preventDefault(); drop.classList.remove('over'); if (e.dataTransfer.files[0]) load(e.dataTransfer.files[0]); });
-  $('#dl-all').addEventListener('click', () => downloadFile('town-ledger-data.json', JSON.stringify(state.dataset, null, 2), 'application/json'));
+  $('#dl-all').addEventListener('click', async () => {
+    await Promise.all(state.dataset.towns.map((t) => loadLedger(t).catch(() => [])));
+    downloadFile('town-ledger-data.json', JSON.stringify({ towns: state.dataset.towns.map(({ ledgerCount, ...t }) => t) }, null, 2), 'application/json');
+  });
   $('#dl-sample').addEventListener('click', () => downloadFile('town-ledger-sample.json', JSON.stringify(SAMPLE, null, 2), 'application/json'));
   $('#reset').addEventListener('click', async () => {
     await resetToDemo();

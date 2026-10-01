@@ -105,7 +105,7 @@ export function renderMap(root, state) {
   let statesLayer;
   const markers = new Map();
   if (L) {
-    map = L.map('map', { zoomControl: true, minZoom: 2, zoomSnap: 0.25, worldCopyJump: true });
+    map = L.map('map', { zoomControl: true, minZoom: 2, zoomSnap: 0.25, worldCopyJump: true, preferCanvas: true });
     map.fitBounds(US_BOUNDS);
     tiles = L.tileLayer(TILE_URL(isDark()), {
       attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
@@ -228,7 +228,12 @@ export function renderMap(root, state) {
     if (map) map.flyTo([town.lat, town.lng], Math.max(map.getZoom(), 6), { duration: 0.6 });
   }
 
-  $('#m-search').addEventListener('input', (e) => { ui.query = e.target.value; draw(); });
+  let searchTimer;
+  $('#m-search').addEventListener('input', (e) => {
+    ui.query = e.target.value;
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(draw, 150);
+  });
   $('#m-state').addEventListener('change', (e) => {
     ui.state = e.target.value;
     draw();
@@ -262,6 +267,7 @@ export function renderMap(root, state) {
     if (pts.length) map.fitBounds(pts, { padding: [40, 40], maxZoom: 9 });
   }
   return () => {
+    clearTimeout(searchTimer);
     window.removeEventListener('themechange', onTheme);
     mq.removeEventListener('change', onTheme);
     if (map) { map.remove(); map = null; }
