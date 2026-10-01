@@ -41,6 +41,18 @@ async function loadStates() {
   }
   return statesGeo;
 }
+
+// County and state lines are drawn above the tiles (which would otherwise hide them).
+const borderCache = {};
+function loadBorders(name) {
+  borderCache[name] ||= fetch(`data/us-${name}-borders.json`).then((r) => {
+    if (!r.ok) throw new Error(`${name} borders ${r.status}`);
+    return r.json();
+  });
+  return borderCache[name];
+}
+const countyLineStyle = () => ({ color: isDark() ? '#8a8a82' : '#8d8c82', weight: 0.7, opacity: 0.6, dashArray: '2 3' });
+const stateLineStyle = () => ({ color: isDark() ? '#d8d8d0' : '#3d3d38', weight: 1.6, opacity: 0.85 });
 const stateStyle = () => ({ color: cssVar('--baseline'), weight: 1, fillColor: cssVar('--surface'), fillOpacity: 1 });
 
 const ui = { metric: 'score', layer: 'towns', state: 'all', query: '', realOnly: null };
@@ -103,6 +115,8 @@ export function renderMap(root, state) {
   let dotLayer;
   let heatLayer;
   let statesLayer;
+  let countyLines;
+  let stateLines;
   const markers = new Map();
   const LIST_PAGE = 100;
   let listLimit = LIST_PAGE;
@@ -118,6 +132,12 @@ export function renderMap(root, state) {
     loadStates()
       .then((geo) => { if (map) statesLayer = L.geoJSON(geo, { pane: 'states', interactive: false, style: stateStyle }).addTo(map); })
       .catch(() => { /* outlines are optional */ });
+    map.createPane('borders').style.zIndex = 350;
+    const addBorders = (name, style) => loadBorders(name)
+      .then((geo) => (map ? L.geoJSON(geo, { pane: 'borders', interactive: false, style }).addTo(map) : null))
+      .catch(() => null);
+    addBorders('county', countyLineStyle).then((l) => { countyLines = l; });
+    addBorders('state', stateLineStyle).then((l) => { stateLines = l; });
     dotLayer = L.layerGroup().addTo(map);
   }
 
@@ -267,6 +287,8 @@ export function renderMap(root, state) {
   const onTheme = () => {
     if (tiles) tiles.setUrl(TILE_URL(isDark()));
     if (statesLayer) statesLayer.setStyle(stateStyle());
+    if (countyLines) countyLines.setStyle(countyLineStyle());
+    if (stateLines) stateLines.setStyle(stateLineStyle());
     draw();
   };
   window.addEventListener('themechange', onTheme);
