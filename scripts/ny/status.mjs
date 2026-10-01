@@ -47,6 +47,8 @@ ${rows.join('\n')}
 - **Villages that dissolved** since 2016 are left out (they are no longer in the Census estimates).
 - **Older reports:** ${old.length ? old.join(', ') : 'none'}. These governments have not filed a newer annual report.
 - **Transparency practices** have not been checked yet, so they are not scored.
-- Campaigns that raise little may not itemize contributions, so a government showing $0 in political money may still have small unreported gifts.
+- Campaigns that raise little may not itemize contributions, and some local candidates have no filings at all, so a government showing $0 in political money may still have small unreported gifts.
+- Filer labels that match no current government (for example "Port Washington,Village", which is not a village, and "Seneca Falls,Village", dissolved in 2012) are left out.
+- Dissolved villages still in the Comptroller's files (Cherry Creek, Van Etten, Port Henry, Harrisville, Fort Johnson, Barneveld, South Nyack, Hermon, Morristown, Mastic Beach, Salem) are left out.
 `);
 console.log(`docs/NY_DATA_STATUS.md: ${covered} governments`);
