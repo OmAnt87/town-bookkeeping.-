@@ -1,6 +1,6 @@
 import { MAP_METRICS } from '../engine/scoring.js';
 import { money, number, escapeHTML } from '../engine/format.js';
-import { gradeBadge, ICONS } from '../charts.js';
+import { gradeBadge, ICONS, cssVar } from '../charts.js';
 import { isDark } from '../app.js';
 
 // Diverging scale (poor = red, middle = gray, good = blue) and a one-hue
@@ -29,6 +29,19 @@ const TILE_URL = (dark) =>
 
 const HEAT_GRADIENT = { 0.2: '#cde2fb', 0.45: '#6da7ec', 0.7: '#2a78d6', 1: '#0d366b' };
 const US_BOUNDS = [[25.5, -123.5], [48.5, -68]];
+
+// State outlines sit underneath the tile layer, so the map stays readable
+// when tiles can't load (offline, blocked hosts).
+let statesGeo = null;
+async function loadStates() {
+  if (!statesGeo) {
+    const res = await fetch('data/us-states.json');
+    if (!res.ok) throw new Error(`us-states.json ${res.status}`);
+    statesGeo = await res.json();
+  }
+  return statesGeo;
+}
+const stateStyle = () => ({ color: cssVar('--baseline'), weight: 1, fillColor: cssVar('--surface'), fillOpacity: 1 });
 
 const ui = { metric: 'score', layer: 'towns', state: 'all', query: '' };
 
@@ -86,6 +99,7 @@ export function renderMap(root, state) {
   let tiles;
   let dotLayer;
   let heatLayer;
+  let statesLayer;
   const markers = new Map();
   if (L) {
     map = L.map('map', { zoomControl: true, minZoom: 2, zoomSnap: 0.25, worldCopyJump: true });
@@ -95,6 +109,10 @@ export function renderMap(root, state) {
       subdomains: 'abcd',
       maxZoom: 18,
     }).addTo(map);
+    map.createPane('states').style.zIndex = 150;
+    loadStates()
+      .then((geo) => { if (map) statesLayer = L.geoJSON(geo, { pane: 'states', interactive: false, style: stateStyle }).addTo(map); })
+      .catch(() => { /* outlines are optional */ });
     dotLayer = L.layerGroup().addTo(map);
   }
 
@@ -222,7 +240,11 @@ export function renderMap(root, state) {
     if (b) openCard(b.dataset.id);
   });
 
-  const onTheme = () => { if (tiles) tiles.setUrl(TILE_URL(isDark())); draw(); };
+  const onTheme = () => {
+    if (tiles) tiles.setUrl(TILE_URL(isDark()));
+    if (statesLayer) statesLayer.setStyle(stateStyle());
+    draw();
+  };
   window.addEventListener('themechange', onTheme);
   const mq = matchMedia('(prefers-color-scheme: dark)');
   mq.addEventListener('change', onTheme);
@@ -231,6 +253,6 @@ export function renderMap(root, state) {
   return () => {
     window.removeEventListener('themechange', onTheme);
     mq.removeEventListener('change', onTheme);
-    if (map) map.remove();
+    if (map) { map.remove(); map = null; }
   };
 }
