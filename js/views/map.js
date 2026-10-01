@@ -25,7 +25,7 @@ function quantile(sorted, q) {
 }
 
 const TILE_URL = (dark) =>
-  `https://{s}.basemaps.cartocdn.com/${dark ? 'dark_all' : 'light_all'}/{z}/{x}/{y}{r}.png`;
+  `https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/${dark ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`;
 
 const HEAT_GRADIENT = { 0.2: '#cde2fb', 0.45: '#6da7ec', 0.7: '#2a78d6', 1: '#0d366b' };
 const US_BOUNDS = [[25.5, -123.5], [48.5, -68]];
@@ -144,8 +144,8 @@ export function renderMap(root, state) {
     map = L.map('map', { zoomControl: true, minZoom: 2, zoomSnap: 0.25, worldCopyJump: true, preferCanvas: true });
     map.fitBounds(US_BOUNDS);
     tiles = L.tileLayer(TILE_URL(isDark()), {
-      attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-      subdomains: 'abcd',
+      attribution: 'Tiles &copy; Esri &mdash; Esri, HERE, Garmin, OpenStreetMap contributors',
+      maxNativeZoom: 16,
       maxZoom: 18,
     }).addTo(map);
     map.createPane('states').style.zIndex = 150;
