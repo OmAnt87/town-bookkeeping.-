@@ -21,6 +21,7 @@ import {
   groupFor, linesOf, totalOf, aggregateUFB, NJ_COUNTIES, countyFips, displayName, normName,
   UFB_REVENUE, UFB_APPROPRIATION,
 } from './ufb-map.mjs';
+import { summarizeElec, ELEC_SEARCH_URL } from './elec-map.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const RAW = join(ROOT, 'data', 'raw', 'nj');
@@ -31,6 +32,20 @@ const GAZ_URL = 'https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2024_
 const GAZ_PAGE = 'https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html';
 
 const args = parseArgs();
+
+// Political money window: the last four years, one full cycle of local elections.
+const TODAY = new Date().toISOString().slice(0, 10);
+const ELEC_SINCE = `${Number(TODAY.slice(0, 4)) - 4}${TODAY.slice(4)}`;
+const ELEC_DIR = join(RAW, 'elec');
+const elecLocs = existsSync(join(ELEC_DIR, 'locations.json')) ? JSON.parse(readFileSync(join(ELEC_DIR, 'locations.json'), 'utf8')) : [];
+function elecFor(name, county) {
+  const pool = elecLocs.filter((l) => l.county === county);
+  const loc = pool.find((l) => l.name.toLowerCase() === name.toLowerCase())
+    || pool.find((l) => normName(l.name) === normName(name) && l.name.split(' ').at(-1).toLowerCase() === name.split(' ').at(-1).toLowerCase())
+    || pool.find((l) => normName(l.name) === normName(name));
+  const file = loc && join(ELEC_DIR, `${loc.code}.json`);
+  return file && existsSync(file) ? { loc, data: JSON.parse(readFileSync(file, 'utf8')) } : null;
+}
 
 if (args.download) {
   mkdirSync(RAW, { recursive: true });
@@ -119,6 +134,9 @@ function buildTown(name, county, report) {
   const dedup = Object.values(Object.fromEntries(history.map((h) => [h.year, h]))).sort((a, b) => a.year - b.year);
 
   const netDebt = Number(r['Net Debt|Net Debt']);
+  const elec = elecFor(name, county);
+  if (!elec) report.noElec.push(displayName(name));
+  const pol = elec ? summarizeElec(elec.data.rows, ELEC_SINCE) : null;
   const kind = (name.match(/(township|borough|city|town|village)$/i) || [])[1];
   const ledger = [
     ...revLines.filter((l) => l.amount).map((l) => ({
@@ -153,17 +171,22 @@ function buildTown(name, county, report) {
     spending,
     ...(Number.isFinite(netDebt) ? { debt: Math.round(netDebt) } : {}),
     history: dedup,
-    ledger,
+    ...(pol ? { influence: pol.influence, topDonors: pol.topDonors } : {}),
+    ledger: [...ledger, ...(pol ? pol.ledger : [])],
     sources: [
       { label: `NJ DLGS User Friendly Budget Database, ${year} filing (adopted budget, net debt, population)`, url: UFB_PAGE },
       { label: 'Workbook download (DLGS)', url: UFB_XLSM_URL.replace(/%20/g, ' ') },
       { label: 'U.S. Census Bureau 2024 Gazetteer, county subdivisions (map location)', url: GAZ_PAGE },
+      ...(pol ? [{ label: `NJ ELEC campaign-finance filings: contributions to ${displayName(name)} municipal candidates since ${ELEC_SINCE} (ELEC location ${elec.loc.code})`, url: ELEC_SEARCH_URL }] : []),
     ],
     notes: [
       'Covers the municipal budget only. School-district and county taxes on the same property-tax bill belong to separate governments and are not included.',
       `Insurance, pension and social-security contributions and shared-service payments ($${Math.round(shared).toLocaleString('en-US')}) are spread across departments in proportion to their size.`,
       ...(excluded ? [`The reserve for uncollected taxes ($${Math.round(excluded).toLocaleString('en-US')}) is set aside, not spent, so it is not counted as spending.`] : []),
-      'Political money and transparency practices have not been loaded yet, so they are not scored.',
+      ...(pol
+        ? [`Political money counts PAC, business and union contributions to candidates for ${displayName(name)} municipal office and mayor reported to NJ ELEC since ${ELEC_SINCE}. Individual donors ($${pol.individuals.toLocaleString('en-US')} in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.`]
+        : ['Political money has not been loaded for this town yet, so it is not scored.']),
+      'Contractor pay-to-play disclosures and transparency practices have not been loaded yet; transparency is not scored.',
     ],
   };
 }
@@ -171,7 +194,7 @@ function buildTown(name, county, report) {
 const index = existsSync(join(OUT, 'index.json')) ? JSON.parse(readFileSync(join(OUT, 'index.json'), 'utf8')) : { files: [] };
 mkdirSync(OUT, { recursive: true });
 for (const county of counties) {
-  const report = { skipped: [], unmapped: [], mismatch: [] };
+  const report = { skipped: [], unmapped: [], mismatch: [], noElec: [] };
   const names = [...new Set(YEARS.flatMap((y) => ufb[y].filter((r) => r['|County'] === county).map((r) => r['|Municipality'])))];
   const current = new Set(ufb[YEARS[0]].filter((r) => r['|County'] === county).map((r) => r['|Municipality']));
   const towns = names.filter((n) => current.has(n)).sort().map((n) => buildTown(n, county, report)).filter(Boolean);
@@ -181,5 +204,5 @@ for (const county of counties) {
   index.files.sort();
   writeFileSync(join(OUT, 'index.json'), `${JSON.stringify(index, null, 2)}\n`);
   const years = towns.reduce((a, t) => ({ ...a, [t.fiscalYear]: (a[t.fiscalYear] || 0) + 1 }), {});
-  console.log(JSON.stringify({ county, towns: towns.length, of: current.size, years, skipped: report.skipped, unmapped: [...new Set(report.unmapped)], mismatch: report.mismatch }));
+  console.log(JSON.stringify({ county, towns: towns.length, of: current.size, years, skipped: report.skipped, unmapped: [...new Set(report.unmapped)], mismatch: report.mismatch, noElec: report.noElec }));
 }

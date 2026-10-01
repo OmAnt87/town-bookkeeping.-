@@ -28,7 +28,7 @@ export function renderTown(root, state, id) {
   const hasInfluence = town.influence && Object.keys(town.influence).length > 0;
   const hasDebt = typeof town.debt === 'number';
   const NA = '<div class="v muted" style="font-size:18px">Not available</div>';
-  const infl = influenceRows(town).map((r) => ({ ...r, color: 'var(--grade-f)' }));
+  const infl = influenceRows(town).filter((r) => r.key in (town.influence || {})).map((r) => ({ ...r, color: 'var(--grade-f)' }));
   const pctOf = (v) => `${Math.round(v * 100)}%`;
   const biggestNonProp = rev.filter((r) => !r.propertyTax && !r.reserve).sort((a, b) => b.amount - a.amount)[0];
 
@@ -106,7 +106,7 @@ export function renderTown(root, state, id) {
 
     <div class="grid grid-2" style="margin-bottom:16px">
       <section class="card" aria-labelledby="h-pol">
-        <div class="card-head"><div><h2 id="h-pol">Political money</h2><p>PAC, developer and union contributions to local officials, plus lobbying the town pays for. This money does not pass through the town budget.</p></div></div>
+        <div class="card-head"><div><h2 id="h-pol">Political money</h2><p>PAC, business and union contributions to local officials, plus lobbying the town pays for. This money does not pass through the town budget.</p></div></div>
         ${hasInfluence ? barList(infl) : '<p class="muted small">No campaign-finance filings have been loaded for this town yet, so political money is unknown. It is not counted in the score.</p>'}
         <h3 style="margin:18px 0 8px">Top contributors</h3>
         ${town.topDonors?.length ? `<div class="table-wrap"><table><thead><tr><th>Contributor</th><th>Type</th><th>Recipient</th><th class="r">Amount</th></tr></thead><tbody>${town.topDonors

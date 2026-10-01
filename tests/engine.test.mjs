@@ -212,3 +212,24 @@ test('surplus from prior years is not counted as non-property-tax revenue', () =
   assert.equal(s.totals.nonPropertyRevenue, 200);
   assert.equal(s.totals.reserves, 200);
 });
+
+import { summarizeElec, donorKey } from '../scripts/nj/elec-map.mjs';
+
+test('ELEC contributions: counted types, party exclusion, donor grouping, date window', () => {
+  const row = (o) => ({ CONT_DATE: '2025-05-01T00:00:00', CONT_AMT: 100, CAND_NAME: 'DOE, JANE', ContributionType: 'MONETARY', OFFICE: 'MUNICIPAL OFFICE', ELECTIONYEAR: 2025, ELECTIONTYPE: 'GENERAL', ...o });
+  const out = summarizeElec([
+    row({ CONTRIBUTOR: 'T&M ASSOCIATES', CONT_TYPE: 'B' }),
+    row({ CONTRIBUTOR: 'T AND M ASSOCIATES', CONT_TYPE: 'B', CAND_NAME: 'ROE, RICH' }),
+    row({ CONTRIBUTOR: 'ENGINEERS PAC', CONT_TYPE: 'X', CONT_AMT: 250 }),
+    row({ CONTRIBUTOR: 'LOCAL 825 OPERATING ENGINEERS', CONT_TYPE: 'H', CONT_AMT: 300 }),
+    row({ CONTRIBUTOR: 'HOLMDEL NJ REPUBLICAN PARTY', CONT_TYPE: 'B', CONT_AMT: 5000 }),
+    row({ CONTRIBUTOR: 'JOHN SMITH', CONT_TYPE: 'A', CONT_AMT: 75 }),
+    row({ CONTRIBUTOR: 'OLD PAC', CONT_TYPE: 'J', CONT_DATE: '2019-01-01T00:00:00' }),
+  ], '2022-10-01');
+  assert.deepEqual(out.influence, { pacContributions: 250, developerContributions: 200, unionContributions: 300 });
+  assert.equal(out.individuals, 75);
+  assert.equal(out.topDonors.find((d) => d.type === 'Business').amount, 200);
+  assert.equal(out.topDonors.find((d) => d.type === 'Business').recipient, 'Jane Doe, Rich Roe');
+  assert.equal(out.ledger.length, 4);
+  assert.equal(donorKey('Collier Engineering & Design'), donorKey('Colliers Engineering and Design'));
+});

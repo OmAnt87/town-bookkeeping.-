@@ -33,7 +33,7 @@ export const SPENDING_CATEGORIES = [
 // contributions to local officials, PACs, and lobbying paid by the town.
 export const INFLUENCE_CATEGORIES = [
   { key: 'pacContributions', label: 'PAC contributions to local officials' },
-  { key: 'developerContributions', label: 'Developer & contractor contributions' },
+  { key: 'developerContributions', label: 'Business & contractor contributions' },
   { key: 'unionContributions', label: 'Union contributions' },
   { key: 'lobbyingPaid', label: 'Lobbying paid by the town' },
 ];

@@ -38,9 +38,10 @@ ${rows.join('\n')}
 ## Sources
 - **Budget, net debt, population:** NJ Division of Local Government Services, [User Friendly Budget Database](https://datahub.dca.nj.gov/datasets/user-friendly-budget-database). Each town's latest filed adopted budget (2026, or 2025 if the 2026 filing is not in the database yet). Category totals are checked against each filing's own totals during the build.
 - **Map location:** U.S. Census Bureau 2024 Gazetteer, county subdivisions.
+- **Political money:** NJ ELEC [contribution search](https://www.njelecefilesearch.com/SearchContributionToEntity): itemized contributions to candidates for each town's municipal office and mayor over the last four years. Counted: PACs, businesses and unions. Not counted: individuals, candidates' own committees, and party committees (also when a party is filed under a business type). Built with \`scripts/nj/fetch-elec.mjs\` and \`scripts/nj/elec-map.mjs\`.
 
 ## Known gaps
-- **Political money** (NJ ELEC filings) is not loaded yet, so it is not scored.
+- **Political money** covers municipal candidates only. Small campaigns can file without itemizing, so a town showing $0 may still have unreported small contributions. Contractor pay-to-play disclosures (ELEC Form BE) are not loaded yet: that search was refused from this environment.
 - **Transparency practices** have not been checked town by town yet, so they are not scored.
 - The state budget format does not separate outside legal and engineering costs from general government, so "consultants" is not broken out for NJ towns.
 - Towns without a usable filing in the database are left out rather than estimated. The build prints any it skips.

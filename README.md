@@ -38,7 +38,7 @@ To use real figures, build a dataset with the pipeline scripts, then load it on 
 |---|---|---|
 | [Census Annual Survey of Local Government Finances](https://www.census.gov/programs-surveys/gov-finances.html) | `scripts/import-census-finance.mjs` | Revenue and spending by category |
 | [USAspending.gov](https://www.usaspending.gov) | `scripts/fetch-usaspending.mjs` | Federal grants and their ledger entries |
-| State or county campaign-finance portal (CSV export) | `scripts/import-contributions.mjs` | PAC, developer and union contributions, lobbying, top donors |
+| State or county campaign-finance portal (CSV export) | `scripts/import-contributions.mjs` | PAC, business and union contributions, lobbying, top donors |
 | New Jersey municipal budget / User Friendly Budget (line items as CSV) | `scripts/import-nj-budget.mjs` | Revenue and spending by line, with one ledger row per budget line |
 | Town budget, audit (ACFR) and website | edit the JSON | Transparency checks, debt, history |
 
@@ -50,6 +50,17 @@ node scripts/import-census-finance.mjs --file 2022FinEstDAT.txt --gov-id <14-dig
 node scripts/fetch-usaspending.mjs --state PA --city "My Town" --recipient "MY TOWNSHIP" --id my-township-pa --fy 2026
 node scripts/import-contributions.mjs --csv contributions.csv --id my-township-pa
 # -> data/my-township-pa.json, ready to load on the Data page
+```
+
+### New Jersey (all 564 municipalities)
+
+`data/real/nj-<county>.json` holds every NJ town, built from the state's [User Friendly Budget Database](https://datahub.dca.nj.gov/datasets/user-friendly-budget-database) (adopted budgets, net debt, population, history back to 2015) and [NJ ELEC](https://www.njelecefilesearch.com/SearchContributionToEntity) contributions to municipal candidates. Coverage and gaps: [docs/NJ_DATA_STATUS.md](docs/NJ_DATA_STATUS.md).
+
+```bash
+node scripts/nj/build-county.mjs --download                      # budget workbook + Census gazetteer
+pip install openpyxl && python3 scripts/nj/ufb-to-json.py data/raw/nj/ufb-database.xlsm data/raw/nj/ufb.json
+node scripts/nj/fetch-elec.mjs --all                              # campaign contributions (cached)
+node scripts/nj/build-county.mjs --all && node scripts/nj/status.mjs
 ```
 
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Verified data**, and lets you filter to them on the map and rankings.
