@@ -104,6 +104,8 @@ export function renderMap(root, state) {
   let heatLayer;
   let statesLayer;
   const markers = new Map();
+  const LIST_PAGE = 100;
+  let listLimit = LIST_PAGE;
   if (L) {
     map = L.map('map', { zoomControl: true, minZoom: 2, zoomSnap: 0.25, worldCopyJump: true, preferCanvas: true });
     map.fitBounds(US_BOUNDS);
@@ -156,7 +158,8 @@ export function renderMap(root, state) {
       ${ui.layer === 'heat' ? '<p class="small muted" style="margin:4px 0 0">Heat glows brighter where towns perform better on this measure. Switch to dots to read single towns.</p>' : ''}`;
   }
 
-  function draw() {
+  function draw(keepLimit) {
+    if (keepLimit !== true) listLimit = LIST_PAGE;
     const m = metric();
     const scale = colorScale();
     const list = visible();
@@ -167,15 +170,20 @@ export function renderMap(root, state) {
     const ungraded = (x) => (m.key === 'score' && x.s.grade === '?' ? 1 : 0);
     const sorted = [...list].sort((a, b) => ungraded(a) - ungraded(b) || (m.higherIsBetter === false ? m.value(a.s) - m.value(b.s) : m.value(b.s) - m.value(a.s)));
     $('#m-count').textContent = `${sorted.length} town${sorted.length === 1 ? '' : 's'} · ${m.higherIsBetter === false ? 'lowest' : 'highest'} first`;
+    // Render the list in pages: thousands of rows in the DOM make the page slow to paint and scroll.
+    const shownRows = sorted.slice(0, listLimit);
     $('#m-list').innerHTML = sorted.length
-      ? sorted
+      ? shownRows
           .map(
             ({ town, s }) => `<li><button type="button" data-id="${town.id}">
               ${gradeBadge(s.grade)}
               <span><span class="t-name">${escapeHTML(town.name)}</span><br><span class="t-sub">${escapeHTML(town.county)}, ${town.state}</span></span>
               <span class="t-val num">${m.format(m.value(s))}</span></button></li>`,
           )
-          .join('')
+          .join('') +
+        (sorted.length > shownRows.length
+          ? `<li><button type="button" class="btn" data-more style="width:100%;justify-content:center">Show more (${sorted.length - shownRows.length} left)</button></li>`
+          : '')
       : '<li class="empty small">No towns match.</li>';
 
     if (!map) return;
@@ -249,6 +257,7 @@ export function renderMap(root, state) {
   $('#m-metric').addEventListener('change', (e) => { ui.metric = e.target.value; draw(); });
   root.querySelectorAll('[data-layer]').forEach((b) => b.addEventListener('click', () => { ui.layer = b.dataset.layer; draw(); }));
   $('#m-list').addEventListener('click', (e) => {
+    if (e.target.closest('[data-more]')) { listLimit += LIST_PAGE; draw(true); return; }
     const b = e.target.closest('button[data-id]');
     if (b) openCard(b.dataset.id);
   });

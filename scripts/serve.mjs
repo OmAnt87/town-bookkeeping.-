@@ -4,6 +4,7 @@ import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { gzipSync } from 'node:zlib';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = Number(process.env.PORT) || 8080;
@@ -19,7 +20,16 @@ createServer(async (req, res) => {
   try {
     if ((await stat(file)).isDirectory()) file = join(file, 'index.html');
     const body = await readFile(file);
-    res.writeHead(200, { 'Content-Type': TYPES[extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-cache', ...(extname(file) === '.json' && { 'Cache-Control': 'public, max-age=300' }) });
+    const type = TYPES[extname(file)] || 'application/octet-stream';
+    const headers = { 'Content-Type': type, 'Cache-Control': extname(file) === '.json' ? 'public, max-age=300' : 'no-cache' };
+    // Compress text responses like a production host would; the JSON data is large.
+    if (/^(text|application\/json|image\/svg)/.test(type) && /\bgzip\b/.test(req.headers['accept-encoding'] || '')) {
+      headers['Content-Encoding'] = 'gzip';
+      headers.Vary = 'Accept-Encoding';
+      res.writeHead(200, headers).end(gzipSync(body));
+      return;
+    }
+    res.writeHead(200, headers);
     res.end(body);
   } catch {
     res.writeHead(404, { 'Content-Type': 'text/plain' }).end('Not found');
