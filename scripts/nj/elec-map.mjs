@@ -26,7 +26,9 @@ const title = (s) => String(s || '').toLowerCase().replace(/[a-z0-9']+/g, (w) =>
 
 // Party organizations are sometimes filed under a business or PAC type; they are
 // excluded like other party committees.
-const PARTY_NAME = /\b(republican|democratic|democrat|party|county committee|municipal committee|political club)\b/i;
+const PARTY_NAME = /(\b(republicans?|democrats?|gop|part(y|ies)|county committee|municipal committee|state committee|political club)\b|democratic)/i;
+// Candidates' own committees filed under another type ("Smith for Council").
+const CANDIDATE_NAME = /\bfor (senate|assembly|congress|governor|mayor|council|committee|freeholder|commissioner|sheriff|clerk|surrogate|office)\b|\b(friends of|elect|re-?elect)\b/i;
 
 // Groups spelling variants of the same donor ("T&M" / "T And M", "Collier" / "Colliers").
 export const donorKey = (s) => String(s || '').toLowerCase()
@@ -51,7 +53,7 @@ export function summarizeElec(rows, since) {
     if (amount <= 0) continue;
     if (r.CONT_TYPE === 'A') individuals += amount;
     const key = ELEC_TYPE_CATEGORY[r.CONT_TYPE];
-    if (!key || PARTY_NAME.test(r.CONTRIBUTOR)) continue;
+    if (!key || PARTY_NAME.test(r.CONTRIBUTOR) || CANDIDATE_NAME.test(r.CONTRIBUTOR)) continue;
     counted++;
     influence[key] += amount;
     const name = title(r.CONTRIBUTOR);

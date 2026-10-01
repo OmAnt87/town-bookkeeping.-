@@ -38,8 +38,12 @@ const TODAY = new Date().toISOString().slice(0, 10);
 const ELEC_SINCE = `${Number(TODAY.slice(0, 4)) - 4}${TODAY.slice(4)}`;
 const ELEC_DIR = join(RAW, 'elec');
 const elecLocs = existsSync(join(ELEC_DIR, 'locations.json')) ? JSON.parse(readFileSync(join(ELEC_DIR, 'locations.json'), 'utf8')) : [];
+// ELEC writes "TWP", "&amp;" and former names in parentheses; a few towns use a different name entirely.
+const ELEC_ALIASES = { 'city of orange township|Essex': 'ORANGE CITY' };
+const cleanElec = (s) => s.replace(/&amp;/g, '&').replace(/\(.*?\)/g, '').replace(/\bTWP\b/g, 'TOWNSHIP').replace(/\bBORO\b/g, 'BOROUGH').replace(/&/g, 'AND').replace(/\s+/g, ' ').trim();
 function elecFor(name, county) {
-  const pool = elecLocs.filter((l) => l.county === county);
+  const alias = ELEC_ALIASES[`${name.toLowerCase()}|${county}`];
+  const pool = elecLocs.filter((l) => l.county === county).map((l) => ({ ...l, name: alias && l.name === alias ? name : cleanElec(l.name) }));
   const loc = pool.find((l) => l.name.toLowerCase() === name.toLowerCase())
     || pool.find((l) => normName(l.name) === normName(name) && l.name.split(' ').at(-1).toLowerCase() === name.split(' ').at(-1).toLowerCase())
     || pool.find((l) => normName(l.name) === normName(name));
