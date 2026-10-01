@@ -120,4 +120,4 @@ tests/                          node --test suite
 vendor/                         Leaflet 1.9.4 and Leaflet.heat 0.2.0 (BSD-2-Clause)
 ```
 
-Map tiles come from CARTO with OpenStreetMap data. State outlines (`data/us-states.json`) are built from the [us-atlas](https://github.com/topojson/us-atlas) package (ISC, U.S. Census Bureau boundaries) and show underneath the tiles, so the map stays usable when tiles are unavailable.
+Map tiles come from Esri's Light/Dark Gray Canvas basemaps (no API key needed). State outlines (`data/us-states.json`) are built from the [us-atlas](https://github.com/topojson/us-atlas) package (ISC, U.S. Census Bureau boundaries) and show underneath the tiles, so the map stays usable when tiles are unavailable.
