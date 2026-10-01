@@ -49,6 +49,7 @@ export const COMPONENTS = [
     key: 'services',
     label: 'Money reaching residents',
     max: 30,
+    available: (t) => t.spending > 0,
     measure: (t) => scale(t.directShare, 0.5, 0.88),
     detail: (t) => `${pct(t.directShare)} of spending goes to direct services`,
   },
@@ -56,6 +57,7 @@ export const COMPONENTS = [
     key: 'overhead',
     label: 'Low overhead',
     max: 15,
+    available: (t) => t.spending > 0,
     measure: (t) => scale(t.adminShare, 0.3, 0.06),
     detail: (t) => `${pct(t.adminShare)} spent on administration and consultants`,
   },
@@ -63,6 +65,7 @@ export const COMPONENTS = [
     key: 'influence',
     label: 'Low outside political money',
     max: 20,
+    available: (_t, town) => hasData(town.influence),
     measure: (t) => scale(t.influencePerResident, 12, 0.5),
     detail: (t) => `$${t.influencePerResident.toFixed(2)} in PAC, donor and lobbying money per resident`,
   },
@@ -70,6 +73,7 @@ export const COMPONENTS = [
     key: 'transparency',
     label: 'Transparency',
     max: 20,
+    available: (_t, town) => Object.values(town.transparency || {}).some((v) => typeof v === 'boolean'),
     measure: (_t, town) => transparencyCount(town) / TRANSPARENCY_CHECKS.length,
     detail: (_t, town) => `${transparencyCount(town)} of ${TRANSPARENCY_CHECKS.length} transparency practices`,
   },
@@ -77,6 +81,7 @@ export const COMPONENTS = [
     key: 'fiscal',
     label: 'Fiscal health',
     max: 15,
+    available: (t, town) => typeof town.debt === 'number' && t.revenue > 0,
     measure: (t) =>
       0.65 * scale(t.debtPerResident, 6000, 300) +
       0.35 * scale(t.revenue ? t.balance / t.revenue : 0, -0.1, 0.02),
@@ -85,6 +90,10 @@ export const COMPONENTS = [
       `${t.balance >= 0 ? 'surplus' : 'deficit'} of ${pct(Math.abs(t.revenue ? t.balance / t.revenue : 0))}`,
   },
 ];
+
+// A section counts as reported when it exists as an object, even if every value is 0.
+// A missing section means "unknown", which is different from zero.
+const hasData = (obj) => obj != null && typeof obj === 'object' && Object.keys(obj).length > 0;
 
 export function transparencyCount(town) {
   return TRANSPARENCY_CHECKS.filter((c) => town.transparency?.[c.key] === true).length;
@@ -101,18 +110,32 @@ export function gradeFor(score) {
 export function scoreTown(town) {
   const t = totals(town);
   const components = COMPONENTS.map((c) => {
-    const ratio = clamp(c.measure(t, town));
+    const available = c.available(t, town);
+    const ratio = available ? clamp(c.measure(t, town)) : 0;
     return {
       key: c.key,
       label: c.label,
       max: c.max,
-      points: Math.round(ratio * c.max * 10) / 10,
+      available,
+      points: available ? Math.round(ratio * c.max * 10) / 10 : null,
       ratio,
-      detail: c.detail(t, town),
+      detail: available ? c.detail(t, town) : 'Not scored: no data loaded for this part yet',
     };
   });
-  const score = Math.round(components.reduce((a, c) => a + c.points, 0) * 10) / 10;
-  return { score, grade: gradeFor(score), components, totals: t };
+  // Parts with no data are left out and the rest are rescaled to 100, so
+  // missing records never count as good or bad.
+  const scored = components.filter((c) => c.available);
+  const possible = scored.reduce((a, c) => a + c.max, 0);
+  const earned = scored.reduce((a, c) => a + c.points, 0);
+  const score = possible ? Math.round((earned / possible) * 1000) / 10 : 0;
+  return {
+    score,
+    // A letter grade needs data behind at least half of the 100 points.
+    grade: possible >= 50 ? gradeFor(score) : '?',
+    components,
+    totals: t,
+    coverage: { scored: scored.length, total: components.length, possible },
+  };
 }
 
 export function pct(v, digits = 0) {

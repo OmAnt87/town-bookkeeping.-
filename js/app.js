@@ -25,9 +25,16 @@ export function setDataset(dataset, source) {
   state.source = source;
   state.towns = dataset.towns.map((town) => ({ town, s: scoreTown(town) }));
   state.byId = new Map(state.towns.map((t) => [t.town.id, t]));
-  const isDemo = dataset.demo === true || dataset.towns.every((t) => t.demo);
-  document.getElementById('demo-banner').hidden = !isDemo;
-  document.body.classList.toggle('has-banner', isDemo);
+  const demoCount = dataset.towns.filter((t) => t.demo === true).length;
+  const realCount = dataset.towns.length - demoCount;
+  const banner = document.getElementById('demo-banner');
+  banner.hidden = demoCount === 0;
+  if (demoCount) {
+    banner.innerHTML = realCount
+      ? `<strong>${realCount} town${realCount === 1 ? '' : 's'} use${realCount === 1 ? 's' : ''} real public records</strong> (marked Verified data). The other ${demoCount} are <strong>fictional demo towns</strong> with illustrative figures.`
+      : 'Showing <strong>fictional demo towns</strong>. Figures are illustrative, not real records. Load real data on the <a href="#/data">Data</a> page.';
+  }
+  document.body.classList.toggle('has-banner', demoCount > 0);
   return [];
 }
 
@@ -44,10 +51,27 @@ export function resetToDemo() {
   return loadDemo();
 }
 
+// Real towns live in data/real/, listed in data/real/index.json. They are
+// shown alongside the demo towns and replace any demo town with the same id.
+async function loadRealTowns() {
+  try {
+    const res = await fetch('data/real/index.json');
+    if (!res.ok) return [];
+    const { files = [] } = await res.json();
+    const sets = await Promise.all(files.map((f) => fetch(`data/real/${f}`).then((r) => (r.ok ? r.json() : { towns: [] }))));
+    return sets.flatMap((d) => d.towns || []).map((t) => ({ ...t, demo: false }));
+  } catch {
+    return [];
+  }
+}
+
 async function loadDemo() {
-  const res = await fetch('data/towns.json');
+  const [res, real] = await Promise.all([fetch('data/towns.json'), loadRealTowns()]);
   if (!res.ok) throw new Error(`Could not load data/towns.json (${res.status})`);
-  setDataset(await res.json(), 'demo');
+  const demo = await res.json();
+  const realIds = new Set(real.map((t) => t.id));
+  const errors = setDataset({ towns: [...real, ...demo.towns.filter((t) => !realIds.has(t.id))] }, real.length ? 'mixed' : 'demo');
+  if (errors.length) throw new Error(errors.join(' '));
 }
 
 async function init() {

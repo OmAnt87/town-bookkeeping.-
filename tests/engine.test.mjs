@@ -120,3 +120,54 @@ test('contributor classification', () => {
   assert.equal(classifyContributor('Lobbying', 'Capitol Strategies'), 'lobbyingPaid');
   assert.equal(classifyContributor('Individual', 'Jane Smith'), null);
 });
+
+import { mapNJLine, aggregateNJBudget } from '../scripts/nj-budget-map.mjs';
+
+test('NJ budget lines map to categories', () => {
+  const a = (l) => mapNJLine(l, 'appropriation');
+  const r = (l) => mapNJLine(l, 'revenue');
+  assert.equal(a('Police - Salaries and Wages'), 'publicSafety');
+  assert.equal(a('Streets and Road Maintenance - Other Expenses'), 'roads');
+  assert.equal(a('Solid Waste Collection'), 'utilities');
+  assert.equal(a('Recreation Services and Programs'), 'parks');
+  assert.equal(a('Legal Services and Costs'), 'consultants');
+  assert.equal(a('Engineering Services and Costs'), 'consultants');
+  assert.equal(a('Municipal Clerk - Salaries and Wages'), 'administration');
+  assert.equal(a('Payment of Bond Principal'), 'debtService');
+  assert.equal(a("Police and Firemen's Retirement System of NJ"), 'shared');
+  assert.equal(a('Social Security System (O.A.S.I.)'), 'shared');
+  assert.equal(a('Reserve for Uncollected Taxes'), 'exclude');
+  assert.equal(r('Amount to be Raised by Taxes for Support of Municipal Budget'), 'propertyTax');
+  assert.equal(r('Energy Receipts Tax'), 'stateAid');
+  assert.equal(r('Fines and Costs - Municipal Court'), 'finesForfeitures');
+  assert.equal(r('Uniform Construction Code Fees'), 'feesPermits');
+  assert.equal(r('Clean Communities Program'), 'stateAid');
+  assert.equal(r('Hotel and Motel Occupancy Tax'), 'salesTax');
+  assert.equal(r('Surplus Anticipated'), 'otherRevenue');
+});
+
+test('NJ aggregation spreads shared costs and drops reserves', () => {
+  const out = aggregateNJBudget([
+    { section: 'appropriation', line: 'Police', amount: 600 },
+    { section: 'appropriation', line: 'Municipal Clerk', amount: 400 },
+    { section: 'appropriation', line: 'Group Insurance Plans for Employees', amount: 100 },
+    { section: 'appropriation', line: 'Reserve for Uncollected Taxes', amount: 50 },
+    { section: 'revenue', line: 'Amount to be Raised by Taxes', amount: 1000 },
+  ]);
+  assert.deepEqual(out.spending, { publicSafety: 660, administration: 440 });
+  assert.equal(out.excluded, 50);
+  assert.deepEqual(out.revenue, { propertyTax: 1000 });
+});
+
+test('missing sections are not scored instead of counting as zero', () => {
+  const t = base();
+  delete t.influence;
+  const s = scoreTown(t);
+  const inf = s.components.find((c) => c.key === 'influence');
+  assert.equal(inf.available, false);
+  assert.equal(inf.points, null);
+  assert.equal(s.coverage.scored, 4);
+  const full = scoreTown(base());
+  assert.notEqual(s.score, full.score);
+  assert.ok(s.score >= 0 && s.score <= 100);
+});

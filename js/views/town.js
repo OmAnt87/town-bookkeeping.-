@@ -2,7 +2,7 @@ import { revenueRows, spendingRows, influenceRows, transparencyCount } from '../
 import { TRANSPARENCY_CHECKS, REVENUE_CATEGORIES, SPENDING_CATEGORIES, INFLUENCE_CATEGORIES } from '../engine/categories.js';
 import { filterLedger, summarizeLedger, sortLedger, ledgerToCSV, categoryLabel, FLOWS } from '../engine/ledger.js';
 import { money, number, escapeHTML, formatDate } from '../engine/format.js';
-import { gradeBadge, barList, splitBar, legendKey, lineChart, downloadFile, ICONS } from '../charts.js';
+import { gradeBadge, verifiedPill, barList, splitBar, legendKey, lineChart, downloadFile, ICONS } from '../charts.js';
 
 const PAGE = 15;
 
@@ -21,6 +21,9 @@ export function renderTown(root, state, id) {
   const spend = spendingRows(town)
     .map((r) => ({ ...r, color: r.direct ? 'var(--series-in)' : 'var(--series-overhead)' }))
     .sort((a, b) => (a.direct === b.direct ? b.amount - a.amount : a.direct ? -1 : 1));
+  const hasInfluence = town.influence && Object.keys(town.influence).length > 0;
+  const hasDebt = typeof town.debt === 'number';
+  const NA = '<div class="v muted" style="font-size:18px">Not available</div>';
   const infl = influenceRows(town).map((r) => ({ ...r, color: 'var(--grade-f)' }));
   const pctOf = (v) => `${Math.round(v * 100)}%`;
   const biggestNonProp = rev.filter((r) => !r.propertyTax).sort((a, b) => b.amount - a.amount)[0];
@@ -30,9 +33,9 @@ export function renderTown(root, state, id) {
     <div class="report-head">
       <div>
         <div class="crumbs"><a href="#/map">Map</a> / <a href="#/rankings">Rankings</a> / ${escapeHTML(town.name)}</div>
-        <h1>${escapeHTML(town.name)}</h1>
+        <h1>${escapeHTML(town.name)} ${verifiedPill(town)}</h1>
         <div class="meta-row">
-          <span>${escapeHTML(town.county)}, ${escapeHTML(town.stateName || town.state)}</span>
+          <span>${escapeHTML([town.county, town.stateName || town.state].filter(Boolean).join(', '))}</span>
           <span>${escapeHTML(town.type || 'Municipality')}</span>
           <span>Population ${number(town.population)}</span>
           <span>Fiscal year ${town.fiscalYear}</span>
@@ -53,10 +56,10 @@ export function renderTown(root, state, id) {
           <div class="score-text">
             <div class="score-value num">${s.score.toFixed(1)}<small> / 100</small></div>
             <div class="track g-${s.grade}" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${s.score}" aria-label="Score"><span style="width:${s.score}%"></span></div>
-            <div class="small muted">Ranked ${rank} of ${state.towns.length} towns in this dataset</div>
+            ${s.grade === '?' ? '<div class="small muted"><strong>Not graded yet:</strong> a letter grade needs data for at least half of the score.</div>' : `<div class="small muted">Ranked ${rank} of ${state.towns.length} towns in this dataset</div>`}
           </div>
         </div>
-        <p class="basis">Based on how much spending reaches residents as services, overhead, outside political money, transparency practices, and debt.</p>
+        <p class="basis">Based on how much spending reaches residents as services, overhead, outside political money, transparency practices, and debt.${s.coverage.scored < s.coverage.total ? ` <strong>Scored on ${s.coverage.scored} of ${s.coverage.total} parts</strong>; parts without data are left out rather than guessed.` : ''}</p>
         <div class="callout">${plainSummary(town, s)}</div>
       </div>
       <div class="card">
@@ -64,7 +67,7 @@ export function renderTown(root, state, id) {
         <div class="components">${s.components
           .map(
             (c) => `<div class="component-row">
-              <div class="top"><strong>${c.label}</strong><span class="num">${c.points} / ${c.max}</span></div>
+              <div class="top"><strong>${c.label}</strong><span class="num ${c.available ? '' : 'muted'}">${c.available ? `${c.points} / ${c.max}` : 'Not scored'}</span></div>
               <div class="track" aria-hidden="true"><span style="width:${c.ratio * 100}%"></span></div>
               <p>${escapeHTML(c.detail)}</p></div>`,
           )
@@ -76,8 +79,8 @@ export function renderTown(root, state, id) {
       <div class="tile"><div class="k">Total money in</div><div class="v num">${money(t.revenue, { compact: true })}</div><div class="s">${money(t.revenue / town.population)} per resident</div></div>
       <div class="tile"><div class="k">Not from property tax</div><div class="v num">${money(t.nonPropertyRevenue, { compact: true })}</div><div class="s">${pctOf(t.nonPropertyShare)} of all revenue</div></div>
       <div class="tile"><div class="k">Services per resident</div><div class="v num">${money(t.directPerResident)}</div><div class="s">${pctOf(t.directShare)} of spending</div></div>
-      <div class="tile"><div class="k">Political money</div><div class="v num">${money(t.influence, { compact: true })}</div><div class="s">${money(t.influencePerResident, { compact: false })} per resident</div></div>
-      <div class="tile"><div class="k">Debt</div><div class="v num">${money(town.debt || 0, { compact: true })}</div><div class="s">${money(t.debtPerResident)} per resident</div></div>
+      <div class="tile"><div class="k">Political money</div>${hasInfluence ? `<div class="v num">${money(t.influence, { compact: true })}</div><div class="s">${money(t.influencePerResident)} per resident</div>` : `${NA}<div class="s">No filings loaded yet</div>`}</div>
+      <div class="tile"><div class="k">Debt</div>${hasDebt ? `<div class="v num">${money(town.debt, { compact: true })}</div><div class="s">${money(t.debtPerResident)} per resident</div>` : `${NA}<div class="s">No debt statement loaded</div>`}</div>
     </section>
 
     <div class="grid grid-2" style="margin-bottom:16px">
@@ -100,7 +103,7 @@ export function renderTown(root, state, id) {
     <div class="grid grid-2" style="margin-bottom:16px">
       <section class="card" aria-labelledby="h-pol">
         <div class="card-head"><div><h2 id="h-pol">Political money</h2><p>PAC, developer and union contributions to local officials, plus lobbying the town pays for. This money does not pass through the town budget.</p></div></div>
-        ${barList(infl)}
+        ${hasInfluence ? barList(infl) : '<p class="muted small">No campaign-finance filings have been loaded for this town yet, so political money is unknown. It is not counted in the score.</p>'}
         <h3 style="margin:18px 0 8px">Top contributors</h3>
         ${town.topDonors?.length ? `<div class="table-wrap"><table><thead><tr><th>Contributor</th><th>Type</th><th>Recipient</th><th class="r">Amount</th></tr></thead><tbody>${town.topDonors
           .map((d) => `<tr><td class="wrap">${escapeHTML(d.name)}</td><td><span class="pill">${escapeHTML(d.type)}</span></td><td class="wrap">${escapeHTML(d.recipient || '')}</td><td class="r num">${money(d.amount)}</td></tr>`)
@@ -204,8 +207,10 @@ export function renderTown(root, state, id) {
 
 function plainSummary(town, s) {
   const t = s.totals;
-  const strongest = [...s.components].sort((a, b) => b.ratio - a.ratio)[0];
-  const weakest = [...s.components].sort((a, b) => a.ratio - b.ratio)[0];
+  const scored = s.components.filter((c) => c.available);
+  if (!scored.length) return '<strong>In plain terms:</strong> not enough data is loaded to judge this town yet.';
+  const strongest = [...scored].sort((a, b) => b.ratio - a.ratio)[0];
+  const weakest = [...scored].sort((a, b) => a.ratio - b.ratio)[0];
   const per100 = Math.round(t.directShare * 100);
   return `<strong>In plain terms:</strong> for every $100 ${escapeHTML(town.name)} spends, about $${per100} pays for services residents use directly.
     Its strongest area is <strong>${strongest.label.toLowerCase()}</strong>; its weakest is <strong>${weakest.label.toLowerCase()}</strong>.`;

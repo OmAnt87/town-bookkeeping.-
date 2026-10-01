@@ -65,7 +65,7 @@ export const emptyTown = (o = {}) => ({
   influence: {},
   topDonors: [],
   transparency: {},
-  debt: 0,
+  debt: null,
   history: [],
   ledger: [],
   sources: [],

@@ -14,6 +14,12 @@ The score runs from 0 to 100 and is the sum of five parts. Each part scales line
 
 **Grades:** A 85+, B 70–84, C 55–69, D 40–54, F below 40.
 
+## Missing data
+
+A part with no data loaded (for example, no campaign-finance filings yet) is **not scored**. It is left out, and the remaining parts are rescaled to 100. Missing records never count as good or bad. A letter grade is given only when parts worth at least 50 points have data; otherwise the town shows "?" (not graded yet).
+
+For New Jersey budgets, pensions, social security and employee insurance are spread across departments in proportion to their size, so they don't count as overhead. Reserves such as the reserve for uncollected taxes are not spending and are excluded. NJ municipal budgets cover the township's own operations only. School-district and county taxes on the same bill are separate governments and are not included.
+
 ## Definitions
 
 - **Direct services:** police, fire and EMS; roads and infrastructure; water, sewer and sanitation; parks, library and recreation; health and human services.

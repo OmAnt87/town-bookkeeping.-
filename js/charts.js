@@ -12,8 +12,15 @@ export const ICONS = {
   sort: '<svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 4l3-3 3 3M2 6l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>',
 };
 
-export const gradeBadge = (grade, size = '') =>
-  `<span class="grade g-${grade} ${size ? `grade-${size}` : ''}" role="img" aria-label="Grade ${grade}">${grade}</span>`;
+export const gradeBadge = (grade, size = '') => {
+  const known = /^[A-F]$/.test(grade);
+  return `<span class="grade ${known ? `g-${grade}` : 'g-none'} ${size ? `grade-${size}` : ''}" role="img" aria-label="${known ? `Grade ${grade}` : 'Not graded'}">${known ? grade : '?'}</span>`;
+};
+
+// Small pill marking a town whose figures come from real public records.
+export const isVerified = (town) => town.demo !== true && (town.sources || []).some((src) => src.url);
+export const verifiedPill = (town) =>
+  !isVerified(town) ? '' : '<span class="pill pill-verified" title="Figures come from public records listed under Sources">Verified data</span>';
 
 // Horizontal bar list. rows: [{ label, amount, share, color }]; bars scale to the largest row.
 export function barList(rows, { total } = {}) {

@@ -39,6 +39,7 @@ To use real figures, build a dataset with the pipeline scripts, then load it on 
 | [Census Annual Survey of Local Government Finances](https://www.census.gov/programs-surveys/gov-finances.html) | `scripts/import-census-finance.mjs` | Revenue and spending by category |
 | [USAspending.gov](https://www.usaspending.gov) | `scripts/fetch-usaspending.mjs` | Federal grants and their ledger entries |
 | State or county campaign-finance portal (CSV export) | `scripts/import-contributions.mjs` | PAC, developer and union contributions, lobbying, top donors |
+| New Jersey municipal budget / User Friendly Budget (line items as CSV) | `scripts/import-nj-budget.mjs` | Revenue and spending by line, with one ledger row per budget line |
 | Town budget, audit (ACFR) and website | edit the JSON | Transparency checks, debt, history |
 
 Example:
@@ -50,6 +51,8 @@ node scripts/fetch-usaspending.mjs --state PA --city "My Town" --recipient "MY T
 node scripts/import-contributions.mjs --csv contributions.csv --id my-township-pa
 # -> data/my-township-pa.json, ready to load on the Data page
 ```
+
+Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Verified data**, and lets you filter to them on the map and rankings.
 
 See [docs/DATA_SCHEMA.md](docs/DATA_SCHEMA.md) for every field and [docs/METHODOLOGY.md](docs/METHODOLOGY.md) for how scores are calculated.
 

@@ -36,7 +36,7 @@ export function renderData(root, state) {
           <button class="btn" id="dl-sample" type="button">${ICONS.download} Sample file</button>
           <button class="btn" id="reset" type="button">Restore demo data</button>
         </div>
-        <p class="small muted" style="margin:14px 0 0">Loaded now: <strong>${state.towns.length} towns</strong> (${state.source === 'demo' ? 'fictional demo data' : 'your imported file'}).</p>
+        <p class="small muted" style="margin:14px 0 0">Loaded now: <strong>${state.towns.length} towns</strong> (${{ demo: 'fictional demo data', mixed: 'demo towns plus verified real towns', import: 'your imported file' }[state.source] || state.source}).</p>
       </section>
       <section class="card prose">
         <h2 style="margin:0 0 8px">Where real numbers come from</h2>

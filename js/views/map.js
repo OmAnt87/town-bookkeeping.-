@@ -1,6 +1,6 @@
 import { MAP_METRICS } from '../engine/scoring.js';
 import { money, number, escapeHTML } from '../engine/format.js';
-import { gradeBadge, ICONS, cssVar } from '../charts.js';
+import { gradeBadge, verifiedPill, isVerified, ICONS, cssVar } from '../charts.js';
 import { isDark } from '../app.js';
 
 // Diverging scale (poor = red, middle = gray, good = blue) and a one-hue
@@ -43,7 +43,7 @@ async function loadStates() {
 }
 const stateStyle = () => ({ color: cssVar('--baseline'), weight: 1, fillColor: cssVar('--surface'), fillOpacity: 1 });
 
-const ui = { metric: 'score', layer: 'towns', state: 'all', query: '' };
+const ui = { metric: 'score', layer: 'towns', state: 'all', query: '', realOnly: false };
 
 export function renderMap(root, state) {
   const states = [...new Set(state.towns.map((t) => t.town.state))].sort();
@@ -73,6 +73,7 @@ export function renderMap(root, state) {
           </div>
         </div>
       </div>
+      ${state.towns.some((t) => isVerified(t.town)) ? `<label class="check"><input type="checkbox" id="m-real" ${ui.realOnly ? 'checked' : ''}> Only towns with verified data</label>` : ''}
       <div class="field">
         <label for="m-metric">Color towns by</label>
         <select id="m-metric" class="select">${MAP_METRICS.map(
@@ -124,6 +125,7 @@ export function renderMap(root, state) {
     return state.towns.filter(
       ({ town }) =>
         (ui.state === 'all' || town.state === ui.state) &&
+        (!ui.realOnly || isVerified(town)) &&
         (!q || `${town.name} ${town.county} ${town.state} ${town.stateName || ''}`.toLowerCase().includes(q)),
     );
   }
@@ -209,7 +211,7 @@ export function renderMap(root, state) {
       <button class="icon-btn close" type="button" aria-label="Close">${ICONS.close}</button>
       <div style="display:flex;gap:12px;align-items:center;padding-right:40px">
         ${gradeBadge(s.grade, 'md')}
-        <div><h2>${escapeHTML(town.name)}</h2><div class="small muted">${escapeHTML(town.county)}, ${town.stateName || town.state} &middot; pop. ${number(town.population)}</div></div>
+        <div><h2>${escapeHTML(town.name)}</h2>${verifiedPill(town)}<div class="small muted">${escapeHTML(town.county)}, ${town.stateName || town.state} &middot; pop. ${number(town.population)}</div></div>
       </div>
       <div class="map-stats">
         <div><span>Community Return Score</span><strong class="num">${s.score.toFixed(0)} / 100</strong></div>
@@ -233,6 +235,7 @@ export function renderMap(root, state) {
       else if (pts.length) map.flyToBounds(pts, { padding: [60, 60], maxZoom: 7, duration: 0.6 });
     }
   });
+  $('#m-real')?.addEventListener('change', (e) => { ui.realOnly = e.target.checked; draw(); });
   $('#m-metric').addEventListener('change', (e) => { ui.metric = e.target.value; draw(); });
   root.querySelectorAll('[data-layer]').forEach((b) => b.addEventListener('click', () => { ui.layer = b.dataset.layer; draw(); }));
   $('#m-list').addEventListener('click', (e) => {
