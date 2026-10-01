@@ -6,7 +6,9 @@
 // known and the rest is 'otherSpending' (not broken down).
 //
 // 'shared' = capital outlay and "other", spread across departments by size as with
-// employee benefits in NJ and NY and "other expenditures" in PA.
+// employee benefits in NJ and NY and "other expenditures" in PA. Employee benefits
+// recorded under general government (town-wide health insurance and pensions) are
+// spread over the town's own departments, not schools or debt service.
 
 export const CT_REVENUE = {
   d_3_property_tax_revenue: ['propertyTax', 'Property tax'],
@@ -38,6 +40,7 @@ export const CT_DEPARTMENT = {
 };
 
 const num = (v) => Number(v) || 0;
+const TOWN_EXCLUDED = new Set(['education', 'debtService']);
 
 // fs: one financial statement row; depts: that town-year's UCOA department rows
 // (4-digit department codes), or null when the breakdown is missing or does not match.
@@ -51,6 +54,7 @@ export function aggregateCt(fs, depts) {
   }
   const spending = {};
   let shared = 0;
+  let benefitsSpread = 0;
   let expSum = 0;
   const unmapped = [];
   if (depts) {
@@ -63,9 +67,18 @@ export function aggregateCt(fs, depts) {
       if (key === 'shared') shared += v;
       else spending[key] = (spending[key] || 0) + v;
     }
+    // Benefits filed under general government cover the whole town workforce
+    // (schools keep their own), so they go to the town's own departments.
+    const gg = depts.find((d) => d.department_code === '4100');
+    benefitsSpread = Math.min(num(gg?.employee_benefits), spending.administration || 0);
+    if (benefitsSpread) spending.administration -= benefitsSpread;
     const base = Object.values(spending).reduce((a, b) => a + b, 0);
     if (shared && base) for (const k of Object.keys(spending)) spending[k] += shared * (spending[k] / base);
-    else if (shared) spending.administration = shared;
+    else if (shared) spending.administration = (spending.administration || 0) + shared;
+    const townKeys = Object.keys(spending).filter((k) => !TOWN_EXCLUDED.has(k));
+    const townBase = townKeys.reduce((a, k) => a + spending[k], 0);
+    if (benefitsSpread && townBase) for (const k of townKeys) spending[k] += benefitsSpread * (spending[k] / townBase);
+    else if (benefitsSpread) spending.administration = (spending.administration || 0) + benefitsSpread;
   } else {
     const parts = { education: num(fs.d_20_total_education), debtService: num(fs.d_21_debt_service_expenditures), otherSpending: num(fs.d_24_all_other_expenditures) };
     for (const [k, v] of Object.entries(parts)) { expSum += v; if (v) spending[k] = v; }
@@ -75,6 +88,7 @@ export function aggregateCt(fs, depts) {
     revenue: round(revenue),
     spending: round(spending),
     shared: Math.round(shared),
+    benefitsSpread: Math.round(benefitsSpread),
     unmapped,
     lineTotals: { revenue: revSum, spending: expSum },
     reported: { revenue: num(fs.d_15_total_revenues), spending: num(fs.d_26_total_expenditures) },

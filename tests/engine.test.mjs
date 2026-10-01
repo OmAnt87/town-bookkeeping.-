@@ -402,6 +402,15 @@ test('CT financial statements and UCOA departments map, reconcile and spread cap
   assert.equal(a.lineTotals.spending, a.reported.spending);
   assert.deepEqual(a.excluded, { transfersIn: 40, transfersOut: 30, netOtherFinancing: 0 });
 
+  // Benefits filed under general government go to town departments only.
+  const c = aggregateCt({ ...fs, d_26_total_expenditures: 1000 }, [
+    { department_code: '4700', total: '600' }, { department_code: '4201', total: '100' },
+    { department_code: '4100', total: '200', employee_benefits: '150' }, { department_code: '4899', total: '100' },
+  ]);
+  assert.equal(c.benefitsSpread, 150);
+  assert.deepEqual(c.spending, { education: 600, publicSafety: 200, administration: 100, debtService: 100 });
+  assert.equal(Object.values(c.spending).reduce((x, y) => x + y, 0), 1000);
+
   // Without a department breakdown only schools and debt are known.
   const b = aggregateCt(fs, null);
   assert.deepEqual(b.spending, { education: 600, debtService: 100, otherSpending: 250 });
@@ -412,4 +421,36 @@ test('CT financial statements and UCOA departments map, reconcile and spread cap
     assert.equal(c.available, false);
     assert.match(c.detail, /not by department/);
   }
+});
+
+import { committeeMatcher, classifyReceipt, summarizeCtReceipts } from '../scripts/ct/seec-map.mjs';
+
+test('CT town committees match their town and SEEC receipts are classified', () => {
+  const match = committeeMatcher(['HARTFORD', 'WEST HARTFORD', 'NEW HAVEN', 'WINDSOR', 'WINDSOR LOCKS', 'STONINGTON']);
+  assert.equal(match('West Hartford Democratic Town Committee'), 'WEST HARTFORD');
+  assert.equal(match('Hartford Working Families Town Committee'), 'HARTFORD');
+  assert.equal(match('Independent Party New Haven Town Committee'), 'NEW HAVEN');
+  assert.equal(match('Windsor Locks Republican Town Committee'), 'WINDSOR LOCKS');
+  assert.equal(match('Stonington Borough Town Committee of the Forward Party'), null);
+  assert.equal(match('Hartford PAC'), null);
+
+  const other = (name) => classifyReceipt({ receipt_type: 'Contributions from Other Committees', contributor_name: name });
+  assert.equal(other('Sheet Metal Workers Local # 38').key, 'unionContributions');
+  assert.equal(other('Ten Town PAC').key, 'pacContributions');
+  assert.equal(other('Carfora for Mayor'), null);
+  assert.equal(other('Elicker 2025'), null);
+  assert.equal(other('30th District Republican Senatorial Committee'), null);
+  const ad = (name) => classifyReceipt({ receipt_type: 'Advertising Book Proceeds', contributor_name: name });
+  assert.equal(ad('Daniels Oil Co').key, 'developerContributions');
+  assert.equal(ad('Carl A Massaro, Jr'), null);
+  const person = { receipt_type: 'Itemized Contributions from Individuals', contributor_name: 'Pat Smith', lobbyist: 'NO', contractor: 'NO' };
+  assert.equal(classifyReceipt(person), null);
+  assert.equal(classifyReceipt({ ...person, lobbyist: 'YES' }).key, 'corporateLobbying');
+  assert.equal(classifyReceipt({ ...person, contractor: 'YES' }).key, 'developerContributions');
+
+  const row = { committee: 'Avon Republican Town Committee', contributor_name: 'Ten Town PAC', receipt_type: 'Contributions from Other Committees', transaction_date: '05/01/2025', amount: '500', receipt_state: 'Original' };
+  const out = summarizeCtReceipts([row, { ...row, receipt_state: 'Amended' }, { ...row, transaction_date: '05/01/2020' }, { ...person, committee: row.committee, transaction_date: '05/02/2025', amount: '40', receipt_state: 'Original' }], '2023-01-01');
+  assert.equal(out.influence.pacContributions, 500);
+  assert.equal(out.individuals, 40);
+  assert.equal(out.counted, 1);
 });

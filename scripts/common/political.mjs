@@ -18,7 +18,7 @@ export const donorKey = (s) => String(s || '').toLowerCase()
   .replace(/[^a-z0-9 ]/g, ' ')
   .split(/\s+/).filter(Boolean).map((w) => w.replace(/s$/, '')).join(' ');
 
-export const TYPE_LABEL = { pacContributions: 'PAC', developerContributions: 'Business', unionContributions: 'Union' };
+export const TYPE_LABEL = { pacContributions: 'PAC', developerContributions: 'Business', unionContributions: 'Union', corporateLobbying: 'Lobbyist' };
 
 // Shared summary: rows are already normalized to { date, amount, key, contributor, recipient, description, source }.
 export function summarizeContributions(rows) {
@@ -26,7 +26,7 @@ export function summarizeContributions(rows) {
   const donors = new Map();
   const ledger = [];
   for (const r of rows) {
-    influence[r.key] += r.amount;
+    influence[r.key] = (influence[r.key] || 0) + r.amount;
     const dk = donorKey(r.contributor);
     const d = donors.get(dk) || { name: title(r.contributor), type: TYPE_LABEL[r.key], recipients: new Set(), amount: 0 };
     d.amount += r.amount;

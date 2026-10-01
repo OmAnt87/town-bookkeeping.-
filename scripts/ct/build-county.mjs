@@ -4,6 +4,7 @@
 // Census uses its nine planning regions as county equivalents.
 //
 //   node scripts/ct/download.mjs
+//   node scripts/ct/fetch-seec.mjs                     # town party committee receipts (optional)
 //   node scripts/ct/build-county.mjs --county Capitol   (or --all)
 //
 // Figures are actual general-fund results reported to the CT Office of Policy and
@@ -14,6 +15,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs, parseCSV, slugify } from '../lib.mjs';
 import { aggregateCt, CT_REVENUE, CT_DEPARTMENT } from './mfi-map.mjs';
+import { committeeMatcher, summarizeCtReceipts, SEEC_URL } from './seec-map.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const RAW = join(ROOT, 'data', 'raw', 'ct');
@@ -44,6 +46,22 @@ for (const r of fsRows) entry(r.entity_name).fs[r.year] = r;
 for (const r of ucoa) if (/^\d{4}$/.test(r.department_code)) (entry(r.entity_name).ucoa[r.year] ||= []).push(r);
 for (const r of ucoa) if (r.department_code === '51') entry(r.entity_name).ucoa[`${r.year}-total`] = Number(r.total);
 for (const r of townRows) entry(r.town).town[r.fiscal_year_end] = r;
+
+// Town party committee receipts from SEEC, grouped by town (cached by fetch-seec.mjs).
+const LEDGER_POLITICAL_MAX = 100;
+const thisYear = new Date().getFullYear();
+const SEEC_SINCE = `${thisYear - 3}-01-01`;
+const seecFiles = [...Array(4)].map((_, i) => join(RAW, `seec_party_${thisYear - 3 + i}.csv`)).filter(existsSync);
+const seecByTown = new Map();
+if (seecFiles.length) {
+  const match = committeeMatcher([...new Set(fsRows.map((r) => r.entity_name))].filter((n) => !/\(CITY\)/.test(n)));
+  for (const f of seecFiles) {
+    for (const r of parseCSV(readFileSync(f, 'latin1'))) {
+      const town = match(r.committee);
+      if (town) (seecByTown.get(town) || seecByTown.set(town, []).get(town)).push(r);
+    }
+  }
+}
 
 const titleCase = (s) => s.toLowerCase().replace(/(^|[\s-])([a-z])/g, (m, a, b) => a + b.toUpperCase());
 const money = (n) => `$${Math.round(n).toLocaleString('en-US')}`;
@@ -105,7 +123,7 @@ function buildTown(name, t, report) {
           .filter(([, v]) => Number(v)).map(([l, v]) => `${l} ${money(Number(v))}`).join(', ');
         return {
           date, flow: 'out', category: k === 'shared' ? 'administration' : k, counterparty: 'Uniform Chart of Accounts: spending',
-          description: `${d.function_description === d.department_description ? d.department_description : `${d.function_description}: ${d.department_description}`}${parts ? ` (${parts})` : ''}${k === 'shared' ? '; spread across departments in totals' : ''}`,
+          description: `${d.function_description === d.department_description ? d.department_description : `${d.function_description}: ${d.department_description}`}${parts ? ` (${parts})` : ''}${k === 'shared' ? '; spread across departments in totals' : ''}${d.department_code === '4100' && Number(d.employee_benefits) ? '; benefits spread across town departments in totals' : ''}`,
           amount: Math.round(Number(d.total)), source: UCOA_PAGE,
         };
       })
@@ -115,6 +133,8 @@ function buildTown(name, t, report) {
         }))),
   ].sort((x, y) => (x.flow === y.flow ? y.amount - x.amount : x.flow === 'in' ? -1 : 1));
 
+  const isCityInTown = census.kind === 'City' && census.within;
+  const pol = seecFiles.length && !isCityInTown ? summarizeCtReceipts(seecByTown.get(name) || [], SEEC_SINCE) : null;
   const display = census.kind === 'Town' ? `Town of ${titleCase(census.base)}` : `${census.kind} of ${titleCase(census.base)}`;
   const ex = a.excluded;
   return {
@@ -134,8 +154,9 @@ function buildTown(name, t, report) {
     revenue: a.revenue,
     spending: a.spending,
     ...(debt != null ? { debt } : {}),
+    ...(pol ? { influence: pol.influence, topDonors: pol.topDonors } : {}),
     history,
-    ledger,
+    ledger: [...ledger, ...(pol ? pol.ledger.slice(0, LEDGER_POLITICAL_MAX) : [])],
     sources: [
       { label: `CT OPM Municipal Fiscal Indicators: financial statement information, FY ${year} (revenue, spending, debt)`, url: FS_PAGE },
       ...(matched ? [{ label: `CT OPM Municipal Fiscal Indicators: Uniform Chart of Accounts, FY ${year} (spending by department)`, url: UCOA_PAGE }] : []),
@@ -143,6 +164,7 @@ function buildTown(name, t, report) {
       { label: 'CT OPM Municipal Fiscal Indicators (publication)', url: OPM_PAGE },
       { label: `U.S. Census Bureau ${POP_YEAR.slice(-4)} population estimates`, url: POP_PAGE },
       { label: 'U.S. Census Bureau 2024 Gazetteer (map location)', url: GAZ_PAGE },
+      ...(pol ? [{ label: `CT State Elections Enforcement Commission, receipts of ${display}'s party town committees since ${SEEC_SINCE.slice(0, 4)}`, url: SEEC_URL }] : []),
     ],
     notes: [
       `Actual general-fund results for the fiscal year ended June 30, ${year}, as reported to the CT Office of Policy and Management, not a budget.`,
@@ -153,9 +175,14 @@ function buildTown(name, t, report) {
         ? `The City of ${census.within} is a separate government inside the Town of ${census.within}, which is listed separately. City residents pay taxes to both.`
         : 'Covers the town\'s general fund. Water, sewer and other enterprise funds and independent authorities are separate.',
       ...(ex.transfersIn || ex.transfersOut || ex.netOtherFinancing ? [`Left out: transfers in (${money(ex.transfersIn)}) and out (${money(ex.transfersOut)}) between the town's own funds and other financing sources such as borrowing, which are not new revenue or spending.`] : []),
+      ...(a.benefitsSpread ? [`Employee benefits the town records under general government (${money(a.benefitsSpread)}, such as health insurance and pensions for town staff) are spread across the town's own departments in proportion to their size, as in other states. Schools and debt service are left out of that spread.`] : []),
       ...(a.shared ? [`Capital outlay and "other" spending (${money(a.shared)}) are spread across departments in proportion to their size.`] : []),
       'The state reports revenue only as property tax, state, federal and all other, so fees, fines and local charges are not shown separately.',
-      'Political money is not scored: Connecticut candidates for town office file campaign reports with their town clerk, and there is no statewide database of those filings.',
+      ...(pol
+        ? [`Political money counts contributions from PACs, unions, businesses (program-book ads), registered lobbyists and state contractors to ${display}'s party town committees, filed with the State Elections Enforcement Commission since ${SEEC_SINCE.slice(0, 4)}. Other individual donors (${money(pol.individuals)} in the same period) and party and candidate committees are not counted. Candidates for town office file with the town clerk, so their own committees are not included, and town committees also support state candidates.`]
+        : isCityInTown
+          ? [`Political money is not scored: the City of ${census.within} has no party committees of its own (the Town of ${census.within}'s are counted there), and city candidates file with the city clerk.`]
+          : ['Political money is not scored: Connecticut candidates for town office file campaign reports with their town clerk, and there is no statewide database of those filings.']),
       'Transparency practices have not been checked yet, so they are not scored.',
     ],
   };
