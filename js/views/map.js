@@ -188,7 +188,8 @@ export function renderMap(root, state) {
       ).addTo(map);
     }
     for (const { town, s } of list) {
-      const radius = Math.max(5, Math.min(14, Math.sqrt(town.population) / 18));
+      const small = map.getSize().x < 600;
+      const radius = Math.max(small ? 3 : 5, Math.min(small ? 7 : 14, Math.sqrt(town.population) / (small ? 36 : 18)));
       const mk = L.circleMarker([town.lat, town.lng], {
         radius: ui.layer === 'heat' ? 4 : radius,
         color: ring,
@@ -234,7 +235,7 @@ export function renderMap(root, state) {
     if (map) {
       const pts = visible().map(({ town }) => [town.lat, town.lng]);
       if (ui.state === 'all') map.flyToBounds(US_BOUNDS, { duration: 0.6 });
-      else if (pts.length) map.flyToBounds(pts, { padding: [60, 60], maxZoom: 7, duration: 0.6 });
+      else if (pts.length) map.flyToBounds(pts, { padding: [60, 60], maxZoom: 9, duration: 0.6 });
     }
   });
   $('#m-real')?.addEventListener('change', (e) => { ui.realOnly = e.target.checked; draw(); });
@@ -255,6 +256,11 @@ export function renderMap(root, state) {
   mq.addEventListener('change', onTheme);
 
   draw();
+  // Open on the towns being shown: with verified data loaded, that's where the real records are.
+  if (map && (ui.realOnly || ui.state !== 'all')) {
+    const pts = visible().map(({ town }) => [town.lat, town.lng]);
+    if (pts.length) map.fitBounds(pts, { padding: [40, 40], maxZoom: 9 });
+  }
   return () => {
     window.removeEventListener('themechange', onTheme);
     mq.removeEventListener('change', onTheme);
