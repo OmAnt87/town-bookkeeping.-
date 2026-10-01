@@ -51,6 +51,18 @@ function loadBorders(name) {
   });
   return borderCache[name];
 }
+// Crowded Northeast/Mid-Atlantic states get hand-placed labels (often just offshore) so names don't collide.
+const LABEL_OVERRIDES = {
+  'Rhode Island': [41.2, -70.6],
+  'Connecticut': [41.45, -72.75],
+  'Massachusetts': [42.35, -72.1],
+  'New Hampshire': [43.95, -71.55],
+  'Vermont': [44.1, -72.75],
+  'New Jersey': [40.2, -74.1],
+  'Delaware': [38.55, -74.7],
+  'Maryland': [39.35, -77.4],
+};
+
 // Label point for each state: centroid of its largest polygon's outer ring.
 function stateLabelPoints(geo) {
   return geo.features.filter((f) => f.properties.name !== 'District of Columbia').map((f) => {
@@ -68,7 +80,7 @@ function stateLabelPoints(geo) {
       }
       if (Math.abs(a) > bestArea) { bestArea = Math.abs(a); best = [cy / (3 * a), cx / (3 * a)]; }
     }
-    return { name: f.properties.name, latlng: best };
+    return { name: f.properties.name, latlng: LABEL_OVERRIDES[f.properties.name] || best };
   });
 }
 const countyLineStyle = () => ({ color: isDark() ? '#8a8a82' : '#8d8c82', weight: 0.8, opacity: 0.55 });
