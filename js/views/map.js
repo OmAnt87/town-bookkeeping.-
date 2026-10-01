@@ -51,6 +51,18 @@ function loadBorders(name) {
   });
   return borderCache[name];
 }
+const STATE_ABBR = {
+  Alabama: 'AL', Alaska: 'AK', Arizona: 'AZ', Arkansas: 'AR', California: 'CA', Colorado: 'CO', Connecticut: 'CT', Delaware: 'DE',
+  Florida: 'FL', Georgia: 'GA', Hawaii: 'HI', Idaho: 'ID', Illinois: 'IL', Indiana: 'IN', Iowa: 'IA', Kansas: 'KS', Kentucky: 'KY',
+  Louisiana: 'LA', Maine: 'ME', Maryland: 'MD', Massachusetts: 'MA', Michigan: 'MI', Minnesota: 'MN', Mississippi: 'MS', Missouri: 'MO',
+  Montana: 'MT', Nebraska: 'NE', Nevada: 'NV', 'New Hampshire': 'NH', 'New Jersey': 'NJ', 'New Mexico': 'NM', 'New York': 'NY',
+  'North Carolina': 'NC', 'North Dakota': 'ND', Ohio: 'OH', Oklahoma: 'OK', Oregon: 'OR', Pennsylvania: 'PA', 'Rhode Island': 'RI',
+  'South Carolina': 'SC', 'South Dakota': 'SD', Tennessee: 'TN', Texas: 'TX', Utah: 'UT', Vermont: 'VT', Virginia: 'VA',
+  Washington: 'WA', 'West Virginia': 'WV', Wisconsin: 'WI', Wyoming: 'WY',
+};
+// Below this zoom, state labels switch from full names to postal codes so they don't collide.
+const FULL_NAME_ZOOM = 6;
+
 // Crowded Northeast/Mid-Atlantic states get hand-placed labels (often just offshore) so names don't collide.
 const LABEL_OVERRIDES = {
   'Rhode Island': [41.2, -70.6],
@@ -178,10 +190,13 @@ export function renderMap(root, state) {
         if (!map) return;
         const group = L.layerGroup().addTo(map);
         for (const { name, latlng } of stateLabelPoints(geo)) {
-          L.marker(latlng, { pane: 'labels', interactive: false, keyboard: false, icon: L.divIcon({ className: 'state-label', html: `<span>${escapeHTML(name)}</span>`, iconSize: [0, 0] }) }).addTo(group);
+          L.marker(latlng, { pane: 'labels', interactive: false, keyboard: false, icon: L.divIcon({ className: 'state-label', html: `<span><b class="full">${escapeHTML(name)}</b><b class="abbr">${STATE_ABBR[name] || ''}</b></span>`, iconSize: [0, 0] }) }).addTo(group);
         }
       })
       .catch(() => { /* labels are optional */ });
+    const syncLabels = () => map.getContainer().classList.toggle('labels-short', map.getZoom() < FULL_NAME_ZOOM);
+    map.on('zoomend', syncLabels);
+    syncLabels();
     dotLayer = L.layerGroup().addTo(map);
   }
 
