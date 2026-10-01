@@ -90,6 +90,16 @@ node scripts/pa/build-county.mjs --all && node scripts/pa/status.mjs
 node scripts/build-summary.mjs
 ```
 
+### Connecticut (all 169 towns and the City of Groton)
+
+`data/real/ct-<planning-region>.json` holds every CT town, grouped by the nine planning regions the Census uses in place of counties. Figures come from the Office of Policy and Management's Municipal Fiscal Indicators on data.ct.gov: [financial statements](https://data.ct.gov/d/d6pe-dw46) (actual general-fund revenue, spending and debt), the [Uniform Chart of Accounts](https://data.ct.gov/d/e2qt-k238) (spending by department) and [town data](https://data.ct.gov/d/ej6f-y2wf) (history back to 2014). Connecticut towns pay for their schools, so school spending is on each report but left out of the services and overhead shares. Political money is not scored: candidates for town office file with their town clerk. Coverage and gaps: [docs/CT_DATA_STATUS.md](docs/CT_DATA_STATUS.md).
+
+```bash
+node scripts/ct/download.mjs
+node scripts/ct/build-county.mjs --all && node scripts/ct/status.mjs
+node scripts/build-summary.mjs
+```
+
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Verified data**, and lets you filter to them on the map and rankings.
