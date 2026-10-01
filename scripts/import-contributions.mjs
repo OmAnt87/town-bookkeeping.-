@@ -5,7 +5,8 @@
 //   node scripts/import-contributions.mjs --csv contributions.csv --id example-township-pa
 //
 // Expected CSV headers (case-insensitive): date, contributor, contributor_type, recipient, amount
-// contributor_type examples: PAC, Developer, Contractor, Union, Individual, Lobbying
+// contributor_type examples: PAC, Developer, Contractor, Union, Individual,
+// Corporate lobbying (a company lobbying town officials), Town-paid lobbying
 // Individual contributions are skipped: the score tracks organized outside money.
 
 import { readFileSync } from 'node:fs';
@@ -20,7 +21,7 @@ if (!args.csv || !args.id) {
 const rows = parseCSV(readFileSync(args.csv, 'utf8'));
 const { town, save } = openTown(args.out || `data/${args.id}.json`, { id: args.id });
 
-const influence = { pacContributions: 0, developerContributions: 0, unionContributions: 0, lobbyingPaid: 0 };
+const influence = { pacContributions: 0, developerContributions: 0, unionContributions: 0, corporateLobbying: 0, lobbyingPaid: 0 };
 const donors = new Map();
 const entries = [];
 let skipped = 0;
@@ -31,7 +32,9 @@ for (const r of rows) {
   influence[key] += amount;
   entries.push({
     date: r.date, flow: 'influence', category: key, counterparty: r.contributor,
-    description: key === 'lobbyingPaid' ? 'Town-paid lobbying' : `Contribution to ${r.recipient || 'local official'}`,
+    description: key === 'lobbyingPaid' ? 'Town-paid lobbying'
+      : key === 'corporateLobbying' ? `Lobbying ${r.recipient || 'town officials'}`
+      : `Contribution to ${r.recipient || 'local official'}`,
     amount, source: args['source-url'] || '',
   });
   if (key !== 'lobbyingPaid') {

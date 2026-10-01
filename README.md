@@ -10,7 +10,9 @@ Plain-language bookkeeping for U.S. towns and townships. Town Ledger shows where
 - **Town report card.** Each town gets a letter grade and a Community Return Score out of 100, with a plain-English breakdown of each part of the score.
 - **Money in.** Every revenue stream: property tax, sales tax, state aid, federal grants, fees, utility charges, fines and borrowing. Property tax is shown separately.
 - **Money out.** Direct services (police, fire, roads, water, parks, health) shown against overhead (administration, consultants, debt).
-- **Political money.** PAC, developer, contractor and union contributions to local officials, plus lobbying the town pays for, with a top-contributors table.
+- **Red flags.** Surveillance tech (Flock license-plate cameras, facial recognition, ShotSpotter), data center contracts, private-developer subsidies and corporate tax breaks are flagged in red and cost points. Known surveillance vendors and data center deals are caught by name even when filed under police or general spending.
+- **Corporate lobbying.** Shown inside Money in and Money out, not just beside them: how much corporations spent lobbying and donating, what they got back in tax breaks, and which companies both lobbied or donated and were paid by the town.
+- **Political money.** Corporate lobbying, PAC, developer, contractor and union contributions to local officials, plus lobbying the town pays for, with a top-contributors table.
 - **Transparency check.** Six good-government practices: budget online, open checkbook, on-time audit, competitive bidding, recorded meetings, and conflict-of-interest disclosures.
 - **Ledger.** Individual transactions you can search, filter, sort and export to CSV.
 - **Five-year trend** of revenue against spending.
@@ -38,9 +40,9 @@ To use real figures, build a dataset with the pipeline scripts, then load it on 
 |---|---|---|
 | [Census Annual Survey of Local Government Finances](https://www.census.gov/programs-surveys/gov-finances.html) | `scripts/import-census-finance.mjs` | Revenue and spending by category |
 | [USAspending.gov](https://www.usaspending.gov) | `scripts/fetch-usaspending.mjs` | Federal grants and their ledger entries |
-| State or county campaign-finance portal (CSV export) | `scripts/import-contributions.mjs` | PAC, business and union contributions, lobbying, top donors |
+| State or county campaign-finance portal / lobbying registry (CSV export) | `scripts/import-contributions.mjs` | PAC, business and union contributions, corporate lobbying (`contributor_type` "Corporate lobbying"), town-paid lobbying ("Town-paid lobbying"), top donors |
 | New Jersey municipal budget / User Friendly Budget (line items as CSV) | `scripts/import-nj-budget.mjs` | Revenue and spending by line, with one ledger row per budget line |
-| Town budget, audit (ACFR) and website | edit the JSON | Transparency checks, debt, history |
+| Town budget, audit (ACFR) and website | edit the JSON | Transparency checks, debt, history, surveillance and data center contracts, corporate tax breaks |
 
 Example:
 
@@ -54,13 +56,15 @@ node scripts/import-contributions.mjs --csv contributions.csv --id my-township-p
 
 ### New Jersey (all 564 municipalities)
 
-`data/real/nj-<county>.json` holds every NJ town, built from the state's [User Friendly Budget Database](https://datahub.dca.nj.gov/datasets/user-friendly-budget-database) (adopted budgets, net debt, population, history back to 2015) and [NJ ELEC](https://www.njelecefilesearch.com/SearchContributionToEntity) contributions to municipal candidates. Coverage and gaps: [docs/NJ_DATA_STATUS.md](docs/NJ_DATA_STATUS.md).
+`data/real/nj-<county>.json` holds every NJ town, built from the state's [User Friendly Budget Database](https://datahub.dca.nj.gov/datasets/user-friendly-budget-database) (adopted budgets, net debt, population, history back to 2015) and [NJ ELEC](https://www.njelecefilesearch.com/SearchContributionToEntity) contributions to municipal candidates. Red flags come from the [EFF Atlas of Surveillance](https://atlasofsurveillance.org/) (police license-plate readers, drones, gunshot detection, face recognition), license-plate cameras mapped in OpenStreetMap ([DeFlock](https://deflock.org/)), and a hand-checked list of data center deals and corporate lobbying (`scripts/nj/corporate-deals.json`). Coverage and gaps: [docs/NJ_DATA_STATUS.md](docs/NJ_DATA_STATUS.md).
 
 ```bash
 node scripts/nj/build-county.mjs --download                      # budget workbook + Census gazetteer
 pip install openpyxl && python3 scripts/nj/ufb-to-json.py data/raw/nj/ufb-database.xlsm data/raw/nj/ufb.json
 node scripts/nj/fetch-elec.mjs --all                              # campaign contributions (cached)
-node scripts/nj/build-county.mjs --all && node scripts/nj/status.mjs
+node scripts/nj/build-county.mjs --all
+node scripts/nj/red-flags.mjs --download && node scripts/nj/red-flags.mjs   # surveillance, data center deals
+node scripts/nj/status.mjs
 ```
 
 ### New York (about 1,525 towns, villages and cities)
@@ -75,7 +79,7 @@ node scripts/ny/build-county.mjs --all && node scripts/ny/status.mjs
 node scripts/build-summary.mjs                     # light index the app loads at startup
 ```
 
-The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build.
+The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Verified data**, and lets you filter to them on the map and rankings.
 

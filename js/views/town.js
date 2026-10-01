@@ -1,4 +1,4 @@
-import { revenueRows, spendingRows, influenceRows, transparencyCount } from '../engine/scoring.js';
+import { revenueRows, spendingRows, influenceRows, taxBreakRows, transparencyCount, redFlagEntries, documentedRedFlags, redFlagReason, corporateTies } from '../engine/scoring.js';
 import { TRANSPARENCY_CHECKS, REVENUE_CATEGORIES, SPENDING_CATEGORIES, INFLUENCE_CATEGORIES } from '../engine/categories.js';
 import { filterLedger, summarizeLedger, sortLedger, ledgerToCSV, categoryLabel, FLOWS } from '../engine/ledger.js';
 import { money, number, escapeHTML, formatDate } from '../engine/format.js';
@@ -30,13 +30,28 @@ export function renderTown(root, state, id) {
   const rev = revenueRows(town).map((r) => ({ ...r, color: r.propertyTax ? 'var(--series-property)' : r.reserve ? 'var(--baseline)' : 'var(--series-in)' }));
   const revOrder = (r) => (r.propertyTax ? 0 : r.reserve ? 2 : 1);
   rev.sort((a, b) => revOrder(a) - revOrder(b) || b.amount - a.amount);
+  const spendOrder = (r) => (r.direct ? 0 : r.redFlag ? 2 : 1);
   const spend = spendingRows(town)
-    .map((r) => ({ ...r, color: r.direct ? 'var(--series-in)' : 'var(--series-overhead)' }))
-    .sort((a, b) => (a.direct === b.direct ? b.amount - a.amount : a.direct ? -1 : 1));
+    .map((r) => ({ ...r, label: r.redFlag ? `⚠ ${r.label}` : r.label, color: r.direct ? 'var(--series-in)' : r.redFlag ? 'var(--bad)' : 'var(--series-overhead)' }))
+    .sort((a, b) => spendOrder(a) - spendOrder(b) || b.amount - a.amount);
+  const breaks = taxBreakRows(town).map((r) => ({ ...r, color: 'var(--bad)' }));
+  const flagged = redFlagEntries(town).sort((a, b) => b.amount - a.amount);
+  const ties = corporateTies(town);
+  // Documented programs and deals from public records. Tax breaks and lobbying sit with
+  // Money in (they shape what the town collects); surveillance and deals sit with Money out.
+  const docs = town.redFlags || [];
+  const isRevenueSide = (f) => f.kind === 'corporateLobbying' || /tax break|pilot|abatement/i.test(f.label);
+  const docsIn = docs.filter(isRevenueSide);
+  const docsOut = docs.filter((f) => !isRevenueSide(f));
+  const docLobbying = docs.filter((f) => f.kind === 'corporateLobbying');
+  const cams = town.surveillanceMap;
+  const overhead = Math.max(0, t.spending - t.directSpending - t.redFlagSpending);
+  const corpLobbying = town.influence?.corporateLobbying || 0;
+  const bizDonations = town.influence?.developerContributions || 0;
   const hasInfluence = town.influence && Object.keys(town.influence).length > 0;
   const hasDebt = typeof town.debt === 'number';
   const NA = '<div class="v muted" style="font-size:18px">Not available</div>';
-  const infl = influenceRows(town).filter((r) => r.key in (town.influence || {})).map((r) => ({ ...r, color: 'var(--grade-f)' }));
+  const infl = influenceRows(town).filter((r) => r.key in (town.influence || {})).map((r) => ({ ...r, color: r.key === 'corporateLobbying' ? 'var(--bad)' : 'var(--grade-f)' }));
   const pctOf = (v) => `${Math.round(v * 100)}%`;
   const biggestNonProp = rev.filter((r) => !r.propertyTax && !r.reserve).sort((a, b) => b.amount - a.amount)[0];
 
@@ -71,7 +86,7 @@ export function renderTown(root, state, id) {
             ${s.grade === '?' ? '<div class="small muted"><strong>Not graded yet:</strong> a letter grade needs data for at least half of the score.</div>' : `<div class="small muted">Ranked ${rank} of ${peers.length} ${peerLabel}</div>`}
           </div>
         </div>
-        <p class="basis">Based on how much spending reaches residents as services, overhead, outside political money, transparency practices, and debt.${s.coverage.scored < s.coverage.total ? ` <strong>Scored on ${s.coverage.scored} of ${s.coverage.total} parts</strong>; parts without data are left out rather than guessed.` : ''}</p>
+        <p class="basis">Based on how much spending reaches residents as services, overhead, surveillance and corporate giveaways, outside political money and corporate lobbying, transparency practices, and debt.${s.coverage.scored < s.coverage.total ? ` <strong>Scored on ${s.coverage.scored} of ${s.coverage.total} parts</strong>; parts without data are left out rather than guessed.` : ''}</p>
         <div class="callout">${plainSummary(town, s)}</div>
       </div>
       <div class="card">
@@ -92,6 +107,9 @@ export function renderTown(root, state, id) {
       <div class="tile"><div class="k">Not from property tax</div><div class="v num">${money(t.nonPropertyRevenue, { compact: true })}</div><div class="s">${pctOf(t.nonPropertyShare)} of all revenue</div></div>
       <div class="tile"><div class="k">Services per resident</div><div class="v num">${money(t.directPerResident)}</div><div class="s">${pctOf(t.directShare)} of spending</div></div>
       <div class="tile"><div class="k">Political money</div>${hasInfluence ? `<div class="v num">${money(t.influence, { compact: true })}</div><div class="s">${money(t.influencePerResident)} per resident</div>` : `${NA}<div class="s">No filings loaded yet</div>`}</div>
+      <div class="tile${t.redFlagCount ? ' tile-flag' : ''}"><div class="k">Surveillance & corporate giveaways</div>${!t.redFlagKnown ? `${NA}<div class="s">Not checked yet</div>`
+        : t.redFlagSpending + t.taxBreaks > 0 ? `<div class="v num">${money(t.redFlagSpending + t.taxBreaks, { compact: true })}</div><div class="s">${money(t.redFlagPerResident)} per resident</div>`
+        : `<div class="v num">${t.redFlagCount} red flag${t.redFlagCount === 1 ? '' : 's'}</div><div class="s">${t.redFlagCount ? 'Documented in public records' : 'None found in public records'}</div>`}</div>
       <div class="tile"><div class="k">Debt</div>${hasDebt ? `<div class="v num">${money(town.debt, { compact: true })}</div><div class="s">${money(t.debtPerResident)} per resident</div>` : `${NA}<div class="s">No debt statement loaded</div>`}</div>
     </section>
 
@@ -102,19 +120,42 @@ export function renderTown(root, state, id) {
         ${legendKey([{ label: `Property tax ${pctOf(t.propertyTax / (t.revenue || 1))}`, color: 'var(--series-property)' }, { label: `Other sources ${pctOf(t.nonPropertyShare)}`, color: 'var(--series-in)' }, ...(t.reserves ? [{ label: `Surplus from prior years ${pctOf(t.reserves / t.revenue)}`, color: 'var(--baseline)' }] : [])])}
         ${barList(rev, { total: t.revenue })}
         ${biggestNonProp ? `<p class="small muted" style="margin:14px 0 0">Largest source besides property tax: <strong>${biggestNonProp.label.toLowerCase()}</strong> (${money(biggestNonProp.amount, { compact: true })}).${town.revenue.borrowing ? ` Borrowing brought in ${money(town.revenue.borrowing, { compact: true })} that must be repaid with interest.` : ''}</p>` : ''}
+        ${breaks.length ? `<div class="flag-box">
+          <h3>⚠ Given away to corporations</h3>
+          <p class="small">Taxes the town agreed not to collect. Residents make up the difference. For every $100 the town takes in, it gave up <strong>$${(t.taxBreaks / (t.revenue || 1) * 100).toFixed(2)}</strong> in corporate tax breaks.</p>
+          ${barList(breaks)}</div>` : ''}
+        ${docsIn.length ? redFlagBox('⚠ Corporate tax deals and lobbying', 'Tax breaks the town granted to corporations and lobbying aimed at the officials who approved them, from news reports and public records.', docsIn) : ''}
+        ${corpLobbying || bizDonations ? `<div class="flag-box">
+          <h3>⚠ Corporate lobbying behind the budget</h3>
+          <p class="small">Corporations and their lobbyists put <strong>${money(t.corporateMoney, { compact: true })}</strong> into lobbying and campaign money aimed at the officials who set these revenues${corpLobbying ? `, including <strong>${money(corpLobbying, { compact: true })}</strong> in direct corporate lobbying` : ''}.${t.taxBreaks ? ` In return, the town gave up ${money(t.taxBreaks, { compact: true })} in corporate tax breaks: <strong>$${(t.taxBreaks / (t.corporateMoney || 1)).toFixed(0)} for every $1</strong> they spent.` : ''}</p></div>` : ''}
       </section>
       <section class="card" aria-labelledby="h-out">
         <div class="card-head"><div><h2 id="h-out">Money out</h2><p>Direct services versus overhead and debt.</p></div><span class="num muted small">${money(t.spending)}</span></div>
-        ${splitBar([{ label: 'Direct services', amount: t.directSpending, color: 'var(--series-in)' }, { label: 'Overhead & debt', amount: t.spending - t.directSpending, color: 'var(--series-overhead)' }])}
-        ${legendKey([{ label: `Direct services ${pctOf(t.directShare)}`, color: 'var(--series-in)' }, { label: `Overhead & debt ${pctOf(1 - t.directShare)}`, color: 'var(--series-overhead)' }])}
+        ${splitBar([{ label: 'Direct services', amount: t.directSpending, color: 'var(--series-in)' }, { label: 'Overhead & debt', amount: overhead, color: 'var(--series-overhead)' }, ...(t.redFlagSpending ? [{ label: 'Surveillance & corporate deals', amount: t.redFlagSpending, color: 'var(--bad)' }] : [])])}
+        ${legendKey([{ label: `Direct services ${pctOf(t.directShare)}`, color: 'var(--series-in)' }, { label: `Overhead & debt ${pctOf(overhead / (t.spending || 1))}`, color: 'var(--series-overhead)' }, ...(t.redFlagSpending ? [{ label: `Surveillance & corporate deals ${pctOf(t.redFlagSpending / t.spending)}`, color: 'var(--bad)' }] : [])])}
         ${barList(spend, { total: t.spending })}
+        ${docsOut.length || cams ? redFlagBox('⚠ Surveillance and corporate deals on record', 'Programs and deals documented in news reports and public records. Most records do not say what the town paid.', docsOut, cams) : ''}
+        ${flagged.length ? `<div class="flag-box">
+          <h3>⚠ Red-flag payments</h3>
+          <p class="small">Mass surveillance and deals that put corporate interests ahead of residents: license-plate cameras that track everyone's movements, data center contracts that drain water and power, and subsidies to private developers.</p>
+          <div class="table-wrap"><table><thead><tr><th>Paid to</th><th>Why it's flagged</th><th class="r">Amount</th></tr></thead><tbody>${flagged.slice(0, 8)
+            .map((e) => `<tr><td class="wrap">${escapeHTML(e.counterparty)}<div class="small muted">${escapeHTML(e.description)}</div></td><td><span class="pill pill-influence">${escapeHTML(redFlagReason(e) || categoryLabel(e.category).split(' (')[0])}</span></td><td class="r num">${money(e.amount)}</td></tr>`)
+            .join('')}</tbody></table></div></div>` : ''}
+        ${ties.length ? `<div class="flag-box">
+          <h3>⚠ Paid to companies that lobby or donate</h3>
+          <p class="small">These companies gave money to or lobbied local officials, and the town paid them. That is not proof of a quid pro quo, but it is the pattern pay-to-play rules exist to stop.</p>
+          <div class="table-wrap"><table><thead><tr><th>Company</th><th class="r">Gave / lobbied</th><th class="r">Town paid them</th></tr></thead><tbody>${ties
+            .map((x) => `<tr><td class="wrap">${escapeHTML(x.name)}</td><td class="r num">${money(x.gave)}</td><td class="r num"><strong>${money(x.paid)}</strong></td></tr>`)
+            .join('')}</tbody></table></div></div>` : ''}
         <p class="small muted" style="margin:14px 0 0">${t.balance >= 0 ? `The town took in ${money(t.balance, { compact: true })} more than it spent.` : `The town spent ${money(-t.balance, { compact: true })} more than it took in.`}</p>
       </section>
     </div>
 
     <div class="grid grid-2" style="margin-bottom:16px">
       <section class="card" aria-labelledby="h-pol">
-        <div class="card-head"><div><h2 id="h-pol">Political money</h2><p>PAC, business and union contributions to local officials, plus lobbying the town pays for. This money does not pass through the town budget.</p></div></div>
+        <div class="card-head"><div><h2 id="h-pol">Political money</h2><p>Corporate lobbying, PAC, business and union contributions to local officials, plus lobbying the town pays for. This money does not pass through the town budget.</p></div></div>
+        ${docLobbying.length ? `<div class="callout callout-bad"><strong>Corporate lobbying on record:</strong> ${docLobbying.map((f) => escapeHTML(f.detail)).join(' ')}</div>` : ''}
+        ${hasInfluence && t.corporateMoney ? `<div class="callout callout-bad"><strong>${pctOf(t.corporateShareOfInfluence)} of this money came from corporations and their lobbyists</strong> (${money(t.corporateMoney, { compact: true })}).</div>` : ''}
         ${hasInfluence ? barList(infl) : '<p class="muted small">No campaign-finance filings have been loaded for this town yet, so political money is unknown. It is not counted in the score.</p>'}
         <h3 style="margin:18px 0 8px">Top contributors</h3>
         ${town.topDonors?.length ? `<div class="table-wrap"><table><thead><tr><th>Contributor</th><th>Type</th><th>Recipient</th><th class="r">Amount</th></tr></thead><tbody>${town.topDonors
@@ -218,6 +259,20 @@ export function renderTown(root, state, id) {
   drawLedger();
 }
 
+// A box listing documented red flags, newest first, each with its source.
+function redFlagBox(title, intro, flags, cams) {
+  const rows = flags.map((f) => {
+    const srcs = f.sources || (f.source ? [f.source] : []);
+    return `<li><div class="rf-top"><span class="pill pill-influence">${escapeHTML(f.label)}</span>${f.vendor ? `<span class="small">${escapeHTML(f.vendor)}</span>` : ''}${f.date ? `<span class="small muted">${formatDate(f.date)}</span>` : ''}</div>
+      <p class="small">${escapeHTML(f.detail)}</p>
+      ${srcs.length ? `<p class="small muted">Source: ${srcs.map((x) => (x.url ? `<a href="${escapeHTML(x.url)}" target="_blank" rel="noopener">${escapeHTML(x.label)}</a>` : escapeHTML(x.label))).join('; ')}</p>` : ''}</li>`;
+  });
+  const camLine = cams
+    ? `<p class="small"><strong>${number(cams.cameras)} license-plate camera${cams.cameras === 1 ? '' : 's'}</strong> mapped inside town borders${cams.flock ? `, <strong>${number(cams.flock)} made by Flock Safety</strong>` : ''}${cams.townOperated ? `; ${number(cams.townOperated)} recorded as run by the town` : ''} (<a href="${escapeHTML(cams.source.url)}" target="_blank" rel="noopener">OpenStreetMap / DeFlock</a>, ${formatDate(cams.asOf)}).${cams.flock ? ' Flock cameras count as a red flag.' : cams.townOperated ? '' : ' Who runs them is not recorded, so they are shown for context and not scored.'}</p>`
+    : '';
+  return `<div class="flag-box"><h3>${title}</h3><p class="small">${intro}</p>${camLine}${rows.length ? `<ul class="rf-list">${rows.join('')}</ul>` : ''}</div>`;
+}
+
 function plainSummary(town, s) {
   const t = s.totals;
   const scored = s.components.filter((c) => c.available);
@@ -226,5 +281,10 @@ function plainSummary(town, s) {
   const weakest = [...scored].sort((a, b) => a.ratio - b.ratio)[0];
   const per100 = Math.round(t.directShare * 100);
   return `<strong>In plain terms:</strong> for every $100 ${escapeHTML(town.name)} spends, about $${per100} pays for services residents use directly.
-    Its strongest area is <strong>${strongest.label.toLowerCase()}</strong>; its weakest is <strong>${weakest.label.toLowerCase()}</strong>.`;
+    Its strongest area is <strong>${strongest.label.toLowerCase()}</strong>; its weakest is <strong>${weakest.label.toLowerCase()}</strong>.${
+    t.redFlagSpending + t.taxBreaks > 0
+      ? ` It also put <strong>$${(t.redFlagShare * 100).toFixed(2)} of every $100</strong> toward surveillance, corporate deals or corporate tax breaks.`
+      : t.documentedRedFlags
+        ? ` Public records show <strong>${documentedRedFlags(town).map((f) => f.label.toLowerCase()).join(', ')}</strong>.`
+        : ''}`;
 }
