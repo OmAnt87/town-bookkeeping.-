@@ -21,6 +21,8 @@ A part with no data loaded (for example, no campaign-finance filings yet) is **n
 
 For New Jersey budgets, pensions, social security and employee insurance are spread across departments in proportion to their size, so they don't count as overhead. Reserves such as the reserve for uncollected taxes are not spending and are excluded. NJ municipal budgets cover the township's own operations only. School-district and county taxes on the same bill are separate governments and are not included.
 
+For New York, figures are **actual results** from each government's Annual Financial Report to the State Comptroller, not budgets. Money the government only holds or passes along is left out: custodial and trust funds (for example, property taxes a town collects for school districts and the county), its internal self-insurance fund, transfers between its own funds, and bond refinancing. Employee benefits are spread across departments, as in New Jersey. Law and engineering costs count as outside consultants. A village's figures cover the village government only; its residents also pay the surrounding town, which is listed separately.
+
 ## Red flags: surveillance and corporate giveaways
 
 Some spending works against residents, so it counts against the score:

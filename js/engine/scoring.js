@@ -153,7 +153,8 @@ export function redFlagReason(entry) {
 // Payments out of the treasury that are red flags: anything in a red-flag
 // category, plus known surveillance vendors and data center deals filed elsewhere.
 export function redFlagEntries(town) {
-  return (town.ledger || []).filter(
+  // Summary records (no ledger yet) carry their flagged payments in redFlagLedger.
+  return (town.ledger || town.redFlagLedger || []).filter(
     (e) => e.flow === 'out' && (RED_FLAG_KEYS.includes(e.category) || redFlagReason(e)),
   );
 }

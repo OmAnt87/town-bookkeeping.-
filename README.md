@@ -67,6 +67,20 @@ node scripts/nj/red-flags.mjs --download && node scripts/nj/red-flags.mjs   # su
 node scripts/nj/status.mjs
 ```
 
+### New York (about 1,525 towns, villages and cities)
+
+`data/real/ny-<county>.json` holds every NY town, village and city that files with the State Comptroller, built from the Comptroller's [Annual Financial Report data](https://wwe1.osc.state.ny.us/localgov/findata/financial-data-for-local-governments.cfm) (actual revenue, spending and debt; history back to 2016), Census 2025 population estimates, and State Board of Elections contribution records on [data.ny.gov](https://data.ny.gov). New York City is not included. Coverage and gaps: [docs/NY_DATA_STATUS.md](docs/NY_DATA_STATUS.md).
+
+```bash
+node scripts/ny/download.mjs                       # Comptroller files, Census estimates, gazetteers
+python3 scripts/ny/osc-to-json.py                  # condense ~5M rows into data/raw/ny/osc.json
+node scripts/ny/fetch-politics.mjs --all           # campaign contributions (cached)
+node scripts/ny/build-county.mjs --all && node scripts/ny/status.mjs
+node scripts/build-summary.mjs                     # light index the app loads at startup
+```
+
+The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
+
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Verified data**, and lets you filter to them on the map and rankings.
 
 See [docs/DATA_SCHEMA.md](docs/DATA_SCHEMA.md) for every field and [docs/METHODOLOGY.md](docs/METHODOLOGY.md) for how scores are calculated.

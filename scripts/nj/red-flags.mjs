@@ -4,7 +4,7 @@
 // what an earlier run added.
 //
 //   node scripts/nj/red-flags.mjs --download   # Atlas of Surveillance, OSM cameras, Census boundaries
-//   node scripts/nj/red-flags.mjs              # apply to data/real/nj-*.json
+//   node scripts/nj/red-flags.mjs              # apply to data/real/nj-*.json, then run scripts/build-summary.mjs
 //
 // Sources:
 //   - EFF Atlas of Surveillance: which police departments use plate readers,

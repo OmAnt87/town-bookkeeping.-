@@ -105,7 +105,7 @@ export function renderMap(root, state) {
   let statesLayer;
   const markers = new Map();
   if (L) {
-    map = L.map('map', { zoomControl: true, minZoom: 2, zoomSnap: 0.25, worldCopyJump: true });
+    map = L.map('map', { zoomControl: true, minZoom: 2, zoomSnap: 0.25, worldCopyJump: true, preferCanvas: true });
     map.fitBounds(US_BOUNDS);
     tiles = L.tileLayer(TILE_URL(isDark()), {
       attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
@@ -163,7 +163,9 @@ export function renderMap(root, state) {
     drawLegend(scale);
     root.querySelectorAll('[data-layer]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.layer === ui.layer)));
 
-    const sorted = [...list].sort((a, b) => (m.higherIsBetter === false ? m.value(a.s) - m.value(b.s) : m.value(b.s) - m.value(a.s)));
+    // Towns without enough data for a grade go last when ranking by score.
+    const ungraded = (x) => (m.key === 'score' && x.s.grade === '?' ? 1 : 0);
+    const sorted = [...list].sort((a, b) => ungraded(a) - ungraded(b) || (m.higherIsBetter === false ? m.value(a.s) - m.value(b.s) : m.value(b.s) - m.value(a.s)));
     $('#m-count').textContent = `${sorted.length} town${sorted.length === 1 ? '' : 's'} · ${m.higherIsBetter === false ? 'lowest' : 'highest'} first`;
     $('#m-list').innerHTML = sorted.length
       ? sorted
@@ -194,7 +196,7 @@ export function renderMap(root, state) {
         radius: ui.layer === 'heat' ? 4 : radius,
         color: ring,
         weight: 2,
-        fillColor: ui.layer === 'heat' ? (isDark() ? '#f4f4f1' : '#121211') : scale.color(m.value(s)),
+        fillColor: ui.layer === 'heat' ? (isDark() ? '#f4f4f1' : '#121211') : m.key === 'score' && s.grade === '?' ? '#9a9890' : scale.color(m.value(s)),
         fillOpacity: ui.layer === 'heat' ? 0.55 : 0.92,
       })
         .bindTooltip(`<strong>${escapeHTML(town.name)}</strong>, ${town.state}<br>Grade ${s.grade} &middot; ${m.label}: ${m.format(m.value(s))}`, { direction: 'top', offset: [0, -6] })
@@ -230,7 +232,12 @@ export function renderMap(root, state) {
     if (map) map.flyTo([town.lat, town.lng], Math.max(map.getZoom(), 6), { duration: 0.6 });
   }
 
-  $('#m-search').addEventListener('input', (e) => { ui.query = e.target.value; draw(); });
+  let searchTimer;
+  $('#m-search').addEventListener('input', (e) => {
+    ui.query = e.target.value;
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(draw, 150);
+  });
   $('#m-state').addEventListener('change', (e) => {
     ui.state = e.target.value;
     draw();
@@ -264,6 +271,7 @@ export function renderMap(root, state) {
     if (pts.length) map.fitBounds(pts, { padding: [40, 40], maxZoom: 9 });
   }
   return () => {
+    clearTimeout(searchTimer);
     window.removeEventListener('themechange', onTheme);
     mq.removeEventListener('change', onTheme);
     if (map) { map.remove(); map = null; }

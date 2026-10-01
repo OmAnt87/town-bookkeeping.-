@@ -310,3 +310,57 @@ test('ELEC contributions: counted types, party exclusion, donor grouping, date w
   assert.equal(out.ledger.length, 4);
   assert.equal(donorKey('Collier Engineering & Design'), donorKey('Colliers Engineering and Design'));
 });
+
+import { mapOscLine, aggregateOsc } from '../scripts/ny/osc-map.mjs';
+import { summarizeNyContributions, isCandidateFiler, isCountedOffice } from '../scripts/ny/politics-map.mjs';
+
+test('NY OSC lines map to categories and pass-through money is excluded', () => {
+  assert.equal(mapOscLine('A|REVENUE|Real Property Taxes and Assessments|Real Property Taxes|'), 'propertyTax');
+  assert.equal(mapOscLine('A|REVENUE|Sales and Use Tax|Sales Tax Distribution|'), 'salesTax');
+  assert.equal(mapOscLine('A|REVENUE|Other Real Property Tax Items|Payments In Lieu Of Taxes|'), 'localRevenue');
+  assert.equal(mapOscLine('SW|REVENUE|Charges for Services|Utility Fees|'), 'utilityCharges');
+  assert.equal(mapOscLine('A|REVENUE|Other Local Revenues|Fines|'), 'finesForfeitures');
+  assert.equal(mapOscLine('H|REVENUE|Proceeds of Debt|Sale Of Obligations|5710'), 'borrowing');
+  assert.match(mapOscLine('H|REVENUE|Proceeds of Debt|Miscellaneous Debt Proceeds|5792'), /^exclude:refinancing/);
+  assert.match(mapOscLine('TC|REVENUE|Other Local Revenues|Miscellaneous Revenues|'), /^exclude:custodial/);
+  assert.match(mapOscLine('A|REVENUE|Other Sources|Transfers|'), /^exclude:transfers/);
+  assert.equal(mapOscLine('A|EXPENDITURE|General Government|Administration|1420'), 'consultants');
+  assert.equal(mapOscLine('A|EXPENDITURE|General Government|Administration|1220'), 'administration');
+  assert.equal(mapOscLine('DA|EXPENDITURE|Transportation|Highways|'), 'roads');
+  assert.equal(mapOscLine('A|EXPENDITURE|Employee Benefits|Medical Insurance|'), 'shared');
+  assert.match(mapOscLine('V|EXPENDITURE|||'), /^exclude:refinancing/);
+});
+
+test('NY OSC aggregation reconciles to reported totals', () => {
+  const out = aggregateOsc({
+    'A|REVENUE|Real Property Taxes and Assessments|Real Property Taxes|': 800,
+    'A|REVENUE|State Aid|Unrestricted State Aid|': 200,
+    'TC|REVENUE|Other Local Revenues|Miscellaneous Revenues|': 5000,
+    'A|EXPENDITURE|Public Safety|Police|': 600,
+    'A|EXPENDITURE|General Government|Administration|1220': 300,
+    'A|EXPENDITURE|Employee Benefits|Medical Insurance|': 90,
+    'TC|EXPENDITURE|General Government|Miscellaneous General Government|1935': 5000,
+  });
+  assert.deepEqual(out.revenue, { propertyTax: 800, stateAid: 200 });
+  assert.deepEqual(out.spending, { publicSafety: 660, administration: 330 });
+  assert.equal(out.excluded.revenue, 5000);
+  assert.equal(out.raw.spending, 5990);
+  assert.deepEqual(out.unmapped, []);
+});
+
+test('NY contributions: counted types, corporate schedule, filers and offices', () => {
+  const row = (o) => ({ sched_date: '2025-05-01T00:00:00.000', org_amt: '100', cand_comm_name: 'FRIENDS OF JANE DOE', election_year: '2025', election_type: 'State/Local', ...o });
+  const out = summarizeNyContributions([
+    row({ cntrbr_type_desc: 'Professional/Limited Liability Company (PLLC/LLC)', flng_ent_name: 'ACME PAVING LLC' }),
+    row({ cntrbr_type_desc: 'Political Action Committee (PAC)', flng_ent_name: 'NYS LABORERS PAC', org_amt: '250' }),
+    row({ cntrbr_type_desc: 'Union', flng_ent_name: 'CSEA LOCAL 1000', org_amt: '300' }),
+    row({ filing_sched_desc: 'Monetary Contributions Received From Corporation', flng_ent_name: 'BIG BOX INC', org_amt: '50' }),
+    row({ cntrbr_type_desc: 'Political Committee', flng_ent_name: 'TOWN DEMOCRATIC COMMITTEE', org_amt: '900' }),
+    row({ cntrbr_type_desc: 'Individual', flng_ent_first_name: 'Sam', org_amt: '40' }),
+  ], '2022-10-01');
+  assert.deepEqual(out.influence, { pacContributions: 250, developerContributions: 150, unionContributions: 300 });
+  assert.equal(out.individuals, 40);
+  assert.ok(isCandidateFiler({ committee_type_desc: 'Authorized Single Candidate Committee' }));
+  assert.ok(!isCandidateFiler({ committee_type_desc: 'Political Action Committee' }));
+  assert.ok(isCountedOffice('Town Supervisor') && !isCountedOffice('Town Justice'));
+});
