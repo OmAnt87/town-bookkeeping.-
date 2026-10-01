@@ -171,3 +171,44 @@ test('missing sections are not scored instead of counting as zero', () => {
   assert.notEqual(s.score, full.score);
   assert.ok(s.score >= 0 && s.score <= 100);
 });
+
+import { aggregateUFB, groupFor, linesOf, totalOf, UFB_REVENUE, UFB_APPROPRIATION, normName } from '../scripts/nj/ufb-map.mjs';
+
+test('NJ UFB service types aggregate and reconcile', () => {
+  const rec = {
+    '2026 Total Anticipated Revenues Current Year (Budgeted)|Surplus': 100,
+    '2026 Total Anticipated Revenues Current Year (Budgeted)|Local Tax for Municipal Purposes': 700,
+    '2026 Total Anticipated Revenues Current Year (Budgeted)|State Aid (without offsetting appropriation)': 200,
+    '2026 Total Anticipated Revenues Current Year (Budgeted)|Total': 1000,
+    '2026 Total Appropriations by Service Type (Current Year)|Public Safety': 600,
+    '2026 Total Appropriations by Service Type (Current Year)|General Government': 200,
+    '2026 Total Appropriations by Service Type (Current Year)|Statutory Expenditures': 160,
+    '2026 Total Appropriations by Service Type (Current Year)|Reserve for Uncollected Taxes': 40,
+    '2026 Total Appropriations by Service Type (Current Year)|TOTAL APPROPRIATION': 1000,
+    '2025 Total Modified Appropriations by Service Type (Prior Year)|Public Safety': 1,
+  };
+  const rg = groupFor(rec, 'anticipated');
+  const ag = groupFor(rec, 'appropriations');
+  assert.match(ag, /^2026 Total Appropriations/);
+  assert.equal(totalOf(rec, rg), 1000);
+  assert.equal(totalOf(rec, ag), 1000);
+  const out = aggregateUFB(linesOf(rec, rg), linesOf(rec, ag));
+  assert.deepEqual(out.revenue, { surplusUsed: 100, propertyTax: 700, stateAid: 200 });
+  assert.deepEqual(out.spending, { publicSafety: 720, administration: 240 });
+  assert.equal(out.excluded, 40);
+  assert.deepEqual(out.unmapped, []);
+});
+
+test('NJ UFB maps every known label and normalizes names', () => {
+  for (const v of [...Object.values(UFB_REVENUE), ...Object.values(UFB_APPROPRIATION)]) assert.ok(v);
+  assert.equal(normName("Atlantic City city"), normName('Atlantic City'));
+  assert.equal(normName('Holmdel township'), 'holmdel');
+});
+
+test('surplus from prior years is not counted as non-property-tax revenue', () => {
+  const t = base();
+  t.revenue = { propertyTax: 600, surplusUsed: 200, stateAid: 200 };
+  const s = scoreTown(t);
+  assert.equal(s.totals.nonPropertyRevenue, 200);
+  assert.equal(s.totals.reserves, 200);
+});

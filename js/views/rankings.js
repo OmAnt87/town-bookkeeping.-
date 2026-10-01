@@ -12,9 +12,11 @@ const COLS = [
   { key: 'debt', label: 'Debt / resident', get: (t) => t.s.totals.debtPerResident, fmt: (v) => money(v) },
 ];
 
-const ui = { sort: 'score', dir: 'desc', state: 'all', grade: 'all', q: '', realOnly: false };
+const ui = { sort: 'score', dir: 'desc', state: 'all', grade: 'all', q: '', realOnly: null };
 
 export function renderRankings(root, state) {
+  // Show only real towns by default once any are loaded; the checkbox shows demo towns too.
+  if (ui.realOnly === null) ui.realOnly = state.towns.some((t) => isVerified(t.town));
   const states = [...new Set(state.towns.map((t) => t.town.state))].sort();
   root.innerHTML = `
   <div class="page">

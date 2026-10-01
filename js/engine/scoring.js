@@ -19,6 +19,7 @@ export function totals(town) {
   const spending = sum(town.spending);
   const influence = sum(town.influence);
   const propertyTax = town.revenue?.propertyTax || 0;
+  const reserves = REVENUE_CATEGORIES.filter((c) => c.reserve).reduce((a, c) => a + (town.revenue?.[c.key] || 0), 0);
   const direct = SPENDING_CATEGORIES.filter((c) => c.direct)
     .reduce((a, c) => a + (town.spending?.[c.key] || 0), 0);
   const pop = Math.max(1, town.population || 1);
@@ -27,8 +28,9 @@ export function totals(town) {
     spending,
     influence,
     propertyTax,
-    nonPropertyRevenue: revenue - propertyTax,
-    nonPropertyShare: revenue ? (revenue - propertyTax) / revenue : 0,
+    reserves,
+    nonPropertyRevenue: revenue - propertyTax - reserves,
+    nonPropertyShare: revenue ? (revenue - propertyTax - reserves) / revenue : 0,
     directSpending: direct,
     directShare: spending ? direct / spending : 0,
     adminShare: spending

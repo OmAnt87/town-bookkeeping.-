@@ -5,11 +5,16 @@ export const REVENUE_CATEGORIES = [
   { key: 'salesTax', label: 'Sales & local option tax' },
   { key: 'stateAid', label: 'State aid & shared revenue' },
   { key: 'federalGrants', label: 'Federal grants' },
+  { key: 'localRevenue', label: 'Local revenue (fees, fines, interest, PILOTs)' },
+  { key: 'grants', label: 'Grants (state, federal & private)' },
   { key: 'feesPermits', label: 'Fees, permits & licenses' },
   { key: 'utilityCharges', label: 'Utility charges' },
   { key: 'finesForfeitures', label: 'Fines & forfeitures' },
   { key: 'borrowing', label: 'Borrowing (bond proceeds)' },
-  { key: 'otherRevenue', label: 'Other (interest, sales of assets)' },
+  { key: 'otherRevenue', label: 'Other revenue' },
+  // Money saved in earlier years and spent this year. Not new revenue, so it is
+  // left out of the "not from property tax" figure.
+  { key: 'surplusUsed', label: 'Surplus from prior years', reserve: true },
 ];
 
 // `direct: true` marks spending that delivers a service residents use directly.

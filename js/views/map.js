@@ -43,9 +43,11 @@ async function loadStates() {
 }
 const stateStyle = () => ({ color: cssVar('--baseline'), weight: 1, fillColor: cssVar('--surface'), fillOpacity: 1 });
 
-const ui = { metric: 'score', layer: 'towns', state: 'all', query: '', realOnly: false };
+const ui = { metric: 'score', layer: 'towns', state: 'all', query: '', realOnly: null };
 
 export function renderMap(root, state) {
+  // Show only real towns by default once any are loaded; the checkbox shows demo towns too.
+  if (ui.realOnly === null) ui.realOnly = state.towns.some((t) => isVerified(t.town));
   const states = [...new Set(state.towns.map((t) => t.town.state))].sort();
   root.innerHTML = `
   <div class="map-layout">

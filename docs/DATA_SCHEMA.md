@@ -14,7 +14,7 @@ Required fields: `id`, `name`, `state`, `lat`, `lng`, `population`, `revenue`, `
 | `population` | number | Used for all per-resident figures |
 | `fiscalYear` | number | Year the figures cover |
 | `asOf` | `YYYY-MM-DD` | When the data was pulled |
-| `revenue` | object of USD | `propertyTax`, `salesTax`, `stateAid`, `federalGrants`, `feesPermits`, `utilityCharges`, `finesForfeitures`, `borrowing`, `otherRevenue` |
+| `revenue` | object of USD | `propertyTax`, `salesTax`, `stateAid`, `federalGrants`, `localRevenue`, `grants`, `feesPermits`, `utilityCharges`, `finesForfeitures`, `borrowing`, `otherRevenue`, `surplusUsed` (prior-year surplus; excluded from the non-property-tax share) |
 | `spending` | object of USD | `publicSafety`, `roads`, `utilities`, `parks`, `healthServices`, `administration`, `consultants`, `debtService` |
 | `influence` | object of USD | `pacContributions`, `developerContributions`, `unionContributions`, `lobbyingPaid` |
 | `topDonors` | array | `{ name, type, recipient, amount }` |
@@ -23,6 +23,7 @@ Required fields: `id`, `name`, `state`, `lat`, `lng`, `population`, `revenue`, `
 | `history` | array | `{ year, revenue, spending }`. Two or more entries draw the trend chart |
 | `ledger` | array | `{ date, flow, category, counterparty, description, amount, source }` |
 | `sources` | array | `{ label, url }` |
+| `notes` | array of strings | Plain-language notes on how the figures were prepared, shown under Sources |
 
 `ledger[].flow` is one of `in` (into the treasury), `out` (paid by the town) or `influence` (political money around the town). `category` is one of the keys above. Amounts are always positive; the flow gives the direction.
 
