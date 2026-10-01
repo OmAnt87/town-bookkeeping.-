@@ -10,7 +10,9 @@ Plain-language bookkeeping for U.S. towns and townships. Town Ledger shows where
 - **Town report card.** Each town gets a letter grade and a Community Return Score out of 100, with a plain-English breakdown of each part of the score.
 - **Money in.** Every revenue stream: property tax, sales tax, state aid, federal grants, fees, utility charges, fines and borrowing. Property tax is shown separately.
 - **Money out.** Direct services (police, fire, roads, water, parks, health) shown against overhead (administration, consultants, debt).
-- **Political money.** PAC, developer, contractor and union contributions to local officials, plus lobbying the town pays for, with a top-contributors table.
+- **Red flags.** Surveillance tech (Flock license-plate cameras, facial recognition, ShotSpotter), data center contracts, private-developer subsidies and corporate tax breaks are flagged in red and cost points. Known surveillance vendors and data center deals are caught by name even when filed under police or general spending.
+- **Corporate lobbying.** Shown inside Money in and Money out, not just beside them: how much corporations spent lobbying and donating, what they got back in tax breaks, and which companies both lobbied or donated and were paid by the town.
+- **Political money.** Corporate lobbying, PAC, developer, contractor and union contributions to local officials, plus lobbying the town pays for, with a top-contributors table.
 - **Transparency check.** Six good-government practices: budget online, open checkbook, on-time audit, competitive bidding, recorded meetings, and conflict-of-interest disclosures.
 - **Ledger.** Individual transactions you can search, filter, sort and export to CSV.
 - **Five-year trend** of revenue against spending.
@@ -38,9 +40,9 @@ To use real figures, build a dataset with the pipeline scripts, then load it on 
 |---|---|---|
 | [Census Annual Survey of Local Government Finances](https://www.census.gov/programs-surveys/gov-finances.html) | `scripts/import-census-finance.mjs` | Revenue and spending by category |
 | [USAspending.gov](https://www.usaspending.gov) | `scripts/fetch-usaspending.mjs` | Federal grants and their ledger entries |
-| State or county campaign-finance portal (CSV export) | `scripts/import-contributions.mjs` | PAC, business and union contributions, lobbying, top donors |
+| State or county campaign-finance portal / lobbying registry (CSV export) | `scripts/import-contributions.mjs` | PAC, business and union contributions, corporate lobbying (`contributor_type` "Corporate lobbying"), town-paid lobbying ("Town-paid lobbying"), top donors |
 | New Jersey municipal budget / User Friendly Budget (line items as CSV) | `scripts/import-nj-budget.mjs` | Revenue and spending by line, with one ledger row per budget line |
-| Town budget, audit (ACFR) and website | edit the JSON | Transparency checks, debt, history |
+| Town budget, audit (ACFR) and website | edit the JSON | Transparency checks, debt, history, surveillance and data center contracts, corporate tax breaks |
 
 Example:
 

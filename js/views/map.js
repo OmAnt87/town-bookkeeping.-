@@ -221,6 +221,8 @@ export function renderMap(root, state) {
         <div><span>Service $ per resident</span><strong class="num">${money(s.totals.directPerResident)}</strong></div>
         <div><span>Not from property tax</span><strong class="num">${Math.round(s.totals.nonPropertyShare * 100)}%</strong></div>
         <div><span>Political money</span><strong class="num">${money(s.totals.influence, { compact: true })}</strong></div>
+        ${s.totals.redFlagSpending + s.totals.taxBreaks > 0 ? `<div><span>Surveillance & corporate giveaways</span><strong class="num" style="color:var(--bad)">${money(s.totals.redFlagSpending + s.totals.taxBreaks, { compact: true })}</strong></div>` : ''}
+        ${s.totals.corporateMoney > 0 ? `<div><span>Corporate lobbying & donations</span><strong class="num" style="color:var(--bad)">${money(s.totals.corporateMoney, { compact: true })}</strong></div>` : ''}
       </div>
       <a class="btn btn-primary" style="width:100%" href="#/town/${encodeURIComponent(town.id)}">Open full report ${ICONS.arrow}</a>`;
     card.querySelector('.close').addEventListener('click', () => { card.hidden = true; });

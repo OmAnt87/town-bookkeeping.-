@@ -71,6 +71,18 @@ const VENDORS = {
   consultants: ['Summit Consulting Group', 'Harbor & Pike LLP (legal)', 'Meridian Planning Associates'],
   debtService: ['Bond Trustee - First Regional Bank', 'State Bond Bank'],
 };
+// Red-flag vendors: [name, what the town bought]. The companies also lobby town officials.
+const SURVEILLANCE = [
+  ['Flock Safety', 'Flock license-plate reader cameras (annual subscription)'],
+  ['Flock Safety', 'ALPR camera network expansion'],
+  ['SoundThinking (ShotSpotter)', 'ShotSpotter gunshot detection contract'],
+  ['Axon Fusus', 'Real-time crime center camera integration'],
+];
+const CORPORATE_DEALS = [
+  ['Ridgeline Data Center Partners LLC', 'Water main and substation upgrades for data center campus'],
+  ['Northgate Hyperscale LLC', 'Road and utility work for data center site'],
+  ['Crossroads Land Partners', 'Redevelopment subsidy for private warehouse project'],
+];
 const PAYERS = {
   propertyTax: 'Property owners (tax collector deposit)',
   salesTax: 'State Dept. of Revenue - local sales tax distribution',
@@ -116,6 +128,11 @@ function makeTown(state, index, usedNames) {
   spending.administration = round(spendTotal * adminShare, 100);
   spending.consultants = round(spendTotal * consultShare, 100);
   spending.debtService = round(spendTotal * debtShare, 100);
+  // Worse-run towns are more likely to buy surveillance tech and cut corporate deals.
+  const surv = rand() < 0.2 + (1 - q) * 0.55 ? pick(SURVEILLANCE) : null;
+  const deal = rand() < 0.1 + (1 - q) * 0.35 ? pick(CORPORATE_DEALS) : null;
+  spending.surveillance = surv ? round(spendTotal * between(0.002, 0.012), 100) : 0;
+  spending.corporateDeals = deal ? round(spendTotal * between(0.005, 0.03), 100) : 0;
   const spendingSum = Object.values(spending).reduce((a, b) => a + b, 0);
 
   const balanceRatio = between(-0.09, 0.05) + q * 0.05;
@@ -126,9 +143,13 @@ function makeTown(state, index, usedNames) {
   const revenue = { propertyTax: round(revTotal * propShare, 100) };
   for (const [k, w] of Object.entries(revWeights)) revenue[k] = round(revTotal * (1 - propShare) * (w / rSum), 100);
 
+  const taxBreaks = {};
+  if (deal && /data center/i.test(deal[1])) taxBreaks.dataCenterAbatements = round(revTotal * between(0.01, 0.05), 100);
+  if (rand() < 0.15 + (1 - q) * 0.35) taxBreaks.corporateAbatements = round(revTotal * between(0.003, 0.02), 100);
+
   const influencePerCap = Math.max(0.1, (1 - q) * between(4, 16) + between(0, 1.5));
   const infTotal = population * influencePerCap;
-  const iw = { pacContributions: between(0.25, 0.5), developerContributions: between(0.15, 0.4), unionContributions: between(0.05, 0.2), lobbyingPaid: rand() < 0.5 ? between(0.05, 0.2) : 0 };
+  const iw = { pacContributions: between(0.25, 0.5), developerContributions: between(0.15, 0.4), unionContributions: between(0.05, 0.2), corporateLobbying: surv || deal ? between(0.15, 0.4) : between(0, 0.08), lobbyingPaid: rand() < 0.5 ? between(0.05, 0.2) : 0 };
   const iSum = Object.values(iw).reduce((a, b) => a + b, 0);
   const influence = {};
   for (const [k, w] of Object.entries(iw)) influence[k] = round(infTotal * (w / iSum), 10);
@@ -156,6 +177,9 @@ function makeTown(state, index, usedNames) {
     topDonors.push({ name: dn, type: dt, recipient: pick(OFFICES), amount: round(infTotal * between(0.05, 0.25), 50) });
   }
   topDonors.sort((a, b) => b.amount - a.amount);
+  // Corporate lobbying, split between the red-flag vendors the town pays.
+  const lobbyists = [surv?.[0], deal?.[0]].filter(Boolean);
+  if (!lobbyists.length && influence.corporateLobbying) lobbyists.push(pick(['Regional Chamber of Commerce', 'Energy Futures Coalition']));
 
   const ledger = [];
   const fyStart = new Date(Date.UTC(2025, 6, 1));
@@ -169,12 +193,21 @@ function makeTown(state, index, usedNames) {
     }
   }
   for (const [k, v] of Object.entries(spending)) {
+    if (!v) continue;
+    if (k === 'surveillance' || k === 'corporateDeals') {
+      const [vendor, what] = k === 'surveillance' ? surv : deal;
+      ledger.push({ date: dateIn(), flow: 'out', category: k, counterparty: vendor, description: what, amount: v });
+      continue;
+    }
     const vendor = pick(VENDORS[k]);
     ledger.push({ date: dateIn(), flow: 'out', category: k, counterparty: vendor, description: k === 'debtService' ? 'Bond payment' : 'Contract / payroll payments', amount: round(v * between(0.15, 0.45), 1) });
   }
   for (const d of topDonors) {
     const cat = d.type === 'PAC' ? 'pacContributions' : d.type === 'Union' ? 'unionContributions' : 'developerContributions';
     ledger.push({ date: dateIn(), flow: 'influence', category: cat, counterparty: d.name, description: `Contribution to ${d.recipient.toLowerCase()} campaign`, amount: d.amount });
+  }
+  for (const name of lobbyists) {
+    ledger.push({ date: dateIn(), flow: 'influence', category: 'corporateLobbying', counterparty: name, description: 'Lobbying council and mayor', amount: round(influence.corporateLobbying / lobbyists.length, 10) });
   }
   if (influence.lobbyingPaid) {
     ledger.push({ date: dateIn(), flow: 'influence', category: 'lobbyingPaid', counterparty: 'Capitol Strategies LLC', description: 'Town-paid lobbying retainer', amount: influence.lobbyingPaid });
@@ -198,6 +231,7 @@ function makeTown(state, index, usedNames) {
     revenue,
     spending,
     influence,
+    taxBreaks,
     topDonors,
     transparency,
     debt,

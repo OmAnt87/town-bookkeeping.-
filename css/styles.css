@@ -271,7 +271,7 @@ button, input, select { font: inherit; color: inherit; }
 .component-row .track { height: 8px; margin: 6px 0 2px; }
 .component-row .track > span { background: var(--accent); }
 .component-row p { font-size: 12.5px; color: var(--text-2); margin: 0; }
-.tiles { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+.tiles { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
 .tile { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); min-width: 0; }
 .tile .k { font-size: 12px; font-weight: 600; color: var(--text-2); }
 .tile .v { font-size: 24px; font-weight: 700; margin: 4px 0 2px; letter-spacing: -0.01em; overflow-wrap: anywhere; }
@@ -295,6 +295,14 @@ button, input, select { font: inherit; color: inherit; }
 .split { display: flex; height: 14px; border-radius: 4px; overflow: hidden; gap: 2px; margin: 4px 0 6px; }
 .split span { background: var(--c); }
 .callout { background: var(--accent-soft); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 13.5px; margin-top: 14px; }
+.callout-bad { background: var(--bad-soft); color: var(--text); margin: 0 0 14px; }
+/* Red flags: surveillance, corporate deals, tax breaks and corporate lobbying. */
+.tile-flag { border-color: var(--bad); background: var(--bad-soft); }
+.tile-flag .v { color: var(--bad); }
+.flag-box { margin-top: 16px; padding: 12px 14px; border: 1px solid var(--bad); border-left-width: 4px; border-radius: var(--radius-sm); background: var(--bad-soft); }
+.flag-box h3 { margin: 0 0 4px; font-size: 14px; color: var(--bad); }
+.flag-box p { margin: 0 0 10px; }
+.flag-box .table-wrap { background: var(--surface); border-radius: 6px; }
 
 /* Tables */
 .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
@@ -360,8 +368,10 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
 .empty { padding: 40px 0; text-align: center; color: var(--text-2); }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
   .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 1000px) {
   .scorecard { grid-template-columns: 1fr; }
 }
 @media (max-width: 860px) {
