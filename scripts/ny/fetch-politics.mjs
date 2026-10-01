@@ -46,7 +46,8 @@ async function fetchCounty(county, osc) {
   const govs = Object.entries(osc);
   const govFor = (label) => {
     const [rawName, kind] = label.split(',');
-    const name = rawName.replace(/^(Town|Village|City) of /i, '');
+    // Also seen: "Castleton/Hudson" for Castleton-on-Hudson, "Rochester Town,Town".
+    const name = rawName.replace(/^(Town|Village|City) of /i, '').replace(/\//g, ' on ').replace(/ (Town|Village|City)$/i, '');
     const want = norm(`${kind} of ${name}`);
     // Filers spell names loosely ("Lagrange" for LaGrange, "Wappinger Falls" for Wappingers Falls).
     const loose = (x) => norm(x).split(' ').map((w) => w.replace(/s$/, '')).join('');
