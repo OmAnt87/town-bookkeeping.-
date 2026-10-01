@@ -31,8 +31,10 @@ export function renderMethod(root) {
     <h2>Direct services vs. overhead</h2>
     <ul>
       <li><strong>Direct services:</strong> ${SPENDING_CATEGORIES.filter((c) => c.direct).map((c) => c.label.toLowerCase()).join(', ')}.</li>
-      <li><strong>Overhead:</strong> ${SPENDING_CATEGORIES.filter((c) => !c.direct).map((c) => c.label.toLowerCase()).join(', ')}.</li>
+      <li><strong>Overhead:</strong> ${SPENDING_CATEGORIES.filter((c) => !c.direct && !c.outsideShares && !c.unitemized).map((c) => c.label.toLowerCase()).join(', ')}.</li>
     </ul>
+    <p><strong>Schools.</strong> In Connecticut the town pays for public schools. In most other states, school districts are separate governments with their own taxes. School spending is shown on Connecticut reports but left out of the services and overhead shares, so every town is measured on the same municipal services.</p>
+    <p><strong>Spending reported only as a total.</strong> When a state reports part of a town's spending without a department breakdown, the services and overhead parts are not scored for that town.</p>
     <p>Overhead is not wasted money. Towns need clerks, audits and lawyers, and debt pays for roads and buildings. But when overhead grows faster than services, residents get less for what they pay.</p>
 
     <h2>Red flags: surveillance and corporate giveaways</h2>

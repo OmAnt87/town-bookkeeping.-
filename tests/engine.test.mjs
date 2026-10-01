@@ -383,3 +383,33 @@ test('PA annual financial report columns map, reconcile and spread benefits', ()
   assert.equal(a.lineTotals.spending, 980);
   assert.deepEqual(a.excluded, { revenue: 100, spending: 100 });
 });
+
+import { aggregateCt } from '../scripts/ct/mfi-map.mjs';
+
+test('CT financial statements and UCOA departments map, reconcile and spread capital outlay', () => {
+  const fs = {
+    d_3_property_tax_revenue: 700, d_6_state_revenues: 200, d_9_federal_revenues: 0, d_12_all_other_revenues: 100, d_15_total_revenues: 1000,
+    d_20_total_education: 600, d_21_debt_service_expenditures: 100, d_24_all_other_expenditures: 250, d_26_total_expenditures: 950,
+    d_28_transfers_in: 40, d_29_transfers_out: -30,
+  };
+  const depts = [
+    { department_code: '4700', total: '500' }, { department_code: '4201', total: '200' },
+    { department_code: '4899', total: '100' }, { department_code: '4100', total: '0' }, { department_code: '4900', total: '150' },
+  ];
+  const a = aggregateCt(fs, depts);
+  assert.deepEqual(a.revenue, { propertyTax: 700, stateAid: 200, otherRevenue: 100 });
+  assert.deepEqual(a.spending, { education: 594, publicSafety: 238, debtService: 119 });
+  assert.equal(a.lineTotals.spending, a.reported.spending);
+  assert.deepEqual(a.excluded, { transfersIn: 40, transfersOut: 30, netOtherFinancing: 0 });
+
+  // Without a department breakdown only schools and debt are known.
+  const b = aggregateCt(fs, null);
+  assert.deepEqual(b.spending, { education: 600, debtService: 100, otherSpending: 250 });
+  const town = { population: 1000, revenue: b.revenue, spending: b.spending, debt: 0 };
+  const s = scoreTown(town);
+  for (const key of ['services', 'overhead']) {
+    const c = s.components.find((x) => x.key === key);
+    assert.equal(c.available, false);
+    assert.match(c.detail, /not by department/);
+  }
+});

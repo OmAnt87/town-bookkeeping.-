@@ -30,6 +30,9 @@ export function totals(town) {
   const direct = SPENDING_CATEGORIES.filter((c) => c.direct)
     .reduce((a, c) => a + (town.spending?.[c.key] || 0), 0);
   const directNet = Math.max(0, direct - flaggedInDirect);
+  // Spending the services and overhead shares are measured against (without schools).
+  const municipal = spending - SPENDING_CATEGORIES.filter((c) => c.outsideShares)
+    .reduce((a, c) => a + (town.spending?.[c.key] || 0), 0);
   const redFlagSpending = SPENDING_CATEGORIES.filter((c) => c.redFlag)
     .reduce((a, c) => a + (town.spending?.[c.key] || 0), 0) + flaggedInDirect;
   const taxBreaks = sum(town.taxBreaks);
@@ -59,9 +62,10 @@ export function totals(town) {
       + Object.values(town.taxBreaks || {}).filter((v) => v > 0).length,
     corporateMoney,
     corporateShareOfInfluence: influence ? corporateMoney / influence : 0,
-    directShare: spending ? directNet / spending : 0,
-    adminShare: spending
-      ? ((town.spending?.administration || 0) + (town.spending?.consultants || 0)) / spending
+    municipalSpending: municipal,
+    directShare: municipal > 0 ? directNet / municipal : 0,
+    adminShare: municipal > 0
+      ? ((town.spending?.administration || 0) + (town.spending?.consultants || 0)) / municipal
       : 0,
     spendingPerResident: spending / pop,
     directPerResident: directNet / pop,
@@ -71,6 +75,10 @@ export function totals(town) {
   };
 }
 
+const notItemized = (_t, town) => (town.spending?.otherSpending > 0
+  ? 'Not scored: part of this town\'s spending is reported only as a total, not by department'
+  : null);
+
 // Each component returns { key, label, points, max, detail } so the UI can
 // explain exactly where the score came from.
 export const COMPONENTS = [
@@ -78,17 +86,19 @@ export const COMPONENTS = [
     key: 'services',
     label: 'Money reaching residents',
     max: 25,
-    available: (t) => t.spending > 0,
+    available: (t, town) => t.municipalSpending > 0 && !(town.spending?.otherSpending > 0),
     measure: (t) => scale(t.directShare, 0.5, 0.88),
-    detail: (t) => `${pct(t.directShare)} of spending goes to direct services`,
+    detail: (t) => `${pct(t.directShare)} of spending goes to direct services${t.municipalSpending < t.spending ? ' (not counting schools)' : ''}`,
+    unavailable: notItemized,
   },
   {
     key: 'overhead',
     label: 'Low overhead',
     max: 10,
-    available: (t) => t.spending > 0,
+    available: (t, town) => t.municipalSpending > 0 && !(town.spending?.otherSpending > 0),
     measure: (t) => scale(t.adminShare, 0.3, 0.06),
-    detail: (t) => `${pct(t.adminShare)} spent on administration and consultants`,
+    detail: (t) => `${pct(t.adminShare)} spent on administration and consultants${t.municipalSpending < t.spending ? ' (not counting schools)' : ''}`,
+    unavailable: notItemized,
   },
   {
     key: 'redFlags',
@@ -234,7 +244,7 @@ export function scoreTown(town) {
       available,
       points: available ? Math.round(ratio * c.max * 10) / 10 : null,
       ratio,
-      detail: available ? c.detail(t, town) : 'Not scored: no data loaded for this part yet',
+      detail: available ? c.detail(t, town) : (c.unavailable?.(t, town) || 'Not scored: no data loaded for this part yet'),
     };
   });
   // Parts with no data are left out and the rest are rescaled to 100, so

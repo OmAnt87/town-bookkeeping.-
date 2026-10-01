@@ -32,7 +32,7 @@ export function renderTown(root, state, id) {
   rev.sort((a, b) => revOrder(a) - revOrder(b) || b.amount - a.amount);
   const spendOrder = (r) => (r.direct ? 0 : r.redFlag ? 2 : 1);
   const spend = spendingRows(town)
-    .map((r) => ({ ...r, label: r.redFlag ? `⚠ ${r.label}` : r.label, color: r.direct ? 'var(--series-in)' : r.redFlag ? 'var(--bad)' : 'var(--series-overhead)' }))
+    .map((r) => ({ ...r, label: r.redFlag ? `⚠ ${r.label}` : r.label, color: r.direct ? 'var(--series-in)' : r.redFlag ? 'var(--bad)' : r.outsideShares ? 'var(--baseline)' : r.unitemized ? 'var(--series-property)' : 'var(--series-overhead)' }))
     .sort((a, b) => spendOrder(a) - spendOrder(b) || b.amount - a.amount);
   const breaks = taxBreakRows(town).map((r) => ({ ...r, color: 'var(--bad)' }));
   const flagged = redFlagEntries(town).sort((a, b) => b.amount - a.amount);
@@ -45,7 +45,16 @@ export function renderTown(root, state, id) {
   const docsOut = docs.filter((f) => !isRevenueSide(f));
   const docLobbying = docs.filter((f) => f.kind === 'corporateLobbying');
   const cams = town.surveillanceMap;
-  const overhead = Math.max(0, t.spending - t.directSpending - t.redFlagSpending);
+  const schools = town.spending?.education || 0;
+  const unitemized = town.spending?.otherSpending || 0;
+  const overhead = Math.max(0, t.spending - t.directSpending - t.redFlagSpending - schools - unitemized);
+  const outSegments = [
+    { label: 'Direct services', amount: t.directSpending, color: 'var(--series-in)' },
+    { label: 'Overhead & debt', amount: overhead, color: 'var(--series-overhead)' },
+    ...(schools ? [{ label: 'Schools', amount: schools, color: 'var(--baseline)' }] : []),
+    ...(unitemized ? [{ label: 'Not broken down', amount: unitemized, color: 'var(--series-property)' }] : []),
+    ...(t.redFlagSpending ? [{ label: 'Surveillance & corporate deals', amount: t.redFlagSpending, color: 'var(--bad)' }] : []),
+  ];
   const corpLobbying = town.influence?.corporateLobbying || 0;
   const bizDonations = town.influence?.developerContributions || 0;
   const hasInfluence = town.influence && Object.keys(town.influence).length > 0;
@@ -105,7 +114,7 @@ export function renderTown(root, state, id) {
     <section class="tiles" aria-label="Key numbers">
       <div class="tile"><div class="k">Total money in</div><div class="v num">${money(t.revenue, { compact: true })}</div><div class="s">${money(t.revenue / town.population)} per resident</div></div>
       <div class="tile"><div class="k">Not from property tax</div><div class="v num">${money(t.nonPropertyRevenue, { compact: true })}</div><div class="s">${pctOf(t.nonPropertyShare)} of all revenue</div></div>
-      <div class="tile"><div class="k">Services per resident</div><div class="v num">${money(t.directPerResident)}</div><div class="s">${pctOf(t.directShare)} of spending</div></div>
+      <div class="tile"><div class="k">Services per resident</div><div class="v num">${money(t.directPerResident)}</div><div class="s">${unitemized ? 'Spending not fully broken down' : `${pctOf(t.directShare)} of ${schools ? 'non-school ' : ''}spending`}</div></div>
       <div class="tile"><div class="k">Political money</div>${hasInfluence ? `<div class="v num">${money(t.influence, { compact: true })}</div><div class="s">${money(t.influencePerResident)} per resident</div>` : `${NA}<div class="s">No filings loaded yet</div>`}</div>
       <div class="tile${t.redFlagCount ? ' tile-flag' : ''}"><div class="k">Surveillance & corporate giveaways</div>${!t.redFlagKnown ? `${NA}<div class="s">Not checked yet</div>`
         : t.redFlagSpending + t.taxBreaks > 0 ? `<div class="v num">${money(t.redFlagSpending + t.taxBreaks, { compact: true })}</div><div class="s">${money(t.redFlagPerResident)} per resident</div>`
@@ -131,8 +140,8 @@ export function renderTown(root, state, id) {
       </section>
       <section class="card" aria-labelledby="h-out">
         <div class="card-head"><div><h2 id="h-out">Money out</h2><p>Direct services versus overhead and debt.</p></div><span class="num muted small">${money(t.spending)}</span></div>
-        ${splitBar([{ label: 'Direct services', amount: t.directSpending, color: 'var(--series-in)' }, { label: 'Overhead & debt', amount: overhead, color: 'var(--series-overhead)' }, ...(t.redFlagSpending ? [{ label: 'Surveillance & corporate deals', amount: t.redFlagSpending, color: 'var(--bad)' }] : [])])}
-        ${legendKey([{ label: `Direct services ${pctOf(t.directShare)}`, color: 'var(--series-in)' }, { label: `Overhead & debt ${pctOf(overhead / (t.spending || 1))}`, color: 'var(--series-overhead)' }, ...(t.redFlagSpending ? [{ label: `Surveillance & corporate deals ${pctOf(t.redFlagSpending / t.spending)}`, color: 'var(--bad)' }] : [])])}
+        ${splitBar(outSegments)}
+        ${legendKey(outSegments.map((g) => ({ label: `${g.label} ${pctOf(g.amount / (t.spending || 1))}`, color: g.color })))}
         ${barList(spend, { total: t.spending })}
         ${docsOut.length || cams ? redFlagBox('⚠ Surveillance and corporate deals on record', 'Programs and deals documented in news reports and public records. Most records do not say what the town paid.', docsOut, cams) : ''}
         ${flagged.length ? `<div class="flag-box">
@@ -280,7 +289,10 @@ function plainSummary(town, s) {
   const strongest = [...scored].sort((a, b) => b.ratio - a.ratio)[0];
   const weakest = [...scored].sort((a, b) => a.ratio - b.ratio)[0];
   const per100 = Math.round(t.directShare * 100);
-  return `<strong>In plain terms:</strong> for every $100 ${escapeHTML(town.name)} spends, about $${per100} pays for services residents use directly.
+  const school = town.spending?.education > 0;
+  return `<strong>In plain terms:</strong> ${town.spending?.otherSpending > 0
+    ? `${escapeHTML(town.name)} reports part of its spending only as a total, so how much reaches residents directly is not known.`
+    : `for every $100 ${escapeHTML(town.name)} spends${school ? ' outside its schools' : ''}, about $${per100} pays for services residents use directly.`}
     Its strongest area is <strong>${strongest.label.toLowerCase()}</strong>; its weakest is <strong>${weakest.label.toLowerCase()}</strong>.${
     t.redFlagSpending + t.taxBreaks > 0
       ? ` It also put <strong>$${(t.redFlagShare * 100).toFixed(2)} of every $100</strong> toward surveillance, corporate deals or corporate tax breaks.`

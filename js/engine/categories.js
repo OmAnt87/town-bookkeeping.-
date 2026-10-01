@@ -26,9 +26,16 @@ export const SPENDING_CATEGORIES = [
   { key: 'utilities', label: 'Water, sewer & sanitation', direct: true },
   { key: 'parks', label: 'Parks, library & recreation', direct: true },
   { key: 'healthServices', label: 'Health & human services', direct: true },
+  // Connecticut towns run their schools; elsewhere school districts are separate
+  // governments. Shown on reports but left out of the services and overhead
+  // shares, so towns are compared on the same municipal services everywhere.
+  { key: 'education', label: 'Schools (board of education)', direct: false, outsideShares: true },
   { key: 'administration', label: 'General administration', direct: false },
   { key: 'consultants', label: 'Outside consultants & legal', direct: false },
   { key: 'debtService', label: 'Debt service (interest & principal)', direct: false },
+  // Spending a town reported only as a total. A town with any is not scored on
+  // services or overhead, since the split is unknown.
+  { key: 'otherSpending', label: 'Other spending (not broken down)', direct: false, unitemized: true },
   { key: 'surveillance', label: 'Surveillance tech (Flock cameras, plate readers, facial recognition)', direct: false, redFlag: true },
   { key: 'corporateDeals', label: 'Corporate deals (data center contracts, private-developer subsidies)', direct: false, redFlag: true },
 ];

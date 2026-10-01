@@ -6,8 +6,8 @@ The score runs from 0 to 100 and is the sum of six parts. Each part scales linea
 
 | Part | Points | Zero at | Full at | Measure |
 |---|---|---|---|---|
-| Money reaching residents | 25 | 50% | 88% | Direct-service spending / total spending |
-| Low overhead | 10 | 30% | 6% | (Administration + consultants & legal) / total spending |
+| Money reaching residents | 25 | 50% | 88% | Direct-service spending / total spending (not counting schools) |
+| Low overhead | 10 | 30% | 6% | (Administration + consultants & legal) / total spending (not counting schools) |
 | No surveillance or corporate giveaways | 10 | 5% or 4 documented | 0% and none | The lower of: (surveillance tech + corporate deals + corporate tax breaks) / total spending, and 1 − ¼ per documented program or deal |
 | Low outside political money | 20 | $12.00 | $0.50 | (Corporate lobbying + PAC + developer/contractor + union contributions + town-paid lobbying) / population |
 | Transparency | 20 | 0 of 6 | 6 of 6 | Practices followed (see below) |
@@ -40,6 +40,8 @@ Payments to known surveillance vendors and data center deals are flagged by name
 ## Corporate lobbying
 
 Corporate lobbying of town officials (`corporateLobbying`) is tracked separately from lobbying the town pays for. Each report shows how much of a town's political money came from corporations (corporate lobbying + business and contractor contributions), how that compares with the tax breaks the town gave away, and which companies both lobbied or donated **and** were paid by the town (a pay-to-play check that matches names across the ledger).
+
+For Connecticut, figures are **actual general-fund results** reported to the Office of Policy and Management (Municipal Fiscal Indicators) for fiscal years ending June 30. Connecticut towns pay for public schools through the town budget. In most other states school districts are separate governments, so school spending is shown on Connecticut reports but left out of the services and overhead shares. Spending by department comes from the state's Uniform Chart of Accounts, and only for a year whose total matches the financial statements to the dollar; capital outlay and "other" are spread across departments. When no matching breakdown exists, spending other than schools and debt is shown as one total and the services and overhead parts are not scored. Transfers between funds and other financing sources are left out. Political money is not scored, because candidates for town office file with their town clerk.
 
 ## Definitions
 
