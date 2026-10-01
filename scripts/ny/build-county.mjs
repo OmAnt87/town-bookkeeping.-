@@ -7,6 +7,7 @@
 //   node scripts/ny/build-county.mjs --county Albany  # or --all
 //
 // Output: data/real/ny-<county>.json, listed in data/real/index.json.
+// Then re-run scripts/common/red-flags.mjs --state ny: a rebuild drops the red-flag records.
 // Figures are actual results from each government's Annual Financial Report to the
 // NY Office of the State Comptroller. Nothing is estimated.
 

@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // Adds red-flag records (surveillance tech, data center deals, corporate
-// lobbying) to the NJ town files in data/real/. Safe to re-run: it replaces
-// what an earlier run added.
+// lobbying) to one state's town files in data/real/. Safe to re-run: it
+// replaces what an earlier run added.
 //
-//   node scripts/nj/red-flags.mjs --download   # Atlas of Surveillance, OSM cameras, Census boundaries
-//   node scripts/nj/red-flags.mjs              # apply to data/real/nj-*.json, then run scripts/build-summary.mjs
+//   node scripts/common/red-flags.mjs --state nj --download   # Atlas of Surveillance, OSM cameras, Census boundaries
+//   node scripts/common/red-flags.mjs --state nj              # apply to data/real/nj-*.json
+//   node scripts/build-summary.mjs                            # then refresh the app's startup summary
 //
 // Sources:
 //   - EFF Atlas of Surveillance: which police departments use plate readers,
@@ -12,7 +13,7 @@
 //   - OpenStreetMap license-plate cameras (the data DeFlock maps), placed in
 //     towns with Census boundaries. Any Flock camera is scored; other brands
 //     only when the camera's recorded operator is the town itself.
-//   - scripts/nj/corporate-deals.json: hand-checked data center deals and
+//   - scripts/<state>/corporate-deals.json: hand-checked data center deals and
 //     corporate lobbying, each with its sources. Scored.
 // Nothing is estimated. Records rarely carry dollar amounts, so red flags are
 // stored as documented programs, not as spending.
@@ -22,33 +23,74 @@ import { execFileSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from '../lib.mjs';
-import { normName } from './ufb-map.mjs';
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
-const RAW = join(ROOT, 'data', 'raw', 'nj');
-const OUT = join(ROOT, 'data', 'real');
-const ATLAS_URL = 'https://atlasofsurveillance.org/download.csv';
-const ATLAS_PAGE = 'https://atlasofsurveillance.org/';
-const TIGER_URL = 'https://www2.census.gov/geo/tiger/TIGER2024/COUSUB/tl_2024_34_cousub.zip';
-const OSM_PAGE = 'https://deflock.org/';
-const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter', 'https://overpass.private.coffee/api/interpreter'];
-const OVERPASS_QUERY = '[out:json][timeout:100];area["ISO3166-2"="US-NJ"]->.nj;node(area.nj)["surveillance:type"="ALPR"];out tags center;';
-const TODAY = new Date().toISOString().slice(0, 10);
+// Per-state settings. `layers` are Census TIGER boundary files checked in
+// order, so the most specific government wins: a NY camera inside a village
+// belongs to the village, not the town around it.
+const STATES = {
+  nj: {
+    name: 'NJ', fips: '34', layers: ['cousub'], bbox: '38.9,-75.6,41.4,-73.9',
+    // Agency spellings that differ from the state's municipal names.
+    aliases: { 'bayhead borough|ocean': 'Bay Head Borough', 'neptune city|monmouth': 'Neptune City Borough', 'orange|essex': 'City of Orange Township' },
+  },
+  ny: {
+    name: 'NY', fips: '36', layers: ['place', 'cousub'], bbox: '40.47,-79.77,45.02,-71.85',
+    // Departments named only for a place that is both a town and a village. Each
+    // is the government that runs the department.
+    aliases: {
+      'colonie|albany': 'Town of Colonie', 'manlius|onondaga': 'Town of Manlius', 'lewiston|niagara': 'Town of Lewiston',
+      'saugerties|ulster': 'Town of Saugerties', 'scarsdale|westchester': 'Village of Scarsdale', 'hempstead|nassau': 'Village of Hempstead',
+      'amhearst|erie': 'Town of Amherst', 'southhampton town|suffolk': 'Town of Southampton',
+    },
+    // Atlas county misspellings.
+    counties: { onandaga: 'Onondaga', wester: 'Westchester' },
+    // A department named only for a place that is a city and a town ("Albany
+    // Police Department") is the city's, except where the town has its own police.
+    preferCity: true,
+    townsWithPolice: ['tonawanda', 'newburgh', 'poughkeepsie', 'lockport'],
+  },
+};
 
 const args = parseArgs();
+const ST = STATES[String(args.state || '').toLowerCase()];
+if (!ST) {
+  console.error(`Usage: node scripts/common/red-flags.mjs --state <${Object.keys(STATES).join('|')}> [--download] [--verbose]`);
+  process.exit(1);
+}
+const st = ST.name.toLowerCase();
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+const RAW = join(ROOT, 'data', 'raw', st);
+const OUT = join(ROOT, 'data', 'real');
+const DEALS_FILE = `scripts/${st}/corporate-deals.json`;
+const ATLAS_URL = 'https://atlasofsurveillance.org/download.csv';
+const ATLAS_PAGE = 'https://atlasofsurveillance.org/';
+const tigerFile = (layer) => `tl_2024_${ST.fips}_${layer}`;
+const TIGER_URL = (layer) => `https://www2.census.gov/geo/tiger/TIGER2024/${layer.toUpperCase()}/${tigerFile(layer)}.zip`;
+const OSM_PAGE = 'https://deflock.org/';
+const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter', 'https://overpass.private.coffee/api/interpreter'];
+// The state-area query is exact but heavy; the bounding box is lighter, and
+// cameras outside the state drop out when they are placed in towns.
+const OVERPASS_QUERIES = [
+  `[out:json][timeout:170];area["ISO3166-2"="US-${ST.name}"]->.s;node(area.s)["surveillance:type"="ALPR"];out tags center;`,
+  `[out:json][timeout:170];node["surveillance:type"="ALPR"](${ST.bbox});out tags center;`,
+];
+const TODAY = new Date().toISOString().slice(0, 10);
 
 if (args.download) {
   mkdirSync(RAW, { recursive: true });
-  const curl = (...a) => execFileSync('curl', ['-sSfL', '-m', '180', '-A', 'Mozilla/5.0', ...a], { stdio: 'inherit' });
+  const curl = (...a) => execFileSync('curl', ['-sSfL', '-m', '240', '-A', 'Mozilla/5.0', ...a], { stdio: 'inherit' });
   curl('-o', join(RAW, 'atlas.csv'), ATLAS_URL);
-  curl('-o', join(RAW, 'cousub.zip'), TIGER_URL);
-  execFileSync('unzip', ['-o', '-q', join(RAW, 'cousub.zip'), '-d', RAW], { stdio: 'inherit' });
+  for (const layer of ST.layers) {
+    curl('-o', join(RAW, `${layer}.zip`), TIGER_URL(layer));
+    execFileSync('unzip', ['-o', '-q', join(RAW, `${layer}.zip`), '-d', RAW], { stdio: 'inherit' });
+  }
   // Overpass mirrors are often busy; take the first that answers.
-  const ok = OVERPASS.some((url) => {
-    try { curl('-G', url, '--data-urlencode', `data=${OVERPASS_QUERY}`, '-o', join(RAW, 'osm-alpr.json')); return true; } catch { return false; }
-  });
+  const ok = OVERPASS_QUERIES.some((q) => OVERPASS.some((url) => {
+    try { curl('-G', url, '--data-urlencode', `data=${q}`, '-o', join(RAW, 'osm-alpr.json')); return true; } catch { return false; }
+  }));
   if (!ok) console.warn('No Overpass mirror answered; OSM cameras will be skipped.');
-  console.log('Downloaded. Now run: node scripts/nj/red-flags.mjs');
+  console.log(`Downloaded. Now run: node scripts/common/red-flags.mjs --state ${st}`);
   process.exit(0);
 }
 
@@ -129,8 +171,9 @@ function parseCSVRows(text) {
 
 // ---------- Load towns ----------
 const index = JSON.parse(readFileSync(join(OUT, 'index.json'), 'utf8'));
-const files = index.files.filter((f) => f.startsWith('nj-'));
-const datasets = files.map((f) => ({ file: f, data: JSON.parse(readFileSync(join(OUT, f), 'utf8')) }));
+const files = index.files.filter((f) => f.startsWith(`${st}-`));
+// Each file is written back in its own format (NY's builder ends files with a newline, NJ's doesn't).
+const datasets = files.map((f) => { const text = readFileSync(join(OUT, f), 'utf8'); return { file: f, data: JSON.parse(text), eol: text.endsWith('\n') ? '\n' : '' }; });
 const towns = datasets.flatMap((d) => d.data.towns);
 const countyOf = (t) => t.county.replace(/ County$/, '');
 const report = { atlas: 0, atlasUnmatched: [], cameras: 0, camerasPlaced: 0, deals: 0 };
@@ -166,24 +209,37 @@ const agencyTown = (agency) => agency
   .replace(/\btwp\b/gi, 'Township')
   .replace(/\s+/g, ' ').trim();
 const TYPE_RX = /\b(township|borough|city|town|village)\b/i;
+const TYPE_WORDS = /\b(township|borough|city|town|village)\b/g;
+// "Town of Hamburg", "Hamburg Town", "hamburg" -> "hamburg"
+const baseName = (s) => String(s).toLowerCase().replace(/[.'’]/g, '').replace(TYPE_WORDS, '').replace(/\bof\b/g, '').replace(/\s+/g, ' ').trim();
+// A town's own type. NJ names end in it ("Bay Head Borough"), NY names start with it ("Village of Menands").
+const typeOf = (t) => (t.type || t.name.match(TYPE_RX)?.[1] || '').toLowerCase();
 
-// Agency spellings that differ from the state's municipal names.
-const ALIASES = { 'bayhead borough|ocean': 'Bay Head Borough', 'neptune city|monmouth': 'Neptune City Borough', 'orange|essex': 'City of Orange Township' };
-
-function matchTown(name, county, city) {
-  const alias = ALIASES[`${name.toLowerCase()}|${county.toLowerCase()}`];
+function matchTown(name, county, city, summary = '') {
+  county = ST.counties?.[county.toLowerCase()] || county;
+  const alias = ST.aliases[`${name.toLowerCase()}|${county.toLowerCase()}`];
   if (alias) name = alias;
+  // An untyped department ("Poughkeepsie Police Department") whose record says
+  // "the Town of Poughkeepsie Police Department" takes that type.
+  if (!TYPE_RX.test(name)) {
+    const said = summary.match(new RegExp(`\\b(township|borough|city|town|village) of ${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i'));
+    if (said) name = `${said[1]} of ${name}`;
+  }
   const pool = towns.filter((t) => countyOf(t).toLowerCase() === county.toLowerCase());
-  // "Township of Lakewood" -> "Lakewood Township"
-  const flipped = name.replace(/^(township|borough|city|town|village) of (.+)$/i, '$2 $1');
-  for (const n of [flipped, city].filter(Boolean)) {
+  for (const n of [name, city].filter(Boolean)) {
     const exact = pool.filter((t) => t.name.toLowerCase() === n.toLowerCase());
     if (exact.length === 1) return exact[0];
-    const loose = pool.filter((t) => normName(t.name) === normName(n));
+    const loose = pool.filter((t) => baseName(t.name) === baseName(n));
     const type = n.match(TYPE_RX)?.[1]?.toLowerCase();
-    const typed = type ? loose.filter((t) => t.name.toLowerCase().endsWith(type)) : loose;
+    const typed = type ? loose.filter((t) => typeOf(t) === type) : loose;
     if (typed.length === 1) return typed[0];
-    if (!type && loose.length === 1) return loose[0];
+    // A department named only for a place ("Albany Police Department") that is both a
+    // city and something else is the city's: towns and villages sharing a name are not guessed.
+    if (!type && loose.length > 1) {
+      const cities = loose.filter((t) => typeOf(t) === 'city');
+      const othersPoliced = loose.some((t) => typeOf(t) !== 'city' && (typeOf(t) === 'village' || ST.townsWithPolice?.includes(baseName(t.name))));
+      return ST.preferCity && cities.length === 1 && !othersPoliced ? cities[0] : null;
+    }
     if (loose.length > 1) return null; // e.g. Franklin Borough vs Franklin Township: don't guess
   }
   return null;
@@ -192,10 +248,10 @@ function matchTown(name, county, city) {
 const atlasFile = join(RAW, 'atlas.csv');
 if (existsSync(atlasFile)) {
   const rows = parseCSVRows(readFileSync(atlasFile, 'utf8'))
-    .filter((r) => r.State === 'NJ' && r['Type of Juris'] === 'Municipal' && ATLAS_LABELS[r.Technology]);
+    .filter((r) => r.State === ST.name && r['Type of Juris'] === 'Municipal' && ATLAS_LABELS[r.Technology]);
   for (const r of rows) {
     const county = r.County.replace(/ County$/, '');
-    const town = matchTown(agencyTown(r.Agency), county, r.City);
+    const town = matchTown(agencyTown(r.Agency), county, r.City, r.Summary);
     if (!town) { report.atlasUnmatched.push(`${r.Agency} (${r.County})`); continue; }
     report.atlas++;
     town.redFlags.push({
@@ -217,14 +273,14 @@ function usDate(s) {
 
 // ---------- OpenStreetMap license-plate cameras ----------
 // Cameras run by stores, malls, the Port Authority, toll roads or schools are not the town's.
-const NOT_TOWN = /home depot|lowe|simon|mall|port authority|panynj|turnpike|parkway|school|university|college|nj transit|state police|county/i;
+const NOT_TOWN = /home depot|lowe|simon|mall|port authority|panynj|turnpike|thruway|parkway|\bmta\b|transit|dot\b|school|university|college|state police|county/i;
 const osmFile = join(RAW, 'osm-alpr.json');
-const shpFile = join(RAW, 'tl_2024_34_cousub.shp');
-if (existsSync(osmFile) && existsSync(shpFile)) {
-  const shapes = readShp(readFileSync(shpFile));
-  const dbf = readDbf(readFileSync(join(RAW, 'tl_2024_34_cousub.dbf')));
+if (existsSync(osmFile) && ST.layers.every((l) => existsSync(join(RAW, `${tigerFile(l)}.shp`)))) {
   const byGeoid = new Map(towns.map((t) => [t.censusGeoid, t]));
-  const areas = dbf.map((r, i) => ({ town: byGeoid.get(r.GEOID), shape: shapes[i] })).filter((a) => a.town && a.shape);
+  const areas = ST.layers.flatMap((l) => {
+    const shapes = readShp(readFileSync(join(RAW, `${tigerFile(l)}.shp`)));
+    return readDbf(readFileSync(join(RAW, `${tigerFile(l)}.dbf`))).map((r, i) => ({ town: byGeoid.get(r.GEOID), shape: shapes[i] }));
+  }).filter((a) => a.town && a.shape);
   const osm = JSON.parse(readFileSync(osmFile, 'utf8'));
   const osmDate = osm.osm3s?.timestamp_osm_base?.slice(0, 10) || TODAY;
   const counts = new Map();
@@ -240,7 +296,7 @@ if (existsSync(osmFile) && existsSync(shpFile)) {
     const c = counts.get(hit.town) || { cameras: 0, flock: 0, townOperated: 0 };
     c.cameras++;
     if (/flock/i.test(`${e.tags?.manufacturer || ''} ${e.tags?.brand || ''}`)) c.flock++;
-    if (op && normName(op.replace(/police department|police|pd\b|\btwp\b|^(township|borough|city|town) of /gi, ' ')).includes(normName(hit.town.name))) c.townOperated++;
+    if (op && baseName(op.replace(/police department|police|pd\b|\btwp\b/gi, ' ')) === baseName(hit.town.name)) c.townOperated++;
     counts.set(hit.town, c);
   }
   for (const [town, c] of counts) {
@@ -266,10 +322,10 @@ if (existsSync(osmFile) && existsSync(shpFile)) {
 }
 
 // ---------- Hand-checked corporate deals ----------
-const deals = JSON.parse(readFileSync(join(ROOT, 'scripts', 'nj', 'corporate-deals.json'), 'utf8'));
-for (const d of deals.deals) {
+const deals = existsSync(join(ROOT, DEALS_FILE)) ? JSON.parse(readFileSync(join(ROOT, DEALS_FILE), 'utf8')).deals : [];
+for (const d of deals) {
   const town = towns.find((t) => t.name === d.town && countyOf(t) === d.county);
-  if (!town) { console.warn(`corporate-deals.json: no town "${d.town}" in ${d.county}`); continue; }
+  if (!town) { console.warn(`${DEALS_FILE}: no town "${d.town}" in ${d.county}`); continue; }
   report.deals++;
   town.redFlags.push({ kind: d.kind, label: d.label, vendor: d.vendor, date: d.date, detail: d.detail, sources: d.sources });
 }
@@ -279,11 +335,11 @@ for (const t of towns) {
   t.redFlags.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   t.sources.push({ label: 'EFF Atlas of Surveillance (police surveillance technology, searched by department)', url: ATLAS_PAGE, addedBy: MARK });
   if (t.surveillanceMap) t.sources.push({ ...t.surveillanceMap.source, addedBy: MARK });
-  if (t.redFlags.some((f) => f.sources)) t.sources.push({ label: 'Data center deals and corporate lobbying: hand-checked news and public records (scripts/nj/corporate-deals.json)', url: '', addedBy: MARK });
+  if (t.redFlags.some((f) => f.sources)) t.sources.push({ label: `Data center deals and corporate lobbying: hand-checked news and public records (${DEALS_FILE})`, url: '', addedBy: MARK });
   t.notes.push(`Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on ${TODAY}. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.`);
   if (t.surveillanceMap) t.notes.push(`Red flags: ${t.surveillanceMap.cameras} license-plate camera${t.surveillanceMap.cameras === 1 ? ' is' : 's are'} mapped inside ${t.name}'s borders in OpenStreetMap (${t.surveillanceMap.flock} made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the town is the recorded operator, since many have no operator recorded.`);
 }
-for (const d of datasets) writeFileSync(join(OUT, d.file), JSON.stringify(d.data, null, 1));
+for (const d of datasets) writeFileSync(join(OUT, d.file), JSON.stringify(d.data, null, 1) + d.eol);
 
 const flagged = towns.filter((t) => t.redFlags.length).length;
 console.log(`Atlas records matched: ${report.atlas} (${report.atlasUnmatched.length} unmatched)`);

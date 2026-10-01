@@ -9,7 +9,7 @@
 //        node scripts/nj/build-county.mjs --county Monmouth
 //
 // Output: data/real/nj-<county>.json, listed in data/real/index.json.
-// Then re-run scripts/nj/red-flags.mjs: a rebuild drops the red-flag records.
+// Then re-run scripts/common/red-flags.mjs --state nj: a rebuild drops the red-flag records.
 // Nothing is estimated: a town with no usable budget filing is left out and
 // reported, and sections without data (political money, transparency) are omitted.
 
