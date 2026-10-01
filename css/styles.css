@@ -405,3 +405,15 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
 @media (prefers-reduced-motion: no-preference) {
   .track > span, .bar-row .bar > span { transition: width 0.4s ease; }
 }
+
+/* State names on the map */
+.state-label { pointer-events: none; }
+.state-label span {
+  display: block; transform: translate(-50%, -50%); white-space: nowrap;
+  font: 700 12px/1 system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase;
+  color: #2b2b27; text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 6px #fff;
+}
+:root[data-theme="dark"] .state-label span { color: #f0f0ea; text-shadow: 0 0 3px #000, 0 0 3px #000, 0 0 6px #000; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .state-label span { color: #f0f0ea; text-shadow: 0 0 3px #000, 0 0 3px #000, 0 0 6px #000; }
+}
