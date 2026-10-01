@@ -18,7 +18,7 @@ export const gradeBadge = (grade, size = '') => {
 };
 
 // Small pill marking a town whose figures come from real public records.
-export const isVerified = (town) => town.demo !== true && (town.sources || []).some((src) => src.url);
+export const isVerified = (town) => town.demo !== true && (Boolean(town.detailFile) || (town.sources || []).some((src) => src.url));
 export const verifiedPill = (town) =>
   !isVerified(town) ? '' : '<span class="pill pill-verified" title="Figures come from public records listed under Sources">Verified data</span>';
 

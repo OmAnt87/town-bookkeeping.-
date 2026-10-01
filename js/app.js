@@ -55,6 +55,10 @@ export function resetToDemo() {
 // shown alongside the demo towns and replace any demo town with the same id.
 async function loadRealTowns() {
   try {
+    // Prefer the light summary (built by scripts/build-summary.mjs); town reports
+    // fetch their county file on demand (see loadTownDetail).
+    const summary = await fetch('data/real/summary.json');
+    if (summary.ok) return (await summary.json()).towns.map((t) => ({ ...t, demo: false }));
     const res = await fetch('data/real/index.json');
     if (!res.ok) return [];
     const { files = [] } = await res.json();
@@ -63,6 +67,22 @@ async function loadRealTowns() {
   } catch {
     return [];
   }
+}
+
+// Full records (ledger, history, donors, sources, notes) for a summary town.
+const detailCache = new Map();
+export async function loadTownDetail(town) {
+  if (!town.detailFile || town.ledger) return town;
+  if (!detailCache.has(town.detailFile)) {
+    detailCache.set(town.detailFile, fetch(`data/real/${town.detailFile}`).then((r) => {
+      if (!r.ok) throw new Error(`Could not load ${town.detailFile} (${r.status})`);
+      return r.json();
+    }));
+  }
+  const file = await detailCache.get(town.detailFile);
+  const full = file.towns.find((t) => t.id === town.id);
+  if (!full) throw new Error(`${town.name} is missing from ${town.detailFile}`);
+  return Object.assign(town, full, { demo: false });
 }
 
 async function loadDemo() {

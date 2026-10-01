@@ -2,6 +2,7 @@ import { revenueRows, spendingRows, influenceRows, transparencyCount } from '../
 import { TRANSPARENCY_CHECKS, REVENUE_CATEGORIES, SPENDING_CATEGORIES, INFLUENCE_CATEGORIES } from '../engine/categories.js';
 import { filterLedger, summarizeLedger, sortLedger, ledgerToCSV, categoryLabel, FLOWS } from '../engine/ledger.js';
 import { money, number, escapeHTML, formatDate } from '../engine/format.js';
+import { loadTownDetail } from '../app.js';
 import { gradeBadge, verifiedPill, isVerified, barList, splitBar, legendKey, lineChart, downloadFile, ICONS } from '../charts.js';
 
 const PAGE = 15;
@@ -13,6 +14,13 @@ export function renderTown(root, state, id) {
     return;
   }
   const { town, s } = entry;
+  if (town.detailFile && !town.ledger) {
+    root.innerHTML = `<div class="page"><div class="card empty">Loading ${escapeHTML(town.name)} records...</div></div>`;
+    loadTownDetail(town)
+      .then(() => { if (decodeURIComponent(location.hash).endsWith(`/town/${id}`)) renderTown(root, state, id); })
+      .catch((err) => { root.innerHTML = `<div class="page"><div class="card empty"><h2>Could not load this town's records</h2><p class="muted">${escapeHTML(err.message)}</p></div></div>`; });
+    return;
+  }
   const t = s.totals;
   // Real towns are ranked only against other real towns, demo towns against demo towns.
   const peers = state.towns.filter((x) => isVerified(x.town) === isVerified(town) && x.s.grade !== '?');
