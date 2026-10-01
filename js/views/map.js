@@ -51,8 +51,28 @@ function loadBorders(name) {
   });
   return borderCache[name];
 }
-const countyLineStyle = () => ({ color: isDark() ? '#8a8a82' : '#8d8c82', weight: 0.7, opacity: 0.6, dashArray: '2 3' });
-const stateLineStyle = () => ({ color: isDark() ? '#d8d8d0' : '#3d3d38', weight: 1.6, opacity: 0.85 });
+// Label point for each state: centroid of its largest polygon's outer ring.
+function stateLabelPoints(geo) {
+  return geo.features.filter((f) => f.properties.name !== 'District of Columbia').map((f) => {
+    const polys = f.geometry.type === 'Polygon' ? [f.geometry.coordinates] : f.geometry.coordinates;
+    let best = null;
+    let bestArea = -1;
+    for (const poly of polys) {
+      const ring = poly[0];
+      let a = 0, cx = 0, cy = 0;
+      for (let i = 0; i < ring.length - 1; i++) {
+        const [x0, y0] = ring[i];
+        const [x1, y1] = ring[i + 1];
+        const k = x0 * y1 - x1 * y0;
+        a += k; cx += (x0 + x1) * k; cy += (y0 + y1) * k;
+      }
+      if (Math.abs(a) > bestArea) { bestArea = Math.abs(a); best = [cy / (3 * a), cx / (3 * a)]; }
+    }
+    return { name: f.properties.name, latlng: best };
+  });
+}
+const countyLineStyle = () => ({ color: isDark() ? '#8a8a82' : '#8d8c82', weight: 0.8, opacity: 0.55 });
+const stateLineStyle = () => ({ color: isDark() ? '#d8d8d0' : '#3d3d38', weight: 2, opacity: 0.9 });
 const stateStyle = () => ({ color: cssVar('--baseline'), weight: 1, fillColor: cssVar('--surface'), fillOpacity: 1 });
 
 const ui = { metric: 'score', layer: 'towns', state: 'all', query: '', realOnly: null };
@@ -132,12 +152,24 @@ export function renderMap(root, state) {
     loadStates()
       .then((geo) => { if (map) statesLayer = L.geoJSON(geo, { pane: 'states', interactive: false, style: stateStyle }).addTo(map); })
       .catch(() => { /* outlines are optional */ });
-    map.createPane('borders').style.zIndex = 350;
+    map.createPane('borders').style.zIndex = 640;
+    map.getPane('borders').style.pointerEvents = 'none';
+    map.createPane('labels').style.zIndex = 650;
+    map.getPane('labels').style.pointerEvents = 'none';
     const addBorders = (name, style) => loadBorders(name)
       .then((geo) => (map ? L.geoJSON(geo, { pane: 'borders', interactive: false, style }).addTo(map) : null))
       .catch(() => null);
     addBorders('county', countyLineStyle).then((l) => { countyLines = l; });
     addBorders('state', stateLineStyle).then((l) => { stateLines = l; });
+    loadStates()
+      .then((geo) => {
+        if (!map) return;
+        const group = L.layerGroup().addTo(map);
+        for (const { name, latlng } of stateLabelPoints(geo)) {
+          L.marker(latlng, { pane: 'labels', interactive: false, keyboard: false, icon: L.divIcon({ className: 'state-label', html: `<span>${escapeHTML(name)}</span>`, iconSize: [0, 0] }) }).addTo(group);
+        }
+      })
+      .catch(() => { /* labels are optional */ });
     dotLayer = L.layerGroup().addTo(map);
   }
 
@@ -219,13 +251,13 @@ export function renderMap(root, state) {
     }
     for (const { town, s } of list) {
       const small = map.getSize().x < 600;
-      const radius = Math.max(small ? 3 : 5, Math.min(small ? 7 : 14, Math.sqrt(town.population) / (small ? 36 : 18)));
+      const radius = Math.max(small ? 2 : 3, Math.min(small ? 5 : 9, Math.sqrt(town.population) / (small ? 50 : 32)));
       const mk = L.circleMarker([town.lat, town.lng], {
         radius: ui.layer === 'heat' ? 4 : radius,
         color: ring,
-        weight: 2,
+        weight: 1,
         fillColor: ui.layer === 'heat' ? (isDark() ? '#f4f4f1' : '#121211') : m.key === 'score' && s.grade === '?' ? '#9a9890' : scale.color(m.value(s)),
-        fillOpacity: ui.layer === 'heat' ? 0.55 : 0.92,
+        fillOpacity: ui.layer === 'heat' ? 0.55 : 0.7,
       })
         .bindTooltip(`<strong>${escapeHTML(town.name)}</strong>, ${town.state}<br>Grade ${s.grade} &middot; ${m.label}: ${m.format(m.value(s))}`, { direction: 'top', offset: [0, -6] })
         .on('click', () => openCard(town.id));
