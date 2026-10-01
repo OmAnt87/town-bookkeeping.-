@@ -92,10 +92,11 @@ node scripts/build-summary.mjs
 
 ### Connecticut (all 169 towns and the City of Groton)
 
-`data/real/ct-<planning-region>.json` holds every CT town, grouped by the nine planning regions the Census uses in place of counties. Figures come from the Office of Policy and Management's Municipal Fiscal Indicators on data.ct.gov: [financial statements](https://data.ct.gov/d/d6pe-dw46) (actual general-fund revenue, spending and debt), the [Uniform Chart of Accounts](https://data.ct.gov/d/e2qt-k238) (spending by department) and [town data](https://data.ct.gov/d/ej6f-y2wf) (history back to 2014). Connecticut towns pay for their schools, so school spending is on each report but left out of the services and overhead shares. Political money is not scored: candidates for town office file with their town clerk. Coverage and gaps: [docs/CT_DATA_STATUS.md](docs/CT_DATA_STATUS.md).
+`data/real/ct-<planning-region>.json` holds every CT town, grouped by the nine planning regions the Census uses in place of counties. Figures come from the Office of Policy and Management's Municipal Fiscal Indicators on data.ct.gov: [financial statements](https://data.ct.gov/d/d6pe-dw46) (actual general-fund revenue, spending and debt), the [Uniform Chart of Accounts](https://data.ct.gov/d/e2qt-k238) (spending by department) and [town data](https://data.ct.gov/d/ej6f-y2wf) (history back to 2014). Connecticut towns pay for their schools, so school spending is on each report but left out of the services and overhead shares. Political money comes from each town's party town committees as filed with the [State Elections Enforcement Commission](https://seec.ct.gov/Portal/eCRIS/CurPreYears); candidates for town office file with their town clerk and are not included. Coverage and gaps: [docs/CT_DATA_STATUS.md](docs/CT_DATA_STATUS.md).
 
 ```bash
 node scripts/ct/download.mjs
+node scripts/ct/fetch-seec.mjs                     # town party committee receipts
 node scripts/ct/build-county.mjs --all && node scripts/ct/status.mjs
 node scripts/build-summary.mjs
 ```
