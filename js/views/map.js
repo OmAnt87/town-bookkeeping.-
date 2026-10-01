@@ -105,7 +105,7 @@ export function renderMap(root, state) {
   let statesLayer;
   const markers = new Map();
   if (L) {
-    map = L.map('map', { zoomControl: true, minZoom: 2, zoomSnap: 0.25, worldCopyJump: true });
+    map = L.map('map', { zoomControl: true, minZoom: 2, zoomSnap: 0.25, worldCopyJump: true, preferCanvas: true });
     map.fitBounds(US_BOUNDS);
     tiles = L.tileLayer(TILE_URL(isDark()), {
       attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
@@ -223,6 +223,8 @@ export function renderMap(root, state) {
         <div><span>Service $ per resident</span><strong class="num">${money(s.totals.directPerResident)}</strong></div>
         <div><span>Not from property tax</span><strong class="num">${Math.round(s.totals.nonPropertyShare * 100)}%</strong></div>
         <div><span>Political money</span><strong class="num">${money(s.totals.influence, { compact: true })}</strong></div>
+        ${s.totals.redFlagCount ? `<div><span>Red flags (surveillance, corporate deals)</span><strong class="num" style="color:var(--bad)">${s.totals.redFlagCount}</strong></div>` : ''}
+        ${s.totals.corporateMoney > 0 ? `<div><span>Corporate lobbying & donations</span><strong class="num" style="color:var(--bad)">${money(s.totals.corporateMoney, { compact: true })}</strong></div>` : ''}
       </div>
       <a class="btn btn-primary" style="width:100%" href="#/town/${encodeURIComponent(town.id)}">Open full report ${ICONS.arrow}</a>`;
     card.querySelector('.close').addEventListener('click', () => { card.hidden = true; });
@@ -230,7 +232,12 @@ export function renderMap(root, state) {
     if (map) map.flyTo([town.lat, town.lng], Math.max(map.getZoom(), 6), { duration: 0.6 });
   }
 
-  $('#m-search').addEventListener('input', (e) => { ui.query = e.target.value; draw(); });
+  let searchTimer;
+  $('#m-search').addEventListener('input', (e) => {
+    ui.query = e.target.value;
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(draw, 150);
+  });
   $('#m-state').addEventListener('change', (e) => {
     ui.state = e.target.value;
     draw();
@@ -264,6 +271,7 @@ export function renderMap(root, state) {
     if (pts.length) map.fitBounds(pts, { padding: [40, 40], maxZoom: 9 });
   }
   return () => {
+    clearTimeout(searchTimer);
     window.removeEventListener('themechange', onTheme);
     mq.removeEventListener('change', onTheme);
     if (map) { map.remove(); map = null; }

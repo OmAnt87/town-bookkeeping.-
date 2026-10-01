@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { scoreTown, gradeFor, totals, COMPONENTS } from '../js/engine/scoring.js';
+import { scoreTown, gradeFor, totals, COMPONENTS, redFlagEntries, corporateTies } from '../js/engine/scoring.js';
 import { filterLedger, summarizeLedger, sortLedger, toCSV, validateDataset } from '../js/engine/ledger.js';
 import { mapCensusItem } from '../scripts/census-codes.mjs';
 import { classifyContributor } from '../scripts/contributor-types.mjs';
@@ -10,7 +10,7 @@ import { parseCSV } from '../scripts/lib.mjs';
 const base = () => ({
   id: 't', name: 'Test Township', state: 'PA', lat: 40, lng: -77, population: 10000,
   revenue: { propertyTax: 5_000_000, stateAid: 3_000_000, federalGrants: 1_000_000, feesPermits: 1_000_000 },
-  spending: { publicSafety: 4_000_000, roads: 2_000_000, utilities: 1_500_000, parks: 500_000, administration: 1_000_000, consultants: 200_000, debtService: 800_000 },
+  spending: { publicSafety: 4_000_000, roads: 2_000_000, utilities: 1_500_000, parks: 500_000, administration: 1_000_000, consultants: 200_000, debtService: 800_000, surveillance: 0, corporateDeals: 0 },
   influence: { pacContributions: 2_000, developerContributions: 1_000 },
   transparency: { budgetOnline: true, openCheckbook: true, auditOnTime: true, competitiveBidding: false, meetingsRecorded: true, conflictDisclosures: false },
   debt: 5_000_000,
@@ -46,6 +46,78 @@ test('a well-run town outscores a poorly-run one', () => {
   bad.transparency = {};
   bad.debt = 70_000_000;
   assert.ok(scoreTown(bad).score < good.score - 30);
+});
+
+test('surveillance, data center deals and corporate tax breaks cost points', () => {
+  const clean = scoreTown(base());
+  assert.equal(clean.components.find((c) => c.key === 'redFlags').points, 10);
+  const flagged = base();
+  flagged.spending.surveillance = 150_000;
+  flagged.spending.corporateDeals = 200_000;
+  flagged.taxBreaks = { dataCenterAbatements: 300_000 };
+  const s = scoreTown(flagged);
+  assert.equal(s.totals.redFlagSpending, 350_000);
+  assert.equal(s.totals.taxBreaks, 300_000);
+  assert.equal(s.components.find((c) => c.key === 'redFlags').points, 0);
+  assert.ok(s.score < clean.score);
+});
+
+test('red flags are not scored when nobody has checked for them', () => {
+  const town = base();
+  delete town.spending.surveillance;
+  delete town.spending.corporateDeals;
+  const part = scoreTown(town).components.find((c) => c.key === 'redFlags');
+  assert.equal(part.available, false);
+  assert.equal(part.points, null);
+});
+
+test('a Flock contract filed under police moves from services to red flags', () => {
+  const town = base();
+  delete town.spending.surveillance;
+  delete town.spending.corporateDeals;
+  town.ledger = [
+    { date: '2026-02-01', flow: 'out', category: 'publicSafety', counterparty: 'Flock Group Inc.', description: 'License plate reader cameras', amount: 60_000 },
+    { date: '2026-02-01', flow: 'out', category: 'publicSafety', counterparty: 'County Fire Supply', description: 'Hoses', amount: 9_000 },
+  ];
+  assert.equal(redFlagEntries(town).length, 1);
+  const t = totals(town);
+  assert.equal(t.redFlagSpending, 60_000);
+  assert.equal(t.directSpending, 8_000_000 - 60_000);
+  assert.equal(scoreTown(town).components.find((c) => c.key === 'redFlags').available, true);
+});
+
+test('documented red flags without dollar amounts still cost points', () => {
+  const town = base();
+  delete town.spending.surveillance;
+  delete town.spending.corporateDeals;
+  town.redFlags = [];
+  const clean = scoreTown(town).components.find((c) => c.key === 'redFlags');
+  assert.equal(clean.available, true, 'an empty list means checked, none found');
+  assert.equal(clean.points, 10);
+  town.redFlags = [
+    { kind: 'surveillance', label: 'License-plate readers', date: '2023-04-28' },
+    { kind: 'surveillance', label: 'License-plate readers', date: '2025-01-02' },
+    { kind: 'dataCenter', label: 'Data center tax break (PILOT)' },
+    { kind: 'surveillance', label: 'Police drones', scored: false },
+  ];
+  const s = scoreTown(town);
+  assert.equal(s.totals.documentedRedFlags, 2, 'same program counted once; unscored records skipped');
+  assert.equal(s.components.find((c) => c.key === 'redFlags').points, 5);
+});
+
+test('corporate ties match donors and lobbyists the town also pays', () => {
+  const town = base();
+  town.influence.corporateLobbying = 25_000;
+  town.ledger = [
+    { date: '2026-01-10', flow: 'influence', category: 'corporateLobbying', counterparty: 'Flock Safety', description: 'Lobbying council', amount: 25_000 },
+    { date: '2026-01-11', flow: 'influence', category: 'developerContributions', counterparty: 'Valley Paving LLC', description: 'Gift', amount: 2_000 },
+    { date: '2026-03-01', flow: 'out', category: 'surveillance', counterparty: 'Flock Safety', description: 'Cameras', amount: 90_000 },
+    { date: '2026-04-01', flow: 'out', category: 'roads', counterparty: 'Valley Paving', description: 'Repaving', amount: 400_000 },
+    { date: '2026-04-02', flow: 'out', category: 'roads', counterparty: 'Other Co', description: 'Signs', amount: 1_000 },
+  ];
+  const ties = corporateTies(town);
+  assert.deepEqual(ties.map((x) => [x.name, x.paid, x.gave]), [['Valley Paving LLC', 400_000, 2_000], ['Flock Safety', 90_000, 25_000]]);
+  assert.equal(totals(town).corporateMoney, 26_000);
 });
 
 test('grade cut-offs', () => {
@@ -117,7 +189,9 @@ test('contributor classification', () => {
   assert.equal(classifyContributor('PAC', 'Regional Builders PAC'), 'pacContributions');
   assert.equal(classifyContributor('', 'Firefighters Local 214'), 'unionContributions');
   assert.equal(classifyContributor('Contractor', 'Valley Asphalt'), 'developerContributions');
-  assert.equal(classifyContributor('Lobbying', 'Capitol Strategies'), 'lobbyingPaid');
+  assert.equal(classifyContributor('Town-paid lobbying', 'Capitol Strategies'), 'lobbyingPaid');
+  assert.equal(classifyContributor('Corporate lobbying', 'Flock Safety'), 'corporateLobbying');
+  assert.equal(classifyContributor('Lobbying', 'Data center developer'), 'corporateLobbying');
   assert.equal(classifyContributor('Individual', 'Jane Smith'), null);
 });
 
@@ -166,7 +240,7 @@ test('missing sections are not scored instead of counting as zero', () => {
   const inf = s.components.find((c) => c.key === 'influence');
   assert.equal(inf.available, false);
   assert.equal(inf.points, null);
-  assert.equal(s.coverage.scored, 4);
+  assert.equal(s.coverage.scored, 5);
   const full = scoreTown(base());
   assert.notEqual(s.score, full.score);
   assert.ok(s.score >= 0 && s.score <= 100);
