@@ -2,7 +2,7 @@ import { revenueRows, spendingRows, influenceRows, transparencyCount } from '../
 import { TRANSPARENCY_CHECKS, REVENUE_CATEGORIES, SPENDING_CATEGORIES, INFLUENCE_CATEGORIES } from '../engine/categories.js';
 import { filterLedger, summarizeLedger, sortLedger, ledgerToCSV, categoryLabel, FLOWS } from '../engine/ledger.js';
 import { money, number, escapeHTML, formatDate } from '../engine/format.js';
-import { loadLedger } from '../app.js';
+import { loadTownDetail } from '../app.js';
 import { gradeBadge, verifiedPill, isVerified, barList, splitBar, legendKey, lineChart, downloadFile, ICONS } from '../charts.js';
 
 const PAGE = 15;
@@ -14,6 +14,13 @@ export function renderTown(root, state, id) {
     return;
   }
   const { town, s } = entry;
+  if (town.detailFile && !town.ledger) {
+    root.innerHTML = `<div class="page"><div class="card empty">Loading ${escapeHTML(town.name)} records...</div></div>`;
+    loadTownDetail(town)
+      .then(() => { if (decodeURIComponent(location.hash).endsWith(`/town/${id}`)) renderTown(root, state, id); })
+      .catch((err) => { root.innerHTML = `<div class="page"><div class="card empty"><h2>Could not load this town's records</h2><p class="muted">${escapeHTML(err.message)}</p></div></div>`; });
+    return;
+  }
   const t = s.totals;
   // Real towns are ranked only against other real towns, demo towns against demo towns.
   const peers = state.towns.filter((x) => isVerified(x.town) === isVerified(town) && x.s.grade !== '?');
@@ -133,7 +140,9 @@ export function renderTown(root, state, id) {
       <div class="toolbar">
         <div class="field"><label for="l-q">Search</label><input id="l-q" class="input" type="search" placeholder="Vendor, donor or description"></div>
         <div class="field"><label for="l-flow">Type</label><select id="l-flow" class="select"><option value="all">All types</option>${Object.entries(FLOWS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select></div>
-        <div class="field"><label for="l-cat">Category</label><select id="l-cat" class="select"><option value="all">All categories</option></select></div>
+        <div class="field"><label for="l-cat">Category</label><select id="l-cat" class="select"><option value="all">All categories</option>${[...REVENUE_CATEGORIES, ...SPENDING_CATEGORIES, ...INFLUENCE_CATEGORIES]
+          .filter((c) => (town.ledger || []).some((e) => e.category === c.key))
+          .map((c) => `<option value="${c.key}">${c.label}</option>`).join('')}</select></div>
       </div>
       <div class="table-wrap"><table>
         <thead><tr>
@@ -141,7 +150,7 @@ export function renderTown(root, state, id) {
           <th>Type</th><th>Category</th><th>Counterparty</th><th>Description</th>
           <th class="r"><button type="button" data-sort="amount">Amount ${ICONS.sort}</button></th>
         </tr></thead>
-        <tbody id="l-body"><tr><td colspan="6" class="empty">Loading transactions…</td></tr></tbody>
+        <tbody id="l-body"></tbody>
       </table></div>
       <div class="pager"><span id="l-sum"></span><span style="display:flex;gap:8px"><button class="btn" id="l-prev" type="button">Previous</button><button class="btn" id="l-next" type="button">Next</button></span></div>
     </section>
@@ -203,23 +212,10 @@ export function renderTown(root, state, id) {
     }),
   );
   $('#dl-ledger').addEventListener('click', () => downloadFile(`${town.id}-ledger.csv`, ledgerToCSV(town, current())));
-  $('#dl-report').addEventListener('click', async () => {
-    await loadLedger(town).catch(() => []);
-    const { ledgerCount, ...full } = town;
-    downloadFile(`${town.id}.json`, JSON.stringify({ towns: [full] }, null, 2), 'application/json');
-  });
-  let gone = false;
-  loadLedger(town)
-    .then((entries) => {
-      if (gone) return;
-      const have = new Set(entries.map((e) => e.category));
-      $('#l-cat').insertAdjacentHTML('beforeend', [...REVENUE_CATEGORIES, ...SPENDING_CATEGORIES, ...INFLUENCE_CATEGORIES]
-        .filter((c) => have.has(c.key))
-        .map((c) => `<option value="${c.key}">${c.label}</option>`).join(''));
-      drawLedger();
-    })
-    .catch(() => { if (!gone) $('#l-body').innerHTML = '<tr><td colspan="6" class="empty">Could not load transactions. Check your connection and reload.</td></tr>'; });
-  return () => { gone = true; };
+  $('#dl-report').addEventListener('click', () =>
+    downloadFile(`${town.id}.json`, JSON.stringify({ towns: [town] }, null, 2), 'application/json'),
+  );
+  drawLedger();
 }
 
 function plainSummary(town, s) {

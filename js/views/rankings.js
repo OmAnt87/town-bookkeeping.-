@@ -44,7 +44,7 @@ export function renderRankings(root, state) {
     return state.towns
       .filter((t) => (ui.state === 'all' || t.town.state === ui.state) && (ui.grade === 'all' || t.s.grade === ui.grade) && (!ui.realOnly || isVerified(t.town)) &&
         (!q || `${t.town.name} ${t.town.county}`.toLowerCase().includes(q)))
-      .sort((a, b) => (ui.dir === 'asc' ? 1 : -1) * (col.get(a) - col.get(b)));
+      .sort((a, b) => (ui.sort === 'score' ? (a.s.grade === '?') - (b.s.grade === '?') : 0) || (ui.dir === 'asc' ? 1 : -1) * (col.get(a) - col.get(b)));
   }
   function draw() {
     const list = rows();

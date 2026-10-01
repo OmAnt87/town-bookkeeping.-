@@ -51,25 +51,46 @@ export function resetToDemo() {
   return loadDemo();
 }
 
-// The site loads data/lite/all.json (built by scripts/build-lite.mjs): every
-// town without its transaction ledger. Ledgers are fetched per town on demand.
-async function fetchJSON(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Could not load ${url} (${res.status})`);
-  return res.json();
+// Real towns live in data/real/, listed in data/real/index.json. They are
+// shown alongside the demo towns and replace any demo town with the same id.
+async function loadRealTowns() {
+  try {
+    // Prefer the light summary (built by scripts/build-summary.mjs); town reports
+    // fetch their county file on demand (see loadTownDetail).
+    const summary = await fetch('data/real/summary.json');
+    if (summary.ok) return (await summary.json()).towns.map((t) => ({ ...t, demo: false }));
+    const res = await fetch('data/real/index.json');
+    if (!res.ok) return [];
+    const { files = [] } = await res.json();
+    const sets = await Promise.all(files.map((f) => fetch(`data/real/${f}`).then((r) => (r.ok ? r.json() : { towns: [] }))));
+    return sets.flatMap((d) => d.towns || []).map((t) => ({ ...t, demo: false }));
+  } catch {
+    return [];
+  }
 }
 
-// Resolves to a town's ledger entries, fetching them once if they are not inline.
-export async function loadLedger(town) {
-  if (town.ledger) return town.ledger;
-  if (!town.ledgerCount) return (town.ledger = []);
-  town.ledger = await fetchJSON(`data/lite/ledger/${encodeURIComponent(town.id)}.json`);
-  return town.ledger;
+// Full records (ledger, history, donors, sources, notes) for a summary town.
+const detailCache = new Map();
+export async function loadTownDetail(town) {
+  if (!town.detailFile || town.ledger) return town;
+  if (!detailCache.has(town.detailFile)) {
+    detailCache.set(town.detailFile, fetch(`data/real/${town.detailFile}`).then((r) => {
+      if (!r.ok) throw new Error(`Could not load ${town.detailFile} (${r.status})`);
+      return r.json();
+    }));
+  }
+  const file = await detailCache.get(town.detailFile);
+  const full = file.towns.find((t) => t.id === town.id);
+  if (!full) throw new Error(`${town.name} is missing from ${town.detailFile}`);
+  return Object.assign(town, full, { demo: false });
 }
 
 async function loadDemo() {
-  const { towns } = await fetchJSON('data/lite/all.json');
-  const errors = setDataset({ towns }, towns.some((t) => t.demo === false) ? 'mixed' : 'demo');
+  const [res, real] = await Promise.all([fetch('data/towns.json'), loadRealTowns()]);
+  if (!res.ok) throw new Error(`Could not load data/towns.json (${res.status})`);
+  const demo = await res.json();
+  const realIds = new Set(real.map((t) => t.id));
+  const errors = setDataset({ towns: [...real, ...demo.towns.filter((t) => !realIds.has(t.id))] }, real.length ? 'mixed' : 'demo');
   if (errors.length) throw new Error(errors.join(' '));
 }
 
