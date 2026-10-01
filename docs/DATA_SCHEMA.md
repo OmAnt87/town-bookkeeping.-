@@ -18,7 +18,7 @@ Required fields: `id`, `name`, `state`, `lat`, `lng`, `population`, `revenue`, `
 | `spending` | object of USD | `publicSafety`, `roads`, `utilities`, `parks`, `healthServices`, `administration`, `consultants`, `debtService`, `surveillance` (Flock/ALPR cameras, facial recognition, ShotSpotter), `corporateDeals` (data center contracts, private-developer subsidies). Set the last two to `0` once checked and none found; leave them out if unknown |
 | `taxBreaks` | object of USD | `dataCenterAbatements`, `corporateAbatements`. Revenue given up to corporations; not counted in revenue totals |
 | `redFlags` | array | Documented programs and deals with no dollar figure: `{ kind, label, vendor, agency, date, detail, source \| sources }`. `kind` is `surveillance`, `dataCenter`, `corporateSubsidy` or `corporateLobbying`. An empty array means checked and none found. `scored: false` shows a record without counting it |
-| `surveillanceMap` | object | Context only: `{ cameras, flock, townOperated, asOf, source }`, license-plate cameras mapped inside the town |
+| `surveillanceMap` | object | `{ cameras, flock, townOperated, asOf, source }`: license-plate cameras mapped inside the town. Shown on the report; Flock cameras are also added to `redFlags` |
 | `influence` | object of USD | `pacContributions`, `developerContributions`, `unionContributions`, `corporateLobbying` (companies lobbying town officials), `lobbyingPaid` (lobbyists the town hires) |
 | `topDonors` | array | `{ name, type, recipient, amount }` |
 | `transparency` | object of booleans | `budgetOnline`, `openCheckbook`, `auditOnTime`, `competitiveBidding`, `meetingsRecorded`, `conflictDisclosures` |

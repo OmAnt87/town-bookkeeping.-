@@ -10,8 +10,8 @@
 //   - EFF Atlas of Surveillance: which police departments use plate readers,
 //     drones, gunshot detection, face recognition and so on. Scored.
 //   - OpenStreetMap license-plate cameras (the data DeFlock maps), placed in
-//     towns with Census boundaries. Shown as context; scored only when the
-//     camera's recorded operator is the town itself.
+//     towns with Census boundaries. Any Flock camera is scored; other brands
+//     only when the camera's recorded operator is the town itself.
 //   - scripts/nj/corporate-deals.json: hand-checked data center deals and
 //     corporate lobbying, each with its sources. Scored.
 // Nothing is estimated. Records rarely carry dollar amounts, so red flags are
@@ -245,8 +245,17 @@ if (existsSync(osmFile) && existsSync(shpFile)) {
   }
   for (const [town, c] of counts) {
     town.surveillanceMap = { ...c, asOf: osmDate, source: { label: 'OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)', url: OSM_PAGE } };
-    // Scored only when OSM records the town itself as the operator and Atlas doesn't already cover it.
-    if (c.townOperated && !town.redFlags.some((f) => f.label === 'License-plate readers')) {
+    // Flock cameras are scored as their own flag even when no operator is recorded:
+    // Flock pools plate scans into a network shared with agencies nationwide.
+    if (c.flock) {
+      town.redFlags.push({
+        kind: 'surveillance', label: 'Flock camera network', vendor: 'Flock Safety', agency: '', date: osmDate,
+        detail: `${c.flock} Flock Safety license-plate camera${c.flock === 1 ? ' is' : 's are'} mapped inside ${town.name}'s borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is ${c.townOperated ? 'recorded for some' : 'not recorded'}; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.`,
+        source: { label: 'OpenStreetMap license-plate cameras (as mapped by DeFlock)', url: OSM_PAGE },
+      });
+    }
+    // Other brands are scored only when OSM records the town itself as the operator and Atlas doesn't already cover it.
+    if (!c.flock && c.townOperated && !town.redFlags.some((f) => f.label === 'License-plate readers')) {
       town.redFlags.push({
         kind: 'surveillance', label: 'License-plate readers', vendor: c.flock ? 'Flock Safety' : '', agency: town.name, date: osmDate,
         detail: `${c.townOperated} license-plate camera${c.townOperated === 1 ? ' is' : 's are'} mapped in OpenStreetMap with ${town.name} recorded as the operator.`,
@@ -272,7 +281,7 @@ for (const t of towns) {
   if (t.surveillanceMap) t.sources.push({ ...t.surveillanceMap.source, addedBy: MARK });
   if (t.redFlags.some((f) => f.sources)) t.sources.push({ label: 'Data center deals and corporate lobbying: hand-checked news and public records (scripts/nj/corporate-deals.json)', url: '', addedBy: MARK });
   t.notes.push(`Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on ${TODAY}. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.`);
-  if (t.surveillanceMap) t.notes.push(`Red flags: ${t.surveillanceMap.cameras} license-plate camera${t.surveillanceMap.cameras === 1 ? ' is' : 's are'} mapped inside ${t.name}'s borders in OpenStreetMap (${t.surveillanceMap.flock} made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Many have no operator recorded, so they are shown for context and not scored unless the town is the recorded operator.`);
+  if (t.surveillanceMap) t.notes.push(`Red flags: ${t.surveillanceMap.cameras} license-plate camera${t.surveillanceMap.cameras === 1 ? ' is' : 's are'} mapped inside ${t.name}'s borders in OpenStreetMap (${t.surveillanceMap.flock} made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the town is the recorded operator, since many have no operator recorded.`);
 }
 for (const d of datasets) writeFileSync(join(OUT, d.file), JSON.stringify(d.data, null, 1));
 

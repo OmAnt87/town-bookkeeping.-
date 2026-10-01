@@ -260,7 +260,7 @@ function redFlagBox(title, intro, flags, cams) {
       ${srcs.length ? `<p class="small muted">Source: ${srcs.map((x) => (x.url ? `<a href="${escapeHTML(x.url)}" target="_blank" rel="noopener">${escapeHTML(x.label)}</a>` : escapeHTML(x.label))).join('; ')}</p>` : ''}</li>`;
   });
   const camLine = cams
-    ? `<p class="small"><strong>${number(cams.cameras)} license-plate camera${cams.cameras === 1 ? '' : 's'}</strong> mapped inside town borders${cams.flock ? `, <strong>${number(cams.flock)} made by Flock Safety</strong>` : ''}${cams.townOperated ? `; ${number(cams.townOperated)} recorded as run by the town` : ''} (<a href="${escapeHTML(cams.source.url)}" target="_blank" rel="noopener">OpenStreetMap / DeFlock</a>, ${formatDate(cams.asOf)}).${cams.townOperated ? '' : ' Who runs them is not recorded, so they are shown for context and not scored.'}</p>`
+    ? `<p class="small"><strong>${number(cams.cameras)} license-plate camera${cams.cameras === 1 ? '' : 's'}</strong> mapped inside town borders${cams.flock ? `, <strong>${number(cams.flock)} made by Flock Safety</strong>` : ''}${cams.townOperated ? `; ${number(cams.townOperated)} recorded as run by the town` : ''} (<a href="${escapeHTML(cams.source.url)}" target="_blank" rel="noopener">OpenStreetMap / DeFlock</a>, ${formatDate(cams.asOf)}).${cams.flock ? ' Flock cameras count as a red flag.' : cams.townOperated ? '' : ' Who runs them is not recorded, so they are shown for context and not scored.'}</p>`
     : '';
   return `<div class="flag-box"><h3>${title}</h3><p class="small">${intro}</p>${camLine}${rows.length ? `<ul class="rf-list">${rows.join('')}</ul>` : ''}</div>`;
 }
