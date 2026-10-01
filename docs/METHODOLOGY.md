@@ -22,6 +22,8 @@ For New Jersey budgets, pensions, social security and employee insurance are spr
 
 For New York, figures are **actual results** from each government's Annual Financial Report to the State Comptroller, not budgets. Money the government only holds or passes along is left out: custodial and trust funds (for example, property taxes a town collects for school districts and the county), its internal self-insurance fund, transfers between its own funds, and bond refinancing. Employee benefits are spread across departments, as in New Jersey. Law and engineering costs count as outside consultants. A village's figures cover the village government only; its residents also pay the surrounding town, which is listed separately.
 
+For Pennsylvania, figures are **actual results** from each municipality's Annual Audit and Financial Report (DCED-CLGS-30). "Other financing sources and uses" (transfers between funds, borrowing, refinancing) are left out because the statewide report does not break them down. "Other expenditures" (mostly insurance, pensions and benefits) are spread across departments. Taxes the statewide report does not itemize are shown as other local taxes. Political money is not scored, because municipal campaign reports are filed with each county, not the state.
+
 ## Definitions
 
 - **Direct services:** police, fire and EMS; roads and infrastructure; water, sewer and sanitation; parks, library and recreation; health and human services.

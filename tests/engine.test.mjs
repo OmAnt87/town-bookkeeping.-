@@ -290,3 +290,22 @@ test('NY contributions: counted types, corporate schedule, filers and offices', 
   assert.ok(!isCandidateFiler({ committee_type_desc: 'Political Action Committee' }));
   assert.ok(isCountedOffice('Town Supervisor') && !isCountedOffice('Town Justice'));
 });
+
+import { aggregateAfr } from '../scripts/pa/afr-map.mjs';
+
+test('PA annual financial report columns map, reconcile and spread benefits', () => {
+  const rec = {
+    'Total Revenues': 1000, 'Total Expenditures': 980, 'Total Taxes Revenues': 650,
+    'Real Estate Tax Revenues': 300, 'Earned Income Tax Revenues': 250, 'All Other Taxes Revenues': 50,
+    'Intergovernmental Revenues-State Government': 200, 'Fines and Forfeits Revenues': 50, 'Other Financing Sources Revenues': 100,
+    'Police Expenditures': 400, 'General Government Expenditures': 200, 'Other Expenditures': 80,
+    'Debt Service Expenditures': 200, 'Other Financing Uses Expenditures': 100,
+  };
+  const a = aggregateAfr(rec);
+  assert.equal(a.unitemizedTaxes, 50);
+  assert.deepEqual(a.revenue, { propertyTax: 300, salesTax: 350, stateAid: 200, finesForfeitures: 50 });
+  assert.deepEqual(a.spending, { publicSafety: 440, administration: 220, debtService: 220 });
+  assert.equal(a.lineTotals.revenue, 1000);
+  assert.equal(a.lineTotals.spending, 980);
+  assert.deepEqual(a.excluded, { revenue: 100, spending: 100 });
+});

@@ -75,6 +75,17 @@ node scripts/ny/build-county.mjs --all && node scripts/ny/status.mjs
 node scripts/build-summary.mjs                     # light index the app loads at startup
 ```
 
+### Pennsylvania (about 2,550 townships, boroughs and cities)
+
+`data/real/pa-<county>.json` holds every PA municipality that files an Annual Audit and Financial Report with the Department of Community and Economic Development, built from DCED's [Statewide Municipal Annual Financial Reports](https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=StatewideMuniAfr) (actual revenue, spending and debt; history back to 2016) and Census 2025 population estimates. Political money is not scored for Pennsylvania: municipal candidates file with their county board of elections and no statewide database of those filings exists. Coverage and gaps: [docs/PA_DATA_STATUS.md](docs/PA_DATA_STATUS.md).
+
+```bash
+node scripts/pa/download.mjs
+pip install xlrd && python3 scripts/pa/afr-to-json.py
+node scripts/pa/build-county.mjs --all && node scripts/pa/status.mjs
+node scripts/build-summary.mjs
+```
+
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build.
 
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Verified data**, and lets you filter to them on the map and rankings.

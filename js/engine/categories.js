@@ -2,7 +2,7 @@
 
 export const REVENUE_CATEGORIES = [
   { key: 'propertyTax', label: 'Property tax', propertyTax: true },
-  { key: 'salesTax', label: 'Sales & local option tax' },
+  { key: 'salesTax', label: 'Sales, income & other local taxes' },
   { key: 'stateAid', label: 'State aid & shared revenue' },
   { key: 'federalGrants', label: 'Federal grants' },
   { key: 'localRevenue', label: 'Local revenue (fees, fines, interest, PILOTs)' },
