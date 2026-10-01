@@ -86,7 +86,7 @@ export function renderTown(root, state, id) {
             ${s.grade === '?' ? '<div class="small muted"><strong>Not graded yet:</strong> a letter grade needs data for at least half of the score.</div>' : `<div class="small muted">Ranked ${rank} of ${peers.length} ${peerLabel}</div>`}
           </div>
         </div>
-        <p class="basis">Based on how much spending reaches residents as services, overhead, surveillance and corporate giveaways, outside political money and corporate lobbying, transparency practices, and debt.${s.coverage.scored < s.coverage.total ? ` <strong>Scored on ${s.coverage.scored} of ${s.coverage.total} parts</strong>; parts without data are left out rather than guessed.` : ''}</p>
+        <p class="basis">Based on how much spending reaches residents as services, overhead, outside political money and corporate lobbying, transparency practices, and debt, minus a penalty for surveillance and corporate giveaways.${s.coverage.scored < s.coverage.total ? ` <strong>Scored on ${s.coverage.scored} of ${s.coverage.total} parts</strong>; parts without data are left out rather than guessed.` : ''}</p>
         <div class="callout">${plainSummary(town, s)}</div>
       </div>
       <div class="card">
@@ -94,8 +94,8 @@ export function renderTown(root, state, id) {
         <div class="components">${s.components
           .map(
             (c) => `<div class="component-row">
-              <div class="top"><strong>${c.label}</strong><span class="num ${c.available ? '' : 'muted'}">${c.available ? `${c.points} / ${c.max}` : 'Not scored'}</span></div>
-              <div class="track" aria-hidden="true"><span style="width:${c.ratio * 100}%"></span></div>
+              <div class="top"><strong>${c.label}${c.penalty ? ' <span class="small muted">(penalty)</span>' : ''}</strong><span class="num ${c.available && !(c.penalty && !c.points) ? '' : 'muted'}">${componentValue(c)}</span></div>
+              <div class="track${c.penalty ? ' track-penalty' : ''}" aria-hidden="true"><span style="width:${(c.penalty ? -(c.points || 0) / c.max : c.ratio) * 100}%"></span></div>
               <p>${escapeHTML(c.detail)}</p></div>`,
           )
           .join('')}</div>
@@ -273,9 +273,16 @@ function redFlagBox(title, intro, flags, cams) {
   return `<div class="flag-box"><h3>${title}</h3><p class="small">${intro}</p>${camLine}${rows.length ? `<ul class="rf-list">${rows.join('')}</ul>` : ''}</div>`;
 }
 
+// "18.9 / 30" for a part; "−2.5" or "No penalty" for the red-flag penalty.
+function componentValue(c) {
+  if (!c.available) return c.penalty ? 'Not checked' : 'Not scored';
+  if (c.penalty) return c.points ? `−${Math.abs(c.points)}` : 'No penalty';
+  return `${c.points} / ${c.max}`;
+}
+
 function plainSummary(town, s) {
   const t = s.totals;
-  const scored = s.components.filter((c) => c.available);
+  const scored = s.components.filter((c) => c.available && !c.penalty);
   if (!scored.length) return '<strong>In plain terms:</strong> not enough data is loaded to judge this town yet.';
   const strongest = [...scored].sort((a, b) => b.ratio - a.ratio)[0];
   const weakest = [...scored].sort((a, b) => a.ratio - b.ratio)[0];
@@ -283,8 +290,8 @@ function plainSummary(town, s) {
   return `<strong>In plain terms:</strong> for every $100 ${escapeHTML(town.name)} spends, about $${per100} pays for services residents use directly.
     Its strongest area is <strong>${strongest.label.toLowerCase()}</strong>; its weakest is <strong>${weakest.label.toLowerCase()}</strong>.${
     t.redFlagSpending + t.taxBreaks > 0
-      ? ` It also put <strong>$${(t.redFlagShare * 100).toFixed(2)} of every $100</strong> toward surveillance, corporate deals or corporate tax breaks.`
+      ? ` It also put <strong>$${(t.redFlagShare * 100).toFixed(2)} of every $100</strong> toward surveillance, corporate deals or corporate tax breaks${s.penalty ? `, which cost it <strong>${s.penalty} points</strong>` : ''}.`
       : t.documentedRedFlags
-        ? ` Public records show <strong>${documentedRedFlags(town).map((f) => f.label.toLowerCase()).join(', ')}</strong>.`
+        ? ` Public records show <strong>${documentedRedFlags(town).map((f) => f.label.toLowerCase()).join(', ')}</strong>, which cost it <strong>${s.penalty} points</strong>.`
         : ''}`;
 }

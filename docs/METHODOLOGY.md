@@ -2,16 +2,16 @@
 
 One question: **how much of a town's money comes back to the people who live there?**
 
-The score runs from 0 to 100 and is the sum of six parts. Each part scales linearly between a "zero points" value and a "full points" value, clamped at both ends. The code lives in `js/engine/scoring.js`.
+The score runs from 0 to 100: the sum of five parts, minus a penalty of up to 10 points for red flags. Each part scales linearly between a "zero points" value and a "full points" value, clamped at both ends. The code lives in `js/engine/scoring.js`.
 
 | Part | Points | Zero at | Full at | Measure |
 |---|---|---|---|---|
-| Money reaching residents | 25 | 50% | 88% | Direct-service spending / total spending |
-| Low overhead | 10 | 30% | 6% | (Administration + consultants & legal) / total spending |
-| No surveillance or corporate giveaways | 10 | 5% or 4 documented | 0% and none | The lower of: (surveillance tech + corporate deals + corporate tax breaks) / total spending, and 1 − ¼ per documented program or deal |
+| Money reaching residents | 30 | 50% | 88% | Direct-service spending / total spending |
+| Low overhead | 15 | 30% | 6% | (Administration + consultants & legal) / total spending |
 | Low outside political money | 20 | $12.00 | $0.50 | (Corporate lobbying + PAC + developer/contractor + union contributions + town-paid lobbying) / population |
 | Transparency | 20 | 0 of 6 | 6 of 6 | Practices followed (see below) |
 | Fiscal health | 15 | | | 65%: debt per resident ($6,000 → $300). 35%: operating balance ((revenue − spending) / revenue, −10% → +2%) |
+| **Red-flag penalty** | **up to −10** | none found | 5% of spending, or 4 documented | The larger of: (surveillance tech + corporate deals + corporate tax breaks) / total spending, scaled to 10 points at 5%; and 2.5 points per documented program or deal |
 
 **Grades:** A 85+, B 70–84, C 55–69, D 40–54, F below 40.
 
@@ -27,15 +27,15 @@ For Pennsylvania, figures are **actual results** from each municipality's Annual
 
 ## Red flags: surveillance and corporate giveaways
 
-Some spending works against residents, so it counts against the score:
+Some spending works against residents, so it counts against the score. Red flags are a **penalty**, taken off after the five parts are added up and rescaled: they only ever lower a score. A town with nothing found, or not checked yet, keeps exactly what its other parts earn. (Public reporting on surveillance and corporate deals is patchy, so finding nothing is weak evidence of a clean record and earns no credit.)
 
 - **Surveillance tech:** Flock and other license-plate reader (ALPR) cameras, facial recognition, ShotSpotter, real-time crime centers.
 - **Corporate deals:** data center contracts (water, power and road work built for a data center), subsidies to private developers.
 - **Corporate tax breaks** (`taxBreaks`): data center abatements, discounted PILOT agreements and other corporate abatements. These are revenue the town gave up, so they are shown next to Money in, not inside it.
 
-Most public records say a town *uses* a technology or *approved* a deal, not what it cost. Those go in `redFlags` and are scored by count: each distinct documented program or deal (license-plate readers, police drones, a data center tax break, corporate lobbying of officials, ...) costs a quarter of the part's points. Several records about the same program count once. Flock cameras are the deliberate exception: any Flock camera mapped inside a town is its own flag ("Flock camera network"), on top of any police license-plate-reader record, because Flock pools every scan into a search network shared with agencies nationwide.
+Most public records say a town *uses* a technology or *approved* a deal, not what it cost. Those go in `redFlags` and are scored by count: each distinct documented program or deal (license-plate readers, police drones, a data center tax break, corporate lobbying of officials, ...) takes off 2.5 points, up to the 10-point limit. Several records about the same program count once. Flock cameras are the deliberate exception: any Flock camera mapped inside a town is its own flag ("Flock camera network"), on top of any police license-plate-reader record, because Flock pools every scan into a search network shared with agencies nationwide.
 
-Payments to known surveillance vendors and data center deals are flagged by name (`RED_FLAG_PATTERNS` in `js/engine/categories.js`) even when a town files them under police or general spending; those payments are moved out of direct services. The part is scored only when red-flag data has been checked for a town (a `surveillance` or `corporateDeals` spending line, even 0, a `taxBreaks` record, or a flagged ledger payment).
+Payments to known surveillance vendors and data center deals are flagged by name (`RED_FLAG_PATTERNS` in `js/engine/categories.js`) even when a town files them under police or general spending; those payments are moved out of direct services. A town counts as checked for red flags when it has a `surveillance` or `corporateDeals` spending line (even 0), a `taxBreaks` record, a `redFlags` list (even empty), or a flagged ledger payment; the report then says "No penalty" instead of "Not checked".
 
 ## Corporate lobbying
 

@@ -42,7 +42,10 @@ export function renderCompare(root, state, arg) {
     const out = root.querySelector('#c-out');
     if (!entries.length) { out.innerHTML = '<div class="card empty">Choose a town above to start.</div>'; return; }
     const compRows = entries[0].s.components.map((c, idx) => ({
-      label: c.label, get: (e) => e.s.components[idx].points, fmt: (v) => (v == null ? 'Not scored' : `${v} / ${c.max}`), better: 'high',
+      label: c.penalty ? `${c.label} (penalty)` : c.label,
+      get: (e) => e.s.components[idx].points,
+      fmt: (v) => (v == null ? (c.penalty ? 'Not checked' : 'Not scored') : c.penalty ? (v ? `−${Math.abs(v)}` : 'No penalty') : `${v} / ${c.max}`),
+      better: 'high',
     }));
     const row = (r) => {
       const vals = entries.map(r.get);

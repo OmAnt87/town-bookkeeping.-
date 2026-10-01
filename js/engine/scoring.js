@@ -77,7 +77,7 @@ export const COMPONENTS = [
   {
     key: 'services',
     label: 'Money reaching residents',
-    max: 25,
+    max: 30,
     available: (t) => t.spending > 0,
     measure: (t) => scale(t.directShare, 0.5, 0.88),
     detail: (t) => `${pct(t.directShare)} of spending goes to direct services`,
@@ -85,18 +85,21 @@ export const COMPONENTS = [
   {
     key: 'overhead',
     label: 'Low overhead',
-    max: 10,
+    max: 15,
     available: (t) => t.spending > 0,
     measure: (t) => scale(t.adminShare, 0.3, 0.06),
     detail: (t) => `${pct(t.adminShare)} spent on administration and consultants`,
   },
   {
+    // A penalty, not a scored part: red flags only ever take points away, so a
+    // town with nothing found (or not checked) keeps the score its other parts earn.
     key: 'redFlags',
-    label: 'No surveillance or corporate giveaways',
+    label: 'Surveillance & corporate giveaways',
     max: 10,
+    penalty: true,
     available: (_t, town) => hasRedFlagData(town),
     // Dollars and documented programs are both checked; the worse one counts.
-    // Each documented program or deal (most records carry no dollar figure) costs a quarter of the points.
+    // Each documented program or deal (most records carry no dollar figure) costs a quarter of the penalty.
     measure: (t) => Math.min(scale(t.redFlagShare, 0.05, 0), Math.max(0, 1 - 0.25 * t.documentedRedFlags)),
     detail: (t) => {
       const parts = [];
@@ -231,25 +234,30 @@ export function scoreTown(town) {
       key: c.key,
       label: c.label,
       max: c.max,
+      penalty: Boolean(c.penalty),
       available,
-      points: available ? Math.round(ratio * c.max * 10) / 10 : null,
+      // A penalty's points are what it takes away: 0 or negative.
+      points: !available ? null : c.penalty ? -Math.round((1 - ratio) * c.max * 10) / 10 || 0 : Math.round(ratio * c.max * 10) / 10,
       ratio,
-      detail: available ? c.detail(t, town) : 'Not scored: no data loaded for this part yet',
+      detail: available ? c.detail(t, town) : c.penalty ? 'Not checked for red flags yet' : 'Not scored: no data loaded for this part yet',
     };
   });
   // Parts with no data are left out and the rest are rescaled to 100, so
-  // missing records never count as good or bad.
-  const scored = components.filter((c) => c.available);
+  // missing records never count as good or bad. Penalties come off afterwards.
+  const scored = components.filter((c) => c.available && !c.penalty);
   const possible = scored.reduce((a, c) => a + c.max, 0);
   const earned = scored.reduce((a, c) => a + c.points, 0);
-  const score = possible ? Math.round((earned / possible) * 1000) / 10 : 0;
+  const deducted = components.filter((c) => c.available && c.penalty).reduce((a, c) => a - c.points, 0);
+  const base = possible ? (earned / possible) * 100 : 0;
+  const score = possible ? Math.round(Math.max(0, base - deducted) * 10) / 10 : 0;
   return {
     score,
     // A letter grade needs data behind at least half of the 100 points.
     grade: possible >= 50 ? gradeFor(score) : '?',
     components,
     totals: t,
-    coverage: { scored: scored.length, total: components.length, possible },
+    penalty: deducted,
+    coverage: { scored: scored.length, total: components.filter((c) => !c.penalty).length, possible },
   };
 }
 

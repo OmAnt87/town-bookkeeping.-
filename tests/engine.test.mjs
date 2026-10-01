@@ -35,7 +35,7 @@ test('score is bounded and components sum to the score', () => {
   assert.ok(Math.abs(sum - s.score) < 0.2);
   assert.ok(s.score >= 0 && s.score <= 100);
   for (const c of s.components) assert.ok(c.points >= 0 && c.points <= c.max, c.key);
-  assert.equal(COMPONENTS.reduce((a, c) => a + c.max, 0), 100);
+  assert.equal(COMPONENTS.filter((c) => !c.penalty).reduce((a, c) => a + c.max, 0), 100);
 });
 
 test('a well-run town outscores a poorly-run one', () => {
@@ -50,7 +50,7 @@ test('a well-run town outscores a poorly-run one', () => {
 
 test('surveillance, data center deals and corporate tax breaks cost points', () => {
   const clean = scoreTown(base());
-  assert.equal(clean.components.find((c) => c.key === 'redFlags').points, 10);
+  assert.equal(clean.components.find((c) => c.key === 'redFlags').points, 0);
   const flagged = base();
   flagged.spending.surveillance = 150_000;
   flagged.spending.corporateDeals = 200_000;
@@ -58,7 +58,8 @@ test('surveillance, data center deals and corporate tax breaks cost points', () 
   const s = scoreTown(flagged);
   assert.equal(s.totals.redFlagSpending, 350_000);
   assert.equal(s.totals.taxBreaks, 300_000);
-  assert.equal(s.components.find((c) => c.key === 'redFlags').points, 0);
+  assert.equal(s.components.find((c) => c.key === 'redFlags').points, -10);
+  assert.equal(s.penalty, 10, 'the whole penalty comes off');
   assert.ok(s.score < clean.score);
 });
 
@@ -93,7 +94,7 @@ test('documented red flags without dollar amounts still cost points', () => {
   town.redFlags = [];
   const clean = scoreTown(town).components.find((c) => c.key === 'redFlags');
   assert.equal(clean.available, true, 'an empty list means checked, none found');
-  assert.equal(clean.points, 10);
+  assert.equal(clean.points, 0);
   town.redFlags = [
     { kind: 'surveillance', label: 'License-plate readers', date: '2023-04-28' },
     { kind: 'surveillance', label: 'License-plate readers', date: '2025-01-02' },
@@ -102,7 +103,7 @@ test('documented red flags without dollar amounts still cost points', () => {
   ];
   const s = scoreTown(town);
   assert.equal(s.totals.documentedRedFlags, 2, 'same program counted once; unscored records skipped');
-  assert.equal(s.components.find((c) => c.key === 'redFlags').points, 5);
+  assert.equal(s.components.find((c) => c.key === 'redFlags').points, -5);
 });
 
 test('corporate ties match donors and lobbyists the town also pays', () => {
@@ -118,6 +119,20 @@ test('corporate ties match donors and lobbyists the town also pays', () => {
   const ties = corporateTies(town);
   assert.deepEqual(ties.map((x) => [x.name, x.paid, x.gave]), [['Valley Paving LLC', 400_000, 2_000], ['Flock Safety', 90_000, 25_000]]);
   assert.equal(totals(town).corporateMoney, 26_000);
+});
+
+test('red flags only ever lower a score', () => {
+  // A town whose other parts are weak would gain from a clean red-flag part if it
+  // were averaged in; as a penalty, finding nothing changes nothing.
+  const weak = base();
+  weak.spending.consultants = 3_000_000;
+  weak.transparency = {};
+  const unchecked = { ...weak, spending: { ...weak.spending } };
+  delete unchecked.spending.surveillance;
+  delete unchecked.spending.corporateDeals;
+  assert.equal(scoreTown(weak).score, scoreTown(unchecked).score);
+  const flagged = { ...weak, redFlags: [{ kind: 'surveillance', label: 'Flock camera network' }] };
+  assert.ok(Math.abs(scoreTown(weak).score - scoreTown(flagged).score - 2.5) < 0.2);
 });
 
 test('grade cut-offs', () => {
@@ -240,7 +255,7 @@ test('missing sections are not scored instead of counting as zero', () => {
   const inf = s.components.find((c) => c.key === 'influence');
   assert.equal(inf.available, false);
   assert.equal(inf.points, null);
-  assert.equal(s.coverage.scored, 5);
+  assert.equal(s.coverage.scored, 4);
   const full = scoreTown(base());
   assert.notEqual(s.score, full.score);
   assert.ok(s.score >= 0 && s.score <= 100);
