@@ -67,3 +67,24 @@ Unknown practices count as not followed, and the report shows them as "Unknown".
 - Towns classify spending differently, so the Census mapping in `scripts/census-codes.mjs` is a best-effort grouping.
 - A political contribution is context, not proof of wrongdoing.
 - Thresholds are judgment calls meant for comparison between towns. Change them in `COMPONENTS` and the whole app updates.
+
+## Display and comparison safeguards
+
+The trust and usability release does not change component weights, thresholds,
+normalization, or grades. Below 50 available points, the UI shows **Not graded**
+instead of promoting the normalized partial score; individual components remain
+visible. Unknown metrics sort last in either direction, use gray map markers,
+and do not contribute to heat or color-scale calculations. Recorded zero remains
+zero. Unitemized service totals are not presented as zero service spending.
+
+Each grade includes fiscal year, retrieval date, component count and available
+scoring weight. **Public-record data** identifies source-backed records; it is not
+an independent verification claim. Cross-year and cross-scope figures may be
+viewed side by side, but winner highlights require matching relevant metadata.
+Political periods and recipient scopes must match for political comparisons.
+Overall-score highlights also require the same available components.
+
+The existing partial-transparency policy is unchanged: once any practice is
+reported, unknown practices receive no points within that component. This differs
+from excluding a wholly unavailable component and is a candidate for a separate
+methodology revision. No new transparency observations are inferred in this release.

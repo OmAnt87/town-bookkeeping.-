@@ -1,65 +1,59 @@
-import { money, number, escapeHTML } from '../engine/format.js';
+import { escapeHTML } from '../engine/format.js';
+import { metric, metricText, coverageText, comparable } from '../engine/metrics.js';
+import { reportingText } from '../engine/reporting.js';
 import { gradeBadge } from '../charts.js';
 
-let picks = [];
-
+let picks = ['', '', ''];
 const ROWS = [
-  { label: 'Community Return Score', get: (e) => e.s.score, fmt: (v) => `${v.toFixed(1)} / 100`, better: 'high' },
-  { label: 'Population', get: (e) => e.town.population, fmt: number },
-  { label: 'Total money in', get: (e) => e.s.totals.revenue, fmt: (v) => money(v, { compact: true }) },
-  { label: 'Share not from property tax', get: (e) => e.s.totals.nonPropertyShare, fmt: (v) => `${Math.round(v * 100)}%` },
-  { label: 'Total money out', get: (e) => e.s.totals.spending, fmt: (v) => money(v, { compact: true }) },
-  { label: 'Service dollars per resident', get: (e) => e.s.totals.directPerResident, fmt: (v) => money(v), better: 'high' },
-  { label: 'Share of spending on services', get: (e) => e.s.totals.directShare, fmt: (v) => `${Math.round(v * 100)}%`, better: 'high' },
-  { label: 'Administration & consultants', get: (e) => e.s.totals.adminShare, fmt: (v) => `${Math.round(v * 100)}%`, better: 'low' },
-  { label: 'Surveillance & corporate giveaways per resident', get: (e) => (e.s.totals.redFlagKnown ? e.s.totals.redFlagPerResident : null), fmt: (v) => (v == null ? 'Not checked' : `$${v.toFixed(2)}`), better: 'low' },
-  { label: 'Red flags (surveillance programs, corporate deals)', get: (e) => (e.s.totals.redFlagKnown ? e.s.totals.redFlagCount : null), fmt: (v) => (v == null ? 'Not checked' : String(v)), better: 'low' },
-  { label: 'Corporate tax breaks', get: (e) => e.s.totals.taxBreaks, fmt: (v) => money(v, { compact: true }), better: 'low' },
-  { label: 'Corporate lobbying & business donations', get: (e) => e.s.totals.corporateMoney, fmt: (v) => money(v, { compact: true }), better: 'low' },
-  { label: 'Political money per resident', get: (e) => e.s.totals.influencePerResident, fmt: (v) => `$${v.toFixed(2)}`, better: 'low' },
-  { label: 'Debt per resident', get: (e) => e.s.totals.debtPerResident, fmt: (v) => money(v), better: 'low' },
+  ['score', 'Community Return Score', 'high'], ['population', 'Population'],
+  ['revenue', 'Total money in'], ['nonPropertyShare', 'Share not from property tax'],
+  ['spending', 'Total money out'], ['directPerResident', 'Service dollars per resident', 'high'],
+  ['directShare', 'Share of spending on services', 'high'], ['adminShare', 'Administration & consultants', 'low'],
+  ['redFlagPerResident', 'Surveillance & corporate giveaways per resident', 'low'],
+  ['redFlagCount', 'Documented red flags', 'low'], ['taxBreaks', 'Corporate tax breaks', 'low'],
+  ['corporateMoney', 'Corporate lobbying & business donations', 'low'],
+  ['influencePerResident', 'Political money per resident', 'low'], ['debtPerResident', 'Debt per resident', 'low'],
 ];
-
 export function renderCompare(root, state, arg) {
+  picks = picks.map((id) => state.byId.has(id) ? id : '');
   if (arg && state.byId.has(arg) && !picks.includes(arg)) picks = [arg, ...picks].slice(0, 3);
-  picks = picks.filter((id) => state.byId.has(id));
-  if (!picks.length) picks = [...state.towns].sort((a, b) => b.s.score - a.s.score).filter((_, i) => i === 0 || i === state.towns.length - 1).map((t) => t.town.id);
   const options = [...state.towns].sort((a, b) => a.town.name.localeCompare(b.town.name));
-
-  root.innerHTML = `
-  <div class="page">
-    <div class="page-head"><div><h1>Compare towns</h1><p>Pick up to three towns to see them side by side. The best value in each row is highlighted.</p></div></div>
-    <div class="compare-pickers">${[0, 1, 2].map((i) => `
-      <div class="field"><label for="c-${i}">Town ${i + 1}</label>
-        <select id="c-${i}" class="select" data-slot="${i}"><option value="">None</option>${options
-          .map((o) => `<option value="${o.town.id}" ${picks[i] === o.town.id ? 'selected' : ''}>${escapeHTML(o.town.name)}, ${o.town.state}</option>`).join('')}</select></div>`).join('')}
-    </div>
-    <div id="c-out"></div>
-  </div>`;
-
-  function draw() {
-    const entries = picks.map((id) => state.byId.get(id)).filter(Boolean);
-    const out = root.querySelector('#c-out');
-    if (!entries.length) { out.innerHTML = '<div class="card empty">Choose a town above to start.</div>'; return; }
-    const compRows = entries[0].s.components.map((c, idx) => ({
-      label: c.label, get: (e) => e.s.components[idx].points, fmt: (v) => (v == null ? 'Not scored' : `${v} / ${c.max}`), better: 'high',
-    }));
-    const row = (r) => {
-      const vals = entries.map(r.get);
-      const nums = vals.filter((v) => v != null);
-      const best = r.better && nums.length > 1 ? (r.better === 'high' ? Math.max(...nums) : Math.min(...nums)) : null;
-      return `<tr><td>${r.label}</td>${vals.map((v) => `<td class="num ${best !== null && v === best ? 'best' : ''}">${r.fmt(v)}</td>`).join('')}</tr>`;
-    };
-    out.innerHTML = `<div class="table-wrap compare-table"><table>
-      <thead><tr><th></th>${entries.map((e) => `<th><div style="display:flex;gap:10px;align-items:center">${gradeBadge(e.s.grade)}<a href="#/town/${encodeURIComponent(e.town.id)}" style="font-size:14px">${escapeHTML(e.town.name)}, ${e.town.state}</a></div></th>`).join('')}</tr></thead>
-      <tbody>${ROWS.map(row).join('')}
-        <tr><td colspan="${entries.length + 1}" class="eyebrow" style="background:var(--surface-2)">Score breakdown</td></tr>
-        ${compRows.map(row).join('')}</tbody></table></div>`;
+  const label = (t) => `${t.name}, ${t.county || 'County not recorded'}, ${t.state}`;
+  root.innerHTML = `<div class="page">
+    <div class="page-head"><div><h1>Compare towns</h1><p>Choose up to three towns. Highlights appear only for available values with matching reporting context.</p></div></div>
+    <div class="compare-pickers">${[0, 1, 2].map((i) => `<div class="field">
+      <label for="c-search-${i}">Find town ${i + 1}</label><input id="c-search-${i}" class="input" type="search" placeholder="Town, county or state">
+      <label for="c-${i}">Town ${i + 1}</label><select class="select" id="c-${i}" data-slot="${i}"></select></div>`).join('')}</div>
+    <div id="c-out"></div></div>`;
+  function choices() {
+    for (let i = 0; i < 3; i++) {
+      const q = root.querySelector(`#c-search-${i}`).value.trim().toLowerCase();
+      root.querySelector(`#c-${i}`).innerHTML = '<option value="">None</option>' + options
+        .filter(({ town }) => town.id === picks[i] || (!picks.includes(town.id) && label(town).toLowerCase().includes(q)))
+        .map(({ town }) => `<option value="${escapeHTML(town.id)}" ${town.id === picks[i] ? 'selected' : ''}>${escapeHTML(label(town))}</option>`).join('');
+    }
   }
-  root.querySelectorAll('[data-slot]').forEach((sel) => sel.addEventListener('change', () => {
-    picks = [0, 1, 2].map((i) => root.querySelector(`#c-${i}`).value).filter(Boolean);
-    picks = [...new Set(picks)];
-    draw();
-  }));
-  draw();
+  function draw() {
+    const entries = picks.filter(Boolean).map((id) => state.byId.get(id));
+    const out = root.querySelector('#c-out');
+    if (!entries.length) { out.innerHTML = '<div class="card empty">Find and select a town above to start.</div>'; return; }
+    const rows = ROWS.map(([key, title, better]) => {
+      const values = entries.map((e) => metric(e, key));
+      const best = better && comparable(entries, key) ? Math[better === 'high' ? 'max' : 'min'](...values.map((m) => m.value)) : null;
+      return `<tr><th scope="row">${title}</th>${entries.map((e, i) => `<td class="num ${best !== null && values[i].value === best ? 'best' : ''}" title="${escapeHTML(values[i].reason)}">${metricText(e, key)}</td>`).join('')}</tr>`;
+    }).join('');
+    out.innerHTML = `<p class="small muted">Different years, reporting scopes, missing metadata, or incomplete measures can prevent a fair comparison. No highlight means no winner is established.</p>
+      <p class="small scroll-cue">Scroll horizontally to compare all towns →</p>
+      <div class="table-wrap compare-table" tabindex="0" role="region" aria-label="Town comparison, scroll horizontally"><table>
+        <thead><tr><th scope="col">Measure</th>${entries.map((e) => `<th scope="col">${gradeBadge(e.s.grade)} <a href="#/town/${encodeURIComponent(e.town.id)}">${escapeHTML(label(e.town))}</a><p class="small muted">${escapeHTML(coverageText(e))}</p></th>`).join('')}</tr></thead>
+        <tbody><tr><th scope="row">Reporting context</th>${entries.map((e) => `<td class="wrap small">${escapeHTML(reportingText(e.town))}</td>`).join('')}</tr>${rows}
+        <tr><th colspan="${entries.length + 1}">Score breakdown (original component points)</th></tr>
+        ${entries[0].s.components.map((c, i) => `<tr><th scope="row">${c.label}</th>${entries.map((e) => `<td>${e.s.components[i].available ? `${e.s.components[i].points} / ${c.max}` : 'Not scored'}</td>`).join('')}</tr>`).join('')}
+        </tbody></table></div>`;
+  }
+  for (let i = 0; i < 3; i++) {
+    root.querySelector(`#c-search-${i}`).addEventListener('input', choices);
+    root.querySelector(`#c-${i}`).addEventListener('change', (event) => { picks[i] = event.target.value; choices(); draw(); });
+  }
+  choices(); draw();
 }
