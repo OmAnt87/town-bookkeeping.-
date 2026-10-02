@@ -454,3 +454,74 @@ test('CT town committees match their town and SEEC receipts are classified', () 
   assert.equal(out.individuals, 40);
   assert.equal(out.counted, 1);
 });
+
+import { aggregateMa } from '../scripts/ma/dls-map.mjs';
+
+test('MA Schedule A maps, reconciles, separates excises and spreads fixed costs', () => {
+  const gf = {
+    revenue: {
+      Taxes: 700, 'Service Charges': 20, 'Licenses and Permits': 10, 'Federal Revenue': 0, 'State Revenue': 200, 'Revenue from Other Governments': 0,
+      'Special Assessments': 0, 'Fines and Forfeitures': 5, Miscellaneous: 15, 'Other Financing Sources': 30, Transfers: 20, 'Total Revenues': 1000,
+    },
+    spending: {
+      'General Government': 50, 'Public Safety': 150, Education: 500, 'Public Works': 100, 'Human Services': 0, 'Culture and Recreation': 0,
+      'Fixed Costs': 160, 'Intergov Assessments': 40, 'Other Expenditures': 0, 'Debt Service': 0, 'Total Expenditures': 1000,
+    },
+  };
+  const a = aggregateMa(gf, { 'Motor Vehicle Excise': 60, 'A.Meals': 40, Fees: 99 });
+  assert.deepEqual(a.revenue, { propertyTax: 600, salesTax: 100, feesPermits: 30, stateAid: 200, finesForfeitures: 5, localRevenue: 15 });
+  assert.equal(a.lineTotals.revenue, a.reported.revenue);
+  assert.equal(a.lineTotals.spending, a.reported.spending);
+  assert.deepEqual(a.excluded, { 'Other Financing Sources': 30, Transfers: 20 });
+  // Fixed costs (160) and assessments (40) spread by size over 800 of departments.
+  assert.deepEqual(a.spending, { administration: 63, publicSafety: 188, education: 625, roads: 125 });
+  assert.equal(Object.values(a.spending).reduce((x, y) => x + y, 0), 1001); // rounding
+
+  // Fixed costs skip debt service.
+  const d = aggregateMa({ revenue: gf.revenue, spending: { Education: 300, 'Debt Service': 100, 'Fixed Costs': 60, 'Total Expenditures': 460 } }, null);
+  assert.deepEqual(d.spending, { education: 360, debtService: 100 });
+  assert.equal(d.taxSplit, false);
+  assert.equal(d.revenue.propertyTax, 700);
+
+  // Only a total reported: not broken down.
+  const t = aggregateMa({ revenue: gf.revenue, spending: { 'Total Expenditures': 900 } }, null);
+  assert.deepEqual(t.spending, { otherSpending: 900 });
+});
+
+import { townMatcher, localFilers, classifyOcpf, summarizeMaReceipts } from '../scripts/ma/ocpf-map.mjs';
+
+test('MA OCPF filers match their town and receipts are classified', () => {
+  const match = townMatcher(['Boston', 'Manchester By The Sea', 'North Andover', 'Agawam']);
+  assert.equal(match('Manchester'), 'Manchester By The Sea');
+  assert.equal(match('north andover'), 'North Andover');
+  assert.equal(match('Andover'), null);
+  const filers = localFilers({
+    lpc: [{ cpfId: 1, filerName: 'Boston Ward 6 DEMWC' }, { cpfId: 2, filerName: 'North Andover REPTC' }, { cpfId: 3, filerName: 'Somewhere Else DEMTC' }],
+    mayoral: [{ cpfId: 4, filerName: 'Johnson, Christopher', officeSought: 'Mayoral, Agawam' }],
+    cc: [{ cpfId: 5, filerName: 'Flynn, Edward Michael', officeSought: 'City Councilor, Boston' }],
+  }, match);
+  assert.deepEqual(filers.get(1), { town: 'Boston', label: 'Boston Ward 6 Democratic Ward Committee' });
+  assert.equal(filers.get(2).label, 'North Andover Republican Town Committee');
+  assert.equal(filers.has(3), false);
+  assert.deepEqual(filers.get(4), { town: 'Agawam', label: 'Christopher Johnson (candidate for mayor)' });
+  assert.equal(filers.get(5).town, 'Boston');
+
+  const pac = new Set([10]);
+  const item = (o) => ({ id: 0, recordTypeId: 202, fullNameReverse: '', filerCpfId: 5, date: '5/1/2025', amount: '$500.00', reportId: 9, ...o });
+  assert.equal(classifyOcpf(item({ recordTypeId: 203, fullNameReverse: 'Boston Teachers Union' }), pac).key, 'unionContributions');
+  assert.equal(classifyOcpf(item({ fullNameReverse: 'Ibew Local 103 #80221' }), pac).key, 'unionContributions');
+  assert.equal(classifyOcpf(item({ id: 10, fullNameReverse: 'Greater Boston Real Estate Board PAC' }), pac).key, 'pacContributions');
+  assert.equal(classifyOcpf(item({ fullNameReverse: 'Committee To Elect Kevin Aguiar' }), pac), null);
+  assert.equal(classifyOcpf(item({ fullNameReverse: 'Saugus DEMTC' }), pac), null);
+  assert.equal(classifyOcpf(item({ recordTypeId: 201, fullNameReverse: 'Pat Smith' }), pac), null);
+
+  const out = summarizeMaReceipts([
+    item({ recordTypeId: 203, fullNameReverse: 'Boston Teachers Union' }),
+    item({ id: 10, fullNameReverse: 'Greater Boston Real Estate Board PAC', amount: '$1,000.00' }),
+    item({ recordTypeId: 203, fullNameReverse: 'Boston Teachers Union', date: '5/1/2020' }),
+  ], filers, pac, '2023-01-01');
+  assert.deepEqual(out.influence, { pacContributions: 1000, developerContributions: 0, unionContributions: 500 });
+  assert.equal(out.counted, 2);
+  assert.equal(out.topDonors[0].recipient, 'Edward Michael Flynn (candidate for city council)');
+  assert.match(out.ledger[0].source, /DisplayReport.*id=9/);
+});
