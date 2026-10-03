@@ -113,6 +113,17 @@ node scripts/ma/build-county.mjs --all && node scripts/ma/status.mjs
 node scripts/build-summary.mjs
 ```
 
+### Rhode Island (all 39 cities and towns)
+
+`data/real/ri-<county>.json` holds every RI city and town, built from the Division of Municipal Finance's [Municipal Transparency Portal](https://municipalfinance.ri.gov/municipal-transparency) (audited actual revenue and spending under the state's uniform chart of accounts, history back to FY 2016) and Census 2025 population estimates. School departments report separately, so reports show each town's appropriation to its schools. Debt outstanding is not available, so fiscal health is not scored. Political money comes from the Board of Elections' [ERTS](https://ricampaignfinance.com/RIPublic/Contributions.aspx): PAC contributions to local candidates and party city and town committees. The portal is behind a browser check, so `download.mjs` uses Playwright when installed (`npm i playwright`); otherwise save "MTP All Data" by hand as `data/raw/ri/mtp.csv`. Coverage and gaps: [docs/RI_DATA_STATUS.md](docs/RI_DATA_STATUS.md).
+
+```bash
+node scripts/ri/download.mjs                       # transparency portal data; Census files
+node scripts/ri/fetch-erts.mjs                     # campaign contributions and filers (cached)
+node scripts/ri/build-county.mjs --all && node scripts/ri/status.mjs
+node scripts/build-summary.mjs
+```
+
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Public-record data**, and lets you filter to them on the map and rankings.
