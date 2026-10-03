@@ -525,3 +525,72 @@ test('MA OCPF filers match their town and receipts are classified', () => {
   assert.equal(out.topDonors[0].recipient, 'Edward Michael Flynn (candidate for city council)');
   assert.match(out.ledger[0].source, /DisplayReport.*id=9/);
 });
+
+import { aggregateRi } from '../scripts/ri/mtp-map.mjs';
+
+test('RI transparency portal rows map, reconcile and spread central costs', () => {
+  const row = (control, o) => ({ control, department: '', group: '', cls: '', account: '', amount: '0', ...o });
+  const a = aggregateRi([
+    row('Revenue', { group: 'Local Revenue', cls: 'Property Tax', account: 'Current Year Levy Tax Collection', amount: '700' }),
+    row('Revenue', { group: 'Local Revenue', cls: 'Property Tax', account: 'PILOT & Tax Treaty (excluded from levy) Collection', amount: '20' }),
+    row('Revenue', { group: 'Local Revenue', cls: 'Local Non-Property Tax Revenues', account: 'Rescue Run Revenue', amount: '30' }),
+    row('Revenue', { group: 'Local Revenue', cls: 'Local Non-Property Tax Revenues', account: 'Fines and Forfeitures', amount: '10' }),
+    row('Revenue', { group: 'State Aid', cls: 'State Aid', account: 'Motor Vehicle Phase Out', amount: '200' }),
+    row('Revenue', { group: 'Federal Aid', cls: 'Federal Aid', account: 'CDBG', amount: '40' }),
+    row('Financing Sources', { amount: '500' }),
+    row('Expenditures', { department: 'Police Department', group: 'Compensation', amount: '300' }),
+    row('Expenditures', { department: 'Public Works', group: 'Operations', amount: '100' }),
+    row('Expenditures', { department: 'General Government', group: 'Operations', account: 'Purchased Services', amount: '100' }),
+    row('Expenditures', { department: 'General Government', group: 'Operations', account: 'Insurance', amount: '50' }),
+    row('Expenditures', { department: 'General Government', group: 'Operations', account: 'Capital Outlays', amount: '100' }),
+    row('Expenditures', { department: 'OPEB', group: 'Benefits', amount: '50' }),
+    row('Expenditures', { department: 'Education', group: 'Municipal Education Appropriation', amount: '400' }),
+    row('Expenditures', { department: 'Debt Service', group: 'Debt Service', amount: '100' }),
+  ]);
+  assert.deepEqual(a.revenue, { propertyTax: 700, localRevenue: 20, feesPermits: 30, finesForfeitures: 10, stateAid: 200, federalGrants: 40 });
+  assert.equal(a.lineTotals.revenue, a.reported.revenue);
+  assert.equal(a.lineTotals.spending, a.reported.spending);
+  assert.deepEqual(a.excluded, { financingSources: 500, financingUses: 0 });
+  assert.equal(a.shared, 100);
+  assert.equal(a.benefitsSpread, 100); // insurance + OPEB
+  // Capital outlay (100) over 1000 of departments, then benefits (100) over police, works and admin only.
+  assert.deepEqual(a.spending, { publicSafety: 390, roads: 130, administration: 130, education: 440, debtService: 110 });
+  assert.deepEqual(a.unmapped, []);
+});
+
+import { townMatcher as riTownMatcher, localFilers as riLocalFilers, recipientTown, classifyErts, summarizeRiReceipts } from '../scripts/ri/erts-map.mjs';
+
+test('RI filers and party committees match their town and ERTS receipts are classified', () => {
+  const match = riTownMatcher(['Providence', 'South Kingstown', 'North Kingstown', 'Cumberland', 'Pawtucket']);
+  assert.equal(match('WAKEFIELD'), 'South Kingstown');
+  assert.equal(match('North Kingston'), 'North Kingstown');
+  assert.equal(match('Groton'), null);
+  const filers = riLocalFilers([
+    { name: 'PAT SMITH', city: 'WAKEFIELD', state: 'RI', office: 'City/Town Council' },
+    { name: 'DANIEL J MCKEE', city: 'CUMBERLAND', state: 'RI', office: 'Mayor/Administrator' },
+    { name: 'SAM LEE', city: 'PROVIDENCE', state: 'RI', office: 'School Committee' },
+    { name: 'SAM LEE', city: 'PAWTUCKET', state: 'RI', office: 'City/Town Council' },
+  ], match, [{ name: 'Daniel J McKee', city: 'CUMBERLAND', office: 'Governor' }]);
+  assert.deepEqual(filers.get('PAT SMITH'), { town: 'South Kingstown', label: 'Pat Smith (city/town council candidate)' });
+  assert.equal(filers.has('DANIEL J MCKEE'), false); // also ran for state office
+  assert.equal(filers.has('SAM LEE'), false); // two towns
+  assert.deepEqual(recipientTown('PROVIDENCE DEMOCRATIC CITY COMMITTEE', filers, match), { town: 'Providence', label: 'Providence Democratic City Committee' });
+  assert.equal(recipientTown('RI DEMOCRATIC STATE COMMITTEE', filers, match), null);
+  assert.equal(recipientTown('Pat  Smith', filers, match).town, 'South Kingstown');
+
+  const pac = (name, o) => ({ fullname: name, transtype: 'Contribution', receiptdate: '05/01/2025', amount: '500.0000', ...o });
+  assert.equal(classifyErts(pac('PROVIDENCE FIRE FIGHTERS HEALTH AND SAFETY PAC')).key, 'unionContributions');
+  assert.equal(classifyErts(pac("RI LABORER'S POLITICAL LEAGUE")).key, 'unionContributions');
+  assert.equal(classifyErts(pac('REALTORS PAC OF RI')).key, 'pacContributions');
+  assert.equal(classifyErts(pac('RI SENATE DEMOCRATS PAC')), null);
+  assert.equal(classifyErts(pac('REALTORS PAC OF RI', { transtype: 'Expenditure' })), null);
+
+  const recipient = { town: 'Providence', label: 'Providence Democratic City Committee' };
+  const out = summarizeRiReceipts([
+    { ...pac('REALTORS PAC OF RI'), recipient },
+    { ...pac('IBEW LOCAL 99', { amount: '250' }), recipient },
+    { ...pac('IBEW LOCAL 99', { receiptdate: '05/01/2020' }), recipient },
+  ], '2023-01-01');
+  assert.deepEqual(out.influence, { pacContributions: 500, developerContributions: 0, unionContributions: 250 });
+  assert.equal(out.counted, 2);
+});
