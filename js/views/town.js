@@ -1,3 +1,6 @@
+import { metricText, coverageText } from '../engine/metrics.js';
+import { reportingText } from '../engine/reporting.js';
+import { requestIsCurrent } from '../data/loading.js';
 import { revenueRows, spendingRows, influenceRows, taxBreakRows, transparencyCount, redFlagEntries, documentedRedFlags, redFlagReason, corporateTies } from '../engine/scoring.js';
 import { TRANSPARENCY_CHECKS, REVENUE_CATEGORIES, SPENDING_CATEGORIES, INFLUENCE_CATEGORIES } from '../engine/categories.js';
 import { filterLedger, summarizeLedger, sortLedger, ledgerToCSV, categoryLabel, FLOWS } from '../engine/ledger.js';
@@ -16,16 +19,27 @@ export function renderTown(root, state, id) {
   const { town, s } = entry;
   if (town.detailFile && !town.ledger) {
     root.innerHTML = `<div class="page"><div class="card empty">Loading ${escapeHTML(town.name)} records...</div></div>`;
-    loadTownDetail(town)
-      .then(() => { if (decodeURIComponent(location.hash).endsWith(`/town/${id}`)) renderTown(root, state, id); })
-      .catch((err) => { root.innerHTML = `<div class="page"><div class="card empty"><h2>Could not load this town's records</h2><p class="muted">${escapeHTML(err.message)}</p></div></div>`; });
-    return;
+    const dataset = state.dataset, revision = state.routeRevision;
+    let active = true;
+    const current = () => active && requestIsCurrent(state, dataset, revision);
+    const load = () => {
+      root.innerHTML = `<div class="page"><p role="status">Loading ${escapeHTML(town.name)} records…</p></div>`;
+      loadTownDetail(town)
+        .then(() => { if (current()) renderTown(root, state, id); })
+        .catch((err) => {
+          if (!current()) return;
+          root.innerHTML = `<div class="page"><div class="card empty"><h2>Could not load this town's records</h2><p class="muted">${escapeHTML(err.message)}</p><button class="btn" id="retry-town">Retry</button></div></div>`;
+          root.querySelector('#retry-town').onclick = load;
+        });
+    };
+    load();
+    return () => { active = false; };
   }
   const t = s.totals;
   // Real towns are ranked only against other real towns, demo towns against demo towns.
   const peers = state.towns.filter((x) => isVerified(x.town) === isVerified(town) && x.s.grade !== '?');
   const rank = [...peers].sort((a, b) => b.s.score - a.s.score).findIndex((x) => x.town.id === id) + 1;
-  const peerLabel = isVerified(town) ? 'towns with verified data' : 'demo towns';
+  const peerLabel = isVerified(town) ? 'towns with public-record data' : 'demo towns';
 
   const rev = revenueRows(town).map((r) => ({ ...r, color: r.propertyTax ? 'var(--series-property)' : r.reserve ? 'var(--baseline)' : 'var(--series-in)' }));
   const revOrder = (r) => (r.propertyTax ? 0 : r.reserve ? 2 : 1);
@@ -49,8 +63,8 @@ export function renderTown(root, state, id) {
   const unitemized = town.spending?.otherSpending || 0;
   const overhead = Math.max(0, t.spending - t.directSpending - t.redFlagSpending - schools - unitemized);
   const outSegments = [
-    { label: 'Direct services', amount: t.directSpending, color: 'var(--series-in)' },
-    { label: 'Overhead & debt', amount: overhead, color: 'var(--series-overhead)' },
+    ...(!unitemized || t.directSpending > 0 ? [{ label: unitemized ? 'Itemized services (partial)' : 'Direct services', amount: t.directSpending, color: 'var(--series-in)' }] : []),
+    { label: unitemized ? 'Other itemized spending' : 'Overhead & debt', amount: overhead, color: 'var(--series-overhead)' },
     ...(schools ? [{ label: 'Schools', amount: schools, color: 'var(--baseline)' }] : []),
     ...(unitemized ? [{ label: 'Not broken down', amount: unitemized, color: 'var(--series-property)' }] : []),
     ...(t.redFlagSpending ? [{ label: 'Surveillance & corporate deals', amount: t.redFlagSpending, color: 'var(--bad)' }] : []),
@@ -90,12 +104,12 @@ export function renderTown(root, state, id) {
         <div class="score-main" style="margin-top:12px">
           ${gradeBadge(s.grade, 'lg')}
           <div class="score-text">
-            <div class="score-value num">${s.score.toFixed(1)}<small> / 100</small></div>
-            <div class="track g-${s.grade}" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${s.score}" aria-label="Score"><span style="width:${s.score}%"></span></div>
+            <div class="score-value num">${metricText(entry, 'score')}</div>
+            <div ${s.grade === '?' ? 'hidden' : ''} class="track g-${s.grade}" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${s.score}" aria-label="Score"><span style="width:${s.score}%"></span></div>
             ${s.grade === '?' ? '<div class="small muted"><strong>Not graded yet:</strong> a letter grade needs data for at least half of the score.</div>' : `<div class="small muted">Ranked ${rank} of ${peers.length} ${peerLabel}</div>`}
           </div>
         </div>
-        <p class="basis">Based on how much spending reaches residents as services, overhead, surveillance and corporate giveaways, outside political money and corporate lobbying, transparency practices, and debt.${s.coverage.scored < s.coverage.total ? ` <strong>Scored on ${s.coverage.scored} of ${s.coverage.total} parts</strong>; parts without data are left out rather than guessed.` : ''}</p>
+        <p class="small muted">${escapeHTML(coverageText(entry))}</p><p class="small muted">${escapeHTML(reportingText(town))}</p><p class="basis">Based on how much spending reaches residents as services, overhead, surveillance and corporate giveaways, outside political money and corporate lobbying, transparency practices, and debt.${s.coverage.scored < s.coverage.total ? ` <strong>Scored on ${s.coverage.scored} of ${s.coverage.total} parts</strong>; parts without data are left out rather than guessed.` : ''}</p>
         <div class="callout">${plainSummary(town, s)}</div>
       </div>
       <div class="card">
@@ -114,12 +128,12 @@ export function renderTown(root, state, id) {
     <section class="tiles" aria-label="Key numbers">
       <div class="tile"><div class="k">Total money in</div><div class="v num">${money(t.revenue, { compact: true })}</div><div class="s">${money(t.revenue / town.population)} per resident</div></div>
       <div class="tile"><div class="k">Not from property tax</div><div class="v num">${money(t.nonPropertyRevenue, { compact: true })}</div><div class="s">${pctOf(t.nonPropertyShare)} of all revenue</div></div>
-      <div class="tile"><div class="k">Services per resident</div><div class="v num">${money(t.directPerResident)}</div><div class="s">${unitemized ? 'Spending not fully broken down' : `${pctOf(t.directShare)} of ${schools ? 'non-school ' : ''}spending`}</div></div>
-      <div class="tile"><div class="k">Political money</div>${hasInfluence ? `<div class="v num">${money(t.influence, { compact: true })}</div><div class="s">${money(t.influencePerResident)} per resident</div>` : `${NA}<div class="s">No filings loaded yet</div>`}</div>
+      <div class="tile"><div class="k">Services per resident</div><div class="v num">${metricText(entry, 'directPerResident')}</div><div class="s">${unitemized ? 'Spending not fully broken down' : `${pctOf(t.directShare)} of ${schools ? 'non-school ' : ''}spending`}</div></div>
+      <div class="tile"><div class="k">Political money</div>${hasInfluence ? `<div class="v num">${metricText(entry, 'politicalTotal')}</div><div class="s">${metricText(entry, 'influencePerResident')} per resident</div>` : `${NA}<div class="s">No filings loaded yet</div>`}</div>
       <div class="tile${t.redFlagCount ? ' tile-flag' : ''}"><div class="k">Surveillance & corporate giveaways</div>${!t.redFlagKnown ? `${NA}<div class="s">Not checked yet</div>`
         : t.redFlagSpending + t.taxBreaks > 0 ? `<div class="v num">${money(t.redFlagSpending + t.taxBreaks, { compact: true })}</div><div class="s">${money(t.redFlagPerResident)} per resident</div>`
         : `<div class="v num">${t.redFlagCount} red flag${t.redFlagCount === 1 ? '' : 's'}</div><div class="s">${t.redFlagCount ? 'Documented in public records' : 'None found in public records'}</div>`}</div>
-      <div class="tile"><div class="k">Debt</div>${hasDebt ? `<div class="v num">${money(town.debt, { compact: true })}</div><div class="s">${money(t.debtPerResident)} per resident</div>` : `${NA}<div class="s">No debt statement loaded</div>`}</div>
+      <div class="tile"><div class="k">Debt</div>${hasDebt ? `<div class="v num">${money(town.debt, { compact: true })}</div><div class="s">${metricText(entry, 'debtPerResident')} per resident</div>` : `${NA}<div class="s">No debt statement loaded</div>`}</div>
     </section>
 
     <div class="grid grid-2" style="margin-bottom:16px">
@@ -136,10 +150,11 @@ export function renderTown(root, state, id) {
         ${docsIn.length ? redFlagBox('⚠ Corporate tax deals and lobbying', 'Tax breaks the town granted to corporations and lobbying aimed at the officials who approved them, from news reports and public records.', docsIn) : ''}
         ${corpLobbying || bizDonations ? `<div class="flag-box">
           <h3>⚠ Corporate lobbying behind the budget</h3>
-          <p class="small">Corporations and their lobbyists put <strong>${money(t.corporateMoney, { compact: true })}</strong> into lobbying and campaign money aimed at the officials who set these revenues${corpLobbying ? `, including <strong>${money(corpLobbying, { compact: true })}</strong> in direct corporate lobbying` : ''}.${t.taxBreaks ? ` In return, the town gave up ${money(t.taxBreaks, { compact: true })} in corporate tax breaks: <strong>$${(t.taxBreaks / (t.corporateMoney || 1)).toFixed(0)} for every $1</strong> they spent.` : ''}</p></div>` : ''}
+          <p class="small">Corporations and their lobbyists put <strong>${money(t.corporateMoney, { compact: true })}</strong> into lobbying and campaign money aimed at the officials who set these revenues${corpLobbying ? `, including <strong>${money(corpLobbying, { compact: true })}</strong> in direct corporate lobbying` : ''}.${t.taxBreaks ? ` Separately, the town reported ${money(t.taxBreaks, { compact: true })} in corporate tax breaks: <strong>$${(t.taxBreaks / (t.corporateMoney || 1)).toFixed(0)} for every $1</strong> they spent.` : ''}</p></div>` : ''}
       </section>
       <section class="card" aria-labelledby="h-out">
         <div class="card-head"><div><h2 id="h-out">Money out</h2><p>Direct services versus overhead and debt.</p></div><span class="num muted small">${money(t.spending)}</span></div>
+        ${unitemized ? '<p class="small muted">Service and overhead shares are unavailable because spending is not fully itemized. The chart shows only recorded categories.</p>' : ''}
         ${splitBar(outSegments)}
         ${legendKey(outSegments.map((g) => ({ label: `${g.label} ${pctOf(g.amount / (t.spending || 1))}`, color: g.color })))}
         ${barList(spend, { total: t.spending })}
@@ -162,7 +177,7 @@ export function renderTown(root, state, id) {
 
     <div class="grid grid-2" style="margin-bottom:16px">
       <section class="card" aria-labelledby="h-pol">
-        <div class="card-head"><div><h2 id="h-pol">Political money</h2><p>Corporate lobbying, PAC, business and union contributions to local officials, plus lobbying the town pays for. This money does not pass through the town budget.</p></div></div>
+        <div class="card-head"><div><h2 id="h-pol">Political money</h2><p>Recorded lobbying and campaign contributions; recipient coverage varies by source. ${escapeHTML(town.reporting?.politicalScope || 'Recipient scope not recorded')}. Political receipts are separate from the town budget.</p></div></div>
         ${docLobbying.length ? `<div class="callout callout-bad"><strong>Corporate lobbying on record:</strong> ${docLobbying.map((f) => escapeHTML(f.detail)).join(' ')}</div>` : ''}
         ${hasInfluence && t.corporateMoney ? `<div class="callout callout-bad"><strong>${pctOf(t.corporateShareOfInfluence)} of this money came from corporations and their lobbyists</strong> (${money(t.corporateMoney, { compact: true })}).</div>` : ''}
         ${hasInfluence ? barList(infl) : '<p class="muted small">No campaign-finance filings have been loaded for this town yet, so political money is unknown. It is not counted in the score.</p>'}
@@ -185,7 +200,7 @@ export function renderTown(root, state, id) {
     </div>
 
     <section class="card" aria-labelledby="h-ledger" style="margin-bottom:16px">
-      <div class="card-head"><div><h2 id="h-ledger">Ledger</h2><p>Individual transactions for fiscal year ${town.fiscalYear}. Search, filter, or export to a spreadsheet.</p></div>
+      <div class="card-head"><div><h2 id="h-ledger">Ledger</h2><p>Budget lines, financial report entries and political filings. Political records may cover a different period from fiscal year ${town.fiscalYear}. Search, filter, or export to a spreadsheet.</p></div>
         <button class="btn" id="dl-ledger" type="button">${ICONS.download} Export CSV</button></div>
       <div class="toolbar">
         <div class="field"><label for="l-q">Search</label><input id="l-q" class="input" type="search" placeholder="Vendor, donor or description"></div>
@@ -293,7 +308,7 @@ function plainSummary(town, s) {
   return `<strong>In plain terms:</strong> ${town.spending?.otherSpending > 0
     ? `${escapeHTML(town.name)} reports part of its spending only as a total, so how much reaches residents directly is not known.`
     : `for every $100 ${escapeHTML(town.name)} spends${school ? ' outside its schools' : ''}, about $${per100} pays for services residents use directly.`}
-    Its strongest area is <strong>${strongest.label.toLowerCase()}</strong>; its weakest is <strong>${weakest.label.toLowerCase()}</strong>.${
+    ${strongest.ratio === weakest.ratio ? 'The available components have the same relative score.' : `Among measured components, its strongest area is <strong>${strongest.label.toLowerCase()}</strong>; its weakest is <strong>${weakest.label.toLowerCase()}</strong>.`}${
     t.redFlagSpending + t.taxBreaks > 0
       ? ` It also put <strong>$${(t.redFlagShare * 100).toFixed(2)} of every $100</strong> toward surveillance, corporate deals or corporate tax breaks.`
       : t.documentedRedFlags

@@ -422,3 +422,18 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
 .state-label .abbr { display: none; }
 .labels-short .state-label .full { display: none; }
 .labels-short .state-label .abbr { display: inline; }
+
+/* Keep all destinations visible, including in the narrow in-app preview. */
+@media (max-width: 640px) {
+  .topbar { height: auto; min-height: 60px; }
+  .nav { flex-wrap: wrap; overflow: visible; min-width: 0; }
+  .nav a { min-height: 36px; display: inline-flex; align-items: center; }
+  .compare-pickers { grid-template-columns: 1fr; }
+  .compare-table th:first-child { max-width: 125px; min-width: 110px; }
+}
+.compare-table th:first-child { position: sticky; left: 0; z-index: 1; background: var(--surface); white-space: normal; }
+.compare-table td, .compare-table thead th:not(:first-child) { min-width: 210px; white-space: normal; }
+.compare-table tbody th { text-align: left; font-weight: 500; }
+.compare-table .small { font-weight: 400; }
+.scroll-cue { margin-top: 16px; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }

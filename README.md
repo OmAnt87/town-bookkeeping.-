@@ -115,7 +115,7 @@ node scripts/build-summary.mjs
 
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 
-Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Verified data**, and lets you filter to them on the map and rankings.
+Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Public-record data**, and lets you filter to them on the map and rankings.
 
 See [docs/DATA_SCHEMA.md](docs/DATA_SCHEMA.md) for every field and [docs/METHODOLOGY.md](docs/METHODOLOGY.md) for how scores are calculated.
 
@@ -133,3 +133,29 @@ vendor/                         Leaflet 1.9.4 and Leaflet.heat 0.2.0 (BSD-2-Clau
 ```
 
 Map tiles come from CARTO with OpenStreetMap data. State outlines (`data/us-states.json`) are built from the [us-atlas](https://github.com/topojson/us-atlas) package (ISC, U.S. Census Bureau boundaries) and show underneath the tiles, so the map stays usable when tiles are unavailable.
+
+## Trust and usability
+
+- Missing figures display as **Not available**, while reported zero stays zero.
+  Towns below the grading coverage threshold display **Not graded**. Grades show
+  fiscal year, retrieval date, component coverage and available scoring weight.
+- **Public-record data** describes provenance, not independent verification.
+  Reports and comparisons show financial basis/scope and political period/recipients.
+- Compare starts empty, supports three searchable town selectors, and highlights
+  winners only where the available measures have compatible reporting context.
+- Rankings display 50 results per page; CSV export includes every filtered result
+  with availability explanations. Map and rankings list only states in the active
+  data filter; unknown measures are excluded from heat and color scales.
+- Failed county requests can be retried. Navigation and dataset changes invalidate
+  pending report rendering. Public-data loading failures are displayed explicitly.
+- The Data page offers **Download summary**, **Download complete records**, and
+  **Restore bundled data**. Complete exports hydrate county records and never
+  silently omit a failed county. Imported JSON is validated before replacing data.
+
+Run `npm test` for scoring, import, availability, loading, export, and all-county
+summary/detail consistency checks. Scoring weights and thresholds are unchanged.
+See [release validation](docs/RELEASE_VALIDATION.md) for browser checks and limits.
+
+Next planned work: shareable filters and comparisons, printable reports with
+sources, and a coverage explorer. Geographic expansion and methodology changes
+remain separate projects.

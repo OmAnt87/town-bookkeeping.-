@@ -9,6 +9,7 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { reportingFor } from '../js/engine/reporting.js';
 import { redFlagEntries } from '../js/engine/scoring.js';
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'data', 'real');
@@ -18,7 +19,7 @@ const { files } = JSON.parse(readFileSync(join(DIR, 'index.json'), 'utf8'));
 const towns = [];
 for (const file of files) {
   for (const t of JSON.parse(readFileSync(join(DIR, file), 'utf8')).towns) {
-    const light = { ...t, detailFile: file };
+    const light = { ...t, reporting: reportingFor(t), detailFile: file };
     // Scores are computed from the summary, so keep what red-flag scoring reads:
     // flagged ledger payments, and each documented red flag's kind and label.
     const flaggedPayments = redFlagEntries(t);

@@ -1,3 +1,4 @@
+import { metric as displayMetric, metricText, coverageText, compareValues } from '../engine/metrics.js';
 import { MAP_METRICS } from '../engine/scoring.js';
 import { money, number, escapeHTML } from '../engine/format.js';
 import { gradeBadge, verifiedPill, isVerified, ICONS, cssVar } from '../charts.js';
@@ -99,12 +100,20 @@ const countyLineStyle = () => ({ color: isDark() ? '#8a8a82' : '#8d8c82', weight
 const stateLineStyle = () => ({ color: isDark() ? '#d8d8d0' : '#3d3d38', weight: 2, opacity: 0.9 });
 const stateStyle = () => ({ color: cssVar('--baseline'), weight: 1, fillColor: cssVar('--surface'), fillOpacity: 1 });
 
+let lastDataset;
 const ui = { metric: 'score', layer: 'towns', state: 'all', query: '', realOnly: null };
 
 export function renderMap(root, state) {
+  if (lastDataset !== state.dataset) {
+    ui.realOnly = state.towns.some((t) => isVerified(t.town));
+    ui.state = 'all'; ui.query = '';
+    lastDataset = state.dataset;
+  }
   // Show only real towns by default once any are loaded; the checkbox shows demo towns too.
   if (ui.realOnly === null) ui.realOnly = state.towns.some((t) => isVerified(t.town));
-  const states = [...new Set(state.towns.map((t) => t.town.state))].sort();
+  const availableStates = () => [...new Set(state.towns.filter((t) => !ui.realOnly || isVerified(t.town)).map((t) => t.town.state))].sort();
+  const states = availableStates();
+  if (!states.includes(ui.state)) ui.state = 'all';
   root.innerHTML = `
   <div class="map-layout">
     <aside class="map-side">
@@ -131,14 +140,14 @@ export function renderMap(root, state) {
           </div>
         </div>
       </div>
-      ${state.towns.some((t) => isVerified(t.town)) ? `<label class="check"><input type="checkbox" id="m-real" ${ui.realOnly ? 'checked' : ''}> Only towns with verified data</label>` : ''}
+      ${state.towns.some((t) => isVerified(t.town)) ? `<label class="check"><input type="checkbox" id="m-real" ${ui.realOnly ? 'checked' : ''}> Only towns with public-record data</label>` : ''}
       <div class="field">
         <label for="m-metric">Color towns by</label>
         <select id="m-metric" class="select">${MAP_METRICS.map(
           (m) => `<option value="${m.key}" ${m.key === ui.metric ? 'selected' : ''}>${m.label}</option>`,
         ).join('')}</select>
       </div>
-      <div class="legend" id="m-legend"></div>
+      <div class="legend" id="m-legend"></div><p class="small muted">States without loaded coverage are not listed. Unavailable measures are not treated as zero.</p>
       <div>
         <div class="eyebrow" id="m-count" style="margin-bottom:6px"></div>
         <ul class="town-list" id="m-list"></ul>
@@ -215,7 +224,7 @@ export function renderMap(root, state) {
 
   function colorScale() {
     const m = metric();
-    const vals = state.towns.map((t) => m.value(t.s)).sort((a, b) => a - b);
+    const vals = visible().map((t) => displayMetric(t, m.key).value).filter((v) => v !== null).sort((a, b) => a - b);
     const lo = m.key === 'score' ? 20 : quantile(vals, 0.05);
     const hi = m.key === 'score' ? 95 : quantile(vals, 0.95);
     const norm = (v) => (v - lo) / (hi - lo || 1);
@@ -245,10 +254,8 @@ export function renderMap(root, state) {
     drawLegend(scale);
     root.querySelectorAll('[data-layer]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.layer === ui.layer)));
 
-    // Towns without enough data for a grade go last when ranking by score.
-    const ungraded = (x) => (m.key === 'score' && x.s.grade === '?' ? 1 : 0);
-    const sorted = [...list].sort((a, b) => ungraded(a) - ungraded(b) || (m.higherIsBetter === false ? m.value(a.s) - m.value(b.s) : m.value(b.s) - m.value(a.s)));
-    $('#m-count').textContent = `${sorted.length} town${sorted.length === 1 ? '' : 's'} · ${m.higherIsBetter === false ? 'lowest' : 'highest'} first`;
+    const sorted = [...list].sort((a, b) => compareValues(displayMetric(a, m.key).value, displayMetric(b, m.key).value, m.higherIsBetter === false ? 'asc' : 'desc'));
+    $('#m-count').textContent = `${sorted.length} towns · ${list.filter((e) => !displayMetric(e, m.key).available).length} unavailable (gray, excluded from heat)`;
     // Render the list in pages: thousands of rows in the DOM make the page slow to paint and scroll.
     const shownRows = sorted.slice(0, listLimit);
     $('#m-list').innerHTML = sorted.length
@@ -257,7 +264,7 @@ export function renderMap(root, state) {
             ({ town, s }) => `<li><button type="button" data-id="${town.id}">
               ${gradeBadge(s.grade)}
               <span><span class="t-name">${escapeHTML(town.name)}</span><br><span class="t-sub">${escapeHTML(town.county)}, ${town.state}</span></span>
-              <span class="t-val num">${m.format(m.value(s))}</span></button></li>`,
+              <span class="t-val num">${metricText({ town, s }, m.key)}</span></button></li>`,
           )
           .join('') +
         (sorted.length > shownRows.length
@@ -272,7 +279,7 @@ export function renderMap(root, state) {
     const ring = isDark() ? '#1a1a19' : '#ffffff';
     if (ui.layer === 'heat' && L.heatLayer) {
       heatLayer = L.heatLayer(
-        list.map(({ town, s }) => [town.lat, town.lng, Math.max(0.05, scale.good(m.value(s)))]),
+        list.filter((e) => displayMetric(e, m.key).available).map(({ town, s }) => [town.lat, town.lng, Math.max(0.05, scale.good(displayMetric({ town, s }, m.key).value))]),
         { radius: 34, blur: 26, maxZoom: 3, max: 1, minOpacity: 0.3, gradient: HEAT_GRADIENT },
       ).addTo(map);
     }
@@ -283,10 +290,10 @@ export function renderMap(root, state) {
         radius: ui.layer === 'heat' ? 4 : radius,
         color: ring,
         weight: 1,
-        fillColor: ui.layer === 'heat' ? (isDark() ? '#f4f4f1' : '#121211') : m.key === 'score' && s.grade === '?' ? '#9a9890' : scale.color(m.value(s)),
+        fillColor: !displayMetric({ town, s }, m.key).available ? '#9a9890' : ui.layer === 'heat' ? (isDark() ? '#f4f4f1' : '#121211') : scale.color(m.value(s)),
         fillOpacity: ui.layer === 'heat' ? 0.55 : 0.7,
       })
-        .bindTooltip(`<strong>${escapeHTML(town.name)}</strong>, ${town.state}<br>Grade ${s.grade} &middot; ${m.label}: ${m.format(m.value(s))}`, { direction: 'top', offset: [0, -6] })
+        .bindTooltip(`<strong>${escapeHTML(town.name)}</strong>, ${town.state}<br>Grade ${s.grade} &middot; ${m.label}: ${metricText({ town, s }, m.key)}`, { direction: 'top', offset: [0, -6] })
         .on('click', () => openCard(town.id));
       mk.addTo(dotLayer);
       markers.set(town.id, mk);
@@ -305,11 +312,11 @@ export function renderMap(root, state) {
         ${gradeBadge(s.grade, 'md')}
         <div><h2>${escapeHTML(town.name)}</h2>${verifiedPill(town)}<div class="small muted">${escapeHTML(town.county)}, ${town.stateName || town.state} &middot; pop. ${number(town.population)}</div></div>
       </div>
-      <div class="map-stats">
-        <div><span>Community Return Score</span><strong class="num">${s.score.toFixed(0)} / 100</strong></div>
-        <div><span>Service $ per resident</span><strong class="num">${money(s.totals.directPerResident)}</strong></div>
+      <p class="small muted">${escapeHTML(coverageText({ town, s }))}</p><div class="map-stats">
+        <div><span>Community Return Score</span><strong class="num">${metricText({ town, s }, 'score')}</strong></div>
+        <div><span>Service $ per resident</span><strong class="num">${metricText({ town, s }, 'directPerResident')}</strong></div>
         <div><span>Not from property tax</span><strong class="num">${Math.round(s.totals.nonPropertyShare * 100)}%</strong></div>
-        <div><span>Political money</span><strong class="num">${money(s.totals.influence, { compact: true })}</strong></div>
+        <div><span>Political money</span><strong class="num">${metricText({ town, s }, 'politicalTotal')}</strong></div>
         ${s.totals.redFlagCount ? `<div><span>Red flags (surveillance, corporate deals)</span><strong class="num" style="color:var(--bad)">${s.totals.redFlagCount}</strong></div>` : ''}
         ${s.totals.corporateMoney > 0 ? `<div><span>Corporate lobbying & donations</span><strong class="num" style="color:var(--bad)">${money(s.totals.corporateMoney, { compact: true })}</strong></div>` : ''}
       </div>
@@ -334,7 +341,11 @@ export function renderMap(root, state) {
       else if (pts.length) map.flyToBounds(pts, { padding: [60, 60], maxZoom: 9, duration: 0.6 });
     }
   });
-  $('#m-real')?.addEventListener('change', (e) => { ui.realOnly = e.target.checked; draw(); });
+  $('#m-real')?.addEventListener('change', (e) => { ui.realOnly = e.target.checked;
+    const states = availableStates();
+    if (!states.includes(ui.state)) ui.state = 'all';
+    $('#m-state').innerHTML = '<option value="all">All states</option>' + states.map((s) => `<option ${s === ui.state ? 'selected' : ''}>${escapeHTML(s)}</option>`).join('');
+    draw(); });
   $('#m-metric').addEventListener('change', (e) => { ui.metric = e.target.value; draw(); });
   root.querySelectorAll('[data-layer]').forEach((b) => b.addEventListener('click', () => { ui.layer = b.dataset.layer; draw(); }));
   $('#m-list').addEventListener('click', (e) => {
@@ -355,7 +366,7 @@ export function renderMap(root, state) {
   mq.addEventListener('change', onTheme);
 
   draw();
-  // Open on the towns being shown: with verified data loaded, that's where the real records are.
+  // Open on the towns being shown: with public-record data loaded, that's where the real records are.
   if (map && (ui.realOnly || ui.state !== 'all')) {
     const pts = visible().map(({ town }) => [town.lat, town.lng]);
     if (pts.length) map.fitBounds(pts, { padding: [40, 40], maxZoom: 9 });

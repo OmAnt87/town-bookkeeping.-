@@ -136,6 +136,14 @@ function buildTown(code, t, report) {
     spending: a.spending,
     ...(debt != null ? { debt } : {}),
     ...(pol ? { influence: pol.influence, topDonors: pol.topDonors } : {}),
+    reporting: {
+      basis: 'Actual results',
+      scope: 'General fund; includes schools',
+      ...(pol ? {
+        politicalPeriod: `Since ${OCPF_SINCE.slice(0, 4)}; retrieved ${new Date().toISOString().slice(0, 10)}`,
+        politicalScope: c.cityForm ? 'Party committees and mayoral and city council candidates; excludes other town candidates' : 'Party committees; excludes candidate committees',
+      } : {}),
+    },
     history,
     ledger: [...ledger, ...(pol ? pol.ledger.slice(0, LEDGER_POLITICAL_MAX) : [])],
     sources: [
