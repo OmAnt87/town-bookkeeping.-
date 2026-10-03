@@ -101,6 +101,18 @@ node scripts/ct/build-county.mjs --all && node scripts/ct/status.mjs
 node scripts/build-summary.mjs
 ```
 
+### Massachusetts (all 351 cities and towns)
+
+`data/real/ma-<county>.json` holds every MA city and town, built from the Division of Local Services' [Schedule A general fund reports](https://www.mass.gov/lists/schedule-a-reports-revenues-expenditures-and-more) (actual revenue and spending by function, history back to 2014), DLS [local receipts](https://dls-gw.dor.state.ma.us/reports/rdPage.aspx?rdReport=TaxRateRecap.PAGE3.LocalReceiptsAct_vs_Est) (to separate excise taxes from property tax) and [long-term debt](https://dls-gw.dor.state.ma.us/reports/rdPage.aspx?rdReport=Dashboard.Cat_6_Reports.LongTermDebt351), and Census 2025 population estimates. Like Connecticut, Massachusetts towns pay for their schools, so school spending is on each report but left out of the services and overhead shares. Political money comes from the [Office of Campaign and Political Finance](https://www.ocpf.us/): union and PAC contributions to party ward, town and city committees and to candidates for mayor and city council. Coverage and gaps: [docs/MA_DATA_STATUS.md](docs/MA_DATA_STATUS.md).
+
+```bash
+node scripts/ma/download.mjs                       # DLS Schedule A, receipts, debt; Census files
+pip install openpyxl && python3 scripts/ma/dls-to-json.py
+node scripts/ma/fetch-ocpf.mjs                     # campaign contributions (cached)
+node scripts/ma/build-county.mjs --all && node scripts/ma/status.mjs
+node scripts/build-summary.mjs
+```
+
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Public-record data**, and lets you filter to them on the map and rankings.

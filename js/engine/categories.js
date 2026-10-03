@@ -26,9 +26,10 @@ export const SPENDING_CATEGORIES = [
   { key: 'utilities', label: 'Water, sewer & sanitation', direct: true },
   { key: 'parks', label: 'Parks, library & recreation', direct: true },
   { key: 'healthServices', label: 'Health & human services', direct: true },
-  // Connecticut towns run their schools; elsewhere school districts are separate
-  // governments. Shown on reports but left out of the services and overhead
-  // shares, so towns are compared on the same municipal services everywhere.
+  // Connecticut and Massachusetts towns run their schools; elsewhere school
+  // districts are separate governments. Shown on reports but left out of the
+  // services and overhead shares, so towns are compared on the same municipal
+  // services everywhere.
   { key: 'education', label: 'Schools (board of education)', direct: false, outsideShares: true },
   { key: 'administration', label: 'General administration', direct: false },
   { key: 'consultants', label: 'Outside consultants & legal', direct: false },
