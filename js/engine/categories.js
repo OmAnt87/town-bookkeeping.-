@@ -26,8 +26,8 @@ export const SPENDING_CATEGORIES = [
   { key: 'utilities', label: 'Water, sewer & sanitation', direct: true },
   { key: 'parks', label: 'Parks, library & recreation', direct: true },
   { key: 'healthServices', label: 'Health & human services', direct: true },
-  // Connecticut, Massachusetts and Rhode Island towns fund their schools;
-  // elsewhere school districts are separate governments. Shown on reports but left out of the
+  // Connecticut, Massachusetts and Rhode Island towns, and Virginia counties and
+  // cities, fund their schools; elsewhere school districts are separate governments. Shown on reports but left out of the
   // services and overhead shares, so towns are compared on the same municipal
   // services everywhere.
   { key: 'education', label: 'Schools (board of education)', direct: false, outsideShares: true },

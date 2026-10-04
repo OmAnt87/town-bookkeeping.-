@@ -622,3 +622,58 @@ test('MD statements map all funds, split utility charges, leave out debt proceed
   assert.equal(a.benefitsSpread, 70);
   assert.deepEqual(aggregateMd({ 'expenditures/Mystery': [1, 0, 0, 1] }).unmapped, ['expenditures/Mystery']);
 });
+
+import { aggregateVa } from '../scripts/va/apa-map.mjs';
+
+test('VA comparative report maps all funds, reconciles to Exhibit A and spreads shared costs', () => {
+  const a = aggregateVa({
+    A: { 'Local Revenue': 700, 'Maintenance and Operation Expenditures': 1000, 'Non-Revenue Receipts': 5 },
+    B: { 'Real Property': 500, 'Personal Property - General': 100, 'Other Local Taxes (Exhibit B-2)': 60, 'Charges for Services': 30, 'Interest (25)': 10 },
+    B1: { 'Categorical State Aid': 200, 'Categorical Federal Aid': 50 },
+    C: { 'General Government Administration (Exhibit C-1)': 100, 'Public Safety (Exhibit C-3)': 200, 'Public Works (Exhibit C-4)': 100, 'Education (Exhibit C-6)': 500, 'Non- Departmental': 100 },
+    C4: { 'Maintenance of Highways, Streets, Bridges, and Sidewalks': 60, 'Sanitation and Waste Removal': 40 },
+    D: { 'Debt Proceeds': 300, Education: 0, 'Streets, Roads, and Bridges': 0 },
+    E: { 'Redemption of Debt Education': 50, 'Debt Interest Costs Education': 20 },
+    F: { 'User Charges': 80, 'General Operating Expenses': 70, Depreciation: 15 },
+    G: { 'Bonds and Bond Issue Anticipation Loans': 900, 'Literary Fund Loans': 100 },
+  });
+  assert.deepEqual(a.check, { localRevenue: [700, 700], operations: [1000, 1000] });
+  assert.deepEqual(a.revenue, { propertyTax: 600, salesTax: 60, feesPermits: 30, localRevenue: 10, stateAid: 200, federalGrants: 50, utilityCharges: 80 });
+  // Non-departmental (100) spread over 970 of departments (not debt service).
+  assert.equal(a.shared, 100);
+  assert.equal(Math.round(Object.values(a.spending).reduce((x, y) => x + y, 0)), 1140);
+  assert.equal(a.spending.debtService, 70);
+  assert.equal(a.spending.education, Math.round(500 + 100 * (500 / 970)));
+  assert.deepEqual(a.excluded, { debtProceeds: 300, nonRevenue: 5, depreciation: 15 });
+  assert.equal(a.debt, 1000);
+});
+
+import { localityFor, classifyVa, isLocalReport, summarizeVaReceipts } from '../scripts/va/elect-map.mjs';
+
+test('VA local committees are placed by district, office or address and receipts are classified', () => {
+  const ctx = {
+    zipCounty: new Map([['20176', '51107'], ['23219', '51760']]),
+    countyKey: new Map([['51107', 'County|Loudoun'], ['51760', 'City|Richmond']]),
+    towns: new Map([['leesburg', 'Town|Leesburg']]),
+    byName: new Map([['richmond', 'City|Richmond']]),
+    placeCounty: new Map([['ashburn', '51107']]),
+  };
+  assert.equal(localityFor({ officesought: 'Member Town Council - Leesburg', district: '', city: 'Leesburg', zipcode: '20176' }, ctx), 'Town|Leesburg');
+  assert.equal(localityFor({ officesought: 'Member Board Of Supervisors', district: 'Election - Broad Run District', city: 'Leesburg', zipcode: '20176-1234' }, ctx), 'County|Loudoun');
+  assert.equal(localityFor({ officesought: 'Mayor', district: '', city: 'Richmond', zipcode: '23219' }, ctx), 'City|Richmond');
+  assert.equal(localityFor({ officesought: 'Sheriff', district: '', city: 'Ashburn', zipcode: '20146' }, ctx), 'County|Loudoun'); // PO box ZIP
+  assert.equal(localityFor({ officesought: 'Member Town Council', district: 'Town - Hamilton', city: 'Hamilton', zipcode: '20158' }, ctx), null);
+  assert.equal(isLocalReport({ islocal: 'True', officesought: 'Member, House Of Delegates', district: '' }), false);
+  assert.equal(isLocalReport({ islocal: 'True', officesought: 'Member School Board', district: '' }), true);
+
+  const rec = (name, o) => ({ isindividual: 'False', firstname: '', lastorcompanyname: name, transactiondate: '05/01/2025', amount: '500.00', recipient: 'Friends of Pat (board of supervisors)', ...o });
+  assert.equal(classifyVa(rec('Firepac Local 2068')).key, 'unionContributions');
+  assert.equal(classifyVa(rec('Dominion Political Action Committee')).key, 'pacContributions');
+  assert.equal(classifyVa(rec('Pruitt Corporation')).key, 'developerContributions');
+  assert.equal(classifyVa(rec('Kannan For Delegate')), null);
+  assert.equal(classifyVa(rec('Loudoun County Republican Committee')), null);
+  assert.equal(classifyVa(rec('Pat Smith', { isindividual: 'True' })), null);
+  const out = summarizeVaReceipts([rec('Pruitt Corporation'), rec('Pruitt Corporation'), rec('Firepac Local 2068', { amount: '250' }), rec('Pruitt Corporation', { transactiondate: '05/01/2020' })], '2023-01-01');
+  assert.deepEqual(out.influence, { pacContributions: 0, developerContributions: 500, unionContributions: 250 });
+  assert.equal(out.counted, 2); // the amended duplicate is dropped
+});
