@@ -769,3 +769,40 @@ test('SC candidates are placed by office name and Ethics Commission contribution
   assert.deepEqual(out.influence, { pacContributions: 250, developerContributions: 500, unionContributions: 0 });
   assert.equal(out.counted, 2); // the repeated contribution is dropped
 });
+
+import { aggregateGa, functionKey as gaFunctionKey } from '../scripts/ga/rlgf-map.mjs';
+
+test('GA RLGF maps revenue and spending, reconciles to the form, and nets out intergovernmental payments', () => {
+  assert.equal(gaFunctionKey('2650'), 'administration');
+  assert.equal(gaFunctionKey('3500'), 'publicSafety');
+  assert.equal(gaFunctionKey('4200'), 'roads');
+  assert.equal(gaFunctionKey('4400'), 'utilities');
+  assert.equal(gaFunctionKey('4960'), null);
+  assert.equal(gaFunctionKey('6100'), 'parks');
+  const blocks = {
+    R1: { '31_1100': 600, '31_9000': 10, '31_3100': 300, '31_4100': 50, '32_1200': 40, TTL_Part1: 1000 },
+    R2: { '33_9999A': 20, '33_7100B': 30, '33_1000C': 15, '34_2100': 5, TTL_2A: 20, TTL_2B: 30, TTL_2C: 15 },
+    R3: { '35_1100': 8, '36_1000': 12, '34_4210': 200, '34_6000': 3, TTL_Part3: 25, TTL_Part4: 203 },
+    E1: { '1300A': 100, '1565B': 20 },
+    E3: { '3200A': 300, '3200C': 25 },
+    E4: { '4200A': 80, '4200B': 40 },
+    E5: { '4960A': 60 },
+    E6: { '6100A': 50, TTL_PART5_A: 590, TTL_PART5_B: 60, TTL_PART5_C: 25, TTL_PART5_D: 0 },
+    E7: { '505CO': 150, '505IE': 30, '550CO': 70 },
+    E9: { '3200B': 25, '4960B': 60, '5540B': 5 },
+    D1: { TTL_10A_C: 40, TTL_10A_D: 500, TTL_10A_E: 30 },
+    D2: { TTL_10B_C: 10, TTL_10B_D: 100, TTL_10B_E: 4 },
+    D4: { SE_STN_C: 99, SE_STN_D: 7, SE_STN_E: 1 },
+  };
+  const a = aggregateGa(blocks);
+  assert.deepEqual(a.revenue, { propertyTax: 610, salesTax: 350, feesPermits: 45, stateAid: 20, grants: 30, federalGrants: 15, finesForfeitures: 8, localRevenue: 12, utilityCharges: 203 });
+  assert.deepEqual(a.check.revenue, [1293, 1293]);
+  assert.deepEqual(a.check.partV, [675, 675]);
+  // Police less its payment to another government; SPLOST paid to cities left out; the transit
+  // payment (5540, not on Part V) comes out of health and welfare, absent here, so it is dropped.
+  assert.deepEqual(a.spending, { administration: 120, publicSafety: 300, roads: 190, parks: 50, utilities: 150, debtService: 85 });
+  assert.equal(a.debt, 607); // long-term 600 plus short-term notes 7; short-term notes retired are not debt service
+  assert.equal(a.intergovernmental, 90);
+  assert.equal(a.empty, false);
+  assert.equal(aggregateGa({ R1: { TTL_Part1: 0 } }).empty, true);
+});
