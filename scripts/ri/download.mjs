@@ -11,7 +11,8 @@
 // download the file in a browser and save it as data/raw/ri/mtp.csv.
 
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, existsSync, writeFileSync } from 'node:fs';
+import { createPublicKey, createHash } from 'node:crypto';
+import { mkdirSync, existsSync, writeFileSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from '../lib.mjs';
@@ -24,13 +25,22 @@ const POP = 'https://www2.census.gov/programs-surveys/popest/datasets/2020-2025/
 const args = parseArgs();
 const curl = (...a) => execFileSync('curl', ['-sSfL', '--retry', '4', '-m', '900', '-A', 'Mozilla/5.0', ...a], { stdio: 'inherit' });
 
+// Behind a TLS-inspecting proxy, Chromium must trust the proxy's CA. Trust that one key
+// (not all certificates); Playwright's own requests use NODE_EXTRA_CA_CERTS.
+function proxyCaArgs() {
+  const ca = process.env.PROXY_CA_CERT || '/root/.ccr/agent-proxy-ca.crt';
+  if (!process.env.HTTPS_PROXY || !existsSync(ca)) return [];
+  const spki = createPublicKey(readFileSync(ca)).export({ type: 'spki', format: 'der' });
+  return [`--ignore-certificate-errors-spki-list=${createHash('sha256').update(spki).digest('base64')}`];
+}
+
 async function viaBrowser(out) {
   let chromium;
   try { ({ chromium } = await import('playwright')); } catch { return false; }
   const proxy = process.env.HTTPS_PROXY ? { server: process.env.HTTPS_PROXY } : undefined;
-  const browser = await chromium.launch({ proxy, args: ['--disable-blink-features=AutomationControlled'] });
+  const browser = await chromium.launch({ proxy, args: ['--disable-blink-features=AutomationControlled', ...proxyCaArgs()] });
   try {
-    const ctx = await browser.newContext({ userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36', ignoreHTTPSErrors: !!proxy });
+    const ctx = await browser.newContext({ userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36' });
     const page = await ctx.newPage();
     await page.goto(MTP_PAGE, { timeout: 60000 });
     await page.waitForTimeout(8000); // let the browser check finish
