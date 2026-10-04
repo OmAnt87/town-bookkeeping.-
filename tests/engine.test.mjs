@@ -677,3 +677,56 @@ test('VA local committees are placed by district, office or address and receipts
   assert.deepEqual(out.influence, { pacContributions: 0, developerContributions: 500, unionContributions: 250 });
   assert.equal(out.counted, 2); // the amended duplicate is dropped
 });
+
+import { mapItem as ncMapItem, aggregateNc } from '../scripts/nc/census-map.mjs';
+
+test('NC Census items map to categories, leave out intergovernmental payments and flag imputed units', () => {
+  assert.equal(ncMapItem('T01').key, 'propertyTax');
+  assert.equal(ncMapItem('A91').key, 'utilityCharges');
+  assert.equal(ncMapItem('E12').key, 'education');
+  assert.equal(ncMapItem('F44').key, 'roads');
+  assert.equal(ncMapItem('39U').key, 'debtService');
+  assert.equal(ncMapItem('M89').group, 'excluded');
+  assert.equal(ncMapItem('29U').group, 'excluded');
+  assert.equal(ncMapItem('Q99'), null);
+  const it = (code, amount, flag = 'R') => ({ code, amount, flag });
+  const a = aggregateNc([it('T01', 100), it('C89', 50), it('A91', 20), it('E62', 60), it('F62', 10), it('E91', 15), it('I89', 5), it('39U', 10), it('M89', 30), it('29U', 40), it('49U', 300), it('64V', 20)]);
+  assert.deepEqual(a.revenue, { propertyTax: 100000, stateAid: 50000, utilityCharges: 20000 });
+  assert.deepEqual(a.spending, { publicSafety: 70000, utilities: 15000, debtService: 15000 });
+  assert.equal(a.debt, 320000);
+  assert.equal(a.proceeds, 40000);
+  assert.equal(a.intergovernmental, 30000);
+  assert.deepEqual(a.lineTotals, { revenue: 170000, spending: 100000 });
+  assert.equal(a.imputed, false);
+  assert.equal(aggregateNc([it('T01', 1, 'I'), it('E62', 1, 'I'), it('C89', 1)]).imputed, true);
+  assert.equal(a.incomplete, false);
+  assert.equal(aggregateNc([it('A90', 5000), it('E90', 4500), it('T10', 185), it('49U', 3450)]).incomplete, true); // only the ABC board
+  assert.equal(aggregateNc([it('39U', 1288), it('49U', 19995)]).incomplete, true); // only debt
+});
+
+import { localityFor as ncLocalityFor, classifyNc, summarizeNcReceipts } from '../scripts/nc/ncsbe-map.mjs';
+
+test('NC local committees are placed by office and address and receipts are classified', () => {
+  const ctx = {
+    zipCounty: new Map([['27601', '37183'], ['27513', '37183'], ['28202', '37119']]),
+    countyKey: new Map([['37183', 'County|37183'], ['37119', 'County|37119']]),
+    munis: new Map([['raleigh', [{ key: 'Place|55000', county: '37183' }]], ['cary', [{ key: 'Place|10740', county: '37183' }]]]),
+    placeCounty: new Map([['charlotte', '37119']]),
+  };
+  assert.equal(ncLocalityFor({ CandOfficeCode: 'COUM', CommCity: 'RALEIGH', CommZip: '27601', CommName: 'X' }, ctx), 'Place|55000');
+  assert.equal(ncLocalityFor({ CandOfficeCode: 'MAY', CommCity: 'APEX', CommZip: '27513', CommName: 'COMMITTEE TO ELECT JO FOR CARY TOWN COUNCIL' }, ctx), 'Place|10740');
+  assert.equal(ncLocalityFor({ CandOfficeCode: 'CYCM', CommCity: 'RALEIGH', CommZip: '27601', CommName: 'X' }, ctx), 'County|37183');
+  assert.equal(ncLocalityFor({ CandOfficeCode: 'SHER', CommCity: 'CHARLOTTE', CommZip: '28299', CommName: 'X' }, ctx), 'County|37119'); // PO box ZIP
+  assert.equal(ncLocalityFor({ CandOfficeCode: 'NSHS', CommCity: 'RALEIGH', CommZip: '27601', CommName: 'X' }, ctx), null);
+
+  const rec = (name, o) => ({ TransSubTypeCode: 'CPCM', OrgName: name, OccurDate: '05/01/2025', Amount: 500, SboeID: '183-1', recipient: 'Committee to Elect Pat (county commissioner)', ...o });
+  assert.equal(classifyNc(rec('Wake County Professional Firefighters Local 548')).key, 'unionContributions');
+  assert.equal(classifyNc(rec('NC Realtors PAC')).key, 'pacContributions');
+  assert.equal(classifyNc(rec('Self Help Credit Union', { TransSubTypeCode: 'OUTS' })), null);
+  assert.equal(classifyNc(rec('Committee to Elect Jane Doe')), null);
+  assert.equal(classifyNc(rec('Jim Perry Committee')), null);
+  assert.equal(classifyNc(rec('Wake County Democratic Party')), null);
+  const out = summarizeNcReceipts([rec('NC Realtors PAC'), rec('NC Realtors PAC'), rec('Wake County Professional Firefighters Local 548', { Amount: 250 }), rec('NC Realtors PAC', { OccurDate: '05/01/2020' })], '2023-01-01');
+  assert.deepEqual(out.influence, { pacContributions: 500, developerContributions: 0, unionContributions: 250 });
+  assert.equal(out.counted, 2);
+});
