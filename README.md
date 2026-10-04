@@ -124,6 +124,17 @@ node scripts/ri/build-county.mjs --all && node scripts/ri/status.mjs
 node scripts/build-summary.mjs
 ```
 
+### Maryland (all reporting municipalities and Baltimore City)
+
+`data/real/md-<county>.json` holds every Maryland municipality that reported to the Department of Legislative Services, and Baltimore City, from DLS's [Local Government Finances in Maryland](https://dls.maryland.gov/budget/local-finances/) (actual revenue by source, spending by function and public debt, reconciled to audits; FY 2021 on) and Census 2025 population estimates. The reports are PDFs; `lgf-to-json.py` reads their tables with pdfplumber. Counties run schools and most services, and municipal candidates file campaign reports locally, so political money is not scored. Coverage and gaps: [docs/MD_DATA_STATUS.md](docs/MD_DATA_STATUS.md).
+
+```bash
+node scripts/md/download.mjs                       # DLS reports (PDF); Census files
+pip install pdfplumber && python3 scripts/md/lgf-to-json.py
+node scripts/md/build-county.mjs --all && node scripts/md/status.mjs
+node scripts/build-summary.mjs
+```
+
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Public-record data**, and lets you filter to them on the map and rankings.
