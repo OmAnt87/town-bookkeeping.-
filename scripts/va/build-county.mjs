@@ -48,7 +48,7 @@ for (const r of pop.filter((p) => p.sumlev === '050')) {
 }
 // Towns: the place, in the county holding most of its people.
 const townCounty = new Map();
-for (const r of pop.filter((p) => p.sumlev === '157' && / town$/.test(p.name))) {
+for (const r of pop.filter((p) => p.sumlev === '157' && / town( \(pt\.\))?$/.test(p.name))) {
   const cur = townCounty.get(r.place);
   if (!cur || Number(r[POP_YEAR]) > cur.pop) townCounty.set(r.place, { county: `51${r.county}`, pop: Number(r[POP_YEAR]) });
 }
