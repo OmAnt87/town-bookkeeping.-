@@ -594,3 +594,31 @@ test('RI filers and party committees match their town and ERTS receipts are clas
   assert.deepEqual(out.influence, { pacContributions: 500, developerContributions: 0, unionContributions: 250 });
   assert.equal(out.counted, 2);
 });
+
+import { aggregateMd } from '../scripts/md/lgf-map.mjs';
+
+test('MD statements map all funds, split utility charges, leave out debt proceeds and spread miscellaneous', () => {
+  const a = aggregateMd({
+    'revenues/Taxes - Local - Property': [500, 0, 0, 500],
+    'revenues/Taxes - Local - Income': [100, 0, 0, 100],
+    'revenues/Service Charges': [20, 0, 180, 200],
+    'revenues/County Grants': [50, 0, 0, 50],
+    'revenues/Debt Proceeds': [0, 150, 0, 150],
+    'revenues/Total': [670, 150, 180, 1000],
+    'expenditures/General Government': [100, 0, 0, 100],
+    'expenditures/Police': [200, 0, 0, 200],
+    'expenditures/Transportation': [100, 100, 0, 200],
+    'expenditures/Sewer/Solid Waste/Water': [0, 0, 200, 200],
+    'expenditures/Principal': [50, 0, 50, 100],
+    'expenditures/Miscellaneous': [70, 0, 0, 70],
+    'expenditures/Total': [520, 100, 250, 870],
+  });
+  assert.deepEqual(a.revenue, { propertyTax: 500, salesTax: 100, utilityCharges: 180, feesPermits: 20, grants: 50 });
+  assert.deepEqual(a.excluded, { 'Debt Proceeds': 150 });
+  assert.equal(a.lineTotals.revenue, a.reported.revenue);
+  assert.equal(a.lineTotals.spending, a.reported.spending);
+  // Miscellaneous (70) over 700 of departments, not debt service.
+  assert.deepEqual(a.spending, { administration: 110, publicSafety: 220, roads: 220, utilities: 220, debtService: 100 });
+  assert.equal(a.benefitsSpread, 70);
+  assert.deepEqual(aggregateMd({ 'expenditures/Mystery': [1, 0, 0, 1] }).unmapped, ['expenditures/Mystery']);
+});
