@@ -17,7 +17,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs, parseCSV, slugify } from '../lib.mjs';
 import { aggregateNc } from './census-map.mjs';
-import { CENSUS_PAGE, YEARS } from './download.mjs';
+import { CENSUS_PAGE, YEARS, readUnits } from '../common/census-units.mjs';
 import { zipCounties } from '../va/elect-map.mjs';
 import { localityFor, summarizeNcReceipts, norm, NCSBE_PAGE, OFFICE_LABEL } from './ncsbe-map.mjs';
 
@@ -35,24 +35,7 @@ const gaz = (file, xcol) => new Map(readFileSync(join(RAW, file), 'utf8').split(
 const countyXY = gaz('2024_Gaz_counties_national.txt', 8);
 const placeXY = gaz('2024_Gaz_place_national.txt', 10);
 
-// Census units by year: id -> { name, county, place, fyEnd, items[] }.
-const units = {};
-for (const y of YEARS) {
-  const dir = join(RAW, `units-${y}`);
-  const u = new Map();
-  for (const l of readFileSync(join(dir, 'pid.txt'), 'latin1').split(/\r?\n/)) {
-    if (!/^37[12]/.test(l)) continue;
-    // Fiscal year end as MMDDYY; a few units leave it blank (North Carolina's is June 30).
-    const fy = l.slice(116).trim().match(/\s(\d\d)(\d\d)(\d\d)$/);
-    const fyEnd = fy ? `20${fy[3]}-${fy[1]}-${fy[2]}` : `${y}-06-30`;
-    u.set(l.slice(0, 12), { id: l.slice(0, 12), kind: l[2] === '1' ? 'county' : 'muni', name: l.slice(12, 76).trim(), place: l.slice(111, 116).trim(), fyEnd, items: [] });
-  }
-  for (const l of readFileSync(join(dir, 'items.txt'), 'latin1').split(/\r?\n/)) {
-    const g = u.get(l.slice(0, 12));
-    if (g) g.items.push({ code: l.slice(12, 15), amount: Number(l.slice(15, 27)), flag: l.slice(31, 32) });
-  }
-  units[y] = u;
-}
+const units = readUnits(RAW, '37');
 
 // Census geography: counties by FIPS, municipalities by place code (in the county holding
 // most of their people).
