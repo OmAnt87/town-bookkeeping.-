@@ -678,7 +678,7 @@ test('VA local committees are placed by district, office or address and receipts
   assert.equal(out.counted, 2); // the amended duplicate is dropped
 });
 
-import { mapItem as ncMapItem, aggregateNc } from '../scripts/nc/census-map.mjs';
+import { mapItem as ncMapItem, aggregateUnit as aggregateNc } from '../scripts/common/census-units.mjs';
 
 test('NC Census items map to categories, leave out intergovernmental payments and flag imputed units', () => {
   assert.equal(ncMapItem('T01').key, 'propertyTax');
@@ -729,4 +729,43 @@ test('NC local committees are placed by office and address and receipts are clas
   const out = summarizeNcReceipts([rec('NC Realtors PAC'), rec('NC Realtors PAC'), rec('Wake County Professional Firefighters Local 548', { Amount: 250 }), rec('NC Realtors PAC', { OccurDate: '05/01/2020' })], '2023-01-01');
   assert.deepEqual(out.influence, { pacContributions: 500, developerContributions: 0, unionContributions: 250 });
   assert.equal(out.counted, 2);
+});
+
+import { parseOffice, localityFor as scLocalityFor, classifySc, summarizeScReceipts } from '../scripts/sc/ethics-map.mjs';
+
+test('SC candidates are placed by office name and Ethics Commission contributions are classified', () => {
+  const ctx = {
+    counties: new Map([['charleston', 'County|45019'], ['spartanburg', 'County|45083'], ['horry', 'County|45051']]),
+    munis: new Map([['charleston', 'Place|13330'], ['mount pleasant', 'Place|48535'], ['north myrtle beach', 'Place|50695']]),
+  };
+  assert.equal(scLocalityFor('Charleston City Council District 3', ctx), 'Place|13330');
+  assert.equal(scLocalityFor('Charleston County Council District 8', ctx), 'County|45019');
+  assert.equal(scLocalityFor('Mt. Pleasant City Council At Large', ctx), 'Place|48535');
+  assert.equal(scLocalityFor('North Myrtle Beach Mayor ', ctx), 'Place|50695');
+  assert.equal(scLocalityFor('Spartanburg Sheriff ', ctx), 'County|45083');
+  assert.equal(scLocalityFor('Horry County Council Chairman/Supervisor', ctx), 'County|45051');
+  assert.equal(parseOffice('Charleston Solicitor'), null);
+  assert.equal(parseOffice('School Board Trustee District SPARTANBURG #2'), null);
+  assert.equal(parseOffice('SC House of Representatives District 4'), null);
+  assert.equal(parseOffice('4'), null);
+  assert.equal(parseOffice('State Treasurer'), null);
+  assert.equal(scLocalityFor('Sullivans Island Mayor', { counties: new Map(), munis: new Map([['sullivans island', 'Place|70090']]) }), 'Place|70090');
+
+  const rec = (name, o) => ({ contributionId: Math.random(), group: 'Yes', contributorName: ` ${name}`, date: '2025-05-01T04:00:00', amount: 500, recipient: 'Pat Doe (council)', ...o });
+  assert.equal(classifySc(rec('Charleston Firefighters Local 1146')).key, 'unionContributions');
+  assert.equal(classifySc(rec('SC Realtors PAC')).key, 'pacContributions');
+  assert.equal(classifySc(rec('Greystar Development LLC')).key, 'developerContributions');
+  assert.equal(classifySc(rec('Founders Federal Credit Union')).key, 'developerContributions');
+  assert.equal(classifySc(rec('COR Employees Credit Union')).key, 'developerContributions');
+  assert.equal(classifySc(rec('Ross Appel for City Council')), null);
+  assert.equal(classifySc(rec('Ripley Yacht Club Investors, LLC')).key, 'developerContributions');
+  assert.equal(classifySc(rec('First Citizens Bank')).key, 'developerContributions');
+  assert.equal(classifySc(rec('Union Heights Residential')).key, 'developerContributions');
+  assert.equal(classifySc(rec("International Longshoreman's Association")).key, 'unionContributions');
+  assert.equal(classifySc(rec('Friends of Jane Doe')), null);
+  assert.equal(classifySc(rec('Charleston County Republican Party')), null);
+  assert.equal(classifySc(rec('Pat Smith', { group: 'No' })), null);
+  const out = summarizeScReceipts([rec('Greystar Development LLC', { contributionId: 1 }), rec('Greystar Development LLC', { contributionId: 1 }), rec('SC Realtors PAC', { contributionId: 2, amount: 250 }), rec('SC Realtors PAC', { contributionId: 3, date: '2020-05-01T04:00:00' })], '2023-01-01');
+  assert.deepEqual(out.influence, { pacContributions: 250, developerContributions: 500, unionContributions: 0 });
+  assert.equal(out.counted, 2); // the repeated contribution is dropped
 });

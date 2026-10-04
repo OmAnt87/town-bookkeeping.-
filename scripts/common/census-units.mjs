@@ -151,7 +151,8 @@ export function aggregateUnit(items) {
     // The Census fills in units that did not report; those are estimates, not filings.
     imputed: flags.I > flags.R,
     // Some units carry only a few lines: their debt, or just a liquor board or other agency.
-    // Every county and municipality has property tax or a share of the local sales tax.
-    incomplete: !has(/^E/) || !has(/^T0[19]$/),
+    // Every county and municipality has property tax or a share of the local sales tax, and
+    // spends more than a quarter of its revenue (less means departments are missing).
+    incomplete: !has(/^E/) || !has(/^T0[19]$/) || expSum * 4 < revSum,
   };
 }
