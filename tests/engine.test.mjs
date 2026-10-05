@@ -808,3 +808,40 @@ test('GA RLGF maps revenue and spending, reconciles to the form, and nets out in
   assert.equal(a.inconsistent, false);
   assert.equal(aggregateGa({ ...blocks, R3: { ...blocks.R3, '39_9999': 7e9 } }).inconsistent, true);
 });
+
+import { aggregateFl, revenueKey as flRevenueKey, expenditureKey as flExpenditureKey } from '../scripts/fl/edr-map.mjs';
+
+test('FL EDR rows map by account code and fund, leaving out internal service, fiduciary and financing items', () => {
+  assert.equal(flRevenueKey('311')[0], 'propertyTax');
+  assert.equal(flRevenueKey('312.41')[0], 'salesTax');
+  assert.equal(flRevenueKey('323.1')[0], 'feesPermits');
+  assert.equal(flRevenueKey('335.18')[0], 'stateAid');
+  assert.equal(flRevenueKey('343.3')[0], 'utilityCharges');
+  assert.equal(flRevenueKey('381'), null);
+  assert.equal(flExpenditureKey('517')[0], 'debtService');
+  assert.equal(flExpenditureKey('522')[0], 'publicSafety');
+  assert.equal(flExpenditureKey('535')[0], 'utilities');
+  assert.equal(flExpenditureKey('572')[0], 'parks');
+  assert.equal(flExpenditureKey('581'), null);
+  const f = (o) => ({ general: 0, specialRevenue: 0, debtService: 0, capitalProjects: 0, permanent: 0, enterprise: 0, internalService: 0, custodial: 0, pension: 0, trust: 0, privatePurpose: 0, componentUnits: 0, ...o });
+  const rev = [
+    ['311', 'Ad Valorem Taxes', f({ general: 1000 })],
+    ['343.3', 'Water Utility', f({ enterprise: 500 })],
+    ['341.2', 'Internal Service Charges', f({ internalService: 300 })],
+    ['381', 'Inter-fund Transfer In', f({ general: 200 })],
+  ];
+  const exp = [
+    ['521', 'Law Enforcement', f({ general: 700, capitalProjects: 50 })],
+    ['533', 'Water Utility Services', f({ enterprise: 450 })],
+    ['517', 'Debt Service Payments', f({ debtService: 80 })],
+    ['518', 'Pension Benefits', f({ pension: 900 })],
+    ['581', 'Inter-fund Group Transfers Out', f({ general: 200 })],
+  ];
+  const a = aggregateFl(rev, exp);
+  assert.deepEqual(a.revenue, { propertyTax: 1000, utilityCharges: 500 });
+  assert.deepEqual(a.spending, { publicSafety: 750, utilities: 450, debtService: 80 });
+  assert.deepEqual(a.leftOut, { otherSources: 200, otherUses: 200 });
+  assert.equal(a.empty, false);
+  assert.equal(a.inconsistent, false);
+  assert.equal(aggregateFl(rev, []).empty, true);
+});
