@@ -170,6 +170,17 @@ node scripts/sc/build-county.mjs --all && node scripts/sc/status.mjs
 node scripts/build-summary.mjs
 ```
 
+### Georgia (counties, consolidated governments, cities and towns)
+
+`data/real/ga-<county>.json` holds each Georgia county (or consolidated city-county government) and the cities whose people mostly live in it, from the Report of Local Government Finance each government files with the Department of Community Affairs ([viewer](https://apps.dca.ga.gov/RLGF/Default.aspx); actual revenue by UCOA account, spending by function including capital, enterprise funds, payments to other governments and debt, from audited figures where available; FY 2022 on) and Census 2025 population estimates. School districts are separate governments. Local candidates file campaign reports with their county or city, so political money is not scored. Coverage and gaps: [docs/GA_DATA_STATUS.md](docs/GA_DATA_STATUS.md).
+
+```bash
+node scripts/ga/download.mjs                       # DCA reports (Excel); Census files
+pip install xlrd openpyxl && python3 scripts/ga/rlgf-to-json.py
+node scripts/ga/build-county.mjs --all && node scripts/ga/status.mjs
+node scripts/build-summary.mjs
+```
+
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Public-record data**, and lets you filter to them on the map and rankings.
