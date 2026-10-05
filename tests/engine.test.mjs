@@ -845,3 +845,22 @@ test('FL EDR rows map by account code and fund, leaving out internal service, fi
   assert.equal(a.inconsistent, false);
   assert.equal(aggregateFl(rev, []).empty, true);
 });
+
+import { parseCommitteeOffice, classifyDe, summarizeDeReceipts } from '../scripts/de/cfrs-map.mjs';
+
+test('DE committees are placed by their office and CFRS contributor types classify the money', () => {
+  assert.deepEqual(parseCommitteeOffice('County Office - Sussex County - County Council - District 3'), { level: 'county', place: 'Sussex', office: 'county council' });
+  assert.deepEqual(parseCommitteeOffice('Municipal Office - Newark - City Council - District 03'), { level: 'municipal', place: 'Newark', office: 'city council' });
+  assert.equal(parseCommitteeOffice('State Office - State Senator - District 16'), null);
+  const rec = (name, type, o) => ({ contributor_name: name, contributor_type: type, contribution_type: 'Check', contribution_date: '5/1/2025', contribution_amount: '500.0000', cf_id: '01000001', recipient: 'Friends of Pat (county council)', ...o });
+  assert.equal(classifyDe(rec('Rickman Management LLC', 'Corporation  Partnership  and Other Entity')).key, 'developerContributions');
+  assert.equal(classifyDe(rec('Laborers Local 199', 'Labor Union')).key, 'unionContributions');
+  assert.equal(classifyDe(rec('Delaware Realtors', 'Political Action Committee')).key, 'pacContributions');
+  assert.equal(classifyDe(rec('Scaor Political Action Committee', 'Corporation  Partnership  and Other Entity')).key, 'pacContributions');
+  assert.equal(classifyDe(rec('Pat Smith', 'Individual')), null);
+  assert.equal(classifyDe(rec('Friends of Lee', 'Candidate Committee')), null);
+  assert.equal(classifyDe(rec('Acme Inc', 'Corporation  Partnership  and Other Entity', { contribution_type: 'Refund/Rebate' })), null);
+  const out = summarizeDeReceipts([rec('Acme Inc', 'Corporation  Partnership  and Other Entity'), rec('Acme Inc', 'Corporation  Partnership  and Other Entity'), rec('Laborers Local 199', 'Labor Union', { contribution_amount: '250' }), rec('Acme Inc', 'Corporation  Partnership  and Other Entity', { contribution_date: '5/1/2020' })], '2023-01-01');
+  assert.deepEqual(out.influence, { pacContributions: 0, developerContributions: 500, unionContributions: 250 });
+  assert.equal(out.counted, 2);
+});
