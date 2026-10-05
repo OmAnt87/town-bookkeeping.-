@@ -70,7 +70,7 @@ def main():
             continue
         out.setdefault(m.group(1), {})[m.group(2)] = blocks
     with open(os.path.join(RAW, 'rlgf.json'), 'w') as fh:
-        json.dump(out, fh)
+        json.dump(out, fh, default=str)  # dates (openpyxl) as text
     print(f'{sum(len(v) for v in out.values())} reports from {len(out)} governments; {len(bad)} unreadable')
     for b in bad[:30]:
         print('  ', b)

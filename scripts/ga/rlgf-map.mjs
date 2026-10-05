@@ -149,5 +149,8 @@ export function aggregateGa(blocks) {
     check: { revenue: [Math.round(sum(revenue)), Math.round(formRevenue)], partV: [Math.round(partV), Math.round(formPartV)] },
     // A report with no revenue or no spending was not filled in.
     empty: !sum(revenue) || !partV,
+    // Revenue and spending more than four times apart means an entry error (Milledgeville's
+    // FY 2025 report lists $7.2 billion of other revenue) or a part left blank.
+    inconsistent: sum(revenue) > 4 * sum(spending) || sum(spending) > 4 * sum(revenue),
   };
 }

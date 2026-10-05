@@ -43,8 +43,9 @@ ${rows.map((r) => `| ${label[r.kind]} | ${r.n} | ${r.fy} | ${r.score} | ${r.admi
 
 ## Known gaps
 - **No report filed with DCA since FY ${2022} (left out, ${report.notFiled.length}):** ${report.notFiled.length ? report.notFiled.join(', ') : 'none'}.
+- **Reports since FY 2022 left out because revenue and spending are more than four times apart** (an entry error or a part left blank; ${report.inconsistent.length}): ${report.inconsistent.length ? report.inconsistent.join(', ') : 'none'}.
 - **Not matched to Census geography:** ${report.skipped.length ? report.skipped.join(', ') : 'none'}.
-- **Older year used** because the latest report is empty: ${report.older.length ? report.older.join(', ') : 'none'}.
+- **Older year used** because the latest report is empty or inconsistent: ${report.older.length ? report.older.join(', ') : 'none'}.
 - **Reports whose own totals do not match their lines:** ${report.mismatch.length ? report.mismatch.join('; ') : 'none'}.
 - **Transparency practices** have not been checked yet, so they are not scored.
 `);

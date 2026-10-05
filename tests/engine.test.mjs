@@ -805,4 +805,6 @@ test('GA RLGF maps revenue and spending, reconciles to the form, and nets out in
   assert.equal(a.intergovernmental, 90);
   assert.equal(a.empty, false);
   assert.equal(aggregateGa({ R1: { TTL_Part1: 0 } }).empty, true);
+  assert.equal(a.inconsistent, false);
+  assert.equal(aggregateGa({ ...blocks, R3: { ...blocks.R3, '39_9999': 7e9 } }).inconsistent, true);
 });

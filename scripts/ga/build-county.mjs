@@ -74,8 +74,9 @@ function geoFor(g) {
     const c = counties.get(norm(g.name.replace(/ County$/, '')));
     return c && { key: g.id, kind: 'County', display: c.name, geoid: c.geoid, pop: c.pop, xy: c.xy, county: c.name, file: c.file };
   }
-  const base = norm(g.name.replace(/ (City|Town)$/i, ''));
-  const list = places.get(ALIAS[base] || base) || [];
+  // "Garden City City" is listed as "Garden City"; try the name with and without the type.
+  const bases = [norm(g.name.replace(/ (City|Town)$/i, '')), norm(g.name)].map((b) => ALIAS[b] || b);
+  const list = bases.map((b) => places.get(b)).find((l) => l?.length) || [];
   const home = dcaCounty.get(g.id.slice(1, 4));
   const p = list.length === 1 ? list[0] : list.find((x) => x.county && norm(x.county.base) === norm(home));
   return p && p.county && { key: g.id, kind: p.kind, display: `${p.kind} of ${p.base}`, geoid: p.geoid, pop: p.pop, xy: p.xy, county: p.county.name, file: p.county.file };
@@ -92,17 +93,22 @@ const fyEndDate = (fye, year) => {
 
 function buildGov(g, report) {
   const years = rlgf[g.id] || {};
-  const usable = Object.keys(years).filter((y) => !aggregateGa(years[y]).empty).sort();
+  const usable = Object.keys(years).filter((y) => { const x = aggregateGa(years[y]); return !x.empty && !x.inconsistent; }).sort();
   const year = usable.at(-1);
   const latestListed = Object.keys(g.files).sort().at(-1);
-  if (!year || Number(year) < MIN_YEAR) { report.notFiled.push(`${g.name}${latestListed ? ` (latest FY ${latestListed})` : ''}`); return null; }
+  if (!year || Number(year) < MIN_YEAR) {
+    const recent = Object.keys(years).filter((y) => Number(y) >= MIN_YEAR);
+    if (recent.length) report.inconsistent.push(`${g.name} (FY ${recent.join(', ')})`);
+    else report.notFiled.push(`${g.name}${latestListed ? ` (latest FY ${latestListed})` : ''}`);
+    return null;
+  }
   const geo = geoFor(g);
   if (!geo || !geo.xy) { report.skipped.push(`${g.name}: no Census match`); return null; }
   const b = years[year];
   const a = aggregateGa(b);
   for (const [t, [x, z]] of Object.entries(a.check)) if (Math.abs(x - z) > 2) report.mismatch.push(`${g.name} FY ${year} ${t}: mapped ${money(x)} vs form ${money(z)}`);
   const lastYear = Object.keys(years).sort().at(-1);
-  if (lastYear !== year) report.older.push(`${geo.display} (FY ${year}; FY ${lastYear} report empty)`);
+  if (lastYear !== year) report.older.push(`${geo.display} (FY ${year}; FY ${lastYear} report ${aggregateGa(years[lastYear]).empty ? 'empty' : 'inconsistent'})`);
 
   const history = usable.map((y) => { const h = aggregateGa(years[y]); return { year: Number(y), revenue: sum(h.revenue), spending: sum(h.spending), basis: 'actual' }; });
   const log = b.LOG1 || {};
@@ -162,7 +168,7 @@ function buildGov(g, report) {
 }
 
 const built = [];
-const report = { skipped: [], notFiled: [], mismatch: [], older: [] };
+const report = { skipped: [], notFiled: [], inconsistent: [], mismatch: [], older: [] };
 for (const g of index) {
   const b = buildGov(g, report);
   if (b) built.push(b);
