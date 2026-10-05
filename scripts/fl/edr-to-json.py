@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Reads the EDR revenue and expenditure workbooks in data/raw/fl/edr/ into data/raw/fl/edr.json.
 
-Each workbook has one sheet per fiscal year. Account rows give the Uniform Accounting System
-code, its name and amounts in twelve fund-type columns (general, special revenue, debt service,
+Each workbook has one sheet per fiscal year. Account rows give (after a category column) the
+Uniform Accounting System code, its name and amounts in twelve fund-type columns (general, special revenue, debt service,
 capital projects, permanent, enterprise, internal service, custodial, pension, trust, private
 purpose, component units). Category subtotal and total rows are skipped.
 
@@ -37,11 +37,12 @@ def read(path):
         for r in rows:
             if not r:
                 continue
-            c = code_of(r[0])
+            # Columns: category, account code, account name, twelve fund types, total.
+            c = code_of(r[1]) if len(r) > 14 else None
             if not c:
                 continue
-            vals = [float(x) if isinstance(x, (int, float)) else float(str(x).replace(',', '') or 0) if x not in (None, '') and re.fullmatch(r'-?[\d,.]+', str(x)) else 0.0 for x in r[2:14]]
-            lines.append([c, str(r[1] or '').strip(), dict(zip(FUNDS, vals))])
+            vals = [float(x) if isinstance(x, (int, float)) else float(str(x).replace(',', '') or 0) if x not in (None, '') and re.fullmatch(r'-?[\d,.]+', str(x)) else 0.0 for x in r[3:15]]
+            lines.append([c, str(r[2] or '').strip(), dict(zip(FUNDS, vals))])
         years[name.strip()] = {'fye': fye, 'lines': lines}
     return years
 

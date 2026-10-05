@@ -28,8 +28,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const list = [];
   for (const [kind, page] of Object.entries(EDR_PAGE)) {
     const html = curl(page).toString('latin1');
-    for (const m of html.matchAll(/href="((?:cntyfiscal|munifiscal)\/([a-z0-9-]+)revenues\.xlsx)"[^>]*>([^<]*?) revenues/gi)) {
-      list.push({ kind, slug: m[2], name: m[3].trim(), revenues: `${EDR_BASE}/${m[1]}`, expenditures: `${EDR_BASE}/${m[1].replace(/revenues\.xlsx$/, 'expenditures.xlsx')}` });
+    for (const m of html.matchAll(/href="((?:cntyfiscal|munifiscal)\/([a-z0-9-]+)revenues\.xlsx)"[^>]*>([^<]*?)(?:\s|&nbsp;)+revenues/gi)) {
+      list.push({ kind, slug: m[2], name: m[3].replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').trim(), revenues: `${EDR_BASE}/${m[1]}`, expenditures: `${EDR_BASE}/${m[1].replace(/revenues\.xlsx$/, 'expenditures.xlsx')}` });
     }
   }
   writeFileSync(join(RAW, 'edr-index.json'), `${JSON.stringify(list, null, 1)}\n`);

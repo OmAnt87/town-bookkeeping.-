@@ -57,12 +57,15 @@ for (const r of pop.filter((p) => p.sumlev === '162')) {
   places.set(norm(m[1]), { geoid: `12${r.place}`, base: m[1], kind: KIND[m[2]], pop: Number(r[POP_YEAR]), xy: placeXY.get(`12${r.place}`), county: c });
 }
 
+// EDR names that differ from the Census's.
+const ALIAS = { Islamorada: 'Islamorada, Village of Islands' };
+
 function geoFor(g) {
   if (g.kind === 'county') {
     const c = counties.get(norm(g.name.replace(/ County$/, '')));
     return c && { kind: 'County', display: c.name, geoid: c.geoid, pop: c.pop, xy: c.xy, county: c.name, file: c.file };
   }
-  const p = places.get(norm(g.name));
+  const p = places.get(norm(ALIAS[g.name] || g.name));
   if (!p || !p.county) return null;
   if (norm(g.name) === 'jacksonville') {
     // Consolidated with Duval County in 1968; the county's file is headed by the city.
@@ -96,7 +99,10 @@ function buildGov(g, report) {
   const geo = geoFor(g);
   if (!geo || !geo.xy) { report.skipped.push(`${g.name}: no Census match`); return null; }
   const a = agg(year);
-  if (years.at(-1) !== year) report.older.push(`${geo.display} (FY ${year}; FY ${years.at(-1)} ${agg(years.at(-1)).empty ? 'empty' : 'inconsistent'})`);
+  // Workbooks may carry an empty sheet for a year not reported yet; only a filled-in later year
+  // that failed the consistency check is worth listing.
+  const lastFilled = years.filter((y) => !agg(y).empty).at(-1);
+  if (lastFilled !== year) report.older.push(`${geo.display} (FY ${year}; FY ${lastFilled} inconsistent)`);
   const history = usable.map((y) => { const h = agg(y); return { year: Number(y), revenue: sum(h.revenue), spending: sum(h.spending), basis: 'actual' }; });
   const date = fyEnd(rec.revenues?.[year]?.fye || rec.expenditures?.[year]?.fye, year);
   const fyEndText = new Date(`${date}T12:00:00Z`).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
