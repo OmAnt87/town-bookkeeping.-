@@ -882,3 +882,33 @@ test('NH keeps only the town share of a property tax levy that includes school a
   // Counties levy only their own tax.
   assert.equal(aggregateNh([it('T01', 900), it('E62', 400)], true).passThrough, 0);
 });
+
+import { aggregateVt, taxesFor, taxYearFor } from '../scripts/vt/edtax.mjs';
+
+test('VT takes out education property tax a town reported as its own, using the state tax file', () => {
+  const it = (code, amount, flag = 'R') => ({ code, amount, flag });
+  // Levy of 4,191 includes the town's 965 and 3,301 of education tax billed for the school district.
+  const gross = aggregateVt([it('T01', 4191), it('C89', 300), it('E44', 900), it('E62', 300)], { muni: 965000, edu: 3301000, taxYear: 2021 });
+  assert.equal(gross.passThrough, 3226000);
+  assert.deepEqual(gross.revenue, { propertyTax: 965000, stateAid: 300000 });
+  assert.equal(gross.lineTotals.revenue, 1265000);
+  assert.equal(gross.lines.find((l) => l.key === 'propertyTax').amount, 965000);
+  // A levy close to the municipal tax (district taxes or late payments a little above) is the town's own.
+  const own = aggregateVt([it('T01', 2436), it('E44', 2000)], { muni: 2200000, edu: 6000000, taxYear: 2021 });
+  assert.equal(own.passThrough, 0);
+  assert.equal(own.revenue.propertyTax, 2436000);
+  // No tax figures (counties, villages): nothing taken out.
+  assert.equal(aggregateVt([it('T01', 900), it('E62', 400)]).passThrough, 0);
+});
+
+test('VT tax file lookup matches Census names and the tax year funding each fiscal year', () => {
+  assert.equal(taxYearFor('2022-06-30'), 2021);
+  assert.equal(taxYearFor('2022-12-31'), 2022);
+  const taxes = { barrecity: { 2021: { edu: 1, muni: 2 } }, barretown: { 2021: { edu: 3, muni: 4 } }, bristol: { 2023: { edu: 5, muni: 6 } }, essexjunction: { 2022: { edu: 7, muni: 8 } } };
+  assert.deepEqual(taxesFor(taxes, 'BARRE CITY', '2022-06-30'), { edu: 1, muni: 2, taxYear: 2021 });
+  assert.deepEqual(taxesFor(taxes, 'BARRE TOWN', '2022-06-30'), { edu: 3, muni: 4, taxYear: 2021 });
+  assert.deepEqual(taxesFor(taxes, 'BRISTOL TOWN', '2024-06-30'), { edu: 5, muni: 6, taxYear: 2023 });
+  // Essex Junction became a city in July 2022: its first tax year is the next one.
+  assert.deepEqual(taxesFor(taxes, 'ESSEX JUNCTION CITY', '2022-06-30'), { edu: 7, muni: 8, taxYear: 2022 });
+  assert.equal(taxesFor(taxes, 'GOSHEN TOWN', '2022-06-30'), null);
+});
