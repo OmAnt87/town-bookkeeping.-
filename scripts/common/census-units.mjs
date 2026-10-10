@@ -1,6 +1,7 @@
 // U.S. Census Bureau Annual Survey of State and Local Government Finances individual unit
 // files: download, parsing and mapping of item codes to Town Ledger categories, shared by the
-// states whose local governments are taken from them (North Carolina, South Carolina).
+// states whose local governments are taken from them (North and South Carolina, Delaware,
+// New Hampshire).
 // Amounts in the files are in thousands of dollars.
 //
 // Spending is by function (the two digits after E current operations, F construction, G other
@@ -37,12 +38,14 @@ export function downloadUnits(raw, curl, force = false) {
   }
 }
 
-// Counties (type 1) and municipalities (type 2) of one state, by year:
-// { [year]: Map(id -> { id, kind: 'county'|'muni', name, place, fyEnd, items[] }) }.
-// place is the FIPS place code, or '99' + county FIPS for a county.
-export function readUnits(raw, stateFips) {
+// Counties (type 1) and municipalities (type 2) of one state, by year, plus townships (type 3,
+// New England towns) when types includes '3':
+// { [year]: Map(id -> { id, kind: 'county'|'muni'|'township', name, place, fyEnd, items[] }) }.
+// place is the FIPS place code (county subdivision code for a township), or '99' + county
+// FIPS for a county.
+export function readUnits(raw, stateFips, types = '12') {
   const units = {};
-  const re = new RegExp(`^${stateFips}[12]`);
+  const re = new RegExp(`^${stateFips}[${types}]`);
   for (const y of YEARS) {
     const dir = join(raw, `units-${y}`);
     const u = new Map();
@@ -51,7 +54,7 @@ export function readUnits(raw, stateFips) {
       // Fiscal year end as MMDDYY; a few units leave it blank (June 30 is used).
       const fy = l.slice(116).trim().match(/\s(\d\d)(\d\d)(\d\d)$/);
       const fyEnd = fy ? `20${fy[3]}-${fy[1]}-${fy[2]}` : `${y}-06-30`;
-      u.set(l.slice(0, 12), { id: l.slice(0, 12), kind: l[2] === '1' ? 'county' : 'muni', name: l.slice(12, 76).trim(), place: l.slice(111, 116).trim(), fyEnd, items: [] });
+      u.set(l.slice(0, 12), { id: l.slice(0, 12), kind: { 1: 'county', 2: 'muni', 3: 'township' }[l[2]], name: l.slice(12, 76).trim(), place: l.slice(111, 116).trim(), fyEnd, items: [] });
     }
     for (const l of readFileSync(join(dir, 'items.txt'), 'latin1').split(/\r?\n/)) {
       const g = u.get(l.slice(0, 12));

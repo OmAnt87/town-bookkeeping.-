@@ -864,3 +864,21 @@ test('DE committees are placed by their office and CFRS contributor types classi
   assert.deepEqual(out.influence, { pacContributions: 0, developerContributions: 500, unionContributions: 250 });
   assert.equal(out.counted, 2);
 });
+
+import { aggregateNh } from '../scripts/nh/levy.mjs';
+
+test('NH keeps only the town share of a property tax levy that includes school and county shares', () => {
+  const it = (code, amount, flag = 'R') => ({ code, amount, flag });
+  // Levy of 900 covers the school district and county; the town spends 400 and has 100 of other revenue.
+  const gross = aggregateNh([it('T01', 900), it('C89', 100), it('E62', 250), it('E44', 150)]);
+  assert.equal(gross.passThrough, 600000);
+  assert.deepEqual(gross.revenue, { propertyTax: 300000, stateAid: 100000 });
+  assert.deepEqual(gross.lineTotals, { revenue: 400000, spending: 400000 });
+  assert.equal(gross.lines.find((l) => l.key === 'propertyTax').amount, 300000);
+  // A levy within 10% of what spending needs is the town's own, surplus included.
+  const own = aggregateNh([it('T01', 320), it('C89', 100), it('E62', 250), it('E44', 150)]);
+  assert.equal(own.passThrough, 0);
+  assert.equal(own.revenue.propertyTax, 320000);
+  // Counties levy only their own tax.
+  assert.equal(aggregateNh([it('T01', 900), it('E62', 400)], true).passThrough, 0);
+});
