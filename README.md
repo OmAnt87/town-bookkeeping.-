@@ -219,6 +219,16 @@ Real towns go in `data/real/` and are listed in `data/real/index.json`. The app 
 
 See [docs/DATA_SCHEMA.md](docs/DATA_SCHEMA.md) for every field and [docs/METHODOLOGY.md](docs/METHODOLOGY.md) for how scores are calculated.
 
+### Vermont (counties, cities, towns and villages)
+
+`data/real/vt-<county>.json` holds each Vermont county and its cities, towns and incorporated villages, from what each government reported to the Census Bureau's [Annual Survey of State and Local Government Finances](https://www.census.gov/programs-surveys/gov-finances.html) (individual unit files, the same mapping as the Carolinas, Delaware and New Hampshire; the Census counts Vermont towns as township governments) and Census 2025 population estimates. Towns and cities bill the statewide education property tax with their own; where a town reported the whole levy as its own, the education tax the Department of Taxes lists for that town ([PVR annual report data](https://tax.vermont.gov/pvr-annual-report)) is taken out (`scripts/vt/edtax.mjs`). The Census estimated rather than received about 115 governments' figures, so those are not listed. Political money is not scored: the Secretary of State's campaign finance system refused connections. Coverage and gaps: [docs/VT_DATA_STATUS.md](docs/VT_DATA_STATUS.md).
+
+```bash
+node scripts/vt/download.mjs                       # Census unit files, population, gazetteers, VT tax file
+node scripts/vt/build-county.mjs --all && node scripts/vt/status.mjs
+node scripts/build-summary.mjs
+```
+
 ## Project layout
 
 ```
