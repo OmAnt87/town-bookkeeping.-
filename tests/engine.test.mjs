@@ -865,7 +865,7 @@ test('DE committees are placed by their office and CFRS contributor types classi
   assert.equal(out.counted, 2);
 });
 
-import { aggregateNh } from '../scripts/nh/levy.mjs';
+import { aggregateLevy as aggregateNh } from '../scripts/common/levy.mjs';
 
 test('NH keeps only the town share of a property tax levy that includes school and county shares', () => {
   const it = (code, amount, flag = 'R') => ({ code, amount, flag });
@@ -881,4 +881,17 @@ test('NH keeps only the town share of a property tax levy that includes school a
   assert.equal(own.revenue.propertyTax, 320000);
   // Counties levy only their own tax.
   assert.equal(aggregateNh([it('T01', 900), it('E62', 400)], true).passThrough, 0);
+});
+
+test('Northern New England towns that file school and county assessments as general government spending have them left out', () => {
+  const it = (code, amount, flag = 'R') => ({ code, amount, flag });
+  // 600 of "other general government" in a 900 budget with no schools: the assessments.
+  const a = aggregateNh([it('T01', 850), it('C89', 50), it('E89', 600), it('E62', 200), it('E44', 100)]);
+  assert.equal(a.assessments, 600000);
+  assert.deepEqual(a.spending, { publicSafety: 200000, roads: 100000 });
+  assert.equal(a.revenue.propertyTax, 250000);
+  assert.equal(a.passThrough, 600000);
+  // A town with its own school department keeps its general government spending.
+  assert.equal(aggregateNh([it('T01', 850), it('E89', 600), it('E12', 200), it('E62', 100)]).assessments, 0);
+  assert.equal(aggregateNh([it('T01', 300), it('E89', 100), it('E62', 200)]).assessments, 0);
 });

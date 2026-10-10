@@ -205,11 +205,31 @@ node scripts/build-summary.mjs
 
 ### New Hampshire (counties, cities and towns)
 
-`data/real/nh-<county>.json` holds each New Hampshire county and its cities and towns, from what each government reported to the Census Bureau's [Annual Survey of State and Local Government Finances](https://www.census.gov/programs-surveys/gov-finances.html) (individual unit files, the same mapping as the Carolinas and Delaware; the Census counts New Hampshire towns as township governments) and Census 2025 population estimates. Towns collect the school district's, county's and state education tax shares on the same bill; where a town reported the whole levy as its own, only the town's share is kept (`scripts/nh/levy.mjs`). The Census estimated rather than received about 100 governments' figures, including Concord's and Portsmouth's, so those are not listed. Political money is not scored: local candidates file with their town or city clerk. Coverage and gaps: [docs/NH_DATA_STATUS.md](docs/NH_DATA_STATUS.md).
+`data/real/nh-<county>.json` holds each New Hampshire county and its cities and towns, from what each government reported to the Census Bureau's [Annual Survey of State and Local Government Finances](https://www.census.gov/programs-surveys/gov-finances.html) (individual unit files, the same mapping as the Carolinas and Delaware; the Census counts New Hampshire towns as township governments) and Census 2025 population estimates. Towns collect the school district's, county's and state education tax shares on the same bill; where a town reported the whole levy as its own, only the town's share is kept, and the few towns that filed their school and county assessments as their own spending have those left out (`scripts/common/levy.mjs`; New Hampshire, Vermont and Maine share `scripts/common/town-census-build.mjs`). The Census estimated rather than received about 100 governments' figures, including Concord's and Portsmouth's, so those are not listed. Political money is not scored: local candidates file with their town or city clerk. Coverage and gaps: [docs/NH_DATA_STATUS.md](docs/NH_DATA_STATUS.md).
 
 ```bash
 node scripts/nh/download.mjs                       # Census unit files, population, gazetteers
 node scripts/nh/build-county.mjs --all && node scripts/nh/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Vermont (counties, cities, towns and villages)
+
+`data/real/vt-<county>.json` holds each Vermont county and its cities, towns and incorporated villages, built the same way as New Hampshire from the Census unit files and Census 2025 population estimates. Towns collect the state education tax and the county tax on the same bill, so where a town reported the whole levy as its own, only the town's share is kept; villages are a second layer inside a town and are listed separately. The Census estimated rather than received about 120 governments' figures, including Bennington and Washington Counties'. Political money is not scored: local candidates do not file with the state. Coverage and gaps: [docs/VT_DATA_STATUS.md](docs/VT_DATA_STATUS.md).
+
+```bash
+node scripts/vt/download.mjs
+node scripts/vt/build-county.mjs --all && node scripts/vt/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Maine (counties, cities, towns and plantations)
+
+`data/real/me-<county>.json` holds each Maine county and its cities, towns and plantations, built the same way as New Hampshire. Towns collect their school unit's assessment and the county tax on the same bill, handled as in New Hampshire. The Census estimated rather than received over 200 governments' figures, including York County's. Political money is not scored: local candidates file with their municipal clerk. Coverage and gaps: [docs/ME_DATA_STATUS.md](docs/ME_DATA_STATUS.md).
+
+```bash
+node scripts/me/download.mjs
+node scripts/me/build-county.mjs --all && node scripts/me/status.mjs
 node scripts/build-summary.mjs
 ```
 
