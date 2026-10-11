@@ -253,6 +253,16 @@ node scripts/mi/build-county.mjs --all && node scripts/mi/status.mjs
 node scripts/build-summary.mjs
 ```
 
+### Indiana (counties, cities, towns and townships)
+
+`data/real/in-<county>.json` holds each Indiana county and the cities, towns and townships whose people mostly live in it, plus the Consolidated City of Indianapolis, from each government's Annual Financial Report on [Indiana Gateway](https://gateway.ifionline.org/public/download.aspx) (cash receipts and disbursements on the state's uniform chart of accounts) rather than the Census unit files, which have estimated figures for many Indiana townships and towns. Money counties collect for other governments, payroll and clearing accounts, internal service funds, transfers, investments, borrowing and refinancing are left out (`scripts/in/gateway-map.mjs`). Indiana's accounts have no function codes, so spending is assigned to services by department or fund name; a general fund reported without departments is shown as not broken down when it is more than 15% of spending, and that government is not scored on services or overhead. Political money is not scored: local candidates file with their county election board. Coverage and gaps: [docs/IN_DATA_STATUS.md](docs/IN_DATA_STATUS.md).
+
+```bash
+node scripts/in/gateway-download.mjs              # Gateway AFR files, population, gazetteers
+node scripts/in/gateway-build.mjs --all && node scripts/in/gateway-status.mjs
+node scripts/build-summary.mjs
+```
+
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Public-record data**, and lets you filter to them on the map and rankings.
