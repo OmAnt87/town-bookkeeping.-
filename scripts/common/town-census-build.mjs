@@ -1,13 +1,15 @@
-// Builds real Town Ledger records for a northern New England state (New Hampshire, Vermont,
-// Maine) from the Census individual unit files: its counties, cities and towns (Census township
-// governments), plus villages or plantations where the state has them. Each county's file holds
+// Builds real Town Ledger records for a state whose towns or townships are Census township
+// governments (New Hampshire, Vermont, Maine, Ohio, Michigan) from the Census individual unit
+// files: its counties, cities and towns or townships, plus villages or plantations where the
+// state has them. Each county's file holds
 // the county and the governments in it.
 //
 // Figures are what each government reported to the Census Bureau's Annual Survey of State and
 // Local Government Finances (every government in the 2022 Census of Governments, a sample in
 // other years). Units whose figures the Census mostly estimated (imputed), or that carry only a
-// few lines, are left out. Property tax a town collects for its school district, the county or
-// the state is taken out where the town reported it as its own (see levy.mjs).
+// few lines, are left out. In northern New England, property tax a town collects for its school
+// district, the county or the state is taken out where the town reported it as its own (see
+// levy.mjs); in Ohio and Michigan the levy rules are off (levy: false).
 //
 // The state script passes a config:
 //   code, name, fips              'NH', 'New Hampshire', '33'
@@ -23,6 +25,8 @@
 //   levyTaxes(unit, g)            optional: the state's published taxes for the unit's tax year,
 //                                 { edu, muni, taxYear } or null, used instead of the estimate
 //   levyTaxesSource(tax)          source entry ({ label, url }) for those figures
+//   levy                          false to leave reported property tax as is (then
+//                                 memberSchoolNote(g) gives the schools note for non-county records)
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -52,6 +56,7 @@ export function buildState(cfg) {
   const placeXY = gaz('2024_Gaz_place_national.txt', (id) => id.slice(2), 10);
 
   const units = readUnits(RAW, cfg.fips, '123');
+  const aggregate = cfg.levy === false ? (items) => ({ ...aggregateUnit(items), passThrough: 0, assessments: 0 }) : aggregateLevy;
 
   // Census geography: counties by FIPS, cities and towns by county subdivision code, villages
   // and other governments inside a town by place code (in the county holding most of their people).
@@ -63,13 +68,15 @@ export function buildState(cfg) {
     countyName.set(geoid, r.name);
     geo.set(`County|${geoid}`, { key: `County|${geoid}`, kind: 'County', display: r.name, geoid, pop: Number(r[POP_YEAR]), xy: countyXY.get(geoid), county: r.name, file: fileOf(r.name) });
   }
-  const kindRe = (kinds) => new RegExp(`^(.+) (${Object.keys(kinds).join('|')})$`);
+  // Townships are named like Pennsylvania's ("Franklin Township"); others "City of Columbus".
+  const displayName = (kind, base) => (/Township$/.test(kind) ? `${base} ${kind}` : `${kind} of ${base}`);
+  const kindRe = (kinds) => new RegExp(`^(.+?) (${Object.keys(kinds).join('|')})$`);
   for (const r of pop.filter((p) => p.sumlev === '061')) {
     const m = r.name.match(kindRe(cfg.cousubKinds));
     if (!m) continue;
     const kind = cfg.cousubKinds[m[2]];
     const county = countyName.get(`${cfg.fips}${r.county}`);
-    geo.set(`Cousub|${r.cousub}`, { key: `Cousub|${r.cousub}`, kind, display: `${kind} of ${m[1]}`, geoid: `${cfg.fips}${r.county}${r.cousub}`, pop: Number(r[POP_YEAR]), xy: cousubXY.get(r.cousub), county, file: fileOf(county) });
+    geo.set(`Cousub|${r.cousub}`, { key: `Cousub|${r.cousub}`, kind, display: displayName(kind, m[1]), geoid: `${cfg.fips}${r.county}${r.cousub}`, pop: Number(r[POP_YEAR]), xy: cousubXY.get(r.cousub), county, file: fileOf(county) });
   }
   if (cfg.placeKinds) {
     const placeCounty = new Map();
@@ -82,7 +89,7 @@ export function buildState(cfg) {
       if (!m) continue;
       const kind = cfg.placeKinds[m[2]];
       const county = countyName.get(placeCounty.get(r.place)?.county);
-      geo.set(`Place|${r.place}`, { key: `Place|${r.place}`, kind, display: `${kind} of ${m[1]}`, geoid: `${cfg.fips}${r.place}`, pop: Number(r[POP_YEAR]), xy: placeXY.get(r.place), county, file: county && fileOf(county) });
+      geo.set(`Place|${r.place}`, { key: `Place|${r.place}`, kind, display: displayName(kind, m[1]), geoid: `${cfg.fips}${r.place}`, pop: Number(r[POP_YEAR]), xy: placeXY.get(r.place), county, file: county && fileOf(county) });
     }
   }
   const geoKey = (u) => (u.kind === 'county' ? `County|${cfg.fips}${u.place.slice(2)}`
@@ -106,7 +113,7 @@ export function buildState(cfg) {
     const ownLevyOnly = isCounty || (cfg.ownLevyKinds || []).includes(g.kind);
     const taxesOf = (unit) => (!ownLevyOnly && cfg.levyTaxes ? cfg.levyTaxes(unit, g) : null);
     const tax = taxesOf(u);
-    const a = aggregateLevy(u.items, ownLevyOnly, tax);
+    const a = aggregate(u.items, ownLevyOnly, tax);
     if (a.unmapped.length) report.unmapped.push(`${g.display} ${year}: ${a.unmapped.join(' ')}`);
     if (Math.abs(sum(a.revenue) - a.lineTotals.revenue) > 2 || Math.abs(sum(a.spending) - a.lineTotals.spending) > 2) report.mismatch.push(`${g.display} ${year}`);
     if (a.passThrough) report.passThrough.push(`${g.display} (${money(a.passThrough)})`);
@@ -115,7 +122,7 @@ export function buildState(cfg) {
     if (lastYear > year) report.older.push(`${g.display} (FY ${year}; FY ${lastYear} ${aggregateUnit(byYear[lastYear].items).imputed ? 'estimated' : 'incomplete'})`);
 
     const history = reported.map((y) => {
-      const h = aggregateLevy(byYear[y].items, ownLevyOnly, taxesOf(byYear[y]));
+      const h = aggregate(byYear[y].items, ownLevyOnly, taxesOf(byYear[y]));
       return { year: Number(y), revenue: sum(h.revenue), spending: sum(h.spending), basis: 'actual' };
     });
     const src = CENSUS_PAGE(year);
@@ -166,7 +173,9 @@ export function buildState(cfg) {
           ...(Number(year) < YEARS.at(-1) ? [`The Census surveys every government only in Census of Governments years (2022) and a sample in other years, so FY ${year} is the latest available.`] : []),
           isCounty
             ? cfg.countyNote(g)
-            : ownLevyOnly
+            : cfg.levy === false
+              ? cfg.memberSchoolNote(g)
+              : ownLevyOnly
               ? `Public schools are run by a separate school district. ${g.kind} residents pay the school and county taxes through the town.`
               : schools
               ? `The ${kindText} runs its own school department, so school spending is included. Residents also pay ${g.county} through the same tax bill.`
@@ -197,6 +206,9 @@ export function buildState(cfg) {
     const b = buildUnit(k, byYear, report);
     if (b) built.push(b);
   }
+  // Names repeated within the state (townships in different counties) get the county in their id.
+  const nameCount = built.reduce((m, b) => m.set(b.town.name, (m.get(b.town.name) || 0) + 1), new Map());
+  for (const b of built) if (nameCount.get(b.town.name) > 1) b.town.id = slugify(`${b.town.name} ${b.town.county} ${st}`);
   const files = [...new Set(built.map((b) => b.file))].sort();
   const pick = args.all ? files : files.filter((f) => f.startsWith(slugify(String(args.county || '-'))));
   if (!pick.length) { console.error(`Usage: node scripts/${st}/build-county.mjs --county <county> | --all\nFiles: ${files.join(', ')}`); process.exit(1); }
