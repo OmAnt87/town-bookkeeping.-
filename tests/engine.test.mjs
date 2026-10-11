@@ -948,3 +948,42 @@ test('Census principal repaid with new borrowing beyond capital outlay is left o
   // Borrowing that all went to capital leaves principal repaid as is.
   assert.equal(aggregateNc([it('T01', 1000), it('E62', 600), it('F44', 900), it('29U', 900), it('39U', 100)], { refinancing: true }).refinanced, 0);
 });
+
+import { aggregateComptroller, revenueKey as ilRevenueKey, functionKey as ilFunctionKey, debtOutstanding as ilDebt } from '../scripts/il/comptroller-map.mjs';
+
+test('IL Comptroller reports map revenue by source and spending by function, counting governmental and enterprise funds', () => {
+  const row = (Category, GN = 0, EP = 0, extra = {}) => ({ Category, GN: String(GN), SR: '0', CP: String(extra.CP || 0), DS: '0', EP: String(EP), TS: String(extra.TS || 0), FD: String(extra.FD || 0), DP: '0' });
+  assert.equal(ilRevenueKey('201t')[0], 'propertyTax');
+  assert.equal(ilRevenueKey('212t')[0], 'stateAid');
+  assert.equal(ilRevenueKey('234a')[0], 'utilityCharges');
+  assert.equal(ilRevenueKey('234k')[0], 'feesPermits');
+  assert.equal(ilFunctionKey('252a')[0], 'publicSafety');
+  assert.equal(ilFunctionKey('254t')[0], 'administration');
+  assert.equal(ilFunctionKey('271c')[0], 'roads');
+  assert.equal(ilFunctionKey('272t'), null);
+  const a = aggregateComptroller(
+    // Fiduciary money (the county collector's tax distributions) is left out.
+    [row('201t', 1000, 0, { FD: 50000 }), row('234a', 0, 400), row('234t', 0, 400)],
+    // Sub-codes are used where reported, not the total as well; depreciation is left out;
+    // utility capital outlay is utilities; the other 80 is spread over all non-debt spending
+    // (500 : 300 : 300).
+    [row('252a', 500), row('252t', 500), row('251t', 300), row('271a', 0, 200), row('272t', 0, 90), row('280t', 0, 100, { CP: 80 }), row('259b', 0, 0)],
+  );
+  assert.deepEqual(a.revenue, { propertyTax: 1000, utilityCharges: 400 });
+  assert.deepEqual(a.spending, { publicSafety: 536, administration: 322, utilities: 322 });
+  assert.equal(a.capital, 80);
+  assert.equal(a.leftOut.depreciation, 90);
+  assert.equal(a.leftOut.revenue, 50000);
+});
+
+test('IL "other" spending is not broken down when it is a large share, and debt outstanding comes from the indebtedness statement', () => {
+  const row = (Category, GN) => ({ Category, GN: String(GN), SR: '0', CP: '0', DS: '0', EP: '0', TS: '0', FD: '0', DP: '0' });
+  const rev = [row('201t', 1000)];
+  assert.deepEqual(aggregateComptroller(rev, [row('252t', 600), row('260t', 400)]).spending, { publicSafety: 600, otherSpending: 400 });
+  assert.deepEqual(aggregateComptroller(rev, [row('252t', 900), row('260t', 100)]).spending, { publicSafety: 900, administration: 100 });
+  // Sub-codes that add up to less than the code's total keep the rest under the total.
+  assert.deepEqual(aggregateComptroller(rev, [row('252a', 300), row('252t', 500), row('251t', 100)]).spending, { publicSafety: 500, administration: 100 });
+  // General obligation bonds (water): 1,000 at the start, 200 issued, 100 retired; contractual: 50 less 10.
+  assert.equal(ilDebt({ a400: '1000', a406: '200', a412: '100', t403: '50', t415: '10' }), 1140);
+  assert.equal(ilDebt(undefined), 0);
+});
