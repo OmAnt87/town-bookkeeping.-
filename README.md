@@ -294,7 +294,27 @@ node scripts/mn/build-county.mjs --all && node scripts/mn/status.mjs
 node scripts/build-summary.mjs
 ```
 
-For every state built with `scripts/common/town-census-build.mjs` (New Hampshire through Minnesota above), principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out of debt service. Wisconsin governments roll over short-term notes often, so it matters most there.
+### Iowa (counties and cities)
+
+`data/real/ia-<county>.json` holds each Iowa county and the cities whose people mostly live in it, built the same way as Ohio and Michigan. Iowa's townships are not governments in the Census count, so none are listed. Almost every city reported to the Census; about 40 counties' figures were estimated and are left out. Political money is not scored yet. Coverage and gaps: [docs/IA_DATA_STATUS.md](docs/IA_DATA_STATUS.md).
+
+```bash
+node scripts/ia/download.mjs
+node scripts/ia/build-county.mjs --all && node scripts/ia/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Missouri (counties, St. Louis, cities, towns, villages and townships)
+
+`data/real/mo-<county>.json` holds each Missouri county and the governments whose people mostly live in it, and `mo-st-louis-city.json` the independent City of St. Louis, built the same way as Ohio and Michigan. The Census estimated or has incomplete records for about 730 Missouri governments, including 57 counties, so coverage is about half. Political money is not scored yet. Coverage and gaps: [docs/MO_DATA_STATUS.md](docs/MO_DATA_STATUS.md).
+
+```bash
+node scripts/mo/download.mjs
+node scripts/mo/build-county.mjs --all && node scripts/mo/status.mjs
+node scripts/build-summary.mjs
+```
+
+For every state built with `scripts/common/town-census-build.mjs` (New Hampshire through Missouri above), principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out of debt service. Wisconsin governments roll over short-term notes often, so it matters most there.
 
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 

@@ -77,7 +77,7 @@ export function buildState(cfg) {
   // Townships are named like Pennsylvania's ("Franklin Township"); others "City of Columbus".
   const displayName = (kind, base) => (/Township$/.test(kind) ? `${base} ${kind}` : `${kind} of ${base.replace(/^Village of /, '')}`);
   const kindRe = (kinds) => new RegExp(`^(.+?) (${Object.keys(kinds).join('|')})$`);
-  for (const r of pop.filter((p) => p.sumlev === '061')) {
+  for (const r of pop.filter((p) => p.sumlev === '061' && Object.keys(cfg.cousubKinds).length)) {
     const m = r.name.match(kindRe(cfg.cousubKinds));
     if (!m) continue;
     // A city in several counties has a subdivision row in each under one code: keep the
