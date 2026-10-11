@@ -233,6 +233,26 @@ node scripts/me/build-county.mjs --all && node scripts/me/status.mjs
 node scripts/build-summary.mjs
 ```
 
+### Ohio (counties, cities, villages and townships)
+
+`data/real/oh-<county>.json` holds each Ohio county and the cities, villages and townships whose people mostly live in it, built with the same shared Census unit-file builder as northern New England (`scripts/common/town-census-build.mjs`) but without its property tax rules, since county treasurers collect every levy. The Census estimated rather than received about 1,000 Ohio governments' figures (mostly small townships and villages, plus Youngstown and 35 counties), so those are not listed. Townships with the same name in different counties carry the county in their id. Political money is not scored: local candidates file with their county board of elections. Coverage and gaps: [docs/OH_DATA_STATUS.md](docs/OH_DATA_STATUS.md).
+
+```bash
+node scripts/oh/download.mjs
+node scripts/oh/build-county.mjs --all && node scripts/oh/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Michigan (counties, cities, villages and townships)
+
+`data/real/mi-<county>.json` holds each Michigan county and the cities, villages, townships and charter townships whose people mostly live in it, built the same way as Ohio. Nearly every Michigan government reported to the Census in 2022. Political money is not scored: local candidates file with their county clerk. Coverage and gaps: [docs/MI_DATA_STATUS.md](docs/MI_DATA_STATUS.md).
+
+```bash
+node scripts/mi/download.mjs
+node scripts/mi/build-county.mjs --all && node scripts/mi/status.mjs
+node scripts/build-summary.mjs
+```
+
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Public-record data**, and lets you filter to them on the map and rankings.
