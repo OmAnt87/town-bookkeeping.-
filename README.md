@@ -276,11 +276,11 @@ node scripts/build-summary.mjs
 
 ### Wisconsin (counties, cities, villages and towns)
 
-`data/real/wi-<county>.json` holds each Wisconsin county and the cities, villages and towns whose people mostly live in it, built the same way as Ohio and Michigan. Every Wisconsin government reported to the Census in 2022, so coverage is nearly complete. Political money is not scored: local candidates file with their municipal clerk. Coverage and gaps: [docs/WI_DATA_STATUS.md](docs/WI_DATA_STATUS.md).
+`data/real/wi-<county>.json` holds each Wisconsin county and the cities, villages and towns whose people mostly live in it, from each government's Municipal Financial Report as compiled by the Wisconsin Department of Revenue ([County and Municipal Revenues and Expenditures](https://www.revenue.wi.gov/Pages/Report/county-municipal-revenues-expenditures.aspx), calendar 2023-2024) rather than the Census unit files: spending by function for governmental funds, utility funds as totals, borrowing and transfers left out (`scripts/wi/dor-map.mjs`). Political money is not scored: local candidates file with their municipal clerk. Coverage and gaps: [docs/WI_DATA_STATUS.md](docs/WI_DATA_STATUS.md).
 
 ```bash
-node scripts/wi/download.mjs
-node scripts/wi/build-county.mjs --all && node scripts/wi/status.mjs
+node scripts/wi/dor-download.mjs                  # DOR workbooks, population, gazetteers
+node scripts/wi/dor-build.mjs --all && node scripts/wi/dor-status.mjs
 node scripts/build-summary.mjs
 ```
 
