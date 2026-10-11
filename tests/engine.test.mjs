@@ -895,3 +895,46 @@ test('Northern New England towns that file school and county assessments as gene
   assert.equal(aggregateNh([it('T01', 850), it('E89', 600), it('E12', 200), it('E62', 100)]).assessments, 0);
   assert.equal(aggregateNh([it('T01', 300), it('E89', 100), it('E62', 200)]).assessments, 0);
 });
+
+import { aggregateGateway, custodial, receiptKey, functionKey } from '../scripts/in/gateway-map.mjs';
+
+test('IN Gateway receipts and disbursements map by code, fund and department, leaving out custodial money', () => {
+  const rc = (Receipt_Code, amount, fund_name = 'General Fund', Fund_code = '101001', receipt_name = '') => ({ Receipt_Code, amount: String(amount), fund_name, Fund_code, receipt_name });
+  const ds = (disburse_code, amount, fund_name = 'General Fund', Fund_code = '101001', department_name = '') => ({ disburse_code, amount: String(amount), fund_name, Fund_code, department_name });
+  assert.equal(custodial('106001', 'Settlement'), true);
+  assert.equal(custodial('900120', 'Payroll Clearing'), true);
+  assert.equal(custodial('940001', 'Benefit Self-Insurance'), true);
+  assert.equal(custodial('101001', 'General Fund'), false);
+  assert.deepEqual(receiptKey('R101')[0], 'propertyTax');
+  assert.deepEqual(receiptKey('R138')[0], 'salesTax');
+  assert.deepEqual(receiptKey('R116')[0], 'stateAid');
+  assert.deepEqual(receiptKey('R421')[0], 'utilityCharges');
+  assert.equal(receiptKey('R910'), null);
+  assert.equal(functionKey('Police Department'), 'publicSafety');
+  assert.equal(functionKey(null, 'Motor Vehicle Highway'), 'roads');
+  const a = aggregateGateway(
+    [rc('R101', 1000), rc('R138', 300), rc('R910', 500), rc('R904', 400, 'Fire Station BAN', '990001'), rc('R101', 9000, 'Settlement', '106001'),
+      rc('R913', 50, 'General Fund', '101001', 'Other Receipts/39100 - INTFTRANS')],
+    [ds('D101', 999, 'General Fund'), ds('D704', 200, 'General Fund'), ds('D101', 300, 'Fire Fund', '102001'), ds('D403', 400, 'Fire Station BAN', '990001'),
+      ds('D404', 20, 'Fire Station BAN', '990001'), ds('D312', 5000, 'Settlement', '106001'), ds('D703', 70, 'Fire Fund', '102001')],
+    // The general fund reports by department: those rows replace its by-fund row.
+    [ds('D101', 600, 'General Fund', '101001', 'Police Department'), ds('D101', 399, 'General Fund', '101001', 'Clerk-Treasurer')],
+  );
+  assert.deepEqual(a.revenue, { propertyTax: 1000, salesTax: 300 });
+  // The note paid off with new borrowing is refinancing; its interest is debt service.
+  assert.equal(a.refinanced, 400);
+  assert.deepEqual(a.spending, { publicSafety: 900, administration: 399, debtService: 20 });
+  assert.equal(a.intergovernmental, 70);
+  assert.deepEqual(a.custodial, { receipts: 9000, disbursements: 5000 });
+});
+
+test('IN general funds without departments are not split when they are a large share of spending', () => {
+  const ds = (disburse_code, amount, fund_name, Fund_code) => ({ disburse_code, amount: String(amount), fund_name, Fund_code, department_name: 'No Department' });
+  const rev = [{ Receipt_Code: 'R101', amount: '1000', fund_name: 'General', Fund_code: '101001' }];
+  const big = aggregateGateway(rev, [ds('D101', 600, 'General', '101001'), ds('D101', 400, 'Motor Vehicle Highway', '102001')]);
+  assert.deepEqual(big.spending, { otherSpending: 600, roads: 400 });
+  const small = aggregateGateway(rev, [ds('D101', 100, 'General', '101001'), ds('D101', 900, 'Motor Vehicle Highway', '102001')]);
+  assert.deepEqual(small.spending, { administration: 100, roads: 900 });
+  // A township's general fund is the trustee's office.
+  assert.deepEqual(aggregateGateway(rev, [ds('D101', 600, 'Township', '101001')], [], { township: true }).spending, { administration: 600 });
+});
