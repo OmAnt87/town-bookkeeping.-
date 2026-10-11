@@ -253,6 +253,27 @@ node scripts/mi/build-county.mjs --all && node scripts/mi/status.mjs
 node scripts/build-summary.mjs
 ```
 
+### Indiana (counties, cities, towns and townships)
+
+`data/real/in-<county>.json` holds each Indiana county and the cities, towns and townships whose people mostly live in it, built the same way as Ohio and Michigan. Indianapolis is consolidated with Marion County, but the Census estimated most of its figures, so it is not listed; many township records in the Census files are incomplete, so about 250 townships are left out. Political money is not scored: local candidates file with their county election board. Coverage and gaps: [docs/IN_DATA_STATUS.md](docs/IN_DATA_STATUS.md).
+
+```bash
+node scripts/in/download.mjs
+node scripts/in/build-county.mjs --all && node scripts/in/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Illinois (counties, cities, villages, towns and townships)
+
+`data/real/il-<county>.json` holds each Illinois county and the cities, villages, towns and townships whose people mostly live in it, built the same way as Ohio and Michigan. Political money comes from the [State Board of Elections](https://www.elections.il.gov/campaigndisclosure/downloadcddatafiles.aspx), where every Illinois committee files: business, union and PAC contributions to county, municipal and township candidates, placed by the office each candidate filed for. Coverage and gaps: [docs/IL_DATA_STATUS.md](docs/IL_DATA_STATUS.md).
+
+```bash
+node scripts/il/download.mjs
+node scripts/il/fetch-isbe.mjs                     # campaign finance (~1 GB download; cached)
+node scripts/il/build-county.mjs --all && node scripts/il/status.mjs
+node scripts/build-summary.mjs
+```
+
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Public-record data**, and lets you filter to them on the map and rankings.

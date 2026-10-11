@@ -49,7 +49,7 @@ ${t.differs.map((d) => `- ${d}`).join('\n')}
 ${t.gaps.map((d) => `- ${d}`).join('\n')}
 ${report.assessments?.length ? `- **School and county assessments filed as town spending (left out, ${report.assessments.length}):** ${list(report.assessments)}. Each of these towns, with no school spending of its own, reported most of its budget as "other general government", which is almost certainly its assessments; that spending is treated as a payment to other governments, and the town's property tax is cut to its own share. Smaller assessments filed the same way cannot be told apart from real overhead and remain in it.\n` : ''}- **Estimated by the Census, not reported (left out, ${imputed.length}):** ${list(imputed)}.${t.imputedNote ? ` ${t.imputedNote}` : ''}
 - **Incomplete in the Census files (only debt or a few figures, or spending under a quarter of revenue; left out, ${incomplete.length}):** ${list(incomplete)}.
-${report.skipped.length ? `- **No longer a separate government:** ${list(report.skipped.map((s) => s.replace(/: no Census match$/, '')))}${t.skippedNote ? ` (${t.skippedNote})` : ''}.\n` : ''}- **Older year used** because the latest sampled year was estimated or incomplete: ${list(report.older)}.
+${report.skipped.length ? `- **Not in current Census geography (left out):** ${list(report.skipped.map((s) => s.replace(/: no Census match$/, '')))}${t.skippedNote ? ` (${t.skippedNote})` : ''}.\n` : ''}- **Older year used** because the latest sampled year was estimated or incomplete: ${list(report.older)}.
 - **Transparency practices** have not been checked yet, so they are not scored.
 `);
   console.log(`docs/${cfg.code}_DATA_STATUS.md: ${towns.length} governments`);
