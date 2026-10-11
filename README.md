@@ -334,7 +334,17 @@ node scripts/ne/build-county.mjs --all && node scripts/ne/status.mjs
 node scripts/build-summary.mjs
 ```
 
-For every state built with `scripts/common/town-census-build.mjs` (New Hampshire through Nebraska above), principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out of debt service. Wisconsin governments roll over short-term notes often, so it matters most there.
+### North Dakota and South Dakota (counties, cities, towns and townships)
+
+`data/real/nd-<county>.json` and `data/real/sd-<county>.json` hold each county and the cities, towns and townships whose people mostly live in it, built the same way as Ohio and Michigan. The Census estimated, or has incomplete records for, about 800 governments in each state (mostly townships and small towns), so coverage is about half in North Dakota and a third in South Dakota. Political money is not scored yet. Coverage and gaps: [docs/ND_DATA_STATUS.md](docs/ND_DATA_STATUS.md), [docs/SD_DATA_STATUS.md](docs/SD_DATA_STATUS.md).
+
+```bash
+node scripts/nd/download.mjs && node scripts/nd/build-county.mjs --all && node scripts/nd/status.mjs
+node scripts/sd/download.mjs && node scripts/sd/build-county.mjs --all && node scripts/sd/status.mjs
+node scripts/build-summary.mjs
+```
+
+For every state built with `scripts/common/town-census-build.mjs` (New Hampshire through the Dakotas above), principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out of debt service. Wisconsin governments roll over short-term notes often, so it matters most there.
 
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 
