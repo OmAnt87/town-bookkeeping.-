@@ -344,7 +344,17 @@ node scripts/sd/download.mjs && node scripts/sd/build-county.mjs --all && node s
 node scripts/build-summary.mjs
 ```
 
-For every state built with `scripts/common/town-census-build.mjs` (New Hampshire through the Dakotas above), principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out of debt service. Wisconsin governments roll over short-term notes often, so it matters most there.
+### Texas and California (counties, cities, towns and villages)
+
+`data/real/tx-<county>.json` and `data/real/ca-<county>.json` hold each county and the municipalities whose people mostly live in it, built the same way as Ohio and Michigan (neither state has townships). San Francisco is a consolidated city and county and reports as one city. California coverage is nearly complete; in Texas the Census estimated, or has incomplete records for, about 700 governments, mostly small cities and towns and about 110 counties. Political money is not scored yet. Coverage and gaps: [docs/TX_DATA_STATUS.md](docs/TX_DATA_STATUS.md), [docs/CA_DATA_STATUS.md](docs/CA_DATA_STATUS.md).
+
+```bash
+node scripts/tx/download.mjs && node scripts/tx/build-county.mjs --all && node scripts/tx/status.mjs
+node scripts/ca/download.mjs && node scripts/ca/build-county.mjs --all && node scripts/ca/status.mjs
+node scripts/build-summary.mjs
+```
+
+For every state built with `scripts/common/town-census-build.mjs` (New Hampshire through California above), principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out of debt service. Wisconsin governments roll over short-term notes often, so it matters most there.
 
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 
