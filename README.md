@@ -364,7 +364,17 @@ node scripts/or/download.mjs && node scripts/or/build-county.mjs --all && node s
 node scripts/build-summary.mjs
 ```
 
-For every state built with `scripts/common/town-census-build.mjs` (New Hampshire through Oregon above), principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out of debt service. Wisconsin governments roll over short-term notes often, so it matters most there.
+### Arizona and Colorado (counties, cities and towns)
+
+`data/real/az-<county>.json` and `data/real/co-<county>.json` hold each county and the cities and towns whose people mostly live in it, built the same way as Texas and California. Denver and Broomfield are consolidated cities and counties and report as one city each. Colorado coverage is nearly complete; in Arizona the Census estimated, or has incomplete records for, 39 governments, including 4 counties and small cities such as Nogales, Bisbee and Globe. Political money is not scored yet. Coverage and gaps: [docs/AZ_DATA_STATUS.md](docs/AZ_DATA_STATUS.md), [docs/CO_DATA_STATUS.md](docs/CO_DATA_STATUS.md).
+
+```bash
+node scripts/az/download.mjs && node scripts/az/build-county.mjs --all && node scripts/az/status.mjs
+node scripts/co/download.mjs && node scripts/co/build-county.mjs --all && node scripts/co/status.mjs
+node scripts/build-summary.mjs
+```
+
+For every state built with `scripts/common/town-census-build.mjs` (New Hampshire through Colorado above), principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out of debt service. Wisconsin governments roll over short-term notes often, so it matters most there.
 
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 
