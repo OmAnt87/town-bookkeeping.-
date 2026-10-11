@@ -265,12 +265,12 @@ node scripts/build-summary.mjs
 
 ### Illinois (counties, cities, villages, towns and townships)
 
-`data/real/il-<county>.json` holds each Illinois county and the cities, villages, towns and townships whose people mostly live in it, built the same way as Ohio and Michigan. Political money comes from the [State Board of Elections](https://www.elections.il.gov/campaigndisclosure/downloadcddatafiles.aspx), where every Illinois committee files: business, union and PAC contributions to county, municipal and township candidates, placed by the office each candidate filed for. Coverage and gaps: [docs/IL_DATA_STATUS.md](docs/IL_DATA_STATUS.md).
+`data/real/il-<county>.json` holds each Illinois county and the cities, villages, towns and townships whose people mostly live in it, from each government's Annual Financial Report in the [Illinois Comptroller's local government financial databases](https://illinoiscomptroller.gov/constituent-services/local-government/local-government-division/financial-databases/) (revenues by source, expenditures by function, debt; one Access database per fiscal year, read with mdbtools) rather than the Census unit files. Fiduciary funds (pension trusts and the money county collectors hold for every district), internal service funds, component units and depreciation are left out; capital outlay without a function is spread over each government's services (`scripts/il/comptroller-map.mjs`). Political money comes from the [State Board of Elections](https://www.elections.il.gov/campaigndisclosure/downloadcddatafiles.aspx), where every Illinois committee files: business, union and PAC contributions to county, municipal and township candidates, placed by the office each candidate filed for (`scripts/il/politics.mjs`). Coverage and gaps: [docs/IL_DATA_STATUS.md](docs/IL_DATA_STATUS.md).
 
 ```bash
-node scripts/il/download.mjs
+node scripts/il/comptroller-download.mjs          # Comptroller databases (needs mdbtools), population, gazetteers
 node scripts/il/fetch-isbe.mjs                     # campaign finance (~1 GB download; cached)
-node scripts/il/build-county.mjs --all && node scripts/il/status.mjs
+node scripts/il/comptroller-build.mjs --all && node scripts/il/comptroller-status.mjs
 node scripts/build-summary.mjs
 ```
 
