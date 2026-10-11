@@ -314,7 +314,57 @@ node scripts/mo/build-county.mjs --all && node scripts/mo/status.mjs
 node scripts/build-summary.mjs
 ```
 
-For every state built with `scripts/common/town-census-build.mjs` (New Hampshire through Missouri above), principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out of debt service. Wisconsin governments roll over short-term notes often, so it matters most there.
+### Kansas (counties, cities and townships)
+
+`data/real/ks-<county>.json` holds each Kansas county and the cities and townships whose people mostly live in it, built the same way as Ohio and Michigan. Kansas City is unified with Wyandotte County and reports as one city. The Census estimated, or has incomplete records for, about 1,200 Kansas governments, so coverage is about a third. Political money is not scored yet. Coverage and gaps: [docs/KS_DATA_STATUS.md](docs/KS_DATA_STATUS.md).
+
+```bash
+node scripts/ks/download.mjs
+node scripts/ks/build-county.mjs --all && node scripts/ks/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Nebraska (counties, cities and villages)
+
+`data/real/ne-<county>.json` holds each Nebraska county and the cities and villages whose people mostly live in it, built the same way as Ohio and Michigan. Township governments are left out: their Census records show road spending about twice their reported revenue, so their revenue appears incomplete. Political money is not scored yet. Coverage and gaps: [docs/NE_DATA_STATUS.md](docs/NE_DATA_STATUS.md).
+
+```bash
+node scripts/ne/download.mjs
+node scripts/ne/build-county.mjs --all && node scripts/ne/status.mjs
+node scripts/build-summary.mjs
+```
+
+### North Dakota and South Dakota (counties, cities, towns and townships)
+
+`data/real/nd-<county>.json` and `data/real/sd-<county>.json` hold each county and the cities, towns and townships whose people mostly live in it, built the same way as Ohio and Michigan. The Census estimated, or has incomplete records for, about 800 governments in each state (mostly townships and small towns), so coverage is about half in North Dakota and a third in South Dakota. Political money is not scored yet. Coverage and gaps: [docs/ND_DATA_STATUS.md](docs/ND_DATA_STATUS.md), [docs/SD_DATA_STATUS.md](docs/SD_DATA_STATUS.md).
+
+```bash
+node scripts/nd/download.mjs && node scripts/nd/build-county.mjs --all && node scripts/nd/status.mjs
+node scripts/sd/download.mjs && node scripts/sd/build-county.mjs --all && node scripts/sd/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Texas and California (counties, cities, towns and villages)
+
+`data/real/tx-<county>.json` and `data/real/ca-<county>.json` hold each county and the municipalities whose people mostly live in it, built the same way as Ohio and Michigan (neither state has townships). San Francisco is a consolidated city and county and reports as one city. California coverage is nearly complete; in Texas the Census estimated, or has incomplete records for, about 700 governments, mostly small cities and towns and about 110 counties. Political money is not scored yet. Coverage and gaps: [docs/TX_DATA_STATUS.md](docs/TX_DATA_STATUS.md), [docs/CA_DATA_STATUS.md](docs/CA_DATA_STATUS.md).
+
+```bash
+node scripts/tx/download.mjs && node scripts/tx/build-county.mjs --all && node scripts/tx/status.mjs
+node scripts/ca/download.mjs && node scripts/ca/build-county.mjs --all && node scripts/ca/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Washington and Oregon (counties, cities and towns)
+
+`data/real/wa-<county>.json` and `data/real/or-<county>.json` hold each county and the cities and towns whose people mostly live in it, built the same way as Texas and California. Washington coverage is nearly complete; in Oregon the Census estimated, or has incomplete records for, 86 governments, including 8 counties and Beaverton. Political money is not scored yet. Coverage and gaps: [docs/WA_DATA_STATUS.md](docs/WA_DATA_STATUS.md), [docs/OR_DATA_STATUS.md](docs/OR_DATA_STATUS.md).
+
+```bash
+node scripts/wa/download.mjs && node scripts/wa/build-county.mjs --all && node scripts/wa/status.mjs
+node scripts/or/download.mjs && node scripts/or/build-county.mjs --all && node scripts/or/status.mjs
+node scripts/build-summary.mjs
+```
+
+For every state built with `scripts/common/town-census-build.mjs` (New Hampshire through Oregon above), principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out of debt service. Wisconsin governments roll over short-term notes often, so it matters most there.
 
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 
