@@ -896,7 +896,7 @@ test('Northern New England towns that file school and county assessments as gene
   assert.equal(aggregateNh([it('T01', 300), it('E89', 100), it('E62', 200)]).assessments, 0);
 });
 
-import { candidatePlacer, classifyIl, summarizeIlReceipts } from '../scripts/il/isbe-map.mjs';
+import { candidatePlacer, classifyIl, committeeTypes, summarizeIlReceipts } from '../scripts/il/isbe-map.mjs';
 
 test('IL candidates are placed by office and ISBE receipts are classified', () => {
   const place = candidatePlacer([
@@ -920,6 +920,11 @@ test('IL candidates are placed by office and ISBE receipts are classified', () =
   assert.equal(classifyIl(rec('Illinois Hospital Assn', '2A')).key, 'pacContributions');
   assert.equal(classifyIl(rec('Woodford Co Dem Central Cmte', '2A')), null);
   assert.equal(classifyIl(rec('Friends of Bob Smith', '2A')), null);
+  assert.equal(classifyIl(rec('Friends For Vicki Scaman', '1A')), null);
+  assert.equal(classifyIl(rec('Isdf', '2A')), null); // Illinois Senate Democratic Fund
+  const types = committeeTypes([{ Name: 'Committee to Elect Jones', TypeOfCommittee: 'Candidate' }, { Name: 'Good Roads Fund', TypeOfCommittee: 'Political Action' }]);
+  assert.equal(classifyIl(rec('Committee To Elect Jones', '2A'), types), null);
+  assert.equal(classifyIl(rec('Good Roads Fund', '1A'), types).key, 'pacContributions');
   assert.equal(classifyIl(rec('Smith', '1A', { FirstName: 'Bob' })), null);
   assert.equal(classifyIl(rec('First Bank', '3A')), null);
   assert.equal(classifyIl(rec('Acme Inc', '1A', { Archived: 'True' })), null);

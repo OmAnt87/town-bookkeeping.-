@@ -50,32 +50,48 @@ export function candidatePlacer(places) {
   };
 }
 
+// Legislative caucus funds, known by their initials in receipts.
+const CAUCUS = /\b(isdf|hdf|hrcc|srcc)\b|\b(senate|house) (democratic|republican)\b|\b(democratic|republican) majority\b/i;
 const PARTY = /\b(dem|dems|rep|reps|gop)\b.*\b(cmte|committee|central|org|organization|club)\b|\b(central (cmte|committee)|township (democratic|republican) organization|ward (democratic|republican) organization)\b/i;
 const UNION = /\b(local \d+|union|brotherhood|afl-?cio|teamsters|ibew|seiu|afscme|iuoe|firefighters|fraternal order of police|fop|laborers|carpenters|pipefitters|plumbers|operating engineers|sheet metal|ironworkers|electrical workers|building (and|&) construction trades|education association|federation of teachers)\b/i;
 
-// row: one ISBE receipt (header keys). Returns { key } or null.
-export function classifyIl(row) {
+// Committees.txt rows -> Map(normalized name -> committee type), for telling a transfer's source
+// apart: candidate and party committees are not counted, PACs are.
+export function committeeTypes(committees) {
+  const types = new Map();
+  for (const c of committees) {
+    const type = String(c.TypeOfCommittee || '').trim();
+    if (type) types.set(norm(c.Name), type);
+  }
+  return types;
+}
+
+// row: one ISBE receipt (header keys); types: committeeTypes(). Returns { key } or null.
+export function classifyIl(row, types = new Map()) {
   if (String(row.Archived).trim() === 'True') return null;
   const part = String(row.D2Part || '').trim();
   if (!['1A', '2A', '5A'].includes(part)) return null;
   if (String(row.FirstName || '').trim()) return null; // an individual
   const name = String(row.LastOnlyName || '').trim();
   if (!name) return null;
-  if (PARTY.test(name) || isPartyOrCandidate(name) || /\bcitizens (for|to elect)\b/i.test(name)) return null;
+  const type = types.get(norm(name));
+  if (type === 'Candidate' || type === 'Political Party') return null;
+  if (PARTY.test(name) || CAUCUS.test(name) || isPartyOrCandidate(name) || /\b(citizens (for|to elect)|friends (of|for))\b/i.test(name)) return null;
   if (/\b(pac|political action|pol action)\b/i.test(name)) return { key: 'pacContributions' };
   if (UNION.test(name) && !/credit union/i.test(name)) return { key: 'unionContributions' };
+  if (type === 'Political Action' || type === 'Independent Expenditure') return { key: 'pacContributions' };
   return { key: part === '2A' ? 'pacContributions' : 'developerContributions' };
 }
 
 // rows: receipts to one government's candidates' committees, each with .recipient (label).
-export function summarizeIlReceipts(rows, since) {
+export function summarizeIlReceipts(rows, since, types = new Map()) {
   const seen = new Set();
   const kept = [];
   for (const r of rows) {
     const date = String(r.RcvDate || '').slice(0, 10);
     const amount = Number(r.Amount) || 0;
     if (!date || date < since || amount <= 0) continue;
-    const c = classifyIl(r);
+    const c = classifyIl(r, types);
     if (!c) continue;
     if (seen.has(r.ID)) continue;
     seen.add(r.ID);

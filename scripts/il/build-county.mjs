@@ -14,7 +14,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildState } from '../common/town-census-build.mjs';
-import { candidatePlacer, summarizeIlReceipts, ISBE_PAGE } from './isbe-map.mjs';
+import { candidatePlacer, committeeTypes, summarizeIlReceipts, ISBE_PAGE } from './isbe-map.mjs';
 
 const ISBE = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'data', 'raw', 'il', 'isbe');
 const readTsv = (file) => {
@@ -47,7 +47,8 @@ function politics(geo) {
     filers.add(c.key);
     (receiptsBy.get(c.key) || receiptsBy.set(c.key, []).get(c.key)).push({ ...r, recipient: c.label });
   }
-  const results = new Map([...filers].map((k) => [k, summarizeIlReceipts(receiptsBy.get(k) || [], SINCE)]));
+  const types = committeeTypes(readTsv('Committees.txt'));
+  const results = new Map([...filers].map((k) => [k, summarizeIlReceipts(receiptsBy.get(k) || [], SINCE, types)]));
   const officeText = (isCounty) => (isCounty ? 'county board and county office candidates' : 'candidates for mayor or village president, council or board, clerk and other local offices');
   return {
     results,

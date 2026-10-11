@@ -112,7 +112,7 @@ export function buildState(cfg) {
   };
 
   const LEDGER_POLITICAL_MAX = 100;
-  const politics = cfg.politics ? cfg.politics(geo) : null;
+  let politics = null; // set once the units' geography keys are known
 
   function buildUnit(key, byYear, report) {
     const g = geo.get(key);
@@ -221,6 +221,8 @@ export function buildState(cfg) {
     const k = geoKey(u);
     (keys.get(k) || keys.set(k, {}).get(k))[y] = u;
   }
+  // Only the geography the units use, so a city listed both as a place and a subdivision is one match.
+  politics = cfg.politics ? cfg.politics(new Map([...geo].filter(([k]) => keys.has(k)))) : null;
   const built = [];
   const report = { skipped: [], imputed: [], incomplete: [], mismatch: [], unmapped: [], older: [], passThrough: [], assessments: [], refinanced: [] };
   for (const [k, byYear] of keys) {
