@@ -112,7 +112,10 @@ export function mapItem(code) {
 }
 
 // items: [{ code, amount (thousands), flag }] for one government-year.
-export function aggregateUnit(items) {
+// With { refinancing: true }, principal repaid that new borrowing paid off is left out of debt
+// service: borrowing (29U) beyond the year's capital outlay (F, G), up to the principal repaid
+// (39U), is taken to be refinancing or a rolled-over note, not money spent on residents.
+export function aggregateUnit(items, { refinancing = false } = {}) {
   const revenue = {};
   const spending = {};
   const lines = new Map();
@@ -141,6 +144,21 @@ export function aggregateUnit(items) {
     lines.set(lk, (lines.get(lk) || 0) + amount);
   }
   const has = (re) => items.some((it) => re.test(String(it.code).trim()) && Number(it.amount));
+  // Some units carry only a few lines: their debt, or just a liquor board or other agency.
+  // Every county and municipality has property tax or a share of the local sales tax, and
+  // spends more than a quarter of its revenue (less means departments are missing).
+  const incomplete = !has(/^E/) || !has(/^T0[19]$/) || expSum * 4 < revSum;
+  let refinanced = 0;
+  if (refinancing) {
+    const total = (re) => items.filter((it) => re.test(String(it.code).trim())).reduce((t, it) => t + (Number(it.amount) || 0) * 1000, 0);
+    refinanced = Math.min(total(/^39U$/), Math.max(0, proceeds - total(/^[FG]/)));
+    if (refinanced) {
+      spending.debtService -= refinanced;
+      expSum -= refinanced;
+      const lk = 'spending|debtService|Debt service: principal repaid';
+      lines.set(lk, lines.get(lk) - refinanced);
+    }
+  }
   const round = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, Math.round(v)]).filter(([, v]) => v));
   return {
     revenue: round(revenue),
@@ -153,9 +171,7 @@ export function aggregateUnit(items) {
     lineTotals: { revenue: Math.round(revSum), spending: Math.round(expSum) },
     // The Census fills in units that did not report; those are estimates, not filings.
     imputed: flags.I > flags.R,
-    // Some units carry only a few lines: their debt, or just a liquor board or other agency.
-    // Every county and municipality has property tax or a share of the local sales tax, and
-    // spends more than a quarter of its revenue (less means departments are missing).
-    incomplete: !has(/^E/) || !has(/^T0[19]$/) || expSum * 4 < revSum,
+    incomplete,
+    refinanced: Math.round(refinanced),
   };
 }

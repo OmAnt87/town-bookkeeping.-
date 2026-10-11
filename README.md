@@ -253,6 +253,69 @@ node scripts/mi/build-county.mjs --all && node scripts/mi/status.mjs
 node scripts/build-summary.mjs
 ```
 
+### Indiana (counties, cities, towns and townships)
+
+`data/real/in-<county>.json` holds each Indiana county and the cities, towns and townships whose people mostly live in it, built the same way as Ohio and Michigan. Indianapolis is consolidated with Marion County, but the Census estimated most of its figures, so it is not listed; many township records in the Census files are incomplete, so about 250 townships are left out. Political money is not scored: local candidates file with their county election board. Coverage and gaps: [docs/IN_DATA_STATUS.md](docs/IN_DATA_STATUS.md).
+
+```bash
+node scripts/in/download.mjs
+node scripts/in/build-county.mjs --all && node scripts/in/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Illinois (counties, cities, villages, towns and townships)
+
+`data/real/il-<county>.json` holds each Illinois county and the cities, villages, towns and townships whose people mostly live in it, built the same way as Ohio and Michigan. Political money comes from the [State Board of Elections](https://www.elections.il.gov/campaigndisclosure/downloadcddatafiles.aspx), where every Illinois committee files: business, union and PAC contributions to county, municipal and township candidates, placed by the office each candidate filed for. Coverage and gaps: [docs/IL_DATA_STATUS.md](docs/IL_DATA_STATUS.md).
+
+```bash
+node scripts/il/download.mjs
+node scripts/il/fetch-isbe.mjs                     # campaign finance (~1 GB download; cached)
+node scripts/il/build-county.mjs --all && node scripts/il/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Wisconsin (counties, cities, villages and towns)
+
+`data/real/wi-<county>.json` holds each Wisconsin county and the cities, villages and towns whose people mostly live in it, built the same way as Ohio and Michigan. Every Wisconsin government reported to the Census in 2022, so coverage is nearly complete. Political money is not scored: local candidates file with their municipal clerk. Coverage and gaps: [docs/WI_DATA_STATUS.md](docs/WI_DATA_STATUS.md).
+
+```bash
+node scripts/wi/download.mjs
+node scripts/wi/build-county.mjs --all && node scripts/wi/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Minnesota (counties, cities and townships)
+
+`data/real/mn-<county>.json` holds each Minnesota county and the cities and townships whose people mostly live in it, built the same way as Ohio and Michigan. Political money is not scored: local candidates file locally, not with the Campaign Finance Board. Coverage and gaps: [docs/MN_DATA_STATUS.md](docs/MN_DATA_STATUS.md).
+
+```bash
+node scripts/mn/download.mjs
+node scripts/mn/build-county.mjs --all && node scripts/mn/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Iowa (counties and cities)
+
+`data/real/ia-<county>.json` holds each Iowa county and the cities whose people mostly live in it, built the same way as Ohio and Michigan. Iowa's townships are not governments in the Census count, so none are listed. Almost every city reported to the Census; about 40 counties' figures were estimated and are left out. Political money is not scored yet. Coverage and gaps: [docs/IA_DATA_STATUS.md](docs/IA_DATA_STATUS.md).
+
+```bash
+node scripts/ia/download.mjs
+node scripts/ia/build-county.mjs --all && node scripts/ia/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Missouri (counties, St. Louis, cities, towns, villages and townships)
+
+`data/real/mo-<county>.json` holds each Missouri county and the governments whose people mostly live in it, and `mo-st-louis-city.json` the independent City of St. Louis, built the same way as Ohio and Michigan. The Census estimated or has incomplete records for about 730 Missouri governments, including 57 counties, so coverage is about half. Political money is not scored yet. Coverage and gaps: [docs/MO_DATA_STATUS.md](docs/MO_DATA_STATUS.md).
+
+```bash
+node scripts/mo/download.mjs
+node scripts/mo/build-county.mjs --all && node scripts/mo/status.mjs
+node scripts/build-summary.mjs
+```
+
+For every state built with `scripts/common/town-census-build.mjs` (New Hampshire through Missouri above), principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out of debt service. Wisconsin governments roll over short-term notes often, so it matters most there.
+
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Public-record data**, and lets you filter to them on the map and rankings.

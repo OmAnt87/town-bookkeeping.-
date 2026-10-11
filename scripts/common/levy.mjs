@@ -31,16 +31,17 @@ const sum = (o) => Object.values(o).reduce((s, v) => s + v, 0);
 // collected for other governments and taken out, and assessments: E89 spending taken to be
 // school and county assessments and left out. ownLevyOnly is for governments whose tax bill
 // carries only their own levy (counties, and Vermont villages, whose town collects the rest).
-// taxes is the state's figures for the town's tax year, { edu, muni, taxYear }, or null; with
-// them the result has passThroughSource 'state'.
-export function aggregateLevy(items, ownLevyOnly = false, taxes = null) {
-  let a = aggregateUnit(items);
+// opts go to aggregateUnit, except opts.taxes: the state's figures for the town's tax year,
+// { edu, muni, taxYear }, or null; with them the result has passThroughSource 'state'.
+export function aggregateLevy(items, ownLevyOnly = false, opts = {}) {
+  const { taxes = null, ...unitOpts } = opts;
+  let a = aggregateUnit(items, unitOpts);
   let assessments = 0;
   if (!ownLevyOnly && !a.spending.education) {
     const e89 = items.filter((it) => String(it.code).trim() === 'E89').reduce((s, it) => s + (Number(it.amount) || 0) * 1000, 0);
     if (e89 > ASSESSMENT_SHARE * a.lineTotals.spending) {
       assessments = Math.round(e89);
-      a = aggregateUnit(items.filter((it) => String(it.code).trim() !== 'E89'));
+      a = aggregateUnit(items.filter((it) => String(it.code).trim() !== 'E89'), unitOpts);
     }
   }
   const levy = a.revenue.propertyTax || 0;
