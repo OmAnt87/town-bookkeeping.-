@@ -274,6 +274,28 @@ node scripts/il/build-county.mjs --all && node scripts/il/status.mjs
 node scripts/build-summary.mjs
 ```
 
+### Wisconsin (counties, cities, villages and towns)
+
+`data/real/wi-<county>.json` holds each Wisconsin county and the cities, villages and towns whose people mostly live in it, built the same way as Ohio and Michigan. Every Wisconsin government reported to the Census in 2022, so coverage is nearly complete. Political money is not scored: local candidates file with their municipal clerk. Coverage and gaps: [docs/WI_DATA_STATUS.md](docs/WI_DATA_STATUS.md).
+
+```bash
+node scripts/wi/download.mjs
+node scripts/wi/build-county.mjs --all && node scripts/wi/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Minnesota (counties, cities and townships)
+
+`data/real/mn-<county>.json` holds each Minnesota county and the cities and townships whose people mostly live in it, built the same way as Ohio and Michigan. Political money is not scored: local candidates file locally, not with the Campaign Finance Board. Coverage and gaps: [docs/MN_DATA_STATUS.md](docs/MN_DATA_STATUS.md).
+
+```bash
+node scripts/mn/download.mjs
+node scripts/mn/build-county.mjs --all && node scripts/mn/status.mjs
+node scripts/build-summary.mjs
+```
+
+For every state built with `scripts/common/town-census-build.mjs` (New Hampshire through Minnesota above), principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out of debt service. Wisconsin governments roll over short-term notes often, so it matters most there.
+
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Public-record data**, and lets you filter to them on the map and rankings.

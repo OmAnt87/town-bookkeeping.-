@@ -12,6 +12,12 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const OUT = join(ROOT, 'data', 'real');
 const median = (a) => a.sort((x, y) => x - y)[a.length >> 1];
 const PLURAL = { County: 'Counties', City: 'Cities' };
+// "MADISON TOWN" -> "Town of Madison", "LIMA TOWNSHIP" -> "Lima Township".
+const tidy = (s) => {
+  const t = s.toLowerCase().replace(/\b[a-z]/g, (c) => c.toUpperCase());
+  const m = t.match(/^(.+) (Town|City|Village|Plantation)$/);
+  return m ? `${m[2]} of ${m[1].replace(/^Village Of /, '')}` : t;
+};
 
 export function writeStatus(cfg) {
   const st = cfg.code.toLowerCase();
@@ -47,9 +53,9 @@ ${t.differs.map((d) => `- ${d}`).join('\n')}
 
 ## Known gaps
 ${t.gaps.map((d) => `- ${d}`).join('\n')}
-${report.assessments?.length ? `- **School and county assessments filed as town spending (left out, ${report.assessments.length}):** ${list(report.assessments)}. Each of these towns, with no school spending of its own, reported most of its budget as "other general government", which is almost certainly its assessments; that spending is treated as a payment to other governments, and the town's property tax is cut to its own share. Smaller assessments filed the same way cannot be told apart from real overhead and remain in it.\n` : ''}- **Estimated by the Census, not reported (left out, ${imputed.length}):** ${list(imputed)}.${t.imputedNote ? ` ${t.imputedNote}` : ''}
+${report.assessments?.length ? `- **School and county assessments filed as town spending (left out, ${report.assessments.length}):** ${list(report.assessments)}. Each of these towns, with no school spending of its own, reported most of its budget as "other general government", which is almost certainly its assessments; that spending is treated as a payment to other governments, and the town's property tax is cut to its own share. Smaller assessments filed the same way cannot be told apart from real overhead and remain in it.\n` : ''}${report.refinanced?.length ? `- **Refinancing left out of debt service (${report.refinanced.length} governments):** principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out; each affected report says how much.\n` : ''}- **Estimated by the Census, not reported (left out, ${imputed.length}):** ${list(imputed)}.${t.imputedNote ? ` ${t.imputedNote}` : ''}
 - **Incomplete in the Census files (only debt or a few figures, or spending under a quarter of revenue; left out, ${incomplete.length}):** ${list(incomplete)}.
-${report.skipped.length ? `- **Not in current Census geography (left out):** ${list(report.skipped.map((s) => s.replace(/: no Census match$/, '')))}${t.skippedNote ? ` (${t.skippedNote})` : ''}.\n` : ''}- **Older year used** because the latest sampled year was estimated or incomplete: ${list(report.older)}.
+${report.skipped.length ? `- **Not in current Census geography (left out):** ${list(report.skipped.map((s) => tidy(s.replace(/: no Census match$/, ''))))}${t.skippedNote ? ` (${t.skippedNote})` : ''}.\n` : ''}- **Older year used** because the latest sampled year was estimated or incomplete: ${list(report.older)}.
 - **Transparency practices** have not been checked yet, so they are not scored.
 `);
   console.log(`docs/${cfg.code}_DATA_STATUS.md: ${towns.length} governments`);

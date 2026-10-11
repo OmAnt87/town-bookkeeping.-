@@ -23,14 +23,15 @@ const sum = (o) => Object.values(o).reduce((s, v) => s + v, 0);
 // collected for other governments and taken out, and assessments: E89 spending taken to be
 // school and county assessments and left out. ownLevyOnly is for governments whose tax bill
 // carries only their own levy (counties, and Vermont villages, whose town collects the rest).
-export function aggregateLevy(items, ownLevyOnly = false) {
-  let a = aggregateUnit(items);
+// opts go to aggregateUnit.
+export function aggregateLevy(items, ownLevyOnly = false, opts = {}) {
+  let a = aggregateUnit(items, opts);
   let assessments = 0;
   if (!ownLevyOnly && !a.spending.education) {
     const e89 = items.filter((it) => String(it.code).trim() === 'E89').reduce((s, it) => s + (Number(it.amount) || 0) * 1000, 0);
     if (e89 > ASSESSMENT_SHARE * a.lineTotals.spending) {
       assessments = Math.round(e89);
-      a = aggregateUnit(items.filter((it) => String(it.code).trim() !== 'E89'));
+      a = aggregateUnit(items.filter((it) => String(it.code).trim() !== 'E89'), opts);
     }
   }
   const levy = a.revenue.propertyTax || 0;

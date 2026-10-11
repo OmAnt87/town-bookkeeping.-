@@ -58,7 +58,11 @@ export function buildState(cfg) {
   const placeXY = gaz('2024_Gaz_place_national.txt', (id) => id.slice(2), 10);
 
   const units = readUnits(RAW, cfg.fips, '123');
-  const aggregate = cfg.levy === false ? (items) => ({ ...aggregateUnit(items), passThrough: 0, assessments: 0 }) : aggregateLevy;
+  // Principal repaid with new borrowing (refinancing, rolled-over notes) is left out of debt service.
+  const OPTS = { refinancing: true };
+  const aggregate = cfg.levy === false
+    ? (items) => ({ ...aggregateUnit(items, OPTS), passThrough: 0, assessments: 0 })
+    : (items, ownLevyOnly) => aggregateLevy(items, ownLevyOnly, OPTS);
 
   // Census geography: counties by FIPS, cities and towns by county subdivision code, villages
   // and other governments inside a town by place code (in the county holding most of their people).
@@ -99,7 +103,7 @@ export function buildState(cfg) {
     }
   }
   // A municipality is matched to its county subdivision (where the city is one) unless that
-  // subdivision is a township or only a fragment of the city, then to its place.
+  // subdivision is a township, only a fragment of the city, then to its place.
   const geoKey = (u) => {
     if (u.kind === 'county') return `County|${cfg.fips}${u.place.slice(2)}`;
     const cousub = geo.get(`Cousub|${u.place}`);
@@ -131,6 +135,7 @@ export function buildState(cfg) {
     if (Math.abs(sum(a.revenue) - a.lineTotals.revenue) > 2 || Math.abs(sum(a.spending) - a.lineTotals.spending) > 2) report.mismatch.push(`${g.display} ${year}`);
     if (a.passThrough) report.passThrough.push(`${g.display} (${money(a.passThrough)})`);
     if (a.assessments) report.assessments.push(`${g.display} (${money(a.assessments)})`);
+    if (a.refinanced) report.refinanced.push(`${g.display} (${money(a.refinanced)})`);
     const lastYear = Object.keys(byYear).sort().at(-1);
     if (lastYear > year) report.older.push(`${g.display} (FY ${year}; FY ${lastYear} ${aggregateUnit(byYear[lastYear].items).imputed ? 'estimated' : 'incomplete'})`);
 
@@ -200,6 +205,7 @@ export function buildState(cfg) {
           ...(a.assessments ? [`The ${kindText} reported ${money(a.assessments)} of "other general government" spending, more than ${Math.round(ASSESSMENT_SHARE * 100)}% of its budget. That is almost certainly its assessments for ${cfg.sharesText} filed as its own spending, so it is treated as a payment to other governments and left out.`] : []),
           ...(a.passThrough ? [`The ${kindText} reported ${money(a.passThrough + (a.revenue.propertyTax || 0))} of property tax, which includes the shares it collects for ${cfg.sharesText}. Only the ${kindText}'s own share, ${money(a.revenue.propertyTax || 0)} (what its spending needed beyond its other revenue, which is how the ${kindText} tax rate is set), is counted, so the ${kindText} shows no surplus or deficit for the year.`] : []),
           'Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.',
+          ...(a.refinanced ? [`Debt service leaves out ${money(a.refinanced)} of principal repaid with new borrowing the ${kindText} did not spend on capital that year, most likely refinancing or a rolled-over note.`] : []),
           ...(a.intergovernmental ? [`Payments to other governments (${money(a.intergovernmental)}) are left out, because the government receiving them reports that spending.`] : []),
           'Courts, legal services, public buildings, housing and community development count as overhead.',
           'Debt is long-term debt outstanding plus short-term debt at year end.',
@@ -216,7 +222,7 @@ export function buildState(cfg) {
     (keys.get(k) || keys.set(k, {}).get(k))[y] = u;
   }
   const built = [];
-  const report = { skipped: [], imputed: [], incomplete: [], mismatch: [], unmapped: [], older: [], passThrough: [], assessments: [] };
+  const report = { skipped: [], imputed: [], incomplete: [], mismatch: [], unmapped: [], older: [], passThrough: [], assessments: [], refinanced: [] };
   for (const [k, byYear] of keys) {
     const b = buildUnit(k, byYear, report);
     if (b) built.push(b);
@@ -239,5 +245,5 @@ export function buildState(cfg) {
   writeFileSync(join(OUT, 'index.json'), `${JSON.stringify(index, null, 2)}\n`);
   if (args.all) writeFileSync(join(RAW, 'build-report.json'), `${JSON.stringify(report, null, 1)}\n`);
   const types = built.reduce((m, b) => ({ ...m, [b.town.type]: (m[b.town.type] || 0) + 1 }), {});
-  console.log(JSON.stringify({ files: pick.length, governments: built.length, types, ...report, imputed: report.imputed.length, incomplete: report.incomplete.length, older: report.older.length, passThrough: report.passThrough.length }, null, 1));
+  console.log(JSON.stringify({ files: pick.length, governments: built.length, types, ...report, imputed: report.imputed.length, incomplete: report.incomplete.length, older: report.older.length, passThrough: report.passThrough.length, refinanced: report.refinanced.length }, null, 1));
 }

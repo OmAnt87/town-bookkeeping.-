@@ -17,7 +17,7 @@ writeStatus({
       '**Payments to other governments are left out**, as in the Carolinas and Delaware.',
     ],
     gaps: [
-      '**Chicago scores very low.** Its Census report puts $4.5 billion under financial administration and $3.4 billion under principal repaid, far more than any other city; both count against the score (as overhead and through fiscal health). Pension contributions filed under administration may explain part of it, but the Census files do not say, so the figures are shown as reported.',
+      '**Chicago scores very low.** Its Census report puts $4.5 billion under financial administration, far more than any other city, and that counts as overhead. Pension contributions filed under administration may explain part of it, but the Census files do not say, so the figure is shown as reported.',
       '**Political money is not scored yet.** Illinois local candidates file with the State Board of Elections, so it can be added.',
     ],
   }),

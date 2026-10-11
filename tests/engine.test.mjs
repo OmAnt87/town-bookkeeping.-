@@ -927,3 +927,19 @@ test('IL candidates are placed by office and ISBE receipts are classified', () =
   assert.deepEqual(out.influence, { pacContributions: 0, developerContributions: 500, unionContributions: 250 });
   assert.equal(out.counted, 2);
 });
+
+test('Census principal repaid with new borrowing beyond capital outlay is left out as refinancing', () => {
+  const it = (code, amount, flag = 'R') => ({ code, amount, flag });
+  const items = [it('T01', 1000), it('E62', 600), it('F44', 100), it('29U', 900), it('39U', 1000), it('I89', 50)];
+  const plain = aggregateNc(items);
+  assert.equal(plain.spending.debtService, 1050000);
+  assert.equal(plain.refinanced, 0);
+  // 900 borrowed, 100 spent on capital: 800 of the 1,000 repaid was refinancing.
+  const net = aggregateNc(items, { refinancing: true });
+  assert.equal(net.refinanced, 800000);
+  assert.equal(net.spending.debtService, 250000);
+  assert.equal(net.lineTotals.spending, 950000);
+  assert.equal(net.lines.find((l) => l.label === 'Debt service: principal repaid').amount, 200000);
+  // Borrowing that all went to capital leaves principal repaid as is.
+  assert.equal(aggregateNc([it('T01', 1000), it('E62', 600), it('F44', 900), it('29U', 900), it('39U', 100)], { refinancing: true }).refinanced, 0);
+});
