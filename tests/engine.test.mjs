@@ -896,6 +896,59 @@ test('Northern New England towns that file school and county assessments as gene
   assert.equal(aggregateNh([it('T01', 300), it('E89', 100), it('E62', 200)]).assessments, 0);
 });
 
+import { candidatePlacer, classifyIl, committeeTypes, summarizeIlReceipts } from '../scripts/il/isbe-map.mjs';
+
+test('IL candidates are placed by office and ISBE receipts are classified', () => {
+  const place = candidatePlacer([
+    { key: 'Place|14000', level: 'municipal', name: 'Chicago', county: 'Cook' },
+    { key: 'Place|51622', level: 'municipal', name: 'Mount Prospect', county: 'Cook' },
+    { key: 'Cousub|1', level: 'township', name: 'Washington', county: 'Tazewell' },
+    { key: 'Cousub|2', level: 'township', name: 'Washington', county: 'Will' },
+    { key: 'County|17031', level: 'county', name: 'Cook', county: 'Cook' },
+  ]);
+  assert.equal(place({ DistrictType: 'Ward', District: 'Chicago 24  ', ResidenceCounty: 'Cook' }).key, 'Place|14000');
+  assert.equal(place({ DistrictType: 'Village', District: 'Mt. Prospect', ResidenceCounty: 'Cook' }).key, 'Place|51622');
+  assert.equal(place({ DistrictType: 'Township', District: 'Washington', ResidenceCounty: 'Will' }).key, 'Cousub|2');
+  assert.equal(place({ DistrictType: 'Township', District: 'Washington', ResidenceCounty: '' }), null); // ambiguous
+  assert.equal(place({ DistrictType: 'County Board', District: 'Cook 14  ', ResidenceCounty: 'Cook' }).key, 'County|17031');
+  assert.equal(place({ DistrictType: 'Representative', District: '5', ResidenceCounty: 'Cook' }), null);
+
+  const rec = (LastOnlyName, D2Part, extra = {}) => ({ ID: String(Math.random()), LastOnlyName, FirstName: '', D2Part, Amount: '500', RcvDate: '2024-03-01 00:00:00', Archived: 'False', recipient: 'Jane Doe (Mayor)', ...extra });
+  assert.equal(classifyIl(rec('Knowles Construction, Inc', '1A')).key, 'developerContributions');
+  assert.equal(classifyIl(rec('Ibew Local 134', '1A')).key, 'unionContributions');
+  assert.equal(classifyIl(rec('Realtors PAC', '2A')).key, 'pacContributions');
+  assert.equal(classifyIl(rec('Illinois Hospital Assn', '2A')).key, 'pacContributions');
+  assert.equal(classifyIl(rec('Woodford Co Dem Central Cmte', '2A')), null);
+  assert.equal(classifyIl(rec('Friends of Bob Smith', '2A')), null);
+  assert.equal(classifyIl(rec('Friends For Vicki Scaman', '1A')), null);
+  assert.equal(classifyIl(rec('Isdf', '2A')), null); // Illinois Senate Democratic Fund
+  const types = committeeTypes([{ Name: 'Committee to Elect Jones', TypeOfCommittee: 'Candidate' }, { Name: 'Good Roads Fund', TypeOfCommittee: 'Political Action' }]);
+  assert.equal(classifyIl(rec('Committee To Elect Jones', '2A'), types), null);
+  assert.equal(classifyIl(rec('Good Roads Fund', '1A'), types).key, 'pacContributions');
+  assert.equal(classifyIl(rec('Smith', '1A', { FirstName: 'Bob' })), null);
+  assert.equal(classifyIl(rec('First Bank', '3A')), null);
+  assert.equal(classifyIl(rec('Acme Inc', '1A', { Archived: 'True' })), null);
+  const out = summarizeIlReceipts([rec('Acme Inc', '1A', { ID: '1' }), rec('Acme Inc', '1A', { ID: '1' }), rec('Laborers Local 25', '1A', { ID: '2', Amount: '250' }), rec('Acme Inc', '1A', { ID: '3', RcvDate: '2020-01-01 00:00:00' })], '2023-01-01');
+  assert.deepEqual(out.influence, { pacContributions: 0, developerContributions: 500, unionContributions: 250 });
+  assert.equal(out.counted, 2);
+});
+
+test('Census principal repaid with new borrowing beyond capital outlay is left out as refinancing', () => {
+  const it = (code, amount, flag = 'R') => ({ code, amount, flag });
+  const items = [it('T01', 1000), it('E62', 600), it('F44', 100), it('29U', 900), it('39U', 1000), it('I89', 50)];
+  const plain = aggregateNc(items);
+  assert.equal(plain.spending.debtService, 1050000);
+  assert.equal(plain.refinanced, 0);
+  // 900 borrowed, 100 spent on capital: 800 of the 1,000 repaid was refinancing.
+  const net = aggregateNc(items, { refinancing: true });
+  assert.equal(net.refinanced, 800000);
+  assert.equal(net.spending.debtService, 250000);
+  assert.equal(net.lineTotals.spending, 950000);
+  assert.equal(net.lines.find((l) => l.label === 'Debt service: principal repaid').amount, 200000);
+  // Borrowing that all went to capital leaves principal repaid as is.
+  assert.equal(aggregateNc([it('T01', 1000), it('E62', 600), it('F44', 900), it('29U', 900), it('39U', 100)], { refinancing: true }).refinanced, 0);
+});
+
 import { aggregateGateway, custodial, receiptKey, functionKey } from '../scripts/in/gateway-map.mjs';
 
 test('IN Gateway receipts and disbursements map by code, fund and department, leaving out custodial money', () => {

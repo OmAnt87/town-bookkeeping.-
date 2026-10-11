@@ -118,3 +118,16 @@ test('reporting is derived from source evidence, not state alone', () => {
   const t = { ...base(), state: 'CT', name: 'City of Groton', sources: [{ label: 'CT OPM Municipal Fiscal Indicators', url: 'https://data.ct.gov' }] };
   assert.equal(reportingFor(t).scope, 'General fund; City of Groton');
 });
+
+test('every real record has a real population and a unique id', () => {
+  const read = (f) => JSON.parse(readFileSync(new URL('../data/real/' + f, import.meta.url)));
+  const seen = new Set();
+  for (const file of read('index.json').files) {
+    for (const t of read(file).towns) {
+      // A population of 1 is the builders' placeholder when no Census estimate matched.
+      assert.ok(t.population > 1, `${file} ${t.id}: population ${t.population}`);
+      assert.ok(!seen.has(t.id), `${file} ${t.id}: duplicate id`);
+      seen.add(t.id);
+    }
+  }
+});
