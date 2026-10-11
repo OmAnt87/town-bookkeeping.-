@@ -79,7 +79,9 @@ For North Dakota and South Dakota, counties are listed alongside cities, towns a
 
 For Texas and California, counties are listed alongside cities, towns and villages (neither state has townships), from the same Census unit files without the northern New England property tax rules. San Francisco is a consolidated city and county and reports as one city. Schools and many services (utility, hospital, fire, water and park districts) are separate governments, so they are not in city or county reports. Political money is not scored yet.
 
-For every state built from the Census unit files with the shared town builder (New Hampshire, Vermont, Maine, Ohio, Michigan, Indiana, Illinois, Wisconsin, Minnesota, Iowa, Missouri, Kansas, Nebraska, North Dakota, South Dakota, Texas and California), debt service leaves out principal repaid with new borrowing: borrowing beyond the year's capital outlay, up to the principal repaid, is treated as refinancing or a rolled-over note rather than money spent. North Carolina, South Carolina and Delaware, which use the same Census files, have not been rebuilt with this rule yet.
+For Washington and Oregon, counties are listed alongside cities and towns (neither state has townships), from the same Census unit files without the northern New England property tax rules. Schools and many services (fire, water, park, library and port districts) are separate governments, so they are not in city or county reports. Political money is not scored yet.
+
+For every state built from the Census unit files with the shared town builder (New Hampshire, Vermont, Maine, Ohio, Michigan, Indiana, Illinois, Wisconsin, Minnesota, Iowa, Missouri, Kansas, Nebraska, North Dakota, South Dakota, Texas, California, Washington and Oregon), debt service leaves out principal repaid with new borrowing: borrowing beyond the year's capital outlay, up to the principal repaid, is treated as refinancing or a rolled-over note rather than money spent. North Carolina, South Carolina and Delaware, which use the same Census files, have not been rebuilt with this rule yet.
 
 ## Definitions
 
