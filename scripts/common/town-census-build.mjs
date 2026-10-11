@@ -27,6 +27,7 @@
 //                                 summary), filers: Set(key), since, sourceLabel(g), sourceUrl,
 //                                 scope(isCounty), note(g, isCounty, pol), noneNote(g, isCounty) };
 //                                 politicalNote is used when it is absent
+//   excludeUnitKinds              Census unit kinds to leave out ('township'), with excludeReason
 //   levy                          false to leave reported property tax as is (then
 //                                 memberSchoolNote(g) gives the schools note for non-county records)
 
@@ -75,10 +76,12 @@ export function buildState(cfg) {
     geo.set(`County|${geoid}`, { key: `County|${geoid}`, kind: 'County', display: r.name, base: r.name.replace(/ County$/, ''), geoid, pop: Number(r[POP_YEAR]), xy: countyXY.get(geoid), county: r.name, file: fileOf(r.name) });
   }
   // Townships are named like Pennsylvania's ("Franklin Township"); others "City of Columbus".
-  const displayName = (kind, base) => (/Township$/.test(kind) ? `${base} ${kind}` : `${kind} of ${base.replace(/^Village of /, '')}`);
+  const displayName = (kind, base) => (/^Township \d+$/.test(base) ? base : /Township$/.test(kind) ? `${base} ${kind}` : `${kind} of ${base.replace(/^Village of /, '')}`);
   const kindRe = (kinds) => new RegExp(`^(.+?) (${Object.keys(kinds).join('|')})$`);
   for (const r of pop.filter((p) => p.sumlev === '061' && Object.keys(cfg.cousubKinds).length)) {
-    const m = r.name.match(kindRe(cfg.cousubKinds));
+    // Numbered townships ("Township 3") keep their name as is.
+    const numbered = cfg.cousubKinds.township && r.name.match(/^Township (\d+)$/);
+    const m = numbered ? [r.name, `Township ${numbered[1]}`, 'township'] : r.name.match(kindRe(cfg.cousubKinds));
     if (!m) continue;
     // A city in several counties has a subdivision row in each under one code: keep the
     // county holding most of its people.
@@ -217,7 +220,9 @@ export function buildState(cfg) {
   }
 
   const keys = new Map();
+  const excluded = new Set();
   for (const y of YEARS) for (const u of units[y].values()) {
+    if ((cfg.excludeUnitKinds || []).includes(u.kind)) { excluded.add(u.id); continue; }
     const k = geoKey(u);
     (keys.get(k) || keys.set(k, {}).get(k))[y] = u;
   }
@@ -245,6 +250,7 @@ export function buildState(cfg) {
   }
   index.files.sort();
   writeFileSync(join(OUT, 'index.json'), `${JSON.stringify(index, null, 2)}\n`);
+  if (excluded.size) report.excluded = { count: excluded.size, reason: cfg.excludeReason };
   if (args.all) writeFileSync(join(RAW, 'build-report.json'), `${JSON.stringify(report, null, 1)}\n`);
   const types = built.reduce((m, b) => ({ ...m, [b.town.type]: (m[b.town.type] || 0) + 1 }), {});
   console.log(JSON.stringify({ files: pick.length, governments: built.length, types, ...report, imputed: report.imputed.length, incomplete: report.incomplete.length, older: report.older.length, passThrough: report.passThrough.length, refinanced: report.refinanced.length }, null, 1));
