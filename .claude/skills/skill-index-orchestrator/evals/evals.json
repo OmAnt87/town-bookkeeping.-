@@ -23,6 +23,34 @@
       "files": [
         "/tmp/claude-0/-home-user-town-bookkeeping--/c048721a-55ef-5e30-bc58-16a3b8be2e0f/scratchpad/skill-index-orchestrator-workspace/fixtures/flock-alpr-agreement.md"
       ]
+    },
+    {
+      "id": 3,
+      "name": "subpoena-flock-data",
+      "prompt": "the county prosecutor's office just sent the town a subpoena for 6 months of plate reads from our Flock camera on Route 9. what do i do first? which of my skills handle this and in what order? don't run anything yet, i need to loop in the town attorney first",
+      "expected_output": "Names litigation-legal:subpoena-triage and litigation-legal:legal-hold (preserve data before routine deletion), in a sensible order; nothing run.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "name": "council-vote-paperwork-chain",
+      "prompt": "council approved the Flock deal at last night's meeting (with the changes we negotiated). i need: minutes of the vote, a formal resolution for the record, and then the final contract sent out for e-signature to the mayor and to Flock. which skills do i use, in what order, and what does each one need from me? plan only",
+      "expected_output": "corporate-legal:board-minutes, then a resolution/written-consent step (noting written-consent is for action without a meeting, so may not fit), then legal:signature-request; flags DocuSign needs authorizing.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "name": "employee-misuse-ordering",
+      "prompt": "a resident says one of our police clerks has been looking up her ex-husband's plates in the Flock system. HR wants to fire him this week. map out the legal side for me \u2014 which skills, in what order. plan only, don't start anything",
+      "expected_output": "employment-legal:investigation-open first, litigation-legal:legal-hold to preserve audit logs, investigation steps, and employment-legal:termination-review only after the investigation; pushes back on firing before facts are established.",
+      "files": []
+    },
+    {
+      "id": 6,
+      "name": "unavailable-skills-trap",
+      "prompt": "use the theme-factory skill to give my town council deck a professional theme, then use artifact-emulator to check how it looks. just tell me the plan first",
+      "expected_output": "States that theme-factory and artifact-emulator are not enabled/available in this session, does not plan to read and imitate them, and offers available alternatives (e.g. artifact-design, brand-guidelines, Slides type).",
+      "files": []
     }
   ]
 }
