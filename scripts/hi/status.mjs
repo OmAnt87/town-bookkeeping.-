@@ -17,7 +17,7 @@ writeStatus({
       '**Payments to other governments are left out**, as in the Carolinas and Delaware.',
     ],
     gaps: [
-      '**Political money is not scored.** Contributions to Hawaii county candidates were not loaded.',
+      '**Political money** comes from the Campaign Spending Commission\'s open data (contributions to state and county candidates since 2015; run `node scripts/hi/fetch-csc.mjs`). Contributions from businesses, unions and PACs to each county\'s mayor, council and prosecuting attorney candidates since three years ago are counted; individuals, family, in-kind gifts and party and candidate committees are not.',
     ],
   }),
 });

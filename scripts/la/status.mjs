@@ -17,7 +17,7 @@ writeStatus({
       '**Payments to other governments are left out**, as in the Carolinas and Delaware.',
     ],
     gaps: [
-      '**Political money is not scored.** Contributions to Louisiana local candidates were not loaded.',
+      '**Political money** comes from the Board of Ethics (`node scripts/la/fetch-ethics.mjs`): its bulk file of e-filed contributions, joined by filer name to its e-filer search, which lists the office each candidate typed when filing. Offices are placed by title (parish: president, council or police jury, sheriff, assessor, coroner, constable, justice of the peace; municipal: mayor, council or aldermen, chief of police) and by the parish or municipality named. Reports filed on paper are not included, and offices typed without a recognizable place are skipped, so coverage is partial.',
     ],
   }),
 });

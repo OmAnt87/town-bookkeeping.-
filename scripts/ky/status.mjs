@@ -16,7 +16,7 @@ writeStatus({
       '**Payments to other governments are left out**, as in the Carolinas and Delaware.',
     ],
     gaps: [
-      '**Political money is not scored.** Contributions to Kentucky local candidates were not loaded.',
+      '**Political money** comes from the Registry of Election Finance\'s public search (`node scripts/ky/fetch-kref.mjs`): every candidate in each election since three years ago, with office and location, and every contribution from PACs and organizations to them. Contributions are matched to candidates by name; a name filed for more than one place is skipped. Kentucky bans corporate contributions. Candidates who raise and spend $3,000 or less file only an exemption and are not included.',
     ],
   }),
 });

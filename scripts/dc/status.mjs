@@ -16,7 +16,7 @@ writeStatus({
       '**Payments to other governments are left out**, as in the Carolinas and Delaware.',
     ],
     gaps: [
-      '**Political money is not scored.** Contributions to District of Columbia District candidates were not loaded.',
+      '**Political money** comes from the Office of Campaign Finance (principal campaign committees\' contributions, exported from its Download Data search; run `node scripts/dc/fetch-ocf.mjs`). Contributions from businesses, unions and PACs to candidates for mayor, council and attorney general since three years ago are counted. Committees for the shadow congressional seats and the State Board of Education are left out, as are candidates\' transfers between their own committees. Candidates in the Fair Elections program may not take business or PAC money, so totals are small.',
     ],
   }),
 });
