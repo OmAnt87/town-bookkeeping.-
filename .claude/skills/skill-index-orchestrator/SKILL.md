@@ -47,6 +47,8 @@ Needs from you: <inputs no skill can produce, or "nothing">
 
 Add any missing prerequisite as an earlier step or put it under "Needs from you". A plan that stops at step 3 because step 2 skipped a prerequisite is the most common orchestration failure.
 
+Only mention prerequisites that exist, and only mention skills you ruled out if the user named them. Saying "no setup needed" or listing every near-miss just makes the plan longer.
+
 ## 4. Run it
 
 - Put each step after the steps whose output it uses.
