@@ -948,3 +948,13 @@ test('Census principal repaid with new borrowing beyond capital outlay is left o
   // Borrowing that all went to capital leaves principal repaid as is.
   assert.equal(aggregateNc([it('T01', 1000), it('E62', 600), it('F44', 900), it('29U', 900), it('39U', 100)], { refinancing: true }).refinanced, 0);
 });
+
+import { atlasLink, agencyTown, ATLAS_PAGE } from '../scripts/common/atlas.mjs';
+test('Atlas of Surveillance helpers clean agency names and links', () => {
+  assert.equal(agencyTown('Springfield Police Department'), 'Springfield');
+  assert.equal(agencyTown('Lower Merion Twp Police'), 'Lower Merion Township');
+  assert.equal(atlasLink({ 'Link 1': 'https://example.org/story' }), 'https://example.org/story');
+  // Some rows hold an agency name instead of a link; the Atlas itself is cited then.
+  assert.equal(atlasLink({ 'Link 1': 'Greenfield Police Department' }), ATLAS_PAGE);
+  assert.equal(atlasLink({}), ATLAS_PAGE);
+});

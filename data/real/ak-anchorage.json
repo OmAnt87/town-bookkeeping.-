@@ -522,6 +522,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -531,7 +536,36 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: contributions to Alaska city candidates were not loaded.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Alaska yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "",
+     "agency": "Anchorage Police Department",
+     "date": "2024-03-06",
+     "detail": "The Anchorage Police Department operates drones as of 2024.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS002987, citing Anchorage Police Department",
+      "url": "https://www.anchoragepolice.com/news/fatality-investigation-near-88th-avenue-and-old-seward-highway"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Cell-site simulator",
+     "vendor": "",
+     "agency": "Anchorage Police Department",
+     "date": "2016-09-07",
+     "detail": "The Anchorage Police Department acquired cell-site simulator technology in 2009.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS007456, citing Anchorage Daily News",
+      "url": "https://www.adn.com/alaska-news/anchorage/2016/09/07/anchorage-police-give-details-on-cellphone-surveillance-after-aclu-records-request/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   }
  ]

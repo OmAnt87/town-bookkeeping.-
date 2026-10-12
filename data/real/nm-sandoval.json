@@ -404,6 +404,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -414,8 +419,10 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: contributions to New Mexico county candidates were not loaded.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for New Mexico yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": []
   },
   {
    "id": "city-of-rio-rancho-nm",
@@ -867,6 +874,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -877,7 +889,75 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: contributions to New Mexico city candidates were not loaded.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for New Mexico yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Face recognition",
+     "vendor": "Clearview AI",
+     "agency": "Rio Rancho Police Department",
+     "date": "2023-12-03",
+     "detail": "The Rio Rancho Police Department began a three-year trial of Clearview AI face recognition software in 2023.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013577, citing KOB",
+      "url": "https://www.kob.com/new-mexico/4-investigates-police-use-of-ai-facial-recognition/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Gunshot detection (ShotSpotter)",
+     "vendor": "",
+     "agency": "Rio Rancho Public Schools",
+     "date": "2018-12-24",
+     "detail": "Rio Rancho Public Schools indicated that it was seeking $1.5 million from the state for gunshot detection in the district's 10 elementaries and four middle schools and that it had funds to install the system in two high schools. The district reported that the project for the two high schools was completed in 2019.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS009158, citing Albuquerque Journal",
+      "url": "https://www.abqjournal.com/1261335/rio-rancho-public-schools-want-to-add-gunshot-alert-systems.html"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "",
+     "agency": "Rio Rancho Police Department",
+     "date": "2018-06-27",
+     "detail": "The Rio Rancho Police Department obtained automated license plate readers in 2018.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS007459, citing KOAT",
+      "url": "https://www.koat.com/article/new-technology-helps-police-spot-stolen-cars-license-plates/21972385"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "",
+     "agency": "Rio Rancho Police Department",
+     "date": "2015-05-08",
+     "detail": "The Rio Rancho Police Department started a registry of surveillance cameras voluntarily submitted by local residents and businesses in 2015.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS002564, citing KRQE",
+      "url": "https://www.krqe.com/news/rio-rancho-police-department-asks-people-to-register-home-cameras/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "DJI",
+     "agency": "Rio Rancho Police Department",
+     "date": "",
+     "detail": "The Rio Rancho Police Department operates one DJI Inspire drone as of 2018, according to data compiled by the Center for the Study of the Drone at Bard College.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS003780, citing Center for the Study of the Drone at Bard College",
+      "url": "https://dronecenter.bard.edu/projects/public-safety-drones-project/public-safety-drones-3rd-edition/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   },
   {
@@ -1161,6 +1241,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1172,8 +1257,10 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: contributions to New Mexico city candidates were not loaded.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for New Mexico yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": []
   }
  ]
 }

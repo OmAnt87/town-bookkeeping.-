@@ -405,6 +405,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -415,7 +420,75 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: contributions to Louisiana city candidates were not loaded.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Louisiana yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "",
+     "agency": "New Orleans Police Department",
+     "date": "2024-06-24",
+     "detail": "The New Orleans Police Department uses drones.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS015445, citing NOPD",
+      "url": "https://nopdnews.com/post/june-2024/nopd-begins-using-drones-in-public-safety-operatio/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Face recognition",
+     "vendor": "Idemia",
+     "agency": "New Orleans Police Department",
+     "date": "2022-07-26",
+     "detail": "The New Orleans Police Department uses Idemia face recognition technology.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS014515, citing Protocol",
+      "url": "https://www.protocol.com/enterprise/new-orleans-surveillance-facial-recognition"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Real-time crime center",
+     "vendor": "",
+     "agency": "New Orleans Office of Homeland Security",
+     "date": "2021-10-21",
+     "detail": "The New Orleans Police Department opened its real-time crime center in November 2017 as a part of the $40-million Citywide Public Safety Improvement Plan. As of December 2018, the RTCC employs a staff of 18 and accesses more than 340 cameras. In February 2018, there were plans to spend another $2.5 million on cameras and installation, including 120 automated license plate readers and up to 250 more cameras.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS006559, citing The Lens",
+      "url": "https://surveillance.thelensnola.org/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "",
+     "agency": "New Orleans Police Department",
+     "date": "2017-10-24",
+     "detail": "The New Orleans Police Department owned 46 automated license plate readers as of 2017.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS007004, citing The Times Picayune",
+      "url": "https://www.nola.com/news/crime_police/article_aad95398-30d3-5468-8474-a8b4f6272cd7.html"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "",
+     "agency": "New Orleans Police Department",
+     "date": "",
+     "detail": "The New Orleans Police Department operates a camera registry through its \"SafeCam\" program.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS002943, citing City of New Orleans",
+      "url": "https://www.nola.gov/homeland-security/real-time-crime-center/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   }
  ]

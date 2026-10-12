@@ -23,12 +23,11 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from '../lib.mjs';
 import { normName } from './ufb-map.mjs';
+import { parseCSVRows, ATLAS_LABELS, ATLAS_URL, ATLAS_PAGE, atlasLink, agencyTown, usDate } from '../common/atlas.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const RAW = join(ROOT, 'data', 'raw', 'nj');
 const OUT = join(ROOT, 'data', 'real');
-const ATLAS_URL = 'https://atlasofsurveillance.org/download.csv';
-const ATLAS_PAGE = 'https://atlasofsurveillance.org/';
 const TIGER_URL = 'https://www2.census.gov/geo/tiger/TIGER2024/COUSUB/tl_2024_34_cousub.zip';
 const OSM_PAGE = 'https://deflock.org/';
 const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter', 'https://overpass.private.coffee/api/interpreter'];
@@ -106,27 +105,6 @@ function contains(shape, x, y) {
   return inside;
 }
 
-// ---------- CSV (quoted fields, embedded newlines) ----------
-function parseCSVRows(text) {
-  const rows = [];
-  let row = [];
-  let cell = '';
-  let q = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (q) {
-      if (c === '"' && text[i + 1] === '"') { cell += '"'; i++; } else if (c === '"') q = false; else cell += c;
-    } else if (c === '"') q = true;
-    else if (c === ',') { row.push(cell); cell = ''; } else if (c === '\n' || c === '\r') {
-      if (c === '\r' && text[i + 1] === '\n') i++;
-      row.push(cell); rows.push(row); row = []; cell = '';
-    } else cell += c;
-  }
-  if (cell || row.length) { row.push(cell); rows.push(row); }
-  const [head, ...body] = rows;
-  return body.filter((r) => r.length === head.length).map((r) => Object.fromEntries(head.map((h, i) => [h, r[i]])));
-}
-
 // ---------- Load towns ----------
 const index = JSON.parse(readFileSync(join(OUT, 'index.json'), 'utf8'));
 const files = index.files.filter((f) => f.startsWith('nj-'));
@@ -145,26 +123,6 @@ for (const t of towns) {
 }
 
 // ---------- Atlas of Surveillance ----------
-// Body-worn cameras are left out: they record police, not the public at large.
-const ATLAS_LABELS = {
-  'Automated License Plate Readers': 'License-plate readers',
-  'Face Recognition': 'Face recognition',
-  'Gunshot Detection': 'Gunshot detection (ShotSpotter)',
-  Drones: 'Police drones',
-  'Camera Registry': 'Private camera registry',
-  'Real-Time Crime Center': 'Real-time crime center',
-  'Predictive Policing': 'Predictive policing',
-  'Video Analytics': 'Video analytics',
-  'Third-party Investigative Platforms': 'Third-party investigative platform',
-  'Cell-site Simulator': 'Cell-site simulator',
-  'Fusion Center': 'Fusion center',
-};
-const agencyTown = (agency) => agency
-  .replace(/[’']/g, '')
-  .replace(/\b(police department|police dept\.?|department of police|police division|division of police|department of public safety|public safety department|police)\b/gi, '')
-  .replace(/\bboro\b/gi, 'Borough')
-  .replace(/\btwp\b/gi, 'Township')
-  .replace(/\s+/g, ' ').trim();
 const TYPE_RX = /\b(township|borough|city|town|village)\b/i;
 
 // Agency spellings that differ from the state's municipal names.
@@ -205,15 +163,11 @@ if (existsSync(atlasFile)) {
       agency: r.Agency,
       date: usDate(r['Link 1 Date']),
       detail: r.Summary,
-      source: { label: `EFF Atlas of Surveillance ${r.AOSNUMBER}${r['Link 1 Source'] ? `, citing ${r['Link 1 Source']}` : ''}`, url: r['Link 1'] || ATLAS_PAGE },
+      source: { label: `EFF Atlas of Surveillance ${r.AOSNUMBER}${r['Link 1 Source'] ? `, citing ${r['Link 1 Source']}` : ''}`, url: atlasLink(r) },
     });
   }
 }
 
-function usDate(s) {
-  const m = String(s || '').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  return m ? `${m[3]}-${m[1].padStart(2, '0')}-${m[2].padStart(2, '0')}` : '';
-}
 
 // ---------- OpenStreetMap license-plate cameras ----------
 // Cameras run by stores, malls, the Port Authority, toll roads or schools are not the town's.

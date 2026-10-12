@@ -477,6 +477,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -487,7 +492,62 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: contributions to Nevada county candidates were not loaded.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Nevada yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "",
+     "agency": "Washoe County Sheriff's Office",
+     "date": "2026-01-24",
+     "detail": "The Washoe County Sheriff's Office has had drones since 2020 and has had a drone-as-first responder program since at least 2025. ",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS003986, citing Washoe County Sheriff's Office",
+      "url": "https://www.instagram.com/reel/DT3lZF4jAO6/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Real-time crime center",
+     "vendor": "Axon",
+     "agency": "Washoe County Sheriff's Office",
+     "date": "2025-02-11",
+     "detail": "The Washoe County Sheriff's Office uses Axon's real-time crime center.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS015299, citing KRNV",
+      "url": "https://mynews4.com/news/local/sparks-washoe-county-law-enforcement-using-ai-in-policing-artificial-intelligence-police-report-officers-axon-fusus-draft-onetaser-body-camera-cam-dash-license-plate-readers"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "Flock Safety",
+     "agency": "Washoe County Sheriff's Office",
+     "date": "2012-09-14",
+     "detail": "The Washoe County Sheriff's Office uses automated license plate readers.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS007044, citing ACLU",
+      "url": "https://www.aclunv.org/en/press-releases/nevada-highway-patrol-using-automatic-license-plate-recognition-system-dea"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "Axon",
+     "agency": "Sparks Police Department",
+     "date": "",
+     "detail": "The Sparks Police Department uses Axon's Fusus camera registry.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS015298, citing City of Sparks",
+      "url": "https://connectsparks.org/camera-registration/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   },
   {
@@ -849,6 +909,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -858,7 +923,75 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: contributions to Nevada city candidates were not loaded.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Nevada yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Real-time crime center",
+     "vendor": "",
+     "agency": "Reno Police Department",
+     "date": "2025-01-30",
+     "detail": "The Sparks Police Department and the Reno Police Department jointly operate a real-time information center. ",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS018108, citing City of Reno",
+      "url": "https://www.reno.gov/Home/Components/News/News/21331/576?arch=1&npage=5"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Gunshot detection (ShotSpotter)",
+     "vendor": "Flock Safety",
+     "agency": "Reno Police Department",
+     "date": "2024-12-20",
+     "detail": "The Reno Police Department uses Flock Safety Raven gunshot detection technology. ",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS018105, citing This is Reno",
+      "url": "https://thisisreno.com/2024/12/privacy-concerns-raised-after-city-pays-450000-for-ai-tracking-tech-license-plate-readers/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Video analytics",
+     "vendor": "Fusus",
+     "agency": "Reno Police Department",
+     "date": "2022-10-26",
+     "detail": "In 2022, Reno Police Department began using Fusus software, with video analytical components.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS002748, citing Reno City Council",
+      "url": "https://www.reno.gov/Home/Components/News/News/20302/576?backlist=%2F"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "Fusus",
+     "agency": "Reno Police Department",
+     "date": "",
+     "detail": "The Reno Police Department operates a voluntary citizen and business camera registry.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS002747, citing Reno Police Department",
+      "url": "https://renopd.com/camregister"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "Flock Safety",
+     "agency": "Reno Police Department",
+     "date": "",
+     "detail": "The Reno Police Department uses Flock Safety automated license plate readers. Previously it used Vigilant Solutions ALPR. ",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS004151, citing Flock Safety",
+      "url": "https://transparency.flocksafety.com/reno-nv-pd"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   },
   {
@@ -1187,6 +1320,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1198,7 +1336,62 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: contributions to Nevada city candidates were not loaded.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Nevada yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "Parrot",
+     "agency": "Sparks Police Department",
+     "date": "2025-08-26",
+     "detail": "The Sparks Police Department is implementing a drone-as-first-responder program.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013534, citing KKOH-AM",
+      "url": "https://www.kkoh.com/2025/08/26/sparks-police-launches-american-made-docked-drone-as-first-responder-dfr-program-to-enhance-public-safety-capabilities/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Real-time crime center",
+     "vendor": "",
+     "agency": "Sparks Police Department",
+     "date": "2025-01-30",
+     "detail": "The Sparks Police Department and the Reno Police Department jointly operate a real-time information center. ",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS018107, citing City of Reno",
+      "url": "https://www.reno.gov/Home/Components/News/News/21331/576?arch=1&npage=5"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Gunshot detection (ShotSpotter)",
+     "vendor": "SoundThinking",
+     "agency": "Sparks Police Department",
+     "date": "2023-08-17",
+     "detail": "The Sparks Police Department began using ShotSpotter gunshot detection technology in 2023.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS011764, citing KOLO",
+      "url": "https://www.kolotv.com/2023/08/18/was-that-gunshot-sparks-pds-shot-spotter-knows/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "Motorola Solutions, Flock Safety",
+     "agency": "Sparks Police Department",
+     "date": "",
+     "detail": "The Spark Police Department has Motorola Solutions automated license plate readers mounted on some patrol vehicles and has installed Flock Safety ALPRs throughout the city.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS004150, citing Flock Safety",
+      "url": "https://transparency.flocksafety.com/sparks-nv-pd"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   }
  ]

@@ -622,6 +622,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -632,7 +637,75 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: contributions to District of Columbia candidates were not loaded.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for District of Columbia yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "ELSAG",
+     "agency": "Metropolitan Police Department",
+     "date": "2020-10-28",
+     "detail": "The Metropolitan Police Department acquired license plate readers from ELSAG as early as 2010.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS008916, citing Metropolitan Police Department",
+      "url": "https://go.mpdconline.com/GO/GO_303_09.pdf"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Video analytics",
+     "vendor": "BriefCam",
+     "agency": "Metropolitan Police Department",
+     "date": "2020-06-12",
+     "detail": "The Metropolitan Police Department obtained BriefCam software in 2015.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS000763, citing Buzzfeed",
+      "url": "https://www.buzzfeednews.com/article/carolinehaskins1/police-software-briefcam"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Cell-site simulator",
+     "vendor": "Harris Corp.",
+     "agency": "Metropolitan Police Department",
+     "date": "2017-04-11",
+     "detail": "The Washington, D.C., Metropolitan Police Department first acquired cell-site simulator technology in 2003.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS004100, citing Vocativ",
+      "url": "https://web.archive.org/web/20170416100107/https://www.vocativ.com/389656/stingray-devices-in-trumps-america/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Gunshot detection (ShotSpotter)",
+     "vendor": "ShotSpotter",
+     "agency": "Metropolitan Police Department",
+     "date": "2006-10-22",
+     "detail": "The Metropolitan Police Department finished building out its ShotSpotter gunshot detection system in 2009.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS004464, citing The Washington Post",
+      "url": "https://www.washingtonpost.com/wp-dyn/content/article/2006/10/21/AR2006102100826.html?tid=a_inl_manual"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "",
+     "agency": "Metropolitan Police Department",
+     "date": "",
+     "detail": "The Metropolitan Police Department D.C. maintains a voluntary registry of private and personal surveillance cameras.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS005030, citing Metropolitan Police Department DC",
+      "url": "https://mpdc.dc.gov/page/closed-circuit-television-cctv-your-home-or-business"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   }
  ]

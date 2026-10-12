@@ -344,6 +344,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -353,7 +358,23 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: contributions to New Mexico county candidates were not loaded.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for New Mexico yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Video analytics",
+     "vendor": "Motorola Solutions, BriefCam",
+     "agency": "Santa Fe Regional Emergency Communications Center",
+     "date": "2020-06-12",
+     "detail": "Santa Fe County purchased a Motorola service package in 2016 that included BriefCam. The software is managed by the Regional Emergency Communications Center.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS000760, citing Buzzfeed",
+      "url": "https://www.buzzfeednews.com/article/carolinehaskins1/police-software-briefcam"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   },
   {
@@ -798,6 +819,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -809,7 +835,36 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: contributions to New Mexico city candidates were not loaded.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for New Mexico yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "Axon",
+     "agency": "Santa Fe Police Department",
+     "date": "2025-06-11",
+     "detail": "The Santa Fe Police Department operates 10 drones as of 2025.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS018414, citing The Santa Fe New Mexican",
+      "url": "https://www.santafenewmexican.com/news/local_news/santa-fe-police-embracing-drones-despite-privacy-concerns/article_d6f1f3d4-f85c-465e-8c71-044909d7b42b.html"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Gunshot detection (ShotSpotter)",
+     "vendor": "SoundThinking",
+     "agency": "Santa Fe Police Department",
+     "date": "2025-02-14",
+     "detail": "The Santa Fe Police Department planned to implement a $350,000-one-year pilot program using SoundThinking's ShotSpotter technology.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS015202, citing KRQE",
+      "url": "https://www.krqe.com/news/crime/gunshot-detection-technology-could-be-coming-to-santa-fe/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   }
  ]

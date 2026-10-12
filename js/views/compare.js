@@ -25,12 +25,18 @@ export function renderCompare(root, state, arg) {
       <label for="c-search-${i}">Find town ${i + 1}</label><input id="c-search-${i}" class="input" type="search" placeholder="Town, county or state">
       <label for="c-${i}">Town ${i + 1}</label><select class="select" id="c-${i}" data-slot="${i}"></select></div>`).join('')}</div>
     <div id="c-out"></div></div>`;
+  // Each list shows the current pick plus up to MAX matches once two letters are typed:
+  // tens of thousands of options per list make the page slow to build and to open.
+  const MAX = 50;
   function choices() {
     for (let i = 0; i < 3; i++) {
       const q = root.querySelector(`#c-search-${i}`).value.trim().toLowerCase();
-      root.querySelector(`#c-${i}`).innerHTML = '<option value="">None</option>' + options
-        .filter(({ town }) => town.id === picks[i] || (!picks.includes(town.id) && label(town).toLowerCase().includes(q)))
+      const matches = q.length < 2 ? [] : options.filter(({ town }) => town.id !== picks[i] && !picks.includes(town.id) && label(town).toLowerCase().includes(q));
+      const current = picks[i] ? [state.byId.get(picks[i])] : [];
+      const hint = q.length < 2 ? 'Type two or more letters to search' : matches.length > MAX ? `${matches.length} matches; showing ${MAX}, keep typing` : `${matches.length} match${matches.length === 1 ? '' : 'es'}`;
+      root.querySelector(`#c-${i}`).innerHTML = `<option value="">${picks[i] ? 'None' : hint}</option>` + [...current, ...matches.slice(0, MAX)]
         .map(({ town }) => `<option value="${escapeHTML(town.id)}" ${town.id === picks[i] ? 'selected' : ''}>${escapeHTML(label(town))}</option>`).join('');
+      root.querySelector(`#c-search-${i}`).title = hint;
     }
   }
   function draw() {
