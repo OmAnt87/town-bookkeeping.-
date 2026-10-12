@@ -374,7 +374,18 @@ node scripts/co/download.mjs && node scripts/co/build-county.mjs --all && node s
 node scripts/build-summary.mjs
 ```
 
-For every state built with `scripts/common/town-census-build.mjs` (New Hampshire through Colorado above), principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out of debt service. Wisconsin governments roll over short-term notes often, so it matters most there.
+### The remaining states and DC (counties, cities, towns and villages)
+
+`data/real/<state>-<county>.json` for Alabama, Alaska, Arkansas, Hawaii, Idaho, Kentucky, Louisiana, Mississippi, Montana, Nevada, New Mexico, Oklahoma, Tennessee, Utah, West Virginia, Wyoming and the District of Columbia holds each county (borough in Alaska, parish in Louisiana) and the municipalities whose people mostly live in it, built the same way as Texas and California. Consolidated city-counties the Census files as municipalities (Anchorage, Juneau, Sitka, Wrangell, Honolulu, Lexington-Fayette, Louisville Metro, Anaconda-Deer Lodge, Butte-Silver Bow, Carson City, Metro Nashville and Lynchburg-Moore) are placed at their county with the `consolidated` option. Tennessee, Alaska and DC run schools inside county, borough or city governments, so school spending is included there and kept out of the services and overhead shares. Coverage is lowest where many small towns did not report to the Census (Oklahoma, Alabama, Arkansas, Louisiana, Mississippi, Tennessee). Political money is not scored yet. Coverage and gaps: `docs/<ST>_DATA_STATUS.md`.
+
+```bash
+for st in al ak ar dc hi id ky la ms mt nv nm ok tn ut wv wy; do
+  node scripts/$st/download.mjs && node scripts/$st/build-county.mjs --all && node scripts/$st/status.mjs
+done
+node scripts/build-summary.mjs
+```
+
+For every state built with `scripts/common/town-census-build.mjs` (New Hampshire through the remaining states above), principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out of debt service. Wisconsin governments roll over short-term notes often, so it matters most there.
 
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 
