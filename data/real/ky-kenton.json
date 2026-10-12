@@ -34,9 +34,60 @@
     "utilities": 82399000
    },
    "debt": 597504000,
+   "influence": {
+    "pacContributions": 2000,
+    "developerContributions": 4111,
+    "unionContributions": 750
+   },
+   "topDonors": [
+    {
+     "name": "Coldiron Rental",
+     "type": "Business",
+     "recipient": "Robert Collins (Sheriff)",
+     "amount": 2158
+    },
+    {
+     "name": "Ludlow Bromley Yacht Club",
+     "type": "Business",
+     "recipient": "Robert Collins (Sheriff)",
+     "amount": 1953
+    },
+    {
+     "name": "Ky Realtors PAC",
+     "type": "PAC",
+     "recipient": "Richard Kimmich (County Commissioner)",
+     "amount": 1000
+    },
+    {
+     "name": "Northern Kentucky Central Labor Council PAC",
+     "type": "PAC",
+     "recipient": "Jordan Baldridge (County Commissioner), Benjamin Bach (County Commissioner)",
+     "amount": 500
+    },
+    {
+     "name": "IBEW PAC Voluntary Fund",
+     "type": "Union",
+     "recipient": "Jordan Baldridge (County Commissioner)",
+     "amount": 500
+    },
+    {
+     "name": "Kentucky Realtors Political Action Committee",
+     "type": "PAC",
+     "recipient": "Darlene Plummer (Property Valuation Administrator)",
+     "amount": 500
+    },
+    {
+     "name": "Iron Workers Local 44 Ipal",
+     "type": "Union",
+     "recipient": "Darlene Plummer (Property Valuation Administrator)",
+     "amount": 250
+    }
+   ],
    "reporting": {
     "basis": "Actual results (as reported to the Census Bureau's Annual Survey of Local Government Finances)",
-    "scope": "All fiscal court funds, including the sheriff, jail, county roads and solid waste"
+    "scope": "All fiscal court funds, including the sheriff, jail, county roads and solid waste",
+    "politicalPeriod": "Since 2023; retrieved 2026-10-12",
+    "politicalScope": "County candidates: judge-executive, magistrates or commissioners, sheriff, jailer, clerk, attorney, coroner, PVA"
    },
    "history": [
     {
@@ -391,6 +442,78 @@
      "description": "Other commercial activities (operations)",
      "amount": 75000,
      "source": "https://www.census.gov/data/datasets/2024/econ/local/public-use-datasets.html"
+    },
+    {
+     "date": "2026-10-01",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Ky Realtors PAC",
+     "description": "Contribution to Richard Kimmich (County Commissioner)",
+     "amount": 1000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-08-19",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Northern Kentucky Central Labor Council PAC",
+     "description": "Contribution to Jordan Baldridge (County Commissioner)",
+     "amount": 250,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-08-16",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "IBEW PAC Voluntary Fund",
+     "description": "Contribution to Jordan Baldridge (County Commissioner)",
+     "amount": 500,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-07-24",
+     "flow": "influence",
+     "category": "developerContributions",
+     "counterparty": "Coldiron Rental",
+     "description": "Contribution to Robert Collins (Sheriff)",
+     "amount": 2158.1,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-06-11",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Northern Kentucky Central Labor Council PAC",
+     "description": "Contribution to Benjamin Bach (County Commissioner)",
+     "amount": 250,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-06-06",
+     "flow": "influence",
+     "category": "developerContributions",
+     "counterparty": "Ludlow Bromley Yacht Club",
+     "description": "Contribution to Robert Collins (Sheriff)",
+     "amount": 1953,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-04-16",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Kentucky Realtors Political Action Committee",
+     "description": "Contribution to Darlene Plummer (Property Valuation Administrator)",
+     "amount": 500,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-01-13",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "Iron Workers Local 44 Ipal",
+     "description": "Contribution to Darlene Plummer (Property Valuation Administrator)",
+     "amount": 250,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
     }
    ],
    "sources": [
@@ -407,6 +530,10 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "Kentucky Registry of Election Finance: contributions to Kenton County's candidates since 2023",
+     "url": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -419,7 +546,7 @@
     "Payments to other governments ($9,149,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky county candidates were not loaded.",
+    "Political money counts contributions from PACs and organizations to county judge-executive, magistrate, sheriff and other county office candidates, reported to the Registry of Election Finance since 2023. Kentucky bans corporate contributions, so outside money comes through PACs and organizations such as unions. Candidates who raise and spend $3,000 or less file only an exemption and are not included. Individuals, candidates' own money and party committees are not counted.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -604,7 +731,7 @@
     "Payments to other governments ($100,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Bromley reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -643,9 +770,48 @@
     "utilities": 3050000
    },
    "debt": 190470000,
+   "influence": {
+    "pacContributions": 600,
+    "developerContributions": 200,
+    "unionContributions": 1000
+   },
+   "topDonors": [
+    {
+     "name": "IBEW PAC Voluntary Fund",
+     "type": "Union",
+     "recipient": "3 candidates",
+     "amount": 800
+    },
+    {
+     "name": "Northern Kentucky Labor Council PAC",
+     "type": "PAC",
+     "recipient": "James Toebbe (City Council Member)",
+     "amount": 300
+    },
+    {
+     "name": "Northern Ky Central Labor Council PAC",
+     "type": "PAC",
+     "recipient": "Tim Downing (City Council Member)",
+     "amount": 300
+    },
+    {
+     "name": "International Brotherhood Of Electrical Workers, Voluntary Fund",
+     "type": "Union",
+     "recipient": "Bradie Bowen (City Commissioner)",
+     "amount": 200
+    },
+    {
+     "name": "Betty Bone Designs",
+     "type": "Business",
+     "recipient": "Maria Garriga (City Council Member)",
+     "amount": 200
+    }
+   ],
    "reporting": {
     "basis": "Actual results (as reported to the Census Bureau's Annual Survey of Local Government Finances)",
-    "scope": "All city funds, including utilities; schools are run by a separate school district"
+    "scope": "All city funds, including utilities; schools are run by a separate school district",
+    "politicalPeriod": "Since 2023; retrieved 2026-10-12",
+    "politicalScope": "City candidates: mayor, council or commission"
    },
    "history": [
     {
@@ -919,6 +1085,69 @@
      "description": "Parks and recreation (construction)",
      "amount": 20000,
      "source": "https://www.census.gov/data/datasets/2024/econ/local/public-use-datasets.html"
+    },
+    {
+     "date": "2026-08-04",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "IBEW PAC Voluntary Fund",
+     "description": "Contribution to James Toebbe (City Council Member)",
+     "amount": 300,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-08-04",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Northern Kentucky Labor Council PAC",
+     "description": "Contribution to James Toebbe (City Council Member)",
+     "amount": 300,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-07-13",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Northern Ky Central Labor Council PAC",
+     "description": "Contribution to Tim Downing (City Council Member)",
+     "amount": 300,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-07-07",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "IBEW PAC Voluntary Fund",
+     "description": "Contribution to Tim Downing (City Council Member)",
+     "amount": 300,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-09-24",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "IBEW PAC Voluntary Fund",
+     "description": "Contribution to Timothy Acri (City Council Member)",
+     "amount": 200,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-09-18",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "International Brotherhood Of Electrical Workers, Voluntary Fund",
+     "description": "Contribution to Bradie Bowen (City Commissioner)",
+     "amount": 200,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-03-19",
+     "flow": "influence",
+     "category": "developerContributions",
+     "counterparty": "Betty Bone Designs",
+     "description": "Contribution to Maria Garriga (City Council Member)",
+     "amount": 200,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
     }
    ],
    "sources": [
@@ -935,6 +1164,10 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "Kentucky Registry of Election Finance: contributions to City of Covington's candidates since 2023",
+     "url": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -947,7 +1180,7 @@
     "Debt service leaves out $24,901,000 of principal repaid with new borrowing the city did not spend on capital that year, most likely refinancing or a rolled-over note.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money counts contributions from PACs and organizations to candidates for mayor, council and commission, reported to the Registry of Election Finance since 2023. Kentucky bans corporate contributions, so outside money comes through PACs and organizations such as unions. Candidates who raise and spend $3,000 or less file only an exemption and are not included. Individuals, candidates' own money and party committees are not counted.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -1136,7 +1369,7 @@
     "Payments to other governments ($2,356,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Crescent Springs reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -1373,7 +1606,7 @@
     "Payments to other governments ($2,139,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Crestview Hills reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -1649,7 +1882,7 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Edgewood reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -1888,7 +2121,7 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Elsmere reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -2148,7 +2381,7 @@
     "Payments to other governments ($91,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Erlanger reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -2293,7 +2526,7 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Fairview reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -2572,7 +2805,7 @@
     "Payments to other governments ($99,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Fort Mitchell reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -2834,7 +3067,7 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Fort Wright reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -3085,7 +3318,7 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Independence reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -3234,7 +3467,7 @@
     "Payments to other governments ($5,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Kenton Vale reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -3389,7 +3622,7 @@
     "Payments to other governments ($900,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Lakeside Park reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -3662,7 +3895,7 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Ludlow reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -3715,9 +3948,36 @@
     "utilities": 270000
    },
    "debt": 908000,
+   "influence": {
+    "pacContributions": 0,
+    "developerContributions": 200,
+    "unionContributions": 500
+   },
+   "topDonors": [
+    {
+     "name": "IBEW 212",
+     "type": "Union",
+     "recipient": "Matthew Breeze (City Council Member)",
+     "amount": 500
+    },
+    {
+     "name": "Nky Labor Council",
+     "type": "Business",
+     "recipient": "Matthew Breeze (City Council Member)",
+     "amount": 150
+    },
+    {
+     "name": "Northern Ky Labor Council",
+     "type": "Business",
+     "recipient": "Laura Cardosi (City Council Member)",
+     "amount": 50
+    }
+   ],
    "reporting": {
     "basis": "Actual results (as reported to the Census Bureau's Annual Survey of Local Government Finances)",
-    "scope": "All city funds, including utilities; schools are run by a separate school district"
+    "scope": "All city funds, including utilities; schools are run by a separate school district",
+    "politicalPeriod": "Since 2023; retrieved 2026-10-12",
+    "politicalScope": "City candidates: mayor, council or commission"
    },
    "history": [
     {
@@ -3943,6 +4203,33 @@
      "description": "Water utility (operations)",
      "amount": 4000,
      "source": "https://www.census.gov/data/datasets/2022/econ/local/public-use-datasets.html"
+    },
+    {
+     "date": "2024-10-28",
+     "flow": "influence",
+     "category": "developerContributions",
+     "counterparty": "Northern Ky Labor Council",
+     "description": "Contribution to Laura Cardosi (City Council Member)",
+     "amount": 50,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-08-07",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "IBEW 212",
+     "description": "Contribution to Matthew Breeze (City Council Member)",
+     "amount": 500,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-07-18",
+     "flow": "influence",
+     "category": "developerContributions",
+     "counterparty": "Nky Labor Council",
+     "description": "Contribution to Matthew Breeze (City Council Member)",
+     "amount": 150,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
     }
    ],
    "sources": [
@@ -3959,6 +4246,10 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "Kentucky Registry of Election Finance: contributions to City of Park Hills's candidates since 2023",
+     "url": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -3972,7 +4263,7 @@
     "Payments to other governments ($91,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money counts contributions from PACs and organizations to candidates for mayor, council and commission, reported to the Registry of Election Finance since 2023. Kentucky bans corporate contributions, so outside money comes through PACs and organizations such as unions. Candidates who raise and spend $3,000 or less file only an exemption and are not included. Individuals, candidates' own money and party committees are not counted.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -4105,7 +4396,7 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Ryland Heights reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -4374,7 +4665,7 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Taylor Mill reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -4637,7 +4928,7 @@
     "Payments to other governments ($941,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Villa Hills reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],

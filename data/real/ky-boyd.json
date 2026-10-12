@@ -322,7 +322,7 @@
     "Payments to other governments ($905,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky county candidates were not loaded.",
+    "Political money is not scored: no county judge-executive, magistrate, sheriff and other county office candidates of Boyd County reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -361,9 +361,60 @@
     "utilities": 20158000
    },
    "debt": 61238000,
+   "influence": {
+    "pacContributions": 0,
+    "developerContributions": 1200,
+    "unionContributions": 8551
+   },
+   "topDonors": [
+    {
+     "name": "Ashland Fire Fighters Local 706",
+     "type": "Union",
+     "recipient": "Timothy Renfroe (City Commissioner)",
+     "amount": 2000
+    },
+    {
+     "name": "Ashland Firefighters #706",
+     "type": "Union",
+     "recipient": "Marty Gute (City Commissioner)",
+     "amount": 2000
+    },
+    {
+     "name": "Ashland Firefighters",
+     "type": "Union",
+     "recipient": "Timothy Renfroe (City Commissioner)",
+     "amount": 2000
+    },
+    {
+     "name": "Ashland Firefighters Local #706",
+     "type": "Union",
+     "recipient": "Marty Gute (City Commissioner)",
+     "amount": 2000
+    },
+    {
+     "name": "Ashland Area Board Of Realtors",
+     "type": "Business",
+     "recipient": "Chuck Charles (Mayor)",
+     "amount": 1000
+    },
+    {
+     "name": "Kentucky People&#X2019;S Union",
+     "type": "Union",
+     "recipient": "Heather Hayes (City Commissioner)",
+     "amount": 551
+    },
+    {
+     "name": "Young Signs",
+     "type": "Business",
+     "recipient": "Cheryl Spriggs (City Commissioner)",
+     "amount": 200
+    }
+   ],
    "reporting": {
     "basis": "Actual results (as reported to the Census Bureau's Annual Survey of Local Government Finances)",
-    "scope": "All city funds, including utilities; schools are run by a separate school district"
+    "scope": "All city funds, including utilities; schools are run by a separate school district",
+    "politicalPeriod": "Since 2023; retrieved 2026-10-12",
+    "politicalScope": "City candidates: mayor, council or commission"
    },
    "history": [
     {
@@ -643,6 +694,69 @@
      "description": "General government (other) (construction)",
      "amount": 11000,
      "source": "https://www.census.gov/data/datasets/2024/econ/local/public-use-datasets.html"
+    },
+    {
+     "date": "2026-05-11",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "Ashland Fire Fighters Local 706",
+     "description": "Contribution to Timothy Renfroe (City Commissioner)",
+     "amount": 2000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-05-11",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "Kentucky People&#X2019;S Union",
+     "description": "Contribution to Heather Hayes (City Commissioner)",
+     "amount": 550.56,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-05-06",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "Ashland Firefighters #706",
+     "description": "Contribution to Marty Gute (City Commissioner)",
+     "amount": 2000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-10-07",
+     "flow": "influence",
+     "category": "developerContributions",
+     "counterparty": "Ashland Area Board Of Realtors",
+     "description": "Contribution to Chuck Charles (Mayor)",
+     "amount": 1000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-10-04",
+     "flow": "influence",
+     "category": "developerContributions",
+     "counterparty": "Young Signs",
+     "description": "Contribution to Cheryl Spriggs (City Commissioner)",
+     "amount": 200,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-06-28",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "Ashland Firefighters",
+     "description": "Contribution to Timothy Renfroe (City Commissioner)",
+     "amount": 2000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-06-06",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "Ashland Firefighters Local #706",
+     "description": "Contribution to Marty Gute (City Commissioner)",
+     "amount": 2000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
     }
    ],
    "sources": [
@@ -659,6 +773,10 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "Kentucky Registry of Election Finance: contributions to City of Ashland's candidates since 2023",
+     "url": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -671,7 +789,7 @@
     "Payments to other governments ($53,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money counts contributions from PACs and organizations to candidates for mayor, council and commission, reported to the Registry of Election Finance since 2023. Kentucky bans corporate contributions, so outside money comes through PACs and organizations such as unions. Candidates who raise and spend $3,000 or less file only an exemption and are not included. Individuals, candidates' own money and party committees are not counted.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -972,7 +1090,7 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Catlettsburg reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],

@@ -34,9 +34,48 @@
     "utilities": 508000
    },
    "debt": 262241000,
+   "influence": {
+    "pacContributions": 3000,
+    "developerContributions": 1760,
+    "unionContributions": 0
+   },
+   "topDonors": [
+    {
+     "name": "Realtor Association Of Southern Kentucky",
+     "type": "PAC",
+     "recipient": "Ronald Cummings (Magistrate/Justice Of The Peace), Brett Hightower (Sheriff)",
+     "amount": 2500
+    },
+    {
+     "name": "Randpac",
+     "type": "PAC",
+     "recipient": "Rex Mcwhorter (Magistrate/Justice Of The Peace)",
+     "amount": 1000
+    },
+    {
+     "name": "Southern Lanes, INC.",
+     "type": "Business",
+     "recipient": "Javen Roberson (Jailer)",
+     "amount": 560
+    },
+    {
+     "name": "Creating Opportunities, Markets & Enthusiasm In Rural Kentucky PAC",
+     "type": "PAC",
+     "recipient": "Justin Gearlds (Magistrate/Justice Of The Peace)",
+     "amount": 500
+    },
+    {
+     "name": "Greeneye Properties",
+     "type": "Business",
+     "recipient": "Javen Roberson (Jailer)",
+     "amount": 200
+    }
+   ],
    "reporting": {
     "basis": "Actual results (as reported to the Census Bureau's Annual Survey of Local Government Finances)",
-    "scope": "All fiscal court funds, including the sheriff, jail, county roads and solid waste"
+    "scope": "All fiscal court funds, including the sheriff, jail, county roads and solid waste",
+    "politicalPeriod": "Since 2023; retrieved 2026-10-12",
+    "politicalScope": "County candidates: judge-executive, magistrates or commissioners, sheriff, jailer, clerk, attorney, coroner, PVA"
    },
    "history": [
     {
@@ -400,6 +439,69 @@
      "description": "Protective inspection (construction)",
      "amount": 34000,
      "source": "https://www.census.gov/data/datasets/2024/econ/local/public-use-datasets.html"
+    },
+    {
+     "date": "2026-07-10",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Creating Opportunities, Markets & Enthusiasm In Rural Kentucky PAC",
+     "description": "Contribution to Justin Gearlds (Magistrate/Justice Of The Peace)",
+     "amount": 250,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-06-18",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Creating Opportunities, Markets & Enthusiasm In Rural Kentucky PAC",
+     "description": "Contribution to Justin Gearlds (Magistrate/Justice Of The Peace)",
+     "amount": 250,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-04-23",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Randpac",
+     "description": "Contribution to Rex Mcwhorter (Magistrate/Justice Of The Peace)",
+     "amount": 1000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-04-08",
+     "flow": "influence",
+     "category": "developerContributions",
+     "counterparty": "Realtors Association Of Southern Kentucky",
+     "description": "Contribution to Brett Hightower (Sheriff)",
+     "amount": 1000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-04-08",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Realtor Association Of Southern Kentucky",
+     "description": "Contribution to Ronald Cummings (Magistrate/Justice Of The Peace)",
+     "amount": 1500,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-04-06",
+     "flow": "influence",
+     "category": "developerContributions",
+     "counterparty": "Southern Lanes, INC.",
+     "description": "Contribution to Javen Roberson (Jailer)",
+     "amount": 560,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-03-03",
+     "flow": "influence",
+     "category": "developerContributions",
+     "counterparty": "Greeneye Properties",
+     "description": "Contribution to Javen Roberson (Jailer)",
+     "amount": 200,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
     }
    ],
    "sources": [
@@ -416,6 +518,10 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "Kentucky Registry of Election Finance: contributions to Warren County's candidates since 2023",
+     "url": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -429,7 +535,7 @@
     "Payments to other governments ($109,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky county candidates were not loaded.",
+    "Political money counts contributions from PACs and organizations to county judge-executive, magistrate, sheriff and other county office candidates, reported to the Registry of Election Finance since 2023. Kentucky bans corporate contributions, so outside money comes through PACs and organizations such as unions. Candidates who raise and spend $3,000 or less file only an exemption and are not included. Individuals, candidates' own money and party committees are not counted.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -468,9 +574,78 @@
     "debtService": 2100000
    },
    "debt": 0,
+   "influence": {
+    "pacContributions": 10750,
+    "developerContributions": 520,
+    "unionContributions": 18700
+   },
+   "topDonors": [
+    {
+     "name": "Kentucky Realtors Political Action Committee",
+     "type": "PAC",
+     "recipient": "3 candidates",
+     "amount": 4000
+    },
+    {
+     "name": "Plumbers & Pipefitters Local 502",
+     "type": "Union",
+     "recipient": "Dana Beasley Brown (City Commissioner)",
+     "amount": 3500
+    },
+    {
+     "name": "IBEW PAC Voluntary Fund",
+     "type": "Union",
+     "recipient": "Patti Minter (Mayor)",
+     "amount": 2100
+    },
+    {
+     "name": "Plumbers & Piperfitters Local 502",
+     "type": "Union",
+     "recipient": "Patti Minter (Mayor)",
+     "amount": 2100
+    },
+    {
+     "name": "Bluegrass Committee",
+     "type": "PAC",
+     "recipient": "Todd Alcott (Mayor)",
+     "amount": 2100
+    },
+    {
+     "name": "CWA Cope Pcc",
+     "type": "Union",
+     "recipient": "Patti Minter (Mayor)",
+     "amount": 2000
+    },
+    {
+     "name": "IBEW Afl-Cio #369",
+     "type": "Union",
+     "recipient": "Dana Beasley Brown (City Commissioner)",
+     "amount": 2000
+    },
+    {
+     "name": "National Conference Of Firemen & Oilers, 32bj/SEIU",
+     "type": "Union",
+     "recipient": "Patti Minter (Mayor)",
+     "amount": 1000
+    },
+    {
+     "name": "Kentucky Laborers' District Council",
+     "type": "Union",
+     "recipient": "Patti Minter (Mayor)",
+     "amount": 1000
+    },
+    {
+     "name": "UAW - V - Cap (UAW Voluntary Community Action Program)",
+     "type": "Union",
+     "recipient": "Patti Minter (Mayor)",
+     "amount": 1000
+    }
+   ],
    "reporting": {
     "basis": "Actual results (as reported to the Census Bureau's Annual Survey of Local Government Finances)",
-    "scope": "All city funds, including utilities; schools are run by a separate school district"
+    "scope": "All city funds, including utilities; schools are run by a separate school district",
+    "politicalPeriod": "Since 2023; retrieved 2026-10-12",
+    "politicalScope": "City candidates: mayor, council or commission"
    },
    "history": [
     {
@@ -834,6 +1009,258 @@
      "description": "Solid waste (operations)",
      "amount": 33000,
      "source": "https://www.census.gov/data/datasets/2024/econ/local/public-use-datasets.html"
+    },
+    {
+     "date": "2026-09-13",
+     "flow": "influence",
+     "category": "developerContributions",
+     "counterparty": "Bg Swagg Sliders",
+     "description": "Contribution to Carlos Bailey (City Commissioner)",
+     "amount": 270,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-08-27",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "Plumbers & Pipefitters Local 502",
+     "description": "Contribution to Dana Beasley Brown (City Commissioner)",
+     "amount": 3500,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2026-07-31",
+     "flow": "influence",
+     "category": "developerContributions",
+     "counterparty": "Bg Swagg Sliders",
+     "description": "Contribution to Carlos Bailey (City Commissioner)",
+     "amount": 250,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-11-12",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "CWA Cope Pcc",
+     "description": "Contribution to Patti Minter (Mayor)",
+     "amount": 2000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-11-04",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "United Food And Commercial Workers Local 227",
+     "description": "Contribution to Dana Beasley Brown (City Commissioner)",
+     "amount": 500,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-11-04",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "General Driver Warehousemen & Helpers",
+     "description": "Contribution to Dana Beasley Brown (City Commissioner)",
+     "amount": 750,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-11-01",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Kentucky Sierra Club PAC",
+     "description": "Contribution to Patti Minter (Mayor)",
+     "amount": 500,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-10-30",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "National Conference Of Firemen & Oilers, 32bj/SEIU",
+     "description": "Contribution to Patti Minter (Mayor)",
+     "amount": 1000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-10-25",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "Kentucky Laborers' District Council",
+     "description": "Contribution to Patti Minter (Mayor)",
+     "amount": 1000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-10-23",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "UAW - V - Cap (UAW Voluntary Community Action Program)",
+     "description": "Contribution to Patti Minter (Mayor)",
+     "amount": 500,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-10-21",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "UAW - V- Cap (UAW Voluntary Community Action Program)",
+     "description": "Contribution to Patti Minter (Mayor)",
+     "amount": 500,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-10-21",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Committee For Fairness & Individual Rights",
+     "description": "Contribution to Patti Minter (Mayor)",
+     "amount": 1000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-10-16",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Brettpac",
+     "description": "Contribution to Todd Alcott (Mayor)",
+     "amount": 1000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-10-08",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "United Food And Commercial Workers International Union",
+     "description": "Contribution to Patti Minter (Mayor)",
+     "amount": 1000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-10-06",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "United Food And Commerical Workers International Union",
+     "description": "Contribution to Patti Minter (Mayor)",
+     "amount": 1000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-10-05",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Kentucky Sierra Club",
+     "description": "Contribution to Dana Beasley Brown (City Commissioner)",
+     "amount": 200,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-10-05",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "International Union Of Operating Engineers",
+     "description": "Contribution to Dana Beasley Brown (City Commissioner)",
+     "amount": 500,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-10-05",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "Teamsters Local Union No. 783",
+     "description": "Contribution to Dana Beasley Brown (City Commissioner)",
+     "amount": 500,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-10-02",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Kentucky Realtors Political Action Committee",
+     "description": "Contribution to John Williams (City Commissioner)",
+     "amount": 1000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-10-02",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Kentucky Realtors Political Action Committee",
+     "description": "Contribution to Sue Parrigin (City Commissioner)",
+     "amount": 1000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-09-27",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "Teamsters Local Union No. 783",
+     "description": "Contribution to Patti Minter (Mayor)",
+     "amount": 500,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-09-10",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Kentucky Realtors Political Action Committee",
+     "description": "Contribution to Todd Alcott (Mayor)",
+     "amount": 2000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-09-04",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "IBEW Afl-Cio #369",
+     "description": "Contribution to Dana Beasley Brown (City Commissioner)",
+     "amount": 2000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-09-03",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "IBEW PAC Voluntary Fund",
+     "description": "Contribution to Patti Minter (Mayor)",
+     "amount": 2100,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-08-12",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Kentucky Sierra Club PAC",
+     "description": "Contribution to Patti Minter (Mayor)",
+     "amount": 200,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-06-21",
+     "flow": "influence",
+     "category": "unionContributions",
+     "counterparty": "Plumbers & Piperfitters Local 502",
+     "description": "Contribution to Patti Minter (Mayor)",
+     "amount": 2100,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-05-04",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Bluegrass Committee",
+     "description": "Contribution to Todd Alcott (Mayor)",
+     "amount": 2100,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
+     "date": "2024-03-22",
+     "flow": "influence",
+     "category": "pacContributions",
+     "counterparty": "Reinventing A New Direction - Rand PAC",
+     "description": "Contribution to Todd Alcott (Mayor)",
+     "amount": 1000,
+     "source": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
     }
    ],
    "sources": [
@@ -850,6 +1277,10 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "Kentucky Registry of Election Finance: contributions to City of Bowling Green's candidates since 2023",
+     "url": "https://secure.kentucky.gov/kref/publicsearch/ToCandidateSearch"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -862,7 +1293,7 @@
     "Payments to other governments ($1,817,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money counts contributions from PACs and organizations to candidates for mayor, council and commission, reported to the Registry of Election Finance since 2023. Kentucky bans corporate contributions, so outside money comes through PACs and organizations such as unions. Candidates who raise and spend $3,000 or less file only an exemption and are not included. Individuals, candidates' own money and party committees are not counted.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -1060,7 +1491,7 @@
     "Payments to other governments ($1,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Plum Springs reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -1289,7 +1720,7 @@
     "Payments to other governments ($4,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Smiths Grove reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
@@ -1519,7 +1950,7 @@
     "Payments to other governments ($3,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Kentucky city candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor, council and commission of City of Woodburn reported PAC or organization contributions to the Registry of Election Finance since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
     "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Kentucky yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
