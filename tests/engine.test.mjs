@@ -948,3 +948,69 @@ test('Census principal repaid with new borrowing beyond capital outlay is left o
   // Borrowing that all went to capital leaves principal repaid as is.
   assert.equal(aggregateNc([it('T01', 1000), it('E62', 600), it('F44', 900), it('29U', 900), it('39U', 100)], { refinancing: true }).refinanced, 0);
 });
+
+import { atlasLink, agencyTown, ATLAS_PAGE } from '../scripts/common/atlas.mjs';
+test('Atlas of Surveillance helpers clean agency names and links', () => {
+  assert.equal(agencyTown('Springfield Police Department'), 'Springfield');
+  assert.equal(agencyTown('Lower Merion Twp Police'), 'Lower Merion Township');
+  assert.equal(atlasLink({ 'Link 1': 'https://example.org/story' }), 'https://example.org/story');
+  // Some rows hold an agency name instead of a link; the Atlas itself is cited then.
+  assert.equal(atlasLink({ 'Link 1': 'Greenfield Police Department' }), ATLAS_PAGE);
+  assert.equal(atlasLink({}), ATLAS_PAGE);
+});
+
+import { countyFor as hiCountyFor, classifyHi } from '../scripts/hi/csc-map.mjs';
+test('Hawaii contributions are placed by county office and classified by contributor type', () => {
+  assert.equal(hiCountyFor({ office: 'Maui Council' }), 'Maui');
+  assert.equal(hiCountyFor({ office: 'Mayor', county: 'Honolulu' }), 'Honolulu');
+  // A blank county is filled from the candidate's other rows.
+  assert.equal(hiCountyFor({ office: 'Mayor', county: '', reg_no: 'CC1' }, new Map([['CC1', 'Kauai']])), 'Kauai');
+  assert.equal(hiCountyFor({ office: 'House' }), null);
+  assert.deepEqual(classifyHi({ contributor_type: 'Other Entity', contributor_name: 'ILWU Local 142' }), { key: 'unionContributions' });
+  assert.deepEqual(classifyHi({ contributor_type: 'Other Entity', contributor_name: 'Matson Navigation Company, Inc.' }), { key: 'developerContributions' });
+  assert.deepEqual(classifyHi({ contributor_type: 'Noncandidate Committee', contributor_name: 'Hawaii Realtors PAC' }), { key: 'pacContributions' });
+  assert.equal(classifyHi({ contributor_type: 'Individual', contributor_name: 'Jane Doe' }), null);
+  assert.equal(classifyHi({ contributor_type: 'Political Party', contributor_name: 'Democratic Party of Hawaii' }), null);
+});
+
+import { classifyDc } from '../scripts/dc/ocf-map.mjs';
+test('DC contributions leave out shadow congressional seats and candidate transfers', () => {
+  const row = (o) => ({ committee_name: 'Smith for Ward 3', contribution_type: 'Check', contributor_type: 'Corporation', contributor_organization_name: 'Acme Inc', ...o });
+  assert.deepEqual(classifyDc(row()), { key: 'developerContributions' });
+  assert.deepEqual(classifyDc(row({ contributor_type: 'Labor', contributor_organization_name: 'Local 25' })), { key: 'unionContributions' });
+  assert.equal(classifyDc(row({ committee_name: 'Jain for Senate' })), null);
+  assert.equal(classifyDc(row({ contributor_type: 'Other PAC or Committee', contributor_organization_name: 'Cynthia Phillips 4 DC' })), null);
+  assert.equal(classifyDc(row({ contributor_type: 'Individual' })), null);
+});
+
+import { placeCandidate as kyPlace, classifyKy } from '../scripts/ky/kref-map.mjs';
+test('Kentucky candidates are placed by office and location', () => {
+  assert.deepEqual(kyPlace({ office: 'Magistrate/Justice Of The Peace', location: 'Pike-District 5' }), { level: 'county', county: 'pike' });
+  assert.deepEqual(kyPlace({ office: 'City Council Member (A)', location: 'Park Hills-Kenton' }), { level: 'city', city: 'park hills', county: 'kenton' });
+  assert.deepEqual(kyPlace({ office: 'Legislative Council - Even', location: 'Jefferson-Dist 4' }), { level: 'merged', county: 'jefferson' });
+  assert.deepEqual(kyPlace({ office: 'Mayor (J2)', location: 'Lexington-Urban County-Fayette' }), { level: 'merged', county: 'fayette' });
+  assert.equal(kyPlace({ office: 'Circuit Court Clerk', location: 'Pike' }), null);
+  assert.deepEqual(classifyKy({ contributor: 'Ibew Pac Voluntary Fund', contributionType: 'Kypac' }), { key: 'unionContributions' });
+  assert.deepEqual(classifyKy({ contributor: 'Kentucky Realtors PAC', contributionType: 'Kypac' }), { key: 'pacContributions' });
+  assert.equal(classifyKy({ contributor: 'Clark County Republicans', contributionType: 'Contributingorganization' }), null);
+});
+
+import { placeOffice as laPlace, nameKey as laNameKey, classifyLa, norm as laNorm } from '../scripts/la/ethics-map.mjs';
+test('Louisiana offices typed by filers are placed in a parish or municipality', () => {
+  const places = {
+    parishes: new Map([[laNorm('Calcasieu'), 'calcasieu'], [laNorm('Lafayette'), 'lafayette-parish'], [laNorm('East Baton Rouge'), 'ebr']]),
+    munis: [{ name: laNorm('Lake Charles'), key: 'lake-charles', parish: laNorm('Calcasieu') }, { name: laNorm('Lafayette'), key: 'lafayette', parish: laNorm('Lafayette') }, { name: laNorm('Baton Rouge'), key: 'baton-rouge', parish: laNorm('East Baton Rouge') }],
+  };
+  assert.equal(laPlace('Police Juror / Calcasieu/Lake Charles / 5', places), 'calcasieu');
+  assert.equal(laPlace('Mayor / Lake Charles / Calcasieu', places), 'lake-charles');
+  assert.equal(laPlace('City Council / Lafayette / 1', places), 'lafayette');
+  assert.equal(laPlace('Sheriff / Lafayette Parish /', places), 'lafayette-parish');
+  assert.equal(laPlace('Councilman / EBR/Baton Rouge / At-Large', places), 'baton-rouge');
+  assert.equal(laPlace('District Court Judge / Calcasieu / 14', places), null);
+  assert.equal(laNameKey('Kristopher W.', 'Cloessner'), 'kristopher cloessner');
+  assert.equal(laNameKey('Linton F. Broussard, Jr.'), 'linton broussard');
+  assert.deepEqual(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'BUS', contributorname: 'FEDEX CORP' }), { key: 'developerContributions' });
+  assert.deepEqual(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'PAC', contributorname: 'OPERATORS POLITICAL ARM LOCAL, IUOE' }), { key: 'unionContributions' });
+  assert.equal(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'IND', contributorname: 'JANE DOE' }), null);
+  assert.equal(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'ORG', contributorname: 'AVOYELLES PARISH CLERK OF COURT' }), null);
+});

@@ -869,6 +869,11 @@
     {
      "label": "NC State Board of Elections, receipts of Durham County's local candidates since 2023",
      "url": "https://cf.ncsbe.gov/CFTxnLkup/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -879,8 +884,10 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money counts contributions from PACs, unions and other organizations to candidates for county commissioner, sheriff, register of deeds and the county school board, filed with the State Board of Elections since 2023. North Carolina bans corporate contributions. Individuals and party and candidate committees are not counted. Committees are placed by office and filing address, so a few may be assigned to a neighbouring county.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for North Carolina yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": []
   },
   {
    "id": "city-of-durham-nc",
@@ -1713,6 +1720,11 @@
     {
      "label": "NC State Board of Elections, receipts of City of Durham's local candidates since 2023",
      "url": "https://cf.ncsbe.gov/CFTxnLkup/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1723,7 +1735,62 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money counts contributions from PACs, unions and other organizations to candidates for city council (or board of commissioners or aldermen) and mayor, filed with the State Board of Elections since 2023. North Carolina bans corporate contributions. Individuals and party and candidate committees are not counted. Committees are placed by office and filing address, so a few may be assigned to a neighbouring municipality.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for North Carolina yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Gunshot detection (ShotSpotter)",
+     "vendor": "ShotSpotter",
+     "agency": "Durham Police Department",
+     "date": "2022-09-26",
+     "detail": "The Durham Police Department signed a one-year contract with ShotSpotter for gunshot detection technology in 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS002508, citing Spectrum News 1",
+      "url": "https://spectrumlocalnews.com/nc/charlotte/news/2022/09/26/durham-contracts-with-shotspotter"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "Flock Safety",
+     "agency": "Durham Police Department",
+     "date": "2020-02-17",
+     "detail": "The Durham Police Department began using Flock automated license plate readers in 2019.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS008947, citing WRAL",
+      "url": "https://www.wral.com/ai-powered-cameras-upgrade-community-watch-and-privacy-concerns/18912240/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Face recognition",
+     "vendor": "DataWorks Plus",
+     "agency": "Durham Police Department",
+     "date": "2020-01-20",
+     "detail": "In 2017, the Durham Police Department bought six mobile face recognition systems for $38,400.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS004102, citing MuckRock",
+      "url": "https://www.MuckRock.com/foi/durham-4165/facial-recognition-software-and-marketing-february-2019-durham-police-department-69566/#file-839119"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Predictive policing",
+     "vendor": "",
+     "agency": "Durham Police Department",
+     "date": "2016-09-01",
+     "detail": "The Durham Police Department has used predictive policing software since at least 2016.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS007164, citing Durham Police Department",
+      "url": "https://durhamnc.gov/DocumentCenter/View/12548/IACP-Report?bidId="
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   }
  ]

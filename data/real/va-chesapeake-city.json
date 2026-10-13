@@ -1384,6 +1384,11 @@
     {
      "label": "VA Department of Elections, receipts of City of Chesapeake's local candidates since 2023",
      "url": "https://www.elections.virginia.gov/candidatepac-info/campaign-finance-reports/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1395,7 +1400,75 @@
     "Judicial administration (courts, the Commonwealth's attorney and clerks) and community development count as overhead.",
     "Debt is gross debt at year end: bonds, Literary Fund loans, other long-term obligations and temporary loans, for general government and enterprise activities.",
     "Political money counts contributions from businesses, unions and PACs to candidates for the governing body, school board and the constitutional offices, filed with the Department of Elections since 2023. Virginia allows business contributions. Individuals and party and candidate committees are not counted. Committees are placed by their filing address, so a few may be assigned to a neighbouring locality.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Virginia yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Gunshot detection (ShotSpotter)",
+     "vendor": "",
+     "agency": "Chesapeake Police Department",
+     "date": "2025-07-31",
+     "detail": "The Chesapeake Police Department uses gunshot detection technology, according to 2024 data.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS016127, citing MuckRock",
+      "url": "https://www.muckrock.com/foi/virginia-128/surveillance-technology-procured-by-va-law-enforcement-agencies-190059/#comms"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "Flock Safety",
+     "agency": "Chesapeake Police Department",
+     "date": "2025-07-15",
+     "detail": "The Chesapeake Police Department has 336 Flock Safety automated license plate readers and other cameras as of July 2025.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS015773, citing Flock Safety",
+      "url": "https://transparency.flocksafety.com/chesapeake-va-pd-"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Real-time crime center",
+     "vendor": "",
+     "agency": "Chesapeake Police Department",
+     "date": "2025-06-17",
+     "detail": "The Chesapeake Police Department operates a real-time crime center.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS016555, citing 13 News Now",
+      "url": "https://www.13newsnow.com/article/news/local/mycity/chesapeake/chesapeake-police-businesses-flock-camera-program/291-ff66973e-4e48-412b-a7fd-32d73e089b36"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "Flock Safety",
+     "agency": "Chesapeake Police Department",
+     "date": "2025-06-17",
+     "detail": "The Chesapeake Police Department has a camera registry program that allows businesses to link their security cameras directly to the city’s real-time crime center.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS016556, citing 13 News Now",
+      "url": "https://www.13newsnow.com/article/news/local/mycity/chesapeake/chesapeake-police-businesses-flock-camera-program/291-ff66973e-4e48-412b-a7fd-32d73e089b36"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "DJI",
+     "agency": "Chesapeake Police Department",
+     "date": "2022-09-12",
+     "detail": "The Chesapeake Police Department uses DJI drones. The agency's drone department had an inventory of eight drones in September 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS015486, citing 13 News Now",
+      "url": "https://www.13newsnow.com/article/news/crime/chesapeake-police-department-drone-technology/291-296933f8-11e1-4af5-bb65-85ee02771dd9"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   }
  ]

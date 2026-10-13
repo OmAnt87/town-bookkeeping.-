@@ -1317,6 +1317,11 @@
     {
      "label": "VA Department of Elections, receipts of City of Portsmouth's local candidates since 2023",
      "url": "https://www.elections.virginia.gov/candidatepac-info/campaign-finance-reports/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1329,7 +1334,62 @@
     "Judicial administration (courts, the Commonwealth's attorney and clerks) and community development count as overhead.",
     "Debt is gross debt at year end: bonds, Literary Fund loans, other long-term obligations and temporary loans, for general government and enterprise activities.",
     "Political money counts contributions from businesses, unions and PACs to candidates for the governing body, school board and the constitutional offices, filed with the Department of Elections since 2023. Virginia allows business contributions. Individuals and party and candidate committees are not counted. Committees are placed by their filing address, so a few may be assigned to a neighbouring locality.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Virginia yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "Axon, Flock Safety",
+     "agency": "Portsmouth Police Department",
+     "date": "2023-05-25",
+     "detail": "The Portsmouth Police Department installed 60 Flock Safety automated license plate readers throughout the city in 2023. The agency also installed Axon ALPR systems in patrol cars.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS011655, citing 13 News",
+      "url": "https://www.13newsnow.com/article/news/local/mycity/portsmouth/portsmouth-police-launch-camera-registry-website-to-reduce-crime/291-56ccc419-56b7-4d63-bb9e-466692617759"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "Fusus",
+     "agency": "Portsmouth Police Department",
+     "date": "2023-02-09",
+     "detail": "The Portsmouth Police Department has partnered with Fusus to set up a camera registry containing public and private cameras.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS011488, citing Fusus",
+      "url": "https://www.fusus.com/blog/portsmouth-police-department-turns-to-fusus-in-an-effort-to-reduce-crime"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Gunshot detection (ShotSpotter)",
+     "vendor": "Shotspotter",
+     "agency": "Portsmouth Police Department",
+     "date": "",
+     "detail": "The Portsmouth Police Department uses gunshot detection technology.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS011716",
+      "url": "https://www.portsmouthva.gov/DocumentCenter/View/13028/Portsmouth-PD-Citywide-Camera-Presentation-W_Cover"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Real-time crime center",
+     "vendor": "",
+     "agency": "Portsmouth Police Department",
+     "date": "",
+     "detail": "The Portsmouth Police Department operates a real-time crime center.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS011717",
+      "url": "https://www.portsmouthva.gov/DocumentCenter/View/13028/Portsmouth-PD-Citywide-Camera-Presentation-W_Cover"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   }
  ]

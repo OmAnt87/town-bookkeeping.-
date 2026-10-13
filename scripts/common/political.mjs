@@ -44,3 +44,6 @@ export function summarizeContributions(rows) {
   ledger.sort((a, b) => (a.date < b.date ? 1 : -1));
   return { influence, topDonors, ledger };
 }
+
+// Labor organizations by name, for states whose filings do not mark unions as a contributor type.
+export const UNION_NAME = /\b(unions?|local\s*#?\s*\d+|brotherhood|workers|federation|afl[- ]?cio|teamsters|ibew|ilwu|seiu|afscme|hgea|upw|unite here|iaff|iuoe|ufcw|uaw|aft|nea|carpenters|laborers?'?s?|plumbers|pipefitters|ironworkers|electricians|firefighters?|fire fighters|police|fop|pba|deputies|teachers|educators|education association|nurses|employees association|painters|sheet metal|operating engineers|cope|trades council)\b/i;

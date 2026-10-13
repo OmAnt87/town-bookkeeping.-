@@ -632,6 +632,11 @@
     {
      "label": "NC State Board of Elections, receipts of Cumberland County's local candidates since 2023",
      "url": "https://cf.ncsbe.gov/CFTxnLkup/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -642,8 +647,10 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money counts contributions from PACs, unions and other organizations to candidates for county commissioner, sheriff, register of deeds and the county school board, filed with the State Board of Elections since 2023. North Carolina bans corporate contributions. Individuals and party and candidate committees are not counted. Committees are placed by office and filing address, so a few may be assigned to a neighbouring county.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for North Carolina yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": []
   },
   {
    "id": "city-of-fayetteville-nc",
@@ -1275,6 +1282,11 @@
     {
      "label": "NC State Board of Elections, receipts of City of Fayetteville's local candidates since 2023",
      "url": "https://cf.ncsbe.gov/CFTxnLkup/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1286,7 +1298,88 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money counts contributions from PACs, unions and other organizations to candidates for city council (or board of commissioners or aldermen) and mayor, filed with the State Board of Elections since 2023. North Carolina bans corporate contributions. Individuals and party and candidate committees are not counted. Committees are placed by office and filing address, so a few may be assigned to a neighbouring municipality.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for North Carolina yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "",
+     "agency": "Fayetteville Police Department",
+     "date": "2025-05-22",
+     "detail": "The Fayetteville Police Department operates 60 license plate readers and plans to expand its ALPR inventory to 128 cameras at a cost of $8.2 million as of May 2025. The agency began using ALPR technology in 2013.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013877, citing City of Fayetteville, NC Government",
+      "url": "https://youtu.be/SusPoXV9kA0?si=4QUyErSd8_bbk9Xx&t=8832"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Gunshot detection (ShotSpotter)",
+     "vendor": "SoundThinking",
+     "agency": "Fayetteville Police Department",
+     "date": "2024-09-24",
+     "detail": "The Fayetteville Police Department entered into a one-year contract for gunshot detection technology services with ShotSpotter for $197,500 in August 2022. The Fayetteville City Council approved $210,000 for a one-year renewal to the ShotSpotter contract in 2024.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS014821, citing CityView",
+      "url": "https://www.cityviewnc.com/stories/shotspotter-gets-another-shot-in-fayetteville/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "Fusus",
+     "agency": "Fayetteville Police Department",
+     "date": "2023-05-01",
+     "detail": "The Fayetteville Police Department utilizes the Fusus camera registry.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS011281, citing City of Fayetteville",
+      "url": "https://cityoffayetteville.legistar.com/LegislationDetail.aspx?ID=6192018&GUID=02B8376F-50BE-45A0-A767-2B66280BF576&Options=&Search="
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Real-time crime center",
+     "vendor": "Fusus",
+     "agency": "Fayetteville Police Department",
+     "date": "2023-04-03",
+     "detail": "The Fayetteville Department has a real time crime center.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS015255, citing Fayetteville Police Department's Facebook page",
+      "url": "https://www.facebook.com/photo.php?fbid=596041925893182&id=100064621394654&set=a.227659156064796"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Face recognition",
+     "vendor": "Clearview AI",
+     "agency": "Fayetteville Police Department",
+     "date": "2021-04-29",
+     "detail": "The Fayetteville Police Department uses Clearview AI face recognition software.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS009121, citing Fayetteville Police Department",
+      "url": "https://www.MuckRock.com/foi/fayetteville-4196/foia-clearview-ai-documents-fayetteville-police-department-110634/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "DJI",
+     "agency": "Fayetteville Police Department",
+     "date": "",
+     "detail": "The Fayetteville Police Department operates two DJI drones as of 2018, according to data compiled by the Center for the Study of the Drone at Bard College.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS003266, citing Center for the Study of the Drone at Bard College",
+      "url": "https://dronecenter.bard.edu/projects/public-safety-drones-project/public-safety-drones-3rd-edition/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   },
   {
@@ -1489,6 +1582,11 @@
     {
      "label": "NC State Board of Elections, receipts of Town of Falcon's local candidates since 2023",
      "url": "https://cf.ncsbe.gov/CFTxnLkup/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1499,8 +1597,10 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money counts contributions from PACs, unions and other organizations to candidates for town council (or board of commissioners or aldermen) and mayor, filed with the State Board of Elections since 2023 (none were found). North Carolina bans corporate contributions. Individuals and party and candidate committees are not counted. Committees are placed by office and filing address, so a few may be assigned to a neighbouring municipality.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for North Carolina yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": []
   },
   {
    "id": "town-of-godwin-nc",
@@ -1665,6 +1765,11 @@
     {
      "label": "NC State Board of Elections, receipts of Town of Godwin's local candidates since 2023",
      "url": "https://cf.ncsbe.gov/CFTxnLkup/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1675,8 +1780,10 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money counts contributions from PACs, unions and other organizations to candidates for town council (or board of commissioners or aldermen) and mayor, filed with the State Board of Elections since 2023 (none were found). North Carolina bans corporate contributions. Individuals and party and candidate committees are not counted. Committees are placed by office and filing address, so a few may be assigned to a neighbouring municipality.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for North Carolina yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": []
   },
   {
    "id": "town-of-hope-mills-nc",
@@ -2078,6 +2185,11 @@
     {
      "label": "NC State Board of Elections, receipts of Town of Hope Mills's local candidates since 2023",
      "url": "https://cf.ncsbe.gov/CFTxnLkup/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -2088,7 +2200,23 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money counts contributions from PACs, unions and other organizations to candidates for town council (or board of commissioners or aldermen) and mayor, filed with the State Board of Elections since 2023 (none were found). North Carolina bans corporate contributions. Individuals and party and candidate committees are not counted. Committees are placed by office and filing address, so a few may be assigned to a neighbouring municipality.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for North Carolina yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "Flock Safety",
+     "agency": "Hope Mills Police Department",
+     "date": "2025-09-11",
+     "detail": "The Hope Mills Police Department operates 36 Flock Safety automated license plate readers as of September 2025.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS017000, citing Public Records From the EFF via Pittsboro Police - See note",
+      "url": "https://www.documentcloud.org/documents/26182924-pittsboro-police-department-flock-safety-shared-devices-list/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   },
   {
@@ -2301,6 +2429,11 @@
     {
      "label": "NC State Board of Elections, receipts of Town of Linden's local candidates since 2023",
      "url": "https://cf.ncsbe.gov/CFTxnLkup/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -2311,8 +2444,10 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money counts contributions from PACs, unions and other organizations to candidates for town council (or board of commissioners or aldermen) and mayor, filed with the State Board of Elections since 2023 (none were found). North Carolina bans corporate contributions. Individuals and party and candidate committees are not counted. Committees are placed by office and filing address, so a few may be assigned to a neighbouring municipality.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for North Carolina yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": []
   },
   {
    "id": "town-of-wade-nc",
@@ -2525,6 +2660,11 @@
     {
      "label": "NC State Board of Elections, receipts of Town of Wade's local candidates since 2023",
      "url": "https://cf.ncsbe.gov/CFTxnLkup/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -2535,8 +2675,10 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money counts contributions from PACs, unions and other organizations to candidates for town council (or board of commissioners or aldermen) and mayor, filed with the State Board of Elections since 2023 (none were found). North Carolina bans corporate contributions. Individuals and party and candidate committees are not counted. Committees are placed by office and filing address, so a few may be assigned to a neighbouring municipality.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for North Carolina yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": []
   }
  ]
 }
