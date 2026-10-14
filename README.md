@@ -327,10 +327,11 @@ node scripts/build-summary.mjs
 
 ### Nebraska (counties, cities and villages)
 
-`data/real/ne-<county>.json` holds each Nebraska county and the cities and villages whose people mostly live in it, built the same way as Ohio and Michigan. Township governments are left out: their Census records show road spending about twice their reported revenue, so their revenue appears incomplete. Political money is not scored yet. Coverage and gaps: [docs/NE_DATA_STATUS.md](docs/NE_DATA_STATUS.md).
+`data/real/ne-<county>.json` holds each Nebraska county and the cities and villages whose people mostly live in it, built the same way as Ohio and Michigan. Township governments are left out: their Census records show road spending about twice their reported revenue, so their revenue appears incomplete. Political money comes from the [Accountability and Disclosure Commission](https://nadc-e.nebraska.gov/PublicSite/DataDownload.aspx): business, union and PAC contributions to county, mayor and city council candidates who file with it (above $5,000 raised or spent). Coverage and gaps: [docs/NE_DATA_STATUS.md](docs/NE_DATA_STATUS.md).
 
 ```bash
 node scripts/ne/download.mjs
+node scripts/ne/fetch-nadc.mjs                     # political money (optional)
 node scripts/ne/build-county.mjs --all && node scripts/ne/status.mjs
 node scripts/build-summary.mjs
 ```

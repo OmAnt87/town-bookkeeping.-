@@ -67,7 +67,14 @@ export async function fetchOrganizations(site, ids, cacheFile, { log = () => {},
       try {
         const { stdout } = await run('curl', ['-sSfL', '--retry', '3', '-m', '60', '-A', 'Mozilla/5.0', `${site}/PublicSite/SearchPages/OrganizationDetail.aspx?OrganizationID=${id}`], { maxBuffer: 1 << 26 });
         const text = stdout.replace(/<[^>]*>/g, ' ').replace(/&nbsp;|&#160;/g, ' ').replace(/\s+/g, ' ');
-        cache[id] = { jurisdiction: field(text, 'Jurisdiction'), office: field(text, 'Office'), district: field(text, 'District') };
+        // Oklahoma labels the fields ("Jurisdiction: TULSA COUNTY Office: ..."); Nebraska lists the
+        // candidate in a table whose cells are spans named lblJurisdiction (type, then name),
+        // lblOfficeDescription and lblDistrictDescription.
+        const span = (name) => [...stdout.matchAll(new RegExp(`_${name}">([^<]*)<`, 'g'))].map((m) => m[1].trim());
+        const grid = span('lblJurisdiction');
+        cache[id] = grid.length
+          ? { jurisdictionType: grid[0] || '', jurisdiction: grid.at(-1) || '', office: span('lblOfficeDescription')[0] || '', district: span('lblDistrictDescription')[0] || '' }
+          : { jurisdiction: field(text, 'Jurisdiction'), office: field(text, 'Office'), district: field(text, 'District') };
       } catch (e) {
         log(`committee ${id}: ${e.message.split('\n')[0]}`);
       }
@@ -90,9 +97,10 @@ export function receiptsByGovernment(geo, receipts, placeOf) {
   const cities = new Map();
   for (const g of geo.values()) {
     if (g.kind === 'County') counties.set(normPlace(g.base), g.key);
-    else if (g.key.startsWith('Place|')) {
+    else if (/^(Place|Cousub)\|/.test(g.key)) {
+      // Some states list a city as a county subdivision too; the same key twice is not ambiguous.
       const n = normPlace(g.base);
-      cities.set(n, cities.has(n) ? null : g.key);
+      cities.set(n, cities.has(n) && cities.get(n) !== g.key ? null : g.key);
     }
   }
   const byKey = new Map();

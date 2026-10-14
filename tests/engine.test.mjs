@@ -1138,3 +1138,15 @@ test('Civix sites share contributor types; Oklahoma committees are placed by the
   assert.equal(classifyOk({ ...row, amended: 'Y' }), null);
   assert.equal(classifyOk({ ...row, 'receipt type': 'In-Kind' }), null);
 });
+
+import { placeCommittee as nePlace, classifyNe } from '../scripts/ne/nadc-map.mjs';
+test('Nebraska committees are placed by jurisdiction type; only mayor and council count in cities', () => {
+  assert.deepEqual(nePlace({ jurisdictionType: 'County', jurisdiction: 'LANCASTER', office: 'COUNTY COMMISSIONER' }), { level: 'county', name: 'lancaster' });
+  assert.deepEqual(nePlace({ jurisdictionType: 'Municipal', jurisdiction: 'OMAHA', office: 'MAYOR' }), { level: 'city', name: 'omaha' });
+  assert.equal(nePlace({ jurisdictionType: 'Municipal', jurisdiction: 'OMAHA', office: 'AIRPORT AUTHORITY' }), null);
+  assert.equal(nePlace({ jurisdictionType: 'State', jurisdiction: 'NEBRASKA', office: 'STATE LEGISLATURE' }), null);
+  const row = { amended: 'N', 'receipt transaction/contribution type': 'Monetary', 'contributor or transaction source type': 'Business (For-Profit and Non-Profit entities)', 'contributor or source name (individual last name)': 'Gifford Realty, Inc.', 'first name': '' };
+  assert.deepEqual(classifyNe(row), { key: 'developerContributions' });
+  assert.deepEqual(classifyNe({ ...row, 'contributor or transaction source type': 'PAC-Separate Segregated Political Fund', 'contributor or source name (individual last name)': 'Lincoln Fire Fighters Assn. Local #644' }), { key: 'unionContributions' });
+  assert.equal(classifyNe({ ...row, 'receipt transaction/contribution type': 'In-Kind Contribution' }), null);
+});
