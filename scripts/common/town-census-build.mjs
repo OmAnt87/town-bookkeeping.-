@@ -33,6 +33,10 @@
 //   excludeUnitKinds              Census unit kinds to leave out ('township'), with excludeReason
 //   levy                          false to leave reported property tax as is (then
 //                                 memberSchoolNote(g) gives the schools note for non-county records)
+//   consolidated                  { <Census place code>: { county: '037', display: 'Metro Nashville' } }:
+//                                 consolidated city-counties the Census files as municipalities but
+//                                 whose place is only a "balance" or a CDP. They take the county's
+//                                 population, location and file.
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -72,7 +76,7 @@ export function buildState(cfg) {
   // and other governments inside a town by place code (in the county holding most of their people).
   const geo = new Map(); // key -> info; key 'County|33009', 'Cousub|40180' or 'Place|12345'
   const countyName = new Map();
-  const fileOf = (county) => slugify(county.replace(/ County$/, ''));
+  const fileOf = (county) => slugify(county.replace(/ (County|Parish|Borough|Census Area|Municipality|City and Borough)$/, ''));
   for (const r of pop.filter((p) => p.sumlev === '050')) {
     const geoid = `${cfg.fips}${r.county}`;
     countyName.set(geoid, r.name);
@@ -108,10 +112,15 @@ export function buildState(cfg) {
       geo.set(`Place|${r.place}`, { key: `Place|${r.place}`, kind, base: m[1].replace(/^Village of /, ''), display: displayName(kind, m[1]), geoid: `${cfg.fips}${r.place}`, pop: Number(r[POP_YEAR]), xy: placeXY.get(r.place), county, file: county && fileOf(county) });
     }
   }
+  for (const [place, c] of Object.entries(cfg.consolidated || {})) {
+    const county = geo.get(`County|${cfg.fips}${c.county}`);
+    if (county) geo.set(`Consolidated|${place}`, { ...county, key: `Consolidated|${place}`, kind: c.kind || 'City', display: c.display, base: c.display });
+  }
   // A municipality is matched to its county subdivision (where the city is one) unless that
   // subdivision is a township, only a fragment of the city, then to its place.
   const geoKey = (u) => {
     if (u.kind === 'county') return `County|${cfg.fips}${u.place.slice(2)}`;
+    if (cfg.consolidated?.[u.place]) return `Consolidated|${u.place}`;
     const cousub = geo.get(`Cousub|${u.place}`);
     const place = geo.get(`Place|${u.place}`);
     return u.kind === 'muni' && (!cousub || /Township$/.test(cousub.kind) || (place && place.pop > cousub.pop)) ? `Place|${u.place}` : `Cousub|${u.place}`;

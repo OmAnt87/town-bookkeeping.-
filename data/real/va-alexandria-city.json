@@ -1366,6 +1366,11 @@
     {
      "label": "VA Department of Elections, receipts of City of Alexandria's local candidates since 2023",
      "url": "https://www.elections.virginia.gov/candidatepac-info/campaign-finance-reports/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1377,7 +1382,62 @@
     "Judicial administration (courts, the Commonwealth's attorney and clerks) and community development count as overhead.",
     "Debt is gross debt at year end: bonds, Literary Fund loans, other long-term obligations and temporary loans, for general government and enterprise activities.",
     "Political money counts contributions from businesses, unions and PACs to candidates for the governing body, school board and the constitutional offices, filed with the Department of Elections since 2023. Virginia allows business contributions. Individuals and party and candidate committees are not counted. Committees are placed by their filing address, so a few may be assigned to a neighbouring locality.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Virginia yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "",
+     "agency": "Alexandria Police Department",
+     "date": "2025-09-25",
+     "detail": "The Alexandria Police Department has drones.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS018158, citing Alexandria Police Department YouTube",
+      "url": "https://youtu.be/pNIJN0422ec?si=hMR_P8ZS-jDHZQHg"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "",
+     "agency": "Alexandria Sheriff's Office",
+     "date": "2025-07-31",
+     "detail": "The Alexandria Sheriff's Office uses automated license plate readers, according to 2024 data.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS016038, citing MuckRock",
+      "url": "https://www.muckrock.com/foi/virginia-128/surveillance-technology-procured-by-va-law-enforcement-agencies-190059/#comms"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Cell-site simulator",
+     "vendor": "",
+     "agency": "Alexandria Police Department",
+     "date": "2017-04-11",
+     "detail": "The Alexandria Police Department acquired cell-site simulator technology in 2007, according data compiled by Kevin Collier for Vocativ.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS004041, citing Vocativ",
+      "url": "https://web.archive.org/web/20170416100107/https://www.vocativ.com/389656/stingray-devices-in-trumps-america/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "Flock Safety",
+     "agency": "Alexandria Police Department",
+     "date": "",
+     "detail": "As of April 2024, the Alexandria Police Department operates 18 Flock Safety automated license plate readers. The agency stores ALPR data for 30 days.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013600, citing Flock Safety",
+      "url": "https://transparency.flocksafety.com/alexandria-va-pd"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   }
  ]

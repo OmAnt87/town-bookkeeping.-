@@ -302,6 +302,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -313,7 +318,36 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: contributions to Texas county candidates were not loaded.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Texas yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "",
+     "agency": "Zapata County Sheriff's Office",
+     "date": "2023-09-25",
+     "detail": "The Zapata County Sheriff's Office received $375,000 from the Operation Stonegarden program to purchase automated license plate readers in 2023.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012179, citing Laredo Morning Times",
+      "url": "https://www.lmtonline.com/local/article/operation-stonegarden-border-security-grant-18387821.php"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "",
+     "agency": "Zapata County Sheriff's Office",
+     "date": "2022-02-24",
+     "detail": "The Zapata County Sheriff's Office uses a drone.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012180, citing News4 San Antonio",
+      "url": "https://news4sanantonio.com/news/local/deputies-track-down-four-missing-children-using-drone-local-san-antonio-texas-lost-kids-zapata-south-texas-highway"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   }
  ]
