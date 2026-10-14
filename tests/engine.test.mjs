@@ -1014,3 +1014,37 @@ test('Louisiana offices typed by filers are placed in a parish or municipality',
   assert.equal(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'IND', contributorname: 'JANE DOE' }), null);
   assert.equal(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'ORG', contributorname: 'AVOYELLES PARISH CLERK OF COURT' }), null);
 });
+
+import { placeCommittee as alPlace, classifyAl, norm as alNorm } from '../scripts/al/fcpa-map.mjs';
+test('Alabama committees are placed by office, county jurisdiction or mailing city', () => {
+  const places = { counties: new Map([[alNorm('Washington'), 'washington'], [alNorm('St. Clair'), 'st-clair']]), cities: new Map([[alNorm('Mobile'), ['mobile']], [alNorm('Midway'), ['midway-1', 'midway-2']]]) };
+  assert.equal(alPlace({ office: 'County Commissioner', jurisdiction: 'WASHINGTON COUNTY' }, places), 'washington');
+  assert.equal(alPlace({ office: 'Sheriff', jurisdiction: 'ST. CLAIR COUNTY' }, places), 'st-clair');
+  assert.equal(alPlace({ office: 'Mayor', city: 'MOBILE, ALABAMA' }, places), 'mobile');
+  assert.equal(alPlace({ office: 'City Council', city: 'Midway' }, places), null);
+  assert.equal(alPlace({ office: 'Circuit Court Judge', jurisdiction: 'WASHINGTON COUNTY' }, places), null);
+  assert.equal(alPlace({ office: 'County Board of Education', jurisdiction: 'WASHINGTON COUNTY' }, places), null);
+  const row = (o) => ({ contributiontype: 'Cash (Itemized)', contributortype: 'Group/Business/Corporation', lastname: 'WINWOOD LLC', candidatelast: 'DRUMMOND', ...o });
+  assert.deepEqual(classifyAl(row()), { key: 'developerContributions' });
+  assert.deepEqual(classifyAl(row({ lastname: 'Alabama Realtors Political Action Committee' })), { key: 'pacContributions' });
+  assert.deepEqual(classifyAl(row({ contributortype: 'PAC', lastname: 'IBEW LOCAL 136 PAC' })), { key: 'unionContributions' });
+  assert.equal(classifyAl(row({ lastname: 'Team Drummond' })), null);
+  assert.equal(classifyAl(row({ contributiontype: 'In-Kind (Itemized)' })), null);
+  assert.equal(classifyAl(row({ contributortype: 'Individual', lastname: 'Smith' })), null);
+});
+
+import { placeMunicipality as akPlace, classifyAk, norm as akNorm } from '../scripts/ak/apoc-map.mjs';
+test('Alaska APOC municipalities map to boroughs, cities and consolidated city-boroughs', () => {
+  const places = { boroughs: new Map([[akNorm('Fairbanks North Star Borough'), 'fnsb'], [akNorm('Municipality of Anchorage'), 'anchorage']]), cities: new Map([[akNorm('Fairbanks'), 'fairbanks']]) };
+  assert.equal(akPlace('Fairbanks, City of', places), 'fairbanks');
+  assert.equal(akPlace('Fairbanks Northstar Borough', places), 'fnsb');
+  assert.equal(akPlace('Anchorage, City and Borough', places), 'anchorage');
+  assert.equal(akPlace('Palmer, City of', places), null);
+  const row = (o) => ({ 'Payment Type': 'Check', 'Last/Business Name': 'IBEW PAC', 'First Name': '', Occupation: 'PAC', ...o });
+  assert.deepEqual(classifyAk(row()), { key: 'unionContributions' });
+  assert.deepEqual(classifyAk(row({ 'Last/Business Name': 'Anchorage Home Builders Association BUILD-PAC' })), { key: 'pacContributions' });
+  assert.deepEqual(classifyAk(row({ 'Last/Business Name': 'Turnagain Training', Occupation: 'Business' })), { key: 'developerContributions' });
+  assert.equal(classifyAk(row({ 'Last/Business Name': 'Anchorage Democrats', Occupation: 'Party Committee' })), null);
+  assert.equal(classifyAk(row({ 'Last/Business Name': 'Lee', 'First Name': 'Amber' })), null);
+  assert.equal(classifyAk(row({ 'Payment Type': 'Bank Interest', 'Last/Business Name': 'Global Federal Credit Union' })), null);
+});
