@@ -1296,6 +1296,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1306,7 +1311,101 @@
     "Debt service counts principal and interest paid from governmental funds; interest on enterprise debt is part of enterprise expenses. Debt outstanding is not in the EDR data, so fiscal health is not scored.",
     "Courts, legal services, planning, housing and economic development count as overhead.",
     "Political money is not scored: Florida county candidates file campaign reports with the county supervisor of elections, not with a statewide agency.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Florida yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Video analytics",
+     "vendor": "Flock Safety",
+     "agency": "Clay County Sheriff's Office",
+     "date": "2025-09-11",
+     "detail": "The Clay County Sheriff's Office operates 40 Condor cameras from Flock Safety as of September 2025. The cameras are paired with video analytics software.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS016599, citing EFF via Pittsboro Police - See note",
+      "url": "https://www.documentcloud.org/documents/26182924-pittsboro-police-department-flock-safety-shared-devices-list/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Real-time crime center",
+     "vendor": "",
+     "agency": "Clay County Sheriff's Office",
+     "date": "2025-04-14",
+     "detail": "The Clay County Sheriff's Office has a real-time crime center.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS015268, citing Governmentjobs.com",
+      "url": "https://web.archive.org/web/20250408175141/https://www.governmentjobs.com/jobs/4891359-0/real-time-crime-center-analyst?keyword=Real+Time+Crime+Center&location=&pagetype=searchPage"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "LexisNexis Risk Solutions",
+     "agency": "Clay County Sheriff's Office",
+     "date": "2024-03-01",
+     "detail": "The Clay County Sheriff's Office uses the LexisNexis Accurint Virtual Crime Center investigative platform.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013160, citing Miami Beach Police Department",
+      "url": "https://www.muckrock.com/foi/miami-beach-10561/public-records-request-information-sharing-interagency-agreements-159445/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "",
+     "agency": "Clay County Sheriff's Office",
+     "date": "2022-11-20",
+     "detail": "The Clay County Sheriff's Office has had a camera registry since at least 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS011230, citing News 4 Jax",
+      "url": "https://www.news4jax.com/news/local/2022/11/20/clay-county-sheriffs-office-expanding-camera-network-wants-people-to-be-involved/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "",
+     "agency": "Clay County Sheriff's Office",
+     "date": "2021-01-08",
+     "detail": "The Clay County Sheriff's Office has a drone program.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS002290, citing Florida Sheriffs Association",
+      "url": "https://www.flsenate.gov/Committees/Show/CJ/Meeting%20Packet/4980"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "",
+     "agency": "Clay County Sheriff's Office",
+     "date": "2019-07-14",
+     "detail": "The Clay County Sheriff's Office uses both fixed and mobile automated license plate readers.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS011975, citing Clay County Sheriff's Office",
+      "url": "https://www.claysheriff.com/wp-content/uploads/2020/07/CCSO_AnnualReport20197.14.pdf"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Face recognition",
+     "vendor": "Idemia",
+     "agency": "Clay County Sheriff's Office",
+     "date": "2019-07-12",
+     "detail": "The Clay County Sheriff's Office is one of more than 275 law enforcement agencies with access to the Face Analysis Comparison & Examination System (FACES), a face recognition program maintained by the Pinellas County Sheriff's Office. Investigators may upload an image to search more than 25-million Florida driver's license photos and mugshots.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS005062, citing Orlando Sentinel",
+      "url": "https://www.orlandosentinel.com/politics/os-ne-ice-fbi-facial-recognition-florida-drivers-license-database-20190712-xs6acoda5zgy5nqsi6yqd2tgwi-story.html"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   },
   {
@@ -1968,6 +2067,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1978,8 +2082,10 @@
     "Debt service counts principal and interest paid from governmental funds; interest on enterprise debt is part of enterprise expenses. Debt outstanding is not in the EDR data, so fiscal health is not scored.",
     "Courts, legal services, planning, housing and economic development count as overhead.",
     "Political money is not scored: Florida municipal candidates file campaign reports with the municipal clerk, not with a statewide agency.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Florida yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": []
   },
   {
    "id": "city-of-keystone-heights-fl",
@@ -2322,6 +2428,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -2332,8 +2443,10 @@
     "Debt service counts principal and interest paid from governmental funds; interest on enterprise debt is part of enterprise expenses. Debt outstanding is not in the EDR data, so fiscal health is not scored.",
     "Courts, legal services, planning, housing and economic development count as overhead.",
     "Political money is not scored: Florida municipal candidates file campaign reports with the municipal clerk, not with a statewide agency.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Florida yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": []
   },
   {
    "id": "town-of-orange-park-fl",
@@ -3029,6 +3142,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -3039,7 +3157,36 @@
     "Debt service counts principal and interest paid from governmental funds; interest on enterprise debt is part of enterprise expenses. Debt outstanding is not in the EDR data, so fiscal health is not scored.",
     "Courts, legal services, planning, housing and economic development count as overhead.",
     "Political money is not scored: Florida municipal candidates file campaign reports with the municipal clerk, not with a statewide agency.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Florida yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "LexisNexis Risk Solutions",
+     "agency": "Orange Park Police Department",
+     "date": "2024-03-01",
+     "detail": "The Orange Park Police Department uses the LexisNexis Accurint Virtual Crime Center investigative platform.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013151, citing Miami Beach Police Department",
+      "url": "https://www.muckrock.com/foi/miami-beach-10561/public-records-request-information-sharing-interagency-agreements-159445/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Face recognition",
+     "vendor": "Idemia",
+     "agency": "Orange Park Police Department",
+     "date": "2019-07-12",
+     "detail": "The Orange Park Police Department is one of more than 275 law enforcement agencies with access to the Face Analysis Comparison & Examination System (FACES), a face recognition program maintained by the Pinellas County Sheriff's Office. Investigators may upload an image to search more than 25-million Florida driver's license photos and mugshots.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS005194, citing Orlando Sentinel",
+      "url": "https://www.orlandosentinel.com/politics/os-ne-ice-fbi-facial-recognition-florida-drivers-license-database-20190712-xs6acoda5zgy5nqsi6yqd2tgwi-story.html"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   },
   {
@@ -3393,6 +3540,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -3403,8 +3555,10 @@
     "Debt service counts principal and interest paid from governmental funds; interest on enterprise debt is part of enterprise expenses. Debt outstanding is not in the EDR data, so fiscal health is not scored.",
     "Courts, legal services, planning, housing and economic development count as overhead.",
     "Political money is not scored: Florida municipal candidates file campaign reports with the municipal clerk, not with a statewide agency.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Florida yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": []
   }
  ]
 }

@@ -374,9 +374,32 @@ node scripts/co/download.mjs && node scripts/co/build-county.mjs --all && node s
 node scripts/build-summary.mjs
 ```
 
-For every state built with `scripts/common/town-census-build.mjs` (New Hampshire through Colorado above), principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out of debt service. Wisconsin governments roll over short-term notes often, so it matters most there.
+### The remaining states and DC (counties, cities, towns and villages)
 
-The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
+`data/real/<state>-<county>.json` for Alabama, Alaska, Arkansas, Hawaii, Idaho, Kentucky, Louisiana, Mississippi, Montana, Nevada, New Mexico, Oklahoma, Tennessee, Utah, West Virginia, Wyoming and the District of Columbia holds each county (borough in Alaska, parish in Louisiana) and the municipalities whose people mostly live in it, built the same way as Texas and California. Consolidated city-counties the Census files as municipalities (Anchorage, Juneau, Sitka, Wrangell, Honolulu, Lexington-Fayette, Louisville Metro, Anaconda-Deer Lodge, Butte-Silver Bow, Carson City, Metro Nashville and Lynchburg-Moore) are placed at their county with the `consolidated` option. Tennessee, Alaska and DC run schools inside county, borough or city governments, so school spending is included there and kept out of the services and overhead shares. Coverage is lowest where many small towns did not report to the Census (Oklahoma, Alabama, Arkansas, Louisiana, Mississippi, Tennessee).
+
+Political money is scored for four of them. Hawaii comes from the Campaign Spending Commission's open data (county mayor, council and prosecuting attorney candidates), DC from the Office of Campaign Finance (mayor, council and attorney general), Kentucky from the Registry of Election Finance's public search (county and city candidates, matched by name to their office and location), and Louisiana from the Board of Ethics' e-filed contributions, matched by filer name to the office each candidate typed (partial coverage). In the other twelve, local candidates file with counties or cities, or the state's data is behind a login, a bot wall or unreachable, so political money is not scored yet. Coverage and gaps: `docs/<ST>_DATA_STATUS.md`.
+
+```bash
+node scripts/hi/fetch-csc.mjs && node scripts/dc/fetch-ocf.mjs && node scripts/ky/fetch-kref.mjs && node scripts/la/fetch-ethics.mjs   # political money (optional)
+for st in al ak ar dc hi id ky la ms mt nv nm ok tn ut wv wy; do
+  node scripts/$st/download.mjs && node scripts/$st/build-county.mjs --all && node scripts/$st/status.mjs
+done
+node scripts/build-summary.mjs
+```
+
+For every state built with `scripts/common/town-census-build.mjs` (New Hampshire through the remaining states above), principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out of debt service. Wisconsin governments roll over short-term notes often, so it matters most there.
+
+### Red flags in every state
+
+Surveillance programs from the [EFF Atlas of Surveillance](https://atlasofsurveillance.org/) are matched to municipal police departments, and to sheriffs and county police where a state's counties are listed, so the red-flag part is scored in every state. Builds rewrite their county files, so re-run it after any build:
+
+```bash
+node scripts/red-flags.mjs --download && node scripts/red-flags.mjs   # every state except NJ (NJ: scripts/nj/red-flags.mjs)
+node scripts/build-summary.mjs
+```
+
+The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or red-flags run.
 
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Public-record data**, and lets you filter to them on the map and rankings.
 

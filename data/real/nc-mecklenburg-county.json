@@ -689,6 +689,11 @@
     {
      "label": "NC State Board of Elections, receipts of Mecklenburg County's local candidates since 2023",
      "url": "https://cf.ncsbe.gov/CFTxnLkup/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -699,8 +704,10 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money counts contributions from PACs, unions and other organizations to candidates for county commissioner, sheriff, register of deeds and the county school board, filed with the State Board of Elections since 2023. North Carolina bans corporate contributions. Individuals and party and candidate committees are not counted. Committees are placed by office and filing address, so a few may be assigned to a neighbouring county.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for North Carolina yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": []
   },
   {
    "id": "city-of-charlotte-nc",
@@ -1540,6 +1547,11 @@
     {
      "label": "NC State Board of Elections, receipts of City of Charlotte's local candidates since 2023",
      "url": "https://cf.ncsbe.gov/CFTxnLkup/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1550,7 +1562,88 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money counts contributions from PACs, unions and other organizations to candidates for city council (or board of commissioners or aldermen) and mayor, filed with the State Board of Elections since 2023. North Carolina bans corporate contributions. Individuals and party and candidate committees are not counted. Committees are placed by office and filing address, so a few may be assigned to a neighbouring municipality.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for North Carolina yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "Motorola Solutions",
+     "agency": "Charlotte-Mecklenburg Police Department",
+     "date": "2025-11-24",
+     "detail": "The Charlotte Mecklenburg Police Department received approval to start a drone as first responder program in 2025.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS018411, citing City of Charlotte",
+      "url": "https://charlottenc.legistar.com/LegislationDetail.aspx?ID=7732294&GUID=66323800-631E-4B3D-BC32-758ECC4166FA&Options=&Search="
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "Dataminr",
+     "agency": "Charlotte-Mecklenburg Police Department",
+     "date": "2025-06-10",
+     "detail": "The Charlotte-Mecklenburg Police Department uses Dataminr.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS018293, citing Muckrock",
+      "url": "https://www.muckrock.com/foi/charlotte-161/public-records-request-dataminr-184347/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "Axon",
+     "agency": "Charlotte-Mecklenburg Police Department",
+     "date": "2025-01-29",
+     "detail": "The Charlotte-Mecklenburg Police Department uses Axon's Fusus camera registry.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS015151, citing WCNC",
+      "url": "https://www.wcnc.com/article/news/local/cmpd-connect-charlotte-security-cameras-1-29-2025/275-9374061d-2afd-4d00-9355-4cfef68b685c"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Real-time crime center",
+     "vendor": "",
+     "agency": "Charlotte-Mecklenburg Police Department",
+     "date": "2017-11-17",
+     "detail": "The Charlotte-Mecklenburg Police Department's real-time crime center has been operating since 2013. The RTCC has access to over 1,000 cameras across the city, and is connected to at least 95 fixed automated license plate readers. Around 13 mobile ALPRs are attached to mobile message/radar trailers and a gunshot detection system. As of April 2013, CMPD'S RTCC has also had access to numerous data-sharing networks, including: LexisNexis, NCAWARE, CJLEADS, LiNX, the CMPD records management system, the North Carolina Crime Information Center, and the National Crime Information Center.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS006537, citing NDI Recognition Systems",
+      "url": "https://www.ndi-rs.com/2017/11/17/charlotte-mecklenburg-pd-real-time-crime-center-revolutionizes-police-work/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Cell-site simulator",
+     "vendor": "Harris Corp.",
+     "agency": "Charlotte-Mecklenburg Police Department",
+     "date": "2017-04-11",
+     "detail": "The Charlotte-Mecklenburg Police Department first acquired a Stingray cell-site simulator from Harris Corp. in 2006. The agency upgraded the technology in 2012 and has not owned it since 2018.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS004049, citing Vocativ",
+      "url": "https://web.archive.org/web/20170416100107/https://www.vocativ.com/389656/stingray-devices-in-trumps-america/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "",
+     "agency": "Charlotte-Mecklenburg Police Department",
+     "date": "",
+     "detail": "The Charlotte-Mecklenburg Police Department has over 100 automated license plate readers.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS004428, citing WCNC",
+      "url": "https://www.wcnc.com/article/news/investigations/investigators/cameras-across-charlotte-snapping-pictures-of-license-plates-alerting-police/275-46a4deec-1269-4a93-9c57-412acd8a629c"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   },
   {
@@ -1885,6 +1978,11 @@
     {
      "label": "NC State Board of Elections, receipts of Town of Cornelius's local candidates since 2023",
      "url": "https://cf.ncsbe.gov/CFTxnLkup/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1894,8 +1992,10 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money counts contributions from PACs, unions and other organizations to candidates for town council (or board of commissioners or aldermen) and mayor, filed with the State Board of Elections since 2023. North Carolina bans corporate contributions. Individuals and party and candidate committees are not counted. Committees are placed by office and filing address, so a few may be assigned to a neighbouring municipality.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for North Carolina yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": []
   },
   {
    "id": "town-of-huntersville-nc",
@@ -2246,6 +2346,11 @@
     {
      "label": "NC State Board of Elections, receipts of Town of Huntersville's local candidates since 2023",
      "url": "https://cf.ncsbe.gov/CFTxnLkup/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -2256,7 +2361,23 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money counts contributions from PACs, unions and other organizations to candidates for town council (or board of commissioners or aldermen) and mayor, filed with the State Board of Elections since 2023. North Carolina bans corporate contributions. Individuals and party and candidate committees are not counted. Committees are placed by office and filing address, so a few may be assigned to a neighbouring municipality.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for North Carolina yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "Flock Safety",
+     "agency": "Huntersville Police Department",
+     "date": "",
+     "detail": "As of April 2024, the Huntersville Police Department operates 10 Flock Safety automated license plate readers. The agency stores ALPR data for 30 days.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013677, citing Flock Safety",
+      "url": "https://transparency.flocksafety.com/huntersville-pd-nc"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   },
   {
@@ -2522,6 +2643,11 @@
     {
      "label": "NC State Board of Elections, receipts of Town of Mint Hill's local candidates since 2023",
      "url": "https://cf.ncsbe.gov/CFTxnLkup/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -2531,7 +2657,23 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money counts contributions from PACs, unions and other organizations to candidates for town council (or board of commissioners or aldermen) and mayor, filed with the State Board of Elections since 2023 (none were found). North Carolina bans corporate contributions. Individuals and party and candidate committees are not counted. Committees are placed by office and filing address, so a few may be assigned to a neighbouring municipality.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for North Carolina yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "Flock Safety",
+     "agency": "Mint Hill Police Department",
+     "date": "",
+     "detail": "As of April 2024, the Mint Hill Police Department operates 10 Flock Safety automated license plate readers. The agency stores ALPR data for 30 days.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013701, citing Flock Safety",
+      "url": "https://transparency.flocksafety.com/mint-hill-nc-pd"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   },
   {
@@ -2920,6 +3062,11 @@
     {
      "label": "NC State Board of Elections, receipts of Town of Pineville's local candidates since 2023",
      "url": "https://cf.ncsbe.gov/CFTxnLkup/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -2929,7 +3076,23 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money counts contributions from PACs, unions and other organizations to candidates for town council (or board of commissioners or aldermen) and mayor, filed with the State Board of Elections since 2023. North Carolina bans corporate contributions. Individuals and party and candidate committees are not counted. Committees are placed by office and filing address, so a few may be assigned to a neighbouring municipality.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for North Carolina yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "Flock Safety",
+     "agency": "Pineville Police Department",
+     "date": "",
+     "detail": "As of April 2024, the Pineville Police Department operates eight Flock Safety automated license plate readers. The agency stores ALPR data for 30 days.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013723, citing Flock Safety",
+      "url": "https://transparency.flocksafety.com/pineville-nc-pd"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   }
  ]

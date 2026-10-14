@@ -1323,6 +1323,11 @@
     {
      "label": "VA Department of Elections, receipts of City of Petersburg's local candidates since 2023",
      "url": "https://www.elections.virginia.gov/candidatepac-info/campaign-finance-reports/"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1334,7 +1339,62 @@
     "Judicial administration (courts, the Commonwealth's attorney and clerks) and community development count as overhead.",
     "Debt is gross debt at year end: bonds, Literary Fund loans, other long-term obligations and temporary loans, for general government and enterprise activities.",
     "Political money counts contributions from businesses, unions and PACs to candidates for the governing body, school board and the constitutional offices, filed with the Department of Elections since 2023. Virginia allows business contributions. Individuals and party and candidate committees are not counted. Committees are placed by their filing address, so a few may be assigned to a neighbouring locality.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Virginia yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Cell-site simulator",
+     "vendor": "",
+     "agency": "Petersburg Bureau of Police",
+     "date": "2025-07-31",
+     "detail": "The Peterburg Bureau of Police operates a cell-site simulator, according to 2024 data submitted to the state of Virginia.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS015983, citing MuckRock",
+      "url": "https://www.muckrock.com/foi/virginia-128/surveillance-technology-procured-by-va-law-enforcement-agencies-190059/#comms"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "",
+     "agency": "Petersburg Police Department",
+     "date": "2025-07-31",
+     "detail": "The Petersburg Police Department uses automated license plate readers, according to 2024 data.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS015996, citing MuckRock",
+      "url": "https://www.muckrock.com/foi/virginia-128/surveillance-technology-procured-by-va-law-enforcement-agencies-190059/#comms"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "Fusus",
+     "agency": "Petersburg Bureau of Police",
+     "date": "2024-01-16",
+     "detail": "The Petersburg Bureau of Police uses the Fusus camera registry system.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012247, citing 404 Media",
+      "url": "https://www.404media.co/fusus-ai-cameras-map-local-police/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "GoPro",
+     "agency": "Petersburg Bureau of Police",
+     "date": "",
+     "detail": "The Petersburg Bureau of Police operates four drones as of 2018, according to data compiled by the Center for the Study of the Drone at Bard College.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS003705, citing Center for the Study of the Drone at Bard College",
+      "url": "https://dronecenter.bard.edu/projects/public-safety-drones-project/public-safety-drones-3rd-edition/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   }
  ]
