@@ -1150,3 +1150,23 @@ test('Nebraska committees are placed by jurisdiction type; only mayor and counci
   assert.deepEqual(classifyNe({ ...row, 'contributor or transaction source type': 'PAC-Separate Segregated Political Fund', 'contributor or source name (individual last name)': 'Lincoln Fire Fighters Assn. Local #644' }), { key: 'unionContributions' });
   assert.equal(classifyNe({ ...row, 'receipt transaction/contribution type': 'In-Kind Contribution' }), null);
 });
+
+import { placeOffice as moPlace, classifyMo, norm as moNorm } from '../scripts/mo/mec-map.mjs';
+test('Missouri committees are placed by the jurisdiction ending the office they sought', () => {
+  const counties = ['saint louis', 'saint charles', 'jackson', 'greene', 'charles'].sort((a, b) => b.length - a.length);
+  assert.deepEqual(moPlace('Mayor City of Creve Coeur', counties), { level: 'city', name: 'creve coeur' });
+  assert.deepEqual(moPlace('County Council District 2 St. Louis County', counties), { level: 'county', name: 'saint louis' });
+  assert.deepEqual(moPlace('Prosecuting Attorney St. Charles County', counties), { level: 'county', name: 'saint charles' });
+  assert.equal(moPlace('State Representative District 62 Missouri House of Representatives', counties), null);
+  assert.equal(moPlace('Boardmember Ferguson-Florissant School District', counties), null);
+  assert.equal(moPlace('Associate Circuit Judge Greene County', counties), null);
+  assert.equal(moNorm('St. Louis'), 'saint louis');
+  const row = { contribution_type: 'Monetary', company: '', committee: '' };
+  assert.deepEqual(classifyMo({ ...row, company: 'Clayco Inc' }), { key: 'developerContributions' });
+  assert.deepEqual(classifyMo({ ...row, committee: 'Missouri Realtors PAC' }), { key: 'pacContributions' });
+  assert.deepEqual(classifyMo({ ...row, committee: 'IBEW Local 1 PAC' }), { key: 'unionContributions' });
+  assert.equal(classifyMo({ ...row, committee: 'Friends Of Joe Vaccaro' }), null);
+  assert.equal(classifyMo({ ...row, committee: 'Jackson County Democratic Committee' }), null);
+  assert.equal(classifyMo(row), null);
+  assert.equal(classifyMo({ ...row, company: 'Acme', contribution_type: 'In-Kind' }), null);
+});

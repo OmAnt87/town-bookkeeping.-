@@ -17,7 +17,7 @@ writeStatus({
       '**Payments to other governments are left out**, as in the Carolinas and Delaware.',
     ],
     gaps: [
-      '**Political money is not scored.** Contributions to Missouri county and local candidates were not loaded.',
+      '**Political money is not scored yet.** County and municipal candidates file with the Missouri Ethics Commission, and `node scripts/mo/fetch-mec.mjs` downloads their itemized contributions, but placing each committee needs the office on its MEC page, and the site refuses those pages after a few requests from one address. The fetch caches what it reads and resumes on a rerun; build with `node scripts/mo/build-county.mjs --all` once it reports done.',
       '**Coverage is about half.** The Census estimated, or has incomplete records for, about 730 Missouri governments, including 57 counties and St. Joseph, so they are not listed.',
     ],
   }),
