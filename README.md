@@ -346,11 +346,12 @@ node scripts/build-summary.mjs
 
 ### Texas and California (counties, cities, towns and villages)
 
-`data/real/tx-<county>.json` and `data/real/ca-<county>.json` hold each county and the municipalities whose people mostly live in it, built the same way as Ohio and Michigan (neither state has townships). San Francisco is a consolidated city and county and reports as one city. California coverage is nearly complete; in Texas the Census estimated, or has incomplete records for, about 700 governments, mostly small cities and towns and about 110 counties. Political money is not scored yet. Coverage and gaps: [docs/TX_DATA_STATUS.md](docs/TX_DATA_STATUS.md), [docs/CA_DATA_STATUS.md](docs/CA_DATA_STATUS.md).
+`data/real/tx-<county>.json` and `data/real/ca-<county>.json` hold each county and the municipalities whose people mostly live in it, built the same way as Ohio and Michigan (neither state has townships). California is built instead from each government's Financial Transactions Report to the [State Controller](https://bythenumbers.sco.ca.gov/) (fiscal 2023-24 revenues, expenditures and debt for every county and city); San Francisco is a consolidated city and county and reports as one city. In Texas the Census estimated, or has incomplete records for, about 700 governments, mostly small cities and towns and about 110 counties. Political money is not scored yet. Coverage and gaps: [docs/TX_DATA_STATUS.md](docs/TX_DATA_STATUS.md), [docs/CA_DATA_STATUS.md](docs/CA_DATA_STATUS.md).
 
 ```bash
 node scripts/tx/download.mjs && node scripts/tx/build-county.mjs --all && node scripts/tx/status.mjs
-node scripts/ca/download.mjs && node scripts/ca/build-county.mjs --all && node scripts/ca/status.mjs
+node scripts/ca/download.mjs && node scripts/ca/sco-download.mjs && python3 scripts/ca/sco-debt-to-json.py
+node scripts/ca/sco-build.mjs --all && node scripts/ca/status.mjs
 node scripts/build-summary.mjs
 ```
 

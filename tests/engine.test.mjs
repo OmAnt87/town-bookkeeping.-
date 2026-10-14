@@ -1054,3 +1054,30 @@ test('Colorado TRACER committees count for a county only when their name shows a
   const rows = parseTracer('"A","B","C"\n"1","12" PIPE","x"\n"2","line\none","y"\n');
   assert.deepEqual(rows.map((r) => r.b), ['12" PIPE', 'line one']);
 });
+
+import { revenueKey as caRevenueKey, expenditureKey as caExpenditureKey, aggregateSco } from '../scripts/ca/sco-map.mjs';
+test('California State Controller lines map to Town Ledger categories', () => {
+  const rev = (category, subcategory_1, line_description, value = 100) => ({ category, subcategory_1, line_description, value });
+  assert.equal(caRevenueKey(rev('Taxes', 'Taxes', 'Secured and Unsecured Property Taxes_General Revenues')), 'propertyTax');
+  assert.equal(caRevenueKey(rev('Taxes', 'Taxes', 'Property Tax In-Lieu of Vehicle License Fees_General Revenues')), 'propertyTax');
+  assert.equal(caRevenueKey(rev('Taxes', 'Taxes', 'Sales and Use Taxes_General Revenues')), 'salesTax');
+  assert.equal(caRevenueKey(rev('Property Taxes', 'General', 'Countywide Secured and Unsecured_General')), 'propertyTax');
+  assert.equal(caRevenueKey(rev('Water Enterprise Fund', 'Operating Revenues', 'Water Sales Revenues')), 'utilityCharges');
+  assert.equal(caRevenueKey(rev('Airport Enterprise Fund', 'Nonoperating Revenues', 'Intergovernmental – Federal')), 'federalGrants');
+  assert.equal(caRevenueKey(rev('Internal Service Fund', 'Operating Revenues', 'Charges for Services_Internal Service Fund')), null);
+  assert.equal(caRevenueKey(rev('Fines, Forfeitures, Penalties, and Revenue from Use of Money and Property', 'Fines, Forfeitures, and Penalties', 'Vehicle Code Fines')), 'finesForfeitures');
+  const exp = (category, subcategory_1, subcategory_2, value = 100) => ({ category, subcategory_1, subcategory_2, line_description: subcategory_2, value });
+  assert.equal(caExpenditureKey(exp('General Government and Public Safety', 'Public Safety', 'Police_Current Expenditures'), 'city'), 'publicSafety');
+  assert.equal(caExpenditureKey(exp('General Government and Public Safety', 'Public Safety', 'District Attorney - Prosecution_Current Expenditures'), 'city'), 'administration');
+  assert.equal(caExpenditureKey(exp('Debt Service and Capital Outlay', 'Capital Outlay', 'Transportation'), 'city'), 'roads');
+  assert.equal(caExpenditureKey(exp('Debt Service and Capital Outlay', 'Capital Outlay', 'General'), 'county'), 'roads');
+  assert.equal(caExpenditureKey(exp('Public Assistance', 'Welfare', 'General'), 'county'), 'healthServices');
+  assert.equal(caExpenditureKey(exp('Public Protection', 'Judicial', 'General'), 'county'), 'administration');
+  assert.equal(caExpenditureKey(exp('Sewer Enterprise Fund', 'Operating Expenses', 'Depreciation and Amortization Expenses_Sewer Enterprise Fund'), 'city'), null);
+  assert.equal(caExpenditureKey(exp('Water Enterprise Fund', 'Nonoperating Expenses', 'Interest Expense_Water Enterprise Fund'), 'city'), null);
+  // Enterprise interest is replaced by enterprise debt payments from the debt forms.
+  const a = aggregateSco([rev('Taxes', 'Taxes', 'Sales and Use Taxes_General Revenues', 500)], [exp('Water Enterprise Fund', 'Operating Expenses', 'Water Supply Expenses', 300)], { kind: 'city', enterpriseDebtPayments: 50 });
+  assert.deepEqual(a.revenue, { salesTax: 500 });
+  assert.deepEqual(a.spending, { utilities: 300, debtService: 50 });
+  assert.equal(a.lineTotals.spending, 350);
+});
