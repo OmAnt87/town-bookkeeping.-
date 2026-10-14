@@ -7,10 +7,11 @@ export function metric(entry, requested) {
   const { town, s } = entry;
   const key = requested === 'politicalTotal' ? 'influence' : aliases[requested] || requested;
   const component = (name) => s.components.find((c) => c.key === name)?.available;
-  let value = key === 'score' ? s.score : key === 'population' ? town.population : s.totals[key];
+  let value = key === 'score' ? s.score : key === 'population' ? town.population : key === 'peerPercentile' ? entry.peer?.percentile : s.totals[key];
   let available = Number.isFinite(value);
   let reason = 'No data loaded for this measure';
   if (key === 'score') { available = s.grade !== '?'; reason = 'Not graded: data covers less than 50 of 100 scoring points'; }
+  if (key === 'peerPercentile') { available = entry.peer?.percentile != null; reason = s.grade === '?' ? 'Not graded, so not ranked among peers' : 'Too few comparable towns to rank'; }
   if (['directPerResident', 'directShare', 'adminShare'].includes(key)) { available = component('services'); reason = 'Spending is not fully broken down by department'; }
   if (['influence', 'influencePerResident'].includes(key)) { available = hasNumbers(town.influence); reason = 'No political filings loaded'; }
   if (key === 'corporateMoney') { available = ['corporateLobbying', 'developerContributions'].some((k) => Number.isFinite(town.influence?.[k])); reason = 'No corporate lobbying or business donation figures loaded'; }
@@ -32,6 +33,7 @@ export function metricText(entry, key) {
   const m = metric(entry, key);
   if (!m.available) return m.key === 'score' ? 'Not graded' : 'Not available';
   if (m.key === 'score') return `${m.value.toFixed(1)} / 100`;
+  if (m.key === 'peerPercentile') return `${Math.round(m.value)}th percentile`;
   if (['population', 'redFlagCount'].includes(m.key)) return number(m.value);
   if (['directShare', 'adminShare', 'nonPropertyShare'].includes(m.key)) return `${Math.round(m.value * 100)}%`;
   if (['influencePerResident', 'redFlagPerResident'].includes(m.key)) return `$${m.value.toFixed(2)}`;

@@ -203,7 +203,13 @@ export function renderMap(root, state) {
         }
       })
       .catch(() => { /* labels are optional */ });
-    const syncLabels = () => map.getContainer().classList.toggle('labels-short', map.getZoom() < FULL_NAME_ZOOM);
+    // Postal codes when zoomed out, full names when zoomed in; none at all on a small screen
+    // zoomed out so far that even the codes would pile on top of each other.
+    const syncLabels = () => {
+      const el = map.getContainer();
+      el.classList.toggle('labels-short', map.getZoom() < FULL_NAME_ZOOM);
+      el.classList.toggle('labels-none', map.getZoom() < 3.5 && map.getSize().x < 600);
+    };
     map.on('zoomend', syncLabels);
     syncLabels();
     dotLayer = L.layerGroup().addTo(map);
@@ -225,8 +231,9 @@ export function renderMap(root, state) {
   function colorScale() {
     const m = metric();
     const vals = visible().map((t) => displayMetric(t, m.key).value).filter((v) => v !== null).sort((a, b) => a - b);
-    const lo = m.key === 'score' ? 20 : quantile(vals, 0.05);
-    const hi = m.key === 'score' ? 95 : quantile(vals, 0.95);
+    // Scores and percentiles have fixed ranges, so colors mean the same thing in every state.
+    const lo = m.key === 'score' ? 20 : m.key === 'peerPercentile' ? 0 : quantile(vals, 0.05);
+    const hi = m.key === 'score' ? 95 : m.key === 'peerPercentile' ? 100 : quantile(vals, 0.95);
     const norm = (v) => (v - lo) / (hi - lo || 1);
     if (m.higherIsBetter === null) return { lo, hi, stops: SEQUENTIAL, color: (v) => lerpColor(SEQUENTIAL, norm(v)), good: (v) => norm(v) };
     const good = (v) => (m.higherIsBetter ? norm(v) : 1 - norm(v));
@@ -261,10 +268,10 @@ export function renderMap(root, state) {
     $('#m-list').innerHTML = sorted.length
       ? shownRows
           .map(
-            ({ town, s }) => `<li><button type="button" data-id="${town.id}">
-              ${gradeBadge(s.grade)}
-              <span><span class="t-name">${escapeHTML(town.name)}</span><br><span class="t-sub">${escapeHTML(town.county)}, ${town.state}</span></span>
-              <span class="t-val num">${metricText({ town, s }, m.key)}</span></button></li>`,
+            (e) => `<li><button type="button" data-id="${e.town.id}">
+              ${gradeBadge(e.s.grade)}
+              <span><span class="t-name">${escapeHTML(e.town.name)}</span><br><span class="t-sub">${escapeHTML(e.town.county)}, ${e.town.state}</span></span>
+              <span class="t-val num">${metricText(e, m.key)}</span></button></li>`,
           )
           .join('') +
         (sorted.length > shownRows.length
@@ -279,21 +286,22 @@ export function renderMap(root, state) {
     const ring = isDark() ? '#1a1a19' : '#ffffff';
     if (ui.layer === 'heat' && L.heatLayer) {
       heatLayer = L.heatLayer(
-        list.filter((e) => displayMetric(e, m.key).available).map(({ town, s }) => [town.lat, town.lng, Math.max(0.05, scale.good(displayMetric({ town, s }, m.key).value))]),
+        list.filter((e) => displayMetric(e, m.key).available).map((e) => [e.town.lat, e.town.lng, Math.max(0.05, scale.good(displayMetric(e, m.key).value))]),
         { radius: 34, blur: 26, maxZoom: 3, max: 1, minOpacity: 0.3, gradient: HEAT_GRADIENT },
       ).addTo(map);
     }
-    for (const { town, s } of list) {
+    for (const e of list) {
+      const { town, s } = e;
       const small = map.getSize().x < 600;
       const radius = Math.max(small ? 2 : 3, Math.min(small ? 5 : 9, Math.sqrt(town.population) / (small ? 50 : 32)));
       const mk = L.circleMarker([town.lat, town.lng], {
         radius: ui.layer === 'heat' ? 4 : radius,
         color: ring,
         weight: 1,
-        fillColor: !displayMetric({ town, s }, m.key).available ? '#9a9890' : ui.layer === 'heat' ? (isDark() ? '#f4f4f1' : '#121211') : scale.color(m.value(s)),
+        fillColor: !displayMetric(e, m.key).available ? '#9a9890' : ui.layer === 'heat' ? (isDark() ? '#f4f4f1' : '#121211') : scale.color(displayMetric(e, m.key).value),
         fillOpacity: ui.layer === 'heat' ? 0.55 : 0.7,
       })
-        .bindTooltip(`<strong>${escapeHTML(town.name)}</strong>, ${town.state}<br>Grade ${s.grade} &middot; ${m.label}: ${metricText({ town, s }, m.key)}`, { direction: 'top', offset: [0, -6] })
+        .bindTooltip(`<strong>${escapeHTML(town.name)}</strong>, ${town.state}<br>Grade ${s.grade} &middot; ${m.label}: ${metricText(e, m.key)}`, { direction: 'top', offset: [0, -6] })
         .on('click', () => openCard(town.id));
       mk.addTo(dotLayer);
       markers.set(town.id, mk);
@@ -314,6 +322,7 @@ export function renderMap(root, state) {
       </div>
       <p class="small muted">${escapeHTML(coverageText({ town, s }))}</p><div class="map-stats">
         <div><span>Community Return Score</span><strong class="num">${metricText({ town, s }, 'score')}</strong></div>
+        ${t.peer?.percentile != null ? `<div><span>Among ${escapeHTML(t.peer.label)}</span><strong class="num">${metricText(t, 'peerPercentile')}</strong></div>` : ''}
         <div><span>Service $ per resident</span><strong class="num">${metricText({ town, s }, 'directPerResident')}</strong></div>
         <div><span>Not from property tax</span><strong class="num">${Math.round(s.totals.nonPropertyShare * 100)}%</strong></div>
         <div><span>Political money</span><strong class="num">${metricText({ town, s }, 'politicalTotal')}</strong></div>
@@ -366,8 +375,9 @@ export function renderMap(root, state) {
   mq.addEventListener('change', onTheme);
 
   draw();
-  // Open on the towns being shown: with public-record data loaded, that's where the real records are.
-  if (map && (ui.realOnly || ui.state !== 'all')) {
+  // Open on the towns being shown. With every state loaded, that is the lower 48 (Alaska and
+  // Hawaii would shrink the rest to a sliver on a phone); a picked state opens on its towns.
+  if (map && ui.state !== 'all') {
     const pts = visible().map(({ town }) => [town.lat, town.lng]);
     if (pts.length) map.fitBounds(pts, { padding: [40, 40], maxZoom: 9 });
   }

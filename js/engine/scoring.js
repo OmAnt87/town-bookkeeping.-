@@ -297,6 +297,8 @@ export function influenceRows(town) {
 // Map metrics: `higherIsBetter` drives the color direction on the map.
 export const MAP_METRICS = [
   { key: 'score', label: 'Community Return Score', higherIsBetter: true, value: (s) => s.score, format: (v) => v.toFixed(0) },
+  // Filled in from engine/peers.js through metrics.js, since it depends on the other towns.
+  { key: 'peerPercentile', label: 'Score among peers (percentile)', higherIsBetter: true, value: () => null, format: (v) => `${Math.round(v)}th` },
   { key: 'directPerResident', label: 'Service dollars per resident', higherIsBetter: true, value: (s) => s.totals.directPerResident, format: (v) => `$${Math.round(v).toLocaleString('en-US')}` },
   { key: 'directShare', label: 'Share of spending on services', higherIsBetter: true, value: (s) => s.totals.directShare, format: (v) => pct(v) },
   { key: 'influencePerResident', label: 'Outside political money per resident', higherIsBetter: false, value: (s) => s.totals.influencePerResident, format: (v) => `$${v.toFixed(2)}` },
