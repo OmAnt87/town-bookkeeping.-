@@ -366,7 +366,7 @@ node scripts/build-summary.mjs
 
 ### Arizona and Colorado (counties, cities and towns)
 
-`data/real/az-<county>.json` and `data/real/co-<county>.json` hold each county and the cities and towns whose people mostly live in it, built the same way as Texas and California. Denver and Broomfield are consolidated cities and counties and report as one city each. Colorado coverage is nearly complete; in Arizona the Census estimated, or has incomplete records for, 39 governments, including 4 counties and small cities such as Nogales, Bisbee and Globe. Political money is not scored yet. Coverage and gaps: [docs/AZ_DATA_STATUS.md](docs/AZ_DATA_STATUS.md), [docs/CO_DATA_STATUS.md](docs/CO_DATA_STATUS.md).
+`data/real/az-<county>.json` and `data/real/co-<county>.json` hold each county and the cities and towns whose people mostly live in it, built the same way as Texas and California. Denver and Broomfield are consolidated cities and counties and report as one city each. Colorado coverage is nearly complete; in Arizona the Census estimated, or has incomplete records for, 39 governments, including 4 counties and small cities such as Nogales, Bisbee and Globe. Colorado county political money comes from the Secretary of State's [TRACER](https://tracer.sos.colorado.gov/PublicSite/DataDownload.aspx) bulk files (`node scripts/co/fetch-tracer.mjs` before building); Colorado cities and Arizona are not scored yet. Coverage and gaps: [docs/AZ_DATA_STATUS.md](docs/AZ_DATA_STATUS.md), [docs/CO_DATA_STATUS.md](docs/CO_DATA_STATUS.md).
 
 ```bash
 node scripts/az/download.mjs && node scripts/az/build-county.mjs --all && node scripts/az/status.mjs

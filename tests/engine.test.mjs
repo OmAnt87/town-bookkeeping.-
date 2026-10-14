@@ -1032,3 +1032,25 @@ test('Washington PDC rows are placed by office jurisdiction and classified by co
   assert.equal(classifyWa(row({ cash_or_in_kind: 'In kind' })), null);
   assert.equal(classifyWa(row({ contributor_category: 'Individual' })), null);
 });
+
+import { isCountyRace, classifyCo, parseTracer } from '../scripts/co/tracer-map.mjs';
+test('Colorado TRACER committees count for a county only when their name shows a county office', () => {
+  assert.equal(isCountyRace('ANGELA THOMAS 4 COMMISSIONER', 'DOUGLAS'), true);
+  assert.equal(isCountyRace('CANDACE RIVERA 4 COUNTY CLERK', 'PUEBLO'), true);
+  assert.equal(isCountyRace('CLAIRE FOR BOULDER COUNTY', 'BOULDER'), true);
+  assert.equal(isCountyRace('WYATT FOR LARIMER', 'LARIMER'), true);
+  assert.equal(isCountyRace('VALERIE FOR DOUGLAS COUNTY SCHOOLS', 'DOUGLAS'), false);
+  assert.equal(isCountyRace('KIMBERLEE SIA FOR DPS BOARD', 'DENVER'), false);
+  assert.equal(isCountyRace('COMMITTEE TO ELECT SETH BRYANT', 'TELLER'), false);
+  assert.equal(isCountyRace('GOLDSTEIN4ADAMS12', 'ADAMS'), false);
+  const row = (o) => ({ amended: 'N', contributiontype: 'Monetary (Itemized)', contributortype: 'Business', lastname: 'ACME HOMES LLC', firstname: '', ...o });
+  assert.deepEqual(classifyCo(row()), { key: 'developerContributions' });
+  assert.deepEqual(classifyCo(row({ contributortype: 'Small Donor Committee', lastname: 'IBEW LOCAL 68 SDC' })), { key: 'unionContributions' });
+  assert.deepEqual(classifyCo(row({ contributortype: 'Political Committee', lastname: 'COLORADO REALTORS PAC' })), { key: 'pacContributions' });
+  assert.equal(classifyCo(row({ amended: 'Y' })), null);
+  assert.equal(classifyCo(row({ contributiontype: 'Non-Monetary (Itemized)' })), null);
+  assert.equal(classifyCo(row({ contributortype: 'Individual', lastname: 'DOE', firstname: 'JANE' })), null);
+  // Stray quotes inside a field and a field broken across lines.
+  const rows = parseTracer('"A","B","C"\n"1","12" PIPE","x"\n"2","line\none","y"\n');
+  assert.deepEqual(rows.map((r) => r.b), ['12" PIPE', 'line one']);
+});
