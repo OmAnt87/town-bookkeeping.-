@@ -1299,6 +1299,11 @@
     {
      "label": "MA Office of Campaign and Political Finance, receipts of Boston's party committees and city candidates since 2023",
      "url": "https://www.ocpf.us/Reports/SearchItems"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1310,7 +1315,88 @@
     "Fixed costs ($927,382,178: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($378,127,008: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money counts contributions from unions and registered PACs to Boston's party ward, town and city committees and its candidates for mayor and city council, filed with the Office of Campaign and Political Finance since 2023. Corporate contributions are banned in Massachusetts. Individuals and money passed between candidate and party committees are not counted. Candidates for other offices file with the city clerk, so their own committees are not included, and party committees also support state candidates.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Boston Police Department",
+     "date": "2022-12-06",
+     "detail": "The Boston Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013104, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "LexisNexis",
+     "agency": "Boston Regional Intelligence Center",
+     "date": "2020-07-22",
+     "detail": "The Boston Regional Intelligence Center uses LexisNexis' Accurint investigative platform.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS014778, citing ACLU",
+      "url": "https://data.aclum.org/2020/07/22/break-up-with-the-bric-unpacking-the-boston-regional-intelligence-center-budget/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "",
+     "agency": "Boston Police Department",
+     "date": "",
+     "detail": "The Boston Police Department operates three drones as of 2017, according to data compiled by the Center for the Study of the Drone at Bard College.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS003061, citing Center for the Study of the Drone at Bard College",
+      "url": "https://dronecenter.bard.edu/projects/public-safety-drones-project/public-safety-drones-3rd-edition/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Cell-site simulator",
+     "vendor": "Tactical Support Equipment",
+     "agency": "Boston Police Department",
+     "date": "",
+     "detail": "The Boston Police Department uses a cell-site simulator, as of 2024.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS004047, citing City of Boston",
+      "url": "https://www.boston.gov/sites/default/files/file/2024/07/2023%20City%20of%20Boston%20Annual%20Surveillance%20Reports_0.pdf"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Gunshot detection (ShotSpotter)",
+     "vendor": "ShotSpotter",
+     "agency": "Boston Police Department",
+     "date": "",
+     "detail": "The Boston Police Department used ShotSpotter gunshot detection technology, as of 2024.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS006755, citing City of Boston",
+      "url": "https://www.boston.gov/sites/default/files/file/2024/07/2023%20City%20of%20Boston%20Annual%20Surveillance%20Reports_0.pdf"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "ELSAG",
+     "agency": "Boston Police Department",
+     "date": "",
+     "detail": "The Boston Police Department used automated license plate readers as of 2024.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS008931, citing City of Boston",
+      "url": "https://www.boston.gov/sites/default/files/file/2024/07/2023%20City%20of%20Boston%20Annual%20Surveillance%20Reports_0.pdf"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   },
   {
@@ -1649,6 +1735,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1661,7 +1752,49 @@
     "Fixed costs ($43,477,136: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($23,149,738: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money is not scored: no party committee or candidate for this town files with the Office of Campaign and Political Finance, and candidates for town office file with the town clerk.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Chelsea Police Department",
+     "date": "2022-12-06",
+     "detail": "The Chelsea Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012869, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Gunshot detection (ShotSpotter)",
+     "vendor": "ShotSpotter",
+     "agency": "Chelsea Police Department",
+     "date": "2019-08-27",
+     "detail": "The Chelsea Police Department uses ShotSpotter gunshot detection technology.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS004453, citing Chelsea Police Department",
+      "url": "https://chelseapolice.com/2019/08/27/calibrating-gunshot-detection-system-on-wednesday-august-28th/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "ELSAG",
+     "agency": "Chelsea Police Department",
+     "date": "2013-02-11",
+     "detail": "The Chelsea Police Department acquired automated license plate readers in 2010.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS008925, citing MuckRock",
+      "url": "https://www.MuckRock.com/foi/chelsea-334/chelsea-ma-alpr-2343/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   },
   {
@@ -2494,6 +2627,11 @@
     {
      "label": "MA Office of Campaign and Political Finance, receipts of Revere's party committees and city candidates since 2023",
      "url": "https://www.ocpf.us/Reports/SearchItems"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -2506,7 +2644,49 @@
     "Fixed costs ($80,678,101: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($22,841,030: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money counts contributions from unions and registered PACs to Revere's party ward, town and city committees and its candidates for mayor and city council, filed with the Office of Campaign and Political Finance since 2023. Corporate contributions are banned in Massachusetts. Individuals and money passed between candidate and party committees are not counted. Candidates for other offices file with the city clerk, so their own committees are not included, and party committees also support state candidates.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Revere Police Department",
+     "date": "2022-12-06",
+     "detail": "The Revere Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012871, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "ELSAG",
+     "agency": "Revere Police Department",
+     "date": "2010-09-02",
+     "detail": "The Revere Police Department had one ELSAG system as of 2010 and acquired L3 automated license plate readers after receiving the Edward Byrne Memorial Justice Assistance Grant in 2010.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS008921, citing Bureau of Justice Assistance",
+      "url": "https://bja.ojp.gov/funding/awards/2010-dj-bx-1489"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Gunshot detection (ShotSpotter)",
+     "vendor": "ShotSpotter",
+     "agency": "Revere Police Department",
+     "date": "",
+     "detail": "The Revere Police Department employs ShopSpotter gunshot detection technology.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS007506, citing ShotSpotter.com",
+      "url": "https://www.shotspotter.com/cities/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   },
   {
@@ -2848,6 +3028,11 @@
     {
      "label": "MA Office of Campaign and Political Finance, receipts of Winthrop's party committees and city candidates since 2023",
      "url": "https://www.ocpf.us/Reports/SearchItems"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -2860,7 +3045,23 @@
     "Fixed costs ($12,915,814: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($1,364,964: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money counts contributions from unions and registered PACs to Winthrop's party ward, town and city committees and its candidates for mayor and city council, filed with the Office of Campaign and Political Finance since 2023. Corporate contributions are banned in Massachusetts. Individuals and money passed between candidate and party committees are not counted. Candidates for other offices file with the city clerk, so their own committees are not included, and party committees also support state candidates.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Winthrop Police Department",
+     "date": "2022-12-06",
+     "detail": "The Winthrop Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012929, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   }
  ]
