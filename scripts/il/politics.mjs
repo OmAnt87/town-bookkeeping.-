@@ -1,19 +1,14 @@
-#!/usr/bin/env node
-// Builds real Town Ledger records for Illinois's counties, cities, villages, towns and townships
-// from the Census individual unit files (see scripts/common/town-census-build.mjs). Each
-// county's file holds the county and the governments whose people mostly live in it.
+// Political money for Illinois governments: contributions from businesses, unions and PACs to
+// county, municipal and township candidates, from Illinois State Board of Elections campaign
+// disclosure data (scripts/il/fetch-isbe.mjs), placed by the office each candidate filed for.
 //
-//   node scripts/il/download.mjs
-//   node scripts/il/fetch-isbe.mjs                       # campaign finance (optional)
-//   node scripts/il/build-county.mjs --county Cook      (or --all)
-//
-// County collectors gather every property tax in Illinois, so the levy rules for northern New
-// England are off.
+// politics(geo): geo is a Map of geography key -> { key, kind, base, county, display }. Returns
+// null when the ISBE files are not loaded, else { results: Map(key -> summary), filers, since,
+// sourceUrl, sourceLabel(g), scope(isCounty), note(g, isCounty, pol), noneNote(g, isCounty) }.
 
 import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { buildState } from '../common/town-census-build.mjs';
 import { candidatePlacer, committeeTypes, summarizeIlReceipts, ISBE_PAGE } from './isbe-map.mjs';
 
 const ISBE = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'data', 'raw', 'il', 'isbe');
@@ -26,7 +21,7 @@ const SINCE = `${new Date().getFullYear() - 3}-01-01`;
 const LEVEL_OF = { County: 'county', Township: 'township', City: 'municipal', Village: 'municipal', Town: 'municipal' };
 
 // Places each local candidate by the office filed for and gathers their committees' receipts.
-function politics(geo) {
+export function politics(geo) {
   if (!existsSync(join(ISBE, 'receipts-local.tsv'))) return null;
   const place = candidatePlacer([...geo.values()].map((g) => ({ key: g.key, level: LEVEL_OF[g.kind], name: g.base, county: String(g.county || '').replace(/ County$/, '') })));
   const candidates = new Map();
@@ -61,18 +56,3 @@ function politics(geo) {
     noneNote: (g, isCounty) => `Political money is not scored: no ${officeText(isCounty)} of ${g.display} reported contributions to the State Board of Elections since ${SINCE.slice(0, 4)}.`,
   };
 }
-
-buildState({
-  code: 'IL',
-  name: 'Illinois',
-  fips: '17',
-  levy: false,
-  cousubKinds: { city: 'City', village: 'Village', township: 'Township' },
-  placeKinds: { city: 'City', village: 'Village', town: 'Town' },
-  countyScope: 'All county funds, including the sheriff, jail, courts and county highways',
-  countyNote: () => 'Public schools are run by separate school districts with their own taxes, so they are not included.',
-  memberSchoolNote: (g) => `Public schools are run by separate school districts with their own taxes, so they are not included. Residents also pay ${g.county}${g.kind === 'Township' ? '' : ' and, in most counties, the township they live in'}.`,
-  memberNote: (g) => (g.kind === 'Township' ? 'Illinois townships maintain township roads, assess property and provide general assistance; most also cover the cities and villages inside them.' : null),
-  politicalNote: () => 'Political money is not scored: State Board of Elections data was not loaded.',
-  politics,
-});
