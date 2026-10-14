@@ -7,7 +7,7 @@
 //
 //   node scripts/mo/fetch-mec.mjs      then: node scripts/mo/build-county.mjs --all
 
-import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseCSV } from '../lib.mjs';
@@ -22,12 +22,13 @@ mkdirSync(RAW, { recursive: true });
 const { browser, context } = await launchBrowser();
 // Each export gets its own browser: after one download the bot check stops serving the form to
 // that browser.
-// Files already downloaded are reused (the current year is always fetched again), and the site
+// Files already downloaded are reused (the current year once it is a day old is fetched again), and the site
 // rate-limits, so exports are a minute apart.
 let exported = 0;
 async function exportCsv(type, year) {
   const file = join(RAW, `${type}${year ? `-${year}` : ''}.csv`);
-  if (existsSync(file) && year !== NOW) return parseCSV(readFileSync(file, 'latin1'));
+  const fresh = existsSync(file) && (year !== NOW || Date.now() - statSync(file).mtimeMs < 86400000);
+  if (fresh) return parseCSV(readFileSync(file, 'latin1'));
   if (exported++) await new Promise((resolve) => setTimeout(resolve, 60000));
   const own = await launchBrowser();
   const ctx = own.context;
