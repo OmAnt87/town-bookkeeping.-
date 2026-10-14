@@ -13,24 +13,8 @@ import { isPartyOrCandidate, summarizeContributions, UNION_NAME } from '../commo
 export const TRACER_PAGE = 'https://tracer.sos.colorado.gov/PublicSite/DataDownload.aspx';
 export const TRACER_FILE = (year) => `https://Tracer.sos.colorado.gov/PublicSite/Docs/BulkDataDownloads/${year}_ContributionData.csv.zip`;
 
-// TRACER's files quote every field but leave stray quotes inside some ("12" PIPE"), which a general
-// CSV parser misreads; fields are split on '","' instead, joining lines a field breaks across.
-// Keys are lower-cased like scripts/lib.mjs parseCSV.
-export function parseTracer(text) {
-  const lines = text.split(/\r?\n/);
-  const split = (l) => l.replace(/^"/, '').replace(/"$/, '').split('","');
-  const keys = split(lines[0]).map((h) => h.trim().toLowerCase());
-  const rows = [];
-  let buf = '';
-  for (const line of lines.slice(1)) {
-    buf = buf ? `${buf} ${line}` : line;
-    const cells = split(buf);
-    if (cells.length < keys.length) continue;
-    if (cells.length === keys.length) rows.push(Object.fromEntries(keys.map((k, i) => [k, cells[i].trim()])));
-    buf = '';
-  }
-  return rows;
-}
+// TRACER's files carry stray quotes and line breaks inside fields; see scripts/common/civix.mjs.
+export { parseCivix as parseTracer } from '../common/civix.mjs';
 
 const OTHER_RACE = /SCHOOL|\bDPS\b|\b[A-Z]*SD\b|\bBOE\b|EDUCATION|KIDS|STUDENTS|\bRE-?\d|\bD-?\d+ SCHOOL|\bD(ISTRICT )?\d+ KIDS|FIRE|LIBRARY|WATER|SANITATION|HOSPITAL|REGENT|DISTRICT ATTORNEY|\bDA\b|JUDGE|SENATE|\bHOUSE\b|CONGRESS|STATE BOARD|CITY COUNCIL|MAYOR/;
 const COUNTY_OFFICE = /\b(COMMISSIONER|COMMISSIONERS|SHERIFF|CLERK|TREASURER|ASSESSOR|CORONER|SURVEYOR)\b/;
