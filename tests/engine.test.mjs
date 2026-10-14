@@ -949,6 +949,39 @@ test('Census principal repaid with new borrowing beyond capital outlay is left o
   assert.equal(aggregateNc([it('T01', 1000), it('E62', 600), it('F44', 900), it('29U', 900), it('39U', 100)], { refinancing: true }).refinanced, 0);
 });
 
+import { taxesFor, taxYearFor } from '../scripts/vt/taxes.mjs';
+
+test('With the state\'s tax figures, the levy rule takes out the education tax a town reported as its own', () => {
+  const it = (code, amount, flag = 'R') => ({ code, amount, flag });
+  // Levy of 4,191 includes the town's 965 and education tax billed for the state.
+  const gross = aggregateNh([it('T01', 4191), it('C89', 300), it('E44', 900), it('E62', 300)], false, { taxes: { muni: 965000, edu: 3301000, taxYear: 2021 } });
+  assert.equal(gross.passThroughSource, 'state');
+  assert.equal(gross.passThrough, 3226000);
+  assert.deepEqual(gross.revenue, { propertyTax: 965000, stateAid: 300000 });
+  assert.equal(gross.lineTotals.revenue, 1265000);
+  // A levy close to the municipal tax is the town's own, surplus included (the estimate would have cut it).
+  const own = aggregateNh([it('T01', 2436), it('E44', 2000)], false, { taxes: { muni: 2200000, edu: 6000000, taxYear: 2021 } });
+  assert.equal(own.passThrough, 0);
+  assert.equal(own.revenue.propertyTax, 2436000);
+  // Assessments filed as general government spending are still left out first.
+  const both = aggregateNh([it('T01', 4000), it('E89', 3000), it('E62', 500), it('E44', 400)], false, { taxes: { muni: 900000, edu: 3100000, taxYear: 2022 } });
+  assert.equal(both.assessments, 3000000);
+  assert.equal(both.passThrough, 3100000);
+  assert.equal(both.revenue.propertyTax, 900000);
+});
+
+test('VT tax file lookup matches Census names and the tax year funding each fiscal year', () => {
+  assert.equal(taxYearFor('2022-06-30'), 2021);
+  assert.equal(taxYearFor('2022-12-31'), 2022);
+  const taxes = { barrecity: { 2021: { edu: 1, muni: 2 } }, barretown: { 2021: { edu: 3, muni: 4 } }, bristol: { 2023: { edu: 5, muni: 6 } }, essexjunction: { 2022: { edu: 7, muni: 8 } } };
+  assert.deepEqual(taxesFor(taxes, 'BARRE CITY', '2022-06-30'), { edu: 1, muni: 2, taxYear: 2021 });
+  assert.deepEqual(taxesFor(taxes, 'BARRE TOWN', '2022-06-30'), { edu: 3, muni: 4, taxYear: 2021 });
+  assert.deepEqual(taxesFor(taxes, 'BRISTOL TOWN', '2024-06-30'), { edu: 5, muni: 6, taxYear: 2023 });
+  // Essex Junction became a city in July 2022: its first tax year is the next one.
+  assert.deepEqual(taxesFor(taxes, 'ESSEX JUNCTION CITY', '2022-06-30'), { edu: 7, muni: 8, taxYear: 2022 });
+  assert.equal(taxesFor(taxes, 'GOSHEN TOWN', '2022-06-30'), null);
+});
+
 import { atlasLink, agencyTown, ATLAS_PAGE } from '../scripts/common/atlas.mjs';
 test('Atlas of Surveillance helpers clean agency names and links', () => {
   assert.equal(agencyTown('Springfield Police Department'), 'Springfield');

@@ -215,10 +215,10 @@ node scripts/build-summary.mjs
 
 ### Vermont (counties, cities, towns and villages)
 
-`data/real/vt-<county>.json` holds each Vermont county and its cities, towns and incorporated villages, built the same way as New Hampshire from the Census unit files and Census 2025 population estimates. Towns collect the state education tax and the county tax on the same bill, so where a town reported the whole levy as its own, only the town's share is kept; villages are a second layer inside a town and are listed separately. The Census estimated rather than received about 120 governments' figures, including Bennington and Washington Counties'. Political money is not scored: local candidates do not file with the state. Coverage and gaps: [docs/VT_DATA_STATUS.md](docs/VT_DATA_STATUS.md).
+`data/real/vt-<county>.json` holds each Vermont county and its cities, towns and incorporated villages, built the same way as New Hampshire from the Census unit files and Census 2025 population estimates. Towns collect the state education tax and the county tax on the same bill; where a town reported the whole levy as its own, the education tax the Department of Taxes lists for that town ([PVR annual report data](https://tax.vermont.gov/pvr-annual-report)) is taken out, so the town's real surplus or deficit is kept; villages are a second layer inside a town and are listed separately. The Census estimated rather than received about 120 governments' figures, including Bennington and Washington Counties'. Political money is not scored: local candidates do not file with the state. Coverage and gaps: [docs/VT_DATA_STATUS.md](docs/VT_DATA_STATUS.md).
 
 ```bash
-node scripts/vt/download.mjs
+node scripts/vt/download.mjs                       # Census unit files, population, gazetteers, VT tax file
 node scripts/vt/build-county.mjs --all && node scripts/vt/status.mjs
 node scripts/build-summary.mjs
 ```
