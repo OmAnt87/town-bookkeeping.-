@@ -6,6 +6,7 @@ import { TRANSPARENCY_CHECKS, REVENUE_CATEGORIES, SPENDING_CATEGORIES, INFLUENCE
 import { filterLedger, summarizeLedger, sortLedger, ledgerToCSV, categoryLabel, FLOWS } from '../engine/ledger.js';
 import { money, number, escapeHTML, formatDate } from '../engine/format.js';
 import { loadTownDetail } from '../app.js';
+import { percentileText, PROVISIONAL_BELOW } from '../engine/peers.js';
 import { gradeBadge, verifiedPill, isVerified, barList, splitBar, legendKey, lineChart, downloadFile, ICONS } from '../charts.js';
 
 const PAGE = 15;
@@ -106,19 +107,24 @@ export function renderTown(root, state, id) {
           <div class="score-text">
             <div class="score-value num">${metricText(entry, 'score')}</div>
             <div ${s.grade === '?' ? 'hidden' : ''} class="track g-${s.grade}" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${s.score}" aria-label="Score"><span style="width:${s.score}%"></span></div>
-            ${s.grade === '?' ? '<div class="small muted"><strong>Not graded yet:</strong> a letter grade needs data for at least half of the score.</div>' : `<div class="small muted">Ranked ${rank} of ${peers.length} ${peerLabel}</div>`}
+            ${s.grade === '?' ? '<div class="small muted"><strong>Not graded yet:</strong> a letter grade needs data for at least half of the score.</div>' : `<div class="small muted">Ranked ${number(rank)} of ${number(peers.length)} ${peerLabel}</div>`}
           </div>
         </div>
+        ${peerBox(entry)}
         <p class="small muted">${escapeHTML(coverageText(entry))}</p><p class="small muted">${escapeHTML(reportingText(town))}</p><p class="basis">Based on how much spending reaches residents as services, overhead, surveillance and corporate giveaways, outside political money and corporate lobbying, transparency practices, and debt.${s.coverage.scored < s.coverage.total ? ` <strong>Scored on ${s.coverage.scored} of ${s.coverage.total} parts</strong>; parts without data are left out rather than guessed.` : ''}</p>
         <div class="callout">${plainSummary(town, s)}</div>
       </div>
       <div class="card">
         <div class="card-head"><h2>What makes up the score</h2><a class="small" href="#/method">How it works</a></div>
+        <p class="small muted" style="margin:-6px 0 4px">Data behind this score: ${s.coverage.possible} of 100 points${entry.provisional && s.grade !== '?' ? ` <span class="pill pill-provisional">Provisional</span> (less than ${PROVISIONAL_BELOW})` : ''}</p>
+        <ul class="completeness" aria-label="Parts of the score with data">${s.components.map((c) => `<li class="${c.available ? 'ok' : ''}">${c.available ? '✓' : '–'} ${escapeHTML(c.label)}</li>`).join('')}</ul>
+        ${entry.peer?.components && Object.keys(entry.peer.components).length ? '<p class="small muted" style="margin:0 0 12px">The dark mark on each bar is the median among this town\'s peers.</p>' : ''}
         <div class="components">${s.components
           .map(
             (c) => `<div class="component-row">
               <div class="top"><strong>${c.label}</strong><span class="num ${c.available ? '' : 'muted'}">${c.available ? `${c.points} / ${c.max}` : 'Not scored'}</span></div>
-              <div class="track" aria-hidden="true"><span style="width:${c.ratio * 100}%"></span></div>
+              <div class="track" aria-hidden="true"><span style="width:${c.ratio * 100}%"></span>${c.available && entry.peer?.components?.[c.key] != null ? `<i class="peer-tick" style="left:${entry.peer.components[c.key] * 100}%"></i>` : ''}</div>
+              ${c.available && entry.peer?.components?.[c.key] != null ? `<p class="small muted">Peer median ${(Math.round(entry.peer.components[c.key] * c.max * 10) / 10)} / ${c.max}</p>` : ''}
               <p>${escapeHTML(c.detail)}</p></div>`,
           )
           .join('')}</div>
@@ -314,4 +320,21 @@ function plainSummary(town, s) {
       : t.documentedRedFlags
         ? ` Public records show <strong>${documentedRedFlags(town).map((f) => f.label.toLowerCase()).join(', ')}</strong>.`
         : ''}`;
+}
+
+// Where the town stands among comparable towns (engine/peers.js): same state, kind of
+// government and population band, widened when that group is too small.
+function peerBox(entry) {
+  const p = entry.peer;
+  if (!p) return '';
+  if (p.percentile == null) {
+    return `<div class="peer-box"><p>${entry.s.grade === '?' ? 'Not compared with peers until it can be graded.' : `Not ranked among peers: fewer than 8 graded ${escapeHTML(p.label)}.`}</p></div>`;
+  }
+  const diff = entry.s.score - p.median;
+  return `<div class="peer-box">
+    <div class="peer-top"><strong class="big">${percentileText(p.percentile)}</strong><span class="small">among ${number(p.size)} ${escapeHTML(p.label)}</span></div>
+    <div class="peer-scale" role="img" aria-label="${percentileText(p.percentile)} among peers"><i style="left:${p.percentile}%"></i></div>
+    <div class="peer-ends"><span>Lowest</span><span>Peer median ${p.median.toFixed(1)}</span><span>Highest</span></div>
+    <p>Rank ${number(p.rank)} of ${number(p.size)}; ${Math.abs(diff) < 0.5 ? 'about the same as' : `${Math.abs(diff).toFixed(1)} points ${diff > 0 ? 'above' : 'below'}`} the peer median. Peers share the same data sources, so this is the fairest comparison.${entry.provisional ? ' This score is provisional: little data is behind it.' : ''}</p>
+  </div>`;
 }

@@ -16,7 +16,8 @@ Plain-language bookkeeping for U.S. towns and townships. Town Ledger shows where
 - **Transparency check.** Six good-government practices: budget online, open checkbook, on-time audit, competitive bidding, recorded meetings, and conflict-of-interest disclosures.
 - **Ledger.** Individual transactions you can search, filter, sort and export to CSV.
 - **Five-year trend** of revenue against spending.
-- **Rankings.** A sortable, filterable table of every town, exportable to CSV.
+- **Rankings.** A sortable table of every town, filterable by state, kind of government, population and grade, exportable to CSV, with filters kept in the link. **Rank among peers** compares each town only with towns in the same state, of the same kind and size; scores built on little data are marked provisional and listed last.
+- **Peer comparison.** Each report card shows the town's percentile among its peers and the peer median on every part of the score.
 - **Compare.** Up to three towns side by side.
 - **Bring your own data.** Import a JSON file in the browser, or build one with the scripts below.
 - Light and dark themes, works on phones, no build step, no tracking.

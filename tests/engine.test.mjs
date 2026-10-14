@@ -1081,3 +1081,39 @@ test('California State Controller lines map to Town Ledger categories', () => {
   assert.deepEqual(a.spending, { utilities: 300, debtService: 50 });
   assert.equal(a.lineTotals.spending, 350);
 });
+
+import { assignPeers, percentileOf, popBand, govKind, MIN_PEERS } from '../js/engine/peers.js';
+test('Peer groups rank towns against the same state, kind and size, widening small groups', () => {
+  assert.equal(popBand(2499).key, 'xs');
+  assert.equal(popBand(2500).key, 's');
+  assert.equal(popBand(300000).key, 'xl');
+  assert.equal(govKind({ type: 'Charter Township' }), 'township');
+  assert.equal(govKind({ type: 'Consolidated government' }), 'city');
+  assert.equal(govKind({ type: 'Borough' }), 'town');
+  assert.equal(govKind({ type: 'County' }), 'county');
+  // Ties count half; one town alone has no percentile.
+  assert.equal(percentileOf([10, 20, 30, 40, 50], 50), 100);
+  assert.equal(percentileOf([10, 20, 30, 40, 50], 10), 0);
+  assert.equal(percentileOf([10, 20, 20, 40, 50], 20), 38);
+  assert.equal(percentileOf([10], 10), null);
+  const entry = (id, state, type, population, score, possible = 80) => ({
+    town: { id, state, type, population },
+    s: { score, grade: possible >= 50 ? 'B' : '?', coverage: { possible }, components: [{ key: 'services', available: true, ratio: score / 100 }] },
+  });
+  const small = Array.from({ length: MIN_PEERS }, (_, i) => entry(`t${i}`, 'NJ', 'Township', 5000, 50 + i));
+  const big = [entry('c1', 'NJ', 'City', 300000, 90), entry('c2', 'NJ', 'City', 20000, 40)];
+  const thin = entry('thin', 'NJ', 'Township', 5000, 99, 40);
+  const all = assignPeers([...small, ...big, thin]);
+  const top = all.find((e) => e.town.id === `t${MIN_PEERS - 1}`);
+  assert.equal(top.peer.level, 0);
+  assert.equal(top.peer.rank, 1);
+  assert.equal(top.peer.percentile, 100);
+  assert.match(top.peer.label, /NJ townships with 2,500 to 10,000 people/);
+  // Two NJ cities are too few for a group of their own, at any level.
+  assert.equal(all.find((e) => e.town.id === 'c1').peer.percentile, null);
+  // Ungraded towns are provisional and left out of their peers' ranks.
+  const t = all.find((e) => e.town.id === 'thin');
+  assert.equal(t.provisional, true);
+  assert.equal(t.peer.percentile, null);
+  assert.equal(t.peer.size, MIN_PEERS);
+});
