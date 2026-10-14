@@ -1,9 +1,14 @@
 // Helpers for the campaign-finance sites several states run on the same vendor's platform
 // (Civix): Colorado TRACER, Oklahoma Guardian, Nebraska NADC. Each publishes yearly bulk
-// contribution files at <site>/PublicSite/Docs/BulkDataDownloads/ and a public candidate search
-// that can export every candidate with the jurisdiction and office they ran for.
+// contribution files at <site>/PublicSite/Docs/BulkDataDownloads/ and a public page per committee
+// with the jurisdiction and office it registered for.
 
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { isPartyOrCandidate, UNION_NAME } from './political.mjs';
+
+const run = promisify(execFile);
 
 // The bulk files quote every field but leave stray quotes inside some ("12" PIPE"), which a
 // general CSV parser misreads; fields are split on '","' instead, joining lines a field breaks
@@ -24,6 +29,13 @@ export function parseCivix(text) {
   return rows;
 }
 
+// "01/02/2023" or "2023-01-02 00:00:00" -> "2023-01-02".
+export function isoDate(s) {
+  const t = String(s || '').trim();
+  const us = t.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  return us ? `${us[3]}-${us[1].padStart(2, '0')}-${us[2].padStart(2, '0')}` : t.slice(0, 10);
+}
+
 // Contributor types across the three sites. Returns { key } for counted money, or null.
 // Individuals, candidates' own money, party and candidate committees, tribes and "other"
 // sources whose name shows neither a union nor a PAC are not counted.
@@ -41,69 +53,53 @@ export function classifyContributor(type, name) {
   return null;
 }
 
-// "LOWE, JASON A" and "Jason A. Lowe Jr" -> "jason lowe": first given name and surname, so the
-// candidate export and the contribution files (which spell names differently) line up.
-export function personKey(name) {
-  let s = String(name || '').toLowerCase().replace(/\b(jr|sr|ii|iii|iv)\b\.?/g, '').replace(/"[^"]*"|\([^)]*\)/g, ' ');
-  let first;
-  let last;
-  if (s.includes(',')) {
-    const [l, f = ''] = s.split(',');
-    last = l;
-    first = f.trim().split(/\s+/)[0];
-  } else {
-    const parts = s.replace(/[^a-z' -]/g, ' ').trim().split(/\s+/);
-    first = parts[0];
-    last = parts.at(-1);
-  }
-  const clean = (x) => String(x || '').replace(/[^a-z]/g, '');
-  return `${clean(first)} ${clean(last)}`.trim();
-}
-
-// Playwright, from the project (npm i playwright) or a path in PLAYWRIGHT_MODULE.
-export async function loadPlaywright() {
-  try { return await import('playwright'); } catch { /* fall through */ }
-  if (process.env.PLAYWRIGHT_MODULE) return import(process.env.PLAYWRIGHT_MODULE);
-  throw new Error('Playwright is needed for the candidate search (npm i playwright, or set PLAYWRIGHT_MODULE to its index.mjs).');
-}
-
-const CANDIDATE_HOOK = '1F26BA5E-71EA-48E4-8D50-C1013E9FE0A7';
-
-// Exports every candidate in the given jurisdiction types ('COUNTY', 'MUNICIPAL') for each
-// election from `sinceYear` on, through the site's candidate search. Returns rows with
-// name, jurisdiction, office, district and election (lower-cased keys).
-export async function fetchCandidates(site, { types, sinceYear, log = () => {} }) {
-  const { chromium } = await loadPlaywright();
-  const browser = await chromium.launch();
-  const rows = [];
-  try {
-    const page = await (await browser.newContext({ acceptDownloads: true })).newPage();
-    const postback = async (fn) => {
-      await Promise.all([page.waitForNavigation({ waitUntil: 'networkidle', timeout: 60000 }).catch(() => {}), fn()]);
-      await page.waitForTimeout(300);
-    };
-    const url = `${site}/PublicSite/SearchPages/Search.aspx?SearchTypeCodeHook=${CANDIDATE_HOOK}`;
-    const sel = (name) => `select[name$="${name}$ctl01"]`;
-    await page.goto(url, { waitUntil: 'networkidle', timeout: 120000 });
-    const elections = (await page.$$eval(`${sel('ElectionID')} option`, (o) => o.map((x) => ({ value: x.value, label: x.textContent.trim() }))))
-      .filter((e) => e.value && Number(e.label.match(/\d{4}/)?.[0]) >= sinceYear && !/NON-CANDIDATE|STATE QUESTION|PARTY FILING/i.test(e.label));
-    for (const election of elections) {
-      for (const type of types) {
-        await page.goto(url, { waitUntil: 'networkidle', timeout: 120000 });
-        await postback(() => page.selectOption(sel('ElectionID'), election.value));
-        await postback(() => page.selectOption(sel('JurisdictionTypeCodeID'), { label: type }));
-        await postback(() => page.click('input[name$="Candidate_SearchButton$ctl01"]'));
-        const link = await page.$('[title*="comma-delimited"]');
-        if (!link) { log(`${election.label} ${type}: no results`); continue; }
-        const [download] = await Promise.all([page.waitForEvent('download', { timeout: 120000 }), link.click()]);
-        const text = await (await download.createReadStream()).toArray().then((chunks) => Buffer.concat(chunks).toString('utf8'));
-        const found = parseCivix(text.replace(/^﻿/, ''));
-        log(`${election.label} ${type}: ${found.length} candidates`);
-        rows.push(...found);
+// Each committee's public page lists the jurisdiction, office and district it registered for.
+// Fetches the pages for `ids` (a few at a time) and returns { id: { jurisdiction, office, district } },
+// reusing and updating the cache file so a rerun only fetches new committees.
+export async function fetchOrganizations(site, ids, cacheFile, { log = () => {}, parallel = 8 } = {}) {
+  const cache = existsSync(cacheFile) ? JSON.parse(readFileSync(cacheFile, 'utf8')) : {};
+  const todo = [...new Set(ids)].filter((id) => id && !(id in cache));
+  const field = (text, label) => (text.match(new RegExp(`${label}:\\s*([^:]*?)\\s*(?:Email|Office|District|Party Affiliation|Jurisdiction|Agencies|Status|Phone|$)`)) || [])[1]?.trim() || '';
+  let done = 0;
+  const next = async () => {
+    while (todo.length) {
+      const id = todo.shift();
+      try {
+        const { stdout } = await run('curl', ['-sSfL', '--retry', '3', '-m', '60', '-A', 'Mozilla/5.0', `${site}/PublicSite/SearchPages/OrganizationDetail.aspx?OrganizationID=${id}`], { maxBuffer: 1 << 26 });
+        const text = stdout.replace(/<[^>]*>/g, ' ').replace(/&nbsp;|&#160;/g, ' ').replace(/\s+/g, ' ');
+        cache[id] = { jurisdiction: field(text, 'Jurisdiction'), office: field(text, 'Office'), district: field(text, 'District') };
+      } catch (e) {
+        log(`committee ${id}: ${e.message.split('\n')[0]}`);
       }
+      if (++done % 100 === 0) { log(`${done} committees looked up`); writeFileSync(cacheFile, JSON.stringify(cache)); }
     }
-  } finally {
-    await browser.close();
+  };
+  await Promise.all(Array.from({ length: parallel }, next));
+  writeFileSync(cacheFile, JSON.stringify(cache));
+  return cache;
+}
+
+export const normPlace = (s) => String(s || '').toLowerCase().replace(/\b(city|town|village) of\b/g, '').replace(/\b(county|city|town|village)\b/g, '')
+  .replace(/\bst\.?\s/g, 'saint ').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+
+// Groups receipts by the government each committee ran in. `placeOf(r)` returns
+// { level: 'county' | 'city', name } (names through normPlace) or null for state, school and
+// other races. City names shared by two places in the state are skipped.
+export function receiptsByGovernment(geo, receipts, placeOf) {
+  const counties = new Map();
+  const cities = new Map();
+  for (const g of geo.values()) {
+    if (g.kind === 'County') counties.set(normPlace(g.base), g.key);
+    else if (g.key.startsWith('Place|')) {
+      const n = normPlace(g.base);
+      cities.set(n, cities.has(n) ? null : g.key);
+    }
   }
-  return rows;
+  const byKey = new Map();
+  for (const r of receipts) {
+    const p = placeOf(r);
+    const key = p && (p.level === 'county' ? counties.get(p.name) : cities.get(p.name));
+    if (key && geo.has(key)) (byKey.get(key) || byKey.set(key, []).get(key)).push(r);
+  }
+  return byKey;
 }

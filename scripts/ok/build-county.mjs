@@ -13,49 +13,19 @@ import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildState } from '../common/town-census-build.mjs';
-import { placeCandidate, normPlace, personKey, summarizeOkContributions, GUARDIAN_PAGE } from './guardian-map.mjs';
+import { receiptsByGovernment } from '../common/civix.mjs';
+import { placeCommittee, summarizeOkContributions, GUARDIAN_PAGE } from './guardian-map.mjs';
 
 const RAW = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'data', 'raw', 'ok', 'guardian');
 const SINCE = `${new Date().getFullYear() - 3}-01-01`;
 
-// Places each county and municipal candidate from the Ethics Commission's candidate export, then
-// gathers the contributions made to their committees (matched by candidate name). Names placed in
-// more than one government, or filed under more than one committee (so possibly also a state or
-// school candidate of the same name), are dropped.
+// Each committee is placed by the jurisdiction on its registration page
+// (scripts/common/civix.mjs receiptsByGovernment).
 function politics(geo) {
-  if (!existsSync(join(RAW, 'candidates.json')) || !existsSync(join(RAW, 'contributions.json'))) return null;
-  const counties = new Map();
-  const cities = new Map();
-  for (const g of geo.values()) {
-    if (g.kind === 'County') counties.set(normPlace(g.base), g.key);
-    else if (g.key.startsWith('Place|')) {
-      const n = normPlace(g.base);
-      cities.set(n, cities.has(n) ? null : g.key);
-    }
-  }
-  const placed = new Map(); // person key -> { keys, office }
-  for (const c of JSON.parse(readFileSync(join(RAW, 'candidates.json'), 'utf8'))) {
-    const p = placeCandidate(c);
-    const key = !p ? 'elsewhere' : (p.level === 'county' ? counties.get(p.name) : cities.get(p.name)) || 'elsewhere';
-    const name = personKey(c.name);
-    if (!placed.has(name)) placed.set(name, { keys: new Set(), office: c.office });
-    placed.get(name).keys.add(key);
-  }
-  const receipts = JSON.parse(readFileSync(join(RAW, 'contributions.json'), 'utf8'));
-  const committees = new Map();
-  for (const r of receipts) {
-    const k = personKey(r['candidate name']);
-    (committees.get(k) || committees.set(k, new Set()).get(k)).add(r['org id']);
-  }
-  const byKey = new Map();
-  for (const r of receipts) {
-    const name = personKey(r['candidate name']);
-    const p = placed.get(name);
-    if (!p || p.keys.size !== 1 || committees.get(name).size !== 1) continue;
-    const [key] = p.keys;
-    if (!geo.has(key)) continue;
-    (byKey.get(key) || byKey.set(key, []).get(key)).push({ ...r, office: p.office });
-  }
+  if (!existsSync(join(RAW, 'committees.json')) || !existsSync(join(RAW, 'contributions.json'))) return null;
+  const orgs = JSON.parse(readFileSync(join(RAW, 'committees.json'), 'utf8'));
+  const receipts = JSON.parse(readFileSync(join(RAW, 'contributions.json'), 'utf8')).map((r) => ({ ...r, office: orgs[r['org id']]?.office || '' }));
+  const byKey = receiptsByGovernment(geo, receipts, (r) => placeCommittee(orgs[r['org id']]));
   const results = new Map([...byKey].map(([k, rows]) => [k, summarizeOkContributions(rows, SINCE)]));
   const officeText = (isCounty) => (isCounty ? 'county commissioner, sheriff, clerk, assessor and treasurer candidates' : 'candidates for mayor and council');
   return {

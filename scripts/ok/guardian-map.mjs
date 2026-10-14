@@ -1,29 +1,25 @@
 // Turns Oklahoma Ethics Commission ("Guardian") contributions into Town Ledger political-money fields.
 //
 // County and municipal candidates file with the Ethics Commission. The bulk contribution files
-// name the candidate but not the office, so each candidate is placed with the Commission's
-// candidate search export (jurisdiction and office for every county and municipal candidate).
+// name the candidate but not the office, so each committee is placed by the jurisdiction on its
+// registration page ("OKLAHOMA COUNTY", "CITY OF NORMAN").
 // Rows use scripts/common/civix.mjs parseCivix keys.
 
 import { summarizeContributions } from '../common/political.mjs';
-import { classifyContributor, personKey } from '../common/civix.mjs';
+import { classifyContributor, normPlace, isoDate } from '../common/civix.mjs';
 
 export const GUARDIAN = 'https://guardian.ok.gov';
 export const GUARDIAN_PAGE = `${GUARDIAN}/PublicSite/DataDownload.aspx`;
 export const GUARDIAN_FILE = (year) => `${GUARDIAN}/PublicSite/Docs/BulkDataDownloads/${year}_ContributionLoanExtract.csv.zip`;
 
-export const normPlace = (s) => String(s || '').toLowerCase().replace(/\b(county|city|town) of\b/g, '').replace(/\b(county|city|town)\b/g, '')
-  .replace(/\bst\.?\s/g, 'saint ').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
 
-// A candidate export row -> { level, name } of the government, or null for school, tech-center
-// and state races. Municipal jurisdictions read "CITY OF NORMAN" or "TOWN OF JONES".
-export function placeCandidate(c) {
-  const j = String(c.jurisdiction || '').trim();
-  if (/ county$/i.test(j)) return { level: 'county', name: normPlace(j) };
-  if (/^(city|town) of /i.test(j) || /municipal/i.test(c.office || '') || /mayor|council|alder|ward|trustee|commissioner/i.test(c.office || '')) {
-    if (/ county$/i.test(j)) return null;
-    return { level: 'city', name: normPlace(j) };
-  }
+// A committee's registration -> { level, name } of its government, or null for state, school,
+// tech-center and judicial races.
+export function placeCommittee(org) {
+  const j = String(org?.jurisdiction || '').trim();
+  if (/ county$/i.test(j) && /^county /i.test(org.office || '')) return { level: 'county', name: normPlace(j) };
+  const m = j.match(/^(city|town|village) of (.+)$/i);
+  if (m) return { level: 'city', name: normPlace(m[2]) };
   return null;
 }
 
@@ -40,7 +36,7 @@ const title = (s) => String(s || '').toLowerCase().replace(/\b[a-z]/g, (c) => c.
 export function summarizeOkContributions(rows, since) {
   const kept = [];
   for (const r of rows) {
-    const date = String(r['receipt date'] || '').slice(0, 10);
+    const date = isoDate(r['receipt date']);
     const amount = Number(r['receipt amount']) || 0;
     if (!date || date < since || amount <= 0) continue;
     const c = classifyOk(r);
@@ -51,4 +47,3 @@ export function summarizeOkContributions(rows, since) {
   return { ...summarizeContributions(kept), counted: kept.length };
 }
 
-export { personKey };

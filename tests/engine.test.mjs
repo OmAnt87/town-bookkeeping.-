@@ -1117,3 +1117,24 @@ test('Peer groups rank towns against the same state, kind and size, widening sma
   assert.equal(t.peer.percentile, null);
   assert.equal(t.peer.size, MIN_PEERS);
 });
+
+import { classifyContributor as civixClassify, isoDate, normPlace as civixPlace } from '../scripts/common/civix.mjs';
+import { placeCommittee as okPlace, classifyOk } from '../scripts/ok/guardian-map.mjs';
+test('Civix sites share contributor types; Oklahoma committees are placed by their registered jurisdiction', () => {
+  assert.deepEqual(civixClassify('Political Action Committee (Registered)', 'Oklahoma Bankers PAC'), { key: 'pacContributions' });
+  assert.deepEqual(civixClassify('PAC-Separate Segregated Political Fund', 'Omaha Firefighters PAC'), { key: 'unionContributions' });
+  assert.deepEqual(civixClassify('Business (For-Profit and Non-Profit entities)', 'Acme Homes'), { key: 'developerContributions' });
+  assert.equal(civixClassify('Indian Tribe', 'Chickasaw Nation'), null);
+  assert.equal(civixClassify('Candidate Committee (Registered)', 'Pugh For Senate'), null);
+  assert.equal(isoDate('01/02/2023'), '2023-01-02');
+  assert.equal(isoDate('2024-06-30 00:00:00'), '2024-06-30');
+  assert.equal(civixPlace('CITY OF OKLAHOMA CITY'), civixPlace('Oklahoma City'));
+  assert.deepEqual(okPlace({ jurisdiction: 'OKLAHOMA COUNTY', office: 'COUNTY COMMISSIONER' }), { level: 'county', name: 'oklahoma' });
+  assert.deepEqual(okPlace({ jurisdiction: 'CITY OF TULSA', office: 'COUNCILMEMBER' }), { level: 'city', name: 'tulsa' });
+  assert.equal(okPlace({ jurisdiction: 'STATE OF OKLAHOMA', office: 'STATE SENATOR' }), null);
+  assert.equal(okPlace({ jurisdiction: 'TULSA PUBLIC SCHOOLS', office: 'BOARD MEMBER' }), null);
+  const row = { amended: 'N', 'receipt type': 'Monetary', 'receipt source type': 'Political Action Committee (Not Registered)', 'last name': 'GENEN PAC', 'first name': '' };
+  assert.deepEqual(classifyOk(row), { key: 'pacContributions' });
+  assert.equal(classifyOk({ ...row, amended: 'Y' }), null);
+  assert.equal(classifyOk({ ...row, 'receipt type': 'In-Kind' }), null);
+});

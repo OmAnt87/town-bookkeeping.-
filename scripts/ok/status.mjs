@@ -16,7 +16,7 @@ writeStatus({
       '**Payments to other governments are left out**, as in the Carolinas and Delaware.',
     ],
     gaps: [
-      '**Political money is not scored.** Contributions to Oklahoma local candidates were not loaded.',
+      '**Political money** comes from the Ethics Commission\'s bulk contribution files (run `node scripts/ok/fetch-guardian.mjs`): cash from PACs, unions and businesses to county and municipal candidates since three years ago. Each candidate committee is placed by the jurisdiction on its registration page. Few local candidates in Oklahoma raise money from organizations, so only the counties and cities where one did are scored; Oklahoma bans corporate contributions to candidates, and tribes, individuals and party committees are not counted.',
     ],
   }),
 });
