@@ -513,6 +513,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -524,7 +529,88 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: contributions to California city candidates were not loaded.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for California yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Real-time crime center",
+     "vendor": "Flock / LiveView Technologies",
+     "agency": "San Francisco Police Department",
+     "date": "2025-04-09",
+     "detail": "The San Francisco Police Department began operating a real-time crime center in 2024.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS017863, citing San Francisco Police Department website",
+      "url": "https://www.sanfranciscopolice.org/news/san-francisco-police-department-real-time-investigation"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "",
+     "agency": "San Francisco Police Department",
+     "date": "2024-08-06",
+     "detail": "The San Francisco Police Department implemented a drone program in 2024.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013947, citing Mission Local",
+      "url": "https://missionlocal.org/2024/08/police-drones-are-being-deployed-in-san-francisco-sfpd-announces/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "Flock Safety",
+     "agency": "San Francisco Police Department",
+     "date": "2024-03-20",
+     "detail": "The San Francisco Police Department began installing 400 Flock Safety automated license plate readers across 100 intersections in 2024. Previously they contracted with Neology Pips.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS000909, citing NBC Bay Area",
+      "url": "https://www.nbcbayarea.com/news/local/san-francisco/san-francisco-new-automated-license-plate-reader/3487668/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "Thomson Reuters",
+     "agency": "San Francisco Police Department",
+     "date": "2023-06-13",
+     "detail": "The San Francisco Police Department transitioned from LexisNexis’ LexisNexis Accurint Virtual Crime Center investigative platform to Thomson Reuter’s CLEAR in 2023.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013268, citing SF Police Department",
+      "url": "https://www.sanfranciscopolice.org/sites/default/files/2023-06/SFPDDN_23_100_20230628.pdf"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Predictive policing",
+     "vendor": "AISight",
+     "agency": "San Francisco Municipal Transit Authority",
+     "date": "2012-06-11",
+     "detail": "The San Francisco Municipal Transit Authority acquired AISight predictive policing in 2012.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS009063, citing Slate",
+      "url": "https://slate.com/technology/2012/06/aisight-from-brs-labs-and-other-technologies-to-detect-suspicious-behavior.html"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Gunshot detection (ShotSpotter)",
+     "vendor": "ShotSpotter",
+     "agency": "San Francisco Police Department",
+     "date": "2009-11-09",
+     "detail": "The San Francisco Police Department has been using Shotspotter gunshot detection technology since 2008.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS004467, citing CNN",
+      "url": "https://money.cnn.com/2009/11/09/smallbusiness/ear_for_crime.fsb/index.htm"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   }
  ]

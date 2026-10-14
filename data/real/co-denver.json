@@ -459,6 +459,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -469,7 +474,75 @@
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: contributions to Colorado city candidates were not loaded.",
-    "Transparency practices have not been checked yet, so they are not scored."
+    "Transparency practices have not been checked yet, so they are not scored.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "",
+     "agency": "Denver Police Department",
+     "date": "2024-05-28",
+     "detail": "The Denver Police Department operates a Drone as First Responder (DFR) program.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013941, citing The Denver Post",
+      "url": "https://www.denverpost.com/2024/05/26/colorado-police-drones-first-responders/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "LexisNexis",
+     "agency": "Denver Police Department",
+     "date": "2022-08-19",
+     "detail": "The Denver Police Department received an enterprise license for LexisNexis' Accurint Virtual Crime Center through its membership in the Colorado Information Sharing Consortium.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012735, citing Government information",
+      "url": "https://cisc.colorado.gov/members"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Real-time crime center",
+     "vendor": "",
+     "agency": "Denver Police Department",
+     "date": "2020-04-20",
+     "detail": "The Denver Police Department opened its Real Time Crime Information Center in August 2019. The RTCC also has access to the city's ShotSpotter system as well as the HALO system, which has 800 cameras.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS006575, citing 9News",
+      "url": "https://www.9news.com/article/news/local/denver-police-quietly-expand-surveillance-camera-network/73-80b180c4-2456-4a28-b106-feb1831ea61f"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Gunshot detection (ShotSpotter)",
+     "vendor": "ShotSpotter",
+     "agency": "The Denver Police Department uses ShotSpotter gunshot detection technology, and in January 2022 entered into a $4.7 million contract to extend the contract through 2026.",
+     "date": "2019-08-25",
+     "detail": "The Denver Police Department uses ShotSpotter gunshot detection technology.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS006761, citing Denver Government",
+      "url": "https://www.denvergov.org/content/denvergov/en/police-department/news/2019/dpd-shotspotter-test-monday.html"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Video analytics",
+     "vendor": "NiceVision",
+     "agency": "Denver Regional Transportation District - Transit Police",
+     "date": "",
+     "detail": "The Denver Regional Transportation District Transit Police implemented NiceVision video analytic technology into their computer systems in 2012. In a 2019 job posting, they ask applicants to be familiar with BriefCam Video Synopsis and Qognify systems.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS004475, citing Government Jobs",
+      "url": "http://agency.governmentjobs.com/rtd-denver/job_bulletin.cfm?jobID=2647065&sharedWindow=0"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
    ]
   }
  ]
