@@ -17,7 +17,7 @@ writeStatus({
       '**Payments to other governments are left out**, as in the Carolinas and Delaware.',
     ],
     gaps: [
-      '**Political money is not scored.** Contributions to Nevada local candidates were not loaded.',
+      '**Political money** comes from the Secretary of State\'s C&E / FD Report Search (`node scripts/nv/fetch-sos.mjs`, which drives a browser with Playwright because the site turns away scripts): each county\'s and city\'s candidates by election year, with the office from each candidate\'s page, and the contribution search\'s CSV export month by month. The export names the recipient but not the office, so contributions are joined to candidates by name, and a name filed in more than one place is skipped. It has no contributor type either, so businesses, unions and PACs are recognized by name and some are missed.',
     ],
   }),
 });

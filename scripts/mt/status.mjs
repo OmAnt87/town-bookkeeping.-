@@ -16,7 +16,7 @@ writeStatus({
       '**Payments to other governments are left out**, as in the Carolinas and Delaware.',
     ],
     gaps: [
-      '**Political money is not scored.** Contributions to Montana local candidates were not loaded.',
+      '**Political money** comes from the Commissioner of Political Practices\' Campaign Electronic Reporting System (`node scripts/mt/fetch-copp.mjs`): its county and city candidate lists and contribution downloads for each election year, joined by candidate ID. County candidates are placed by their county of residence; city candidates are listed with no city, so they are placed by the city of their mailing address. Montana bars corporate contributions to candidates, so organizational money is mostly committees, and COPP dates many contributions to the first day of their reporting period.',
     ],
   }),
 });

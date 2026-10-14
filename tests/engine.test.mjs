@@ -1048,3 +1048,43 @@ test('Alaska APOC municipalities map to boroughs, cities and consolidated city-b
   assert.equal(classifyAk(row({ 'Last/Business Name': 'Lee', 'First Name': 'Amber' })), null);
   assert.equal(classifyAk(row({ 'Payment Type': 'Bank Interest', 'Last/Business Name': 'Global Federal Credit Union' })), null);
 });
+
+import { officeLevel as nvLevel, classifyNv, nameKey as nvNameKey, norm as nvNorm, parseOffice as nvOffice } from '../scripts/nv/sos-map.mjs';
+test('Nevada candidates are placed by jurisdiction and office; organizations recognized by name', () => {
+  assert.equal(nvLevel('Clark County Commissioner, District A', 'CLARK COUNTY'), 'county');
+  assert.equal(nvLevel('City of Reno, City Council, Ward 1', 'CITY OF RENO'), 'city');
+  assert.equal(nvLevel('Carson City, Supervisor, Ward 2', 'CARSON CITY'), 'county');
+  assert.equal(nvLevel('City of Las Vegas, Municipal Court Judge, Dept 3', 'CITY OF LAS VEGAS'), null);
+  assert.equal(nvLevel('City of Reno, Assistant City Manager', 'CITY OF RENO'), null);
+  assert.equal(nvLevel('Clark County School Trustee, District C', 'CLARK COUNTY'), null);
+  assert.equal(nvNorm('CITY OF NORTH LAS VEGAS'), 'north las vegas');
+  assert.equal(nvNorm('BOULDER CITY'), nvNorm('Boulder City'));
+  assert.equal(nvNameKey('Michael Corey Thomas'), 'michael thomas');
+  assert.equal(nvOffice('<span id="ctl00_MainContent_lblOffice">Clark County Commissioner, District A</span>'), 'Clark County Commissioner, District A');
+  const row = (o) => ({ Type: 'Monetary Contribution', Contributor: '19 Enterprises LLC', ...o });
+  assert.deepEqual(classifyNv(row()), { key: 'developerContributions' });
+  assert.deepEqual(classifyNv(row({ Contributor: 'IBEW Local 357' })), { key: 'unionContributions' });
+  assert.deepEqual(classifyNv(row({ Contributor: 'Nevada Realtors PAC' })), { key: 'pacContributions' });
+  assert.equal(classifyNv(row({ Contributor: 'Jane Doe' })), null);
+  assert.equal(classifyNv(row({ Contributor: 'Accrued Account Interest' })), null);
+  assert.equal(classifyNv(row({ Type: 'In Kind Contribution' })), null);
+});
+
+import { placeCandidate as mtPlace, classifyMt, parsePipes as mtParse, norm as mtNorm } from '../scripts/mt/copp-map.mjs';
+test('Montana candidates are placed by county of residence or mailing city', () => {
+  const places = { counties: new Map([['yellowstone', 'yellowstone'], ['silver bow', 'butte']]), consolidated: new Set(['silver bow']), cities: new Map([['billings', [{ key: 'billings', county: 'yellowstone' }]], ['great falls', [{ key: 'great-falls', county: 'cascade' }]]]) };
+  assert.equal(mtPlace({ officeTitle: 'County Commissioner', resCountyDescr: 'Yellowstone' }, 'CN', places), 'yellowstone');
+  assert.equal(mtPlace({ officeTitle: 'County Attorney', resCountyDescr: 'Yellowstone' }, 'CN', places), null);
+  assert.equal(mtPlace({ officeTitle: 'City Council', resCountyDescr: 'Yellowstone', candidateAddress: '123 Main St, Billings, MT 59101' }, 'CT', places), 'billings');
+  assert.equal(mtPlace({ officeTitle: 'Councilman', resCountyDescr: 'Cascade', candidateAddress: 'PO BOX 6156, GREAT FALLS, MT 59406' }, 'CT', places), 'great-falls');
+  assert.equal(mtPlace({ officeTitle: 'Commissioner', resCountyDescr: 'Silver Bow', candidateAddress: 'Butte, MT' }, 'CT', places), 'butte');
+  assert.equal(mtPlace({ officeTitle: 'City Judge', resCountyDescr: 'Yellowstone', candidateAddress: 'Billings, MT' }, 'CT', places), null);
+  assert.equal(mtNorm('St. Ignatius'), 'saint ignatius');
+  const rows = mtParse('Candidate ID|Contributor Name|Description|Line Item|Amount|Amount Subtype\n1|Smith, Jo|signs|Individual Contributions|50.00|Cash\n2|MEA-MFT COPE|long\ndescription|Independent Committee Contributions|500.00|Cash\n');
+  assert.equal(rows.length, 2);
+  assert.equal(rows[1].Description, 'long description');
+  assert.equal(classifyMt(rows[0]), null);
+  assert.deepEqual(classifyMt(rows[1]), { key: 'unionContributions' });
+  assert.deepEqual(classifyMt({ 'Contributor Name': 'Yellowstone Realty LLC', 'Line Item': 'Individual Contributions', 'Amount Subtype': 'Cash' }), { key: 'developerContributions' });
+  assert.equal(classifyMt({ 'Contributor Name': 'Montana Republican Party', 'Line Item': 'Political Party Committee Contributions', 'Amount Subtype': 'Cash' }), null);
+});
