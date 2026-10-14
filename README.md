@@ -356,7 +356,7 @@ node scripts/build-summary.mjs
 
 ### Washington and Oregon (counties, cities and towns)
 
-`data/real/wa-<county>.json` and `data/real/or-<county>.json` hold each county and the cities and towns whose people mostly live in it, built the same way as Texas and California. Washington coverage is nearly complete; in Oregon the Census estimated, or has incomplete records for, 86 governments, including 8 counties and Beaverton. Political money is not scored yet. Coverage and gaps: [docs/WA_DATA_STATUS.md](docs/WA_DATA_STATUS.md), [docs/OR_DATA_STATUS.md](docs/OR_DATA_STATUS.md).
+`data/real/wa-<county>.json` and `data/real/or-<county>.json` hold each county and the cities and towns whose people mostly live in it, built the same way as Texas and California. Washington coverage is nearly complete; in Oregon the Census estimated, or has incomplete records for, 86 governments, including 8 counties and Beaverton. Washington political money comes from the [Public Disclosure Commission](https://data.wa.gov/d/kv7h-kjye): business, union and PAC contributions to county, city and town candidates (`node scripts/wa/fetch-pdc.mjs` before building); it is not scored for Oregon yet. Coverage and gaps: [docs/WA_DATA_STATUS.md](docs/WA_DATA_STATUS.md), [docs/OR_DATA_STATUS.md](docs/OR_DATA_STATUS.md).
 
 ```bash
 node scripts/wa/download.mjs && node scripts/wa/build-county.mjs --all && node scripts/wa/status.mjs

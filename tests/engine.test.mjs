@@ -1014,3 +1014,21 @@ test('Louisiana offices typed by filers are placed in a parish or municipality',
   assert.equal(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'IND', contributorname: 'JANE DOE' }), null);
   assert.equal(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'ORG', contributorname: 'AVOYELLES PARISH CLERK OF COURT' }), null);
 });
+
+import { placeJurisdiction as waPlace, classifyWa } from '../scripts/wa/pdc-map.mjs';
+test('Washington PDC rows are placed by office jurisdiction and classified by contributor code', () => {
+  assert.deepEqual(waPlace('KING CO'), { level: 'county', name: 'king' });
+  assert.deepEqual(waPlace('CITY OF AUBURN *'), { level: 'city', name: 'auburn' });
+  assert.deepEqual(waPlace('TOWN OF WINTHROP'), { level: 'city', name: 'winthrop' });
+  assert.equal(waPlace('PORT OF SEATTLE'), null);
+  assert.equal(waPlace('SEATTLE SCHOOL DIST 001'), null);
+  const row = (o) => ({ cash_or_in_kind: 'Cash', contributor_category: 'Organization', code: 'Business', contributor_name: 'Acme Homes LLC', ...o });
+  assert.deepEqual(classifyWa(row()), { key: 'developerContributions' });
+  assert.deepEqual(classifyWa(row({ code: 'Union', contributor_name: 'SEIU 775' })), { key: 'unionContributions' });
+  assert.deepEqual(classifyWa(row({ code: 'Political Action Committee', contributor_name: 'Electrical Workers 46 PAC' })), { key: 'unionContributions' });
+  assert.deepEqual(classifyWa(row({ code: 'Political Action Committee', contributor_name: 'Washington Realtors PAC' })), { key: 'pacContributions' });
+  assert.equal(classifyWa(row({ code: 'Other', contributor_name: 'Tulalip Tribes' })), null);
+  assert.equal(classifyWa(row({ code: 'Party', contributor_name: 'King County Democrats' })), null);
+  assert.equal(classifyWa(row({ cash_or_in_kind: 'In kind' })), null);
+  assert.equal(classifyWa(row({ contributor_category: 'Individual' })), null);
+});
