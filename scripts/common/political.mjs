@@ -9,6 +9,11 @@ export const PARTY_NAME = /(\b(republicans?|democrats?|gop|part(y|ies)|county co
 // Candidates' own committees filed under another type ("Smith for Council").
 export const CANDIDATE_NAME = /\bfor (senate|assembly|congress|governor|mayor|council|committee|freeholder|commissioner|sheriff|clerk|surrogate|office|supervisor|trustee|town board|judge|justice)\b|\b(friends of|elect|re-?elect)\b/i;
 
+// Committees and contributors that are unions; and committee names that are
+// party, district or candidate committees rather than PACs.
+export const UNION = /\b(unions?|local\s*#?\s*\d+|brotherhood|workers|federation|afl[- ]?cio|teamsters|ibew|seiu|afscme|uaw|iuoe|aft|carpenters|laborers?'?s?|plumbers|pipefitters|machinists|electricians|firefighters|employees assoc(iation)?|education association|teachers|1199|32bj|cope|opc)\b/i;
+export const NOT_A_PAC = /\b(senatorial|town|district|state central|county) committee\b|\bfor\b|\b4 (mayor|council|selectm[ae]n|board)\b|\b20\d\d\b/i;
+
 export const isPartyOrCandidate = (name) => PARTY_NAME.test(name || '') || CANDIDATE_NAME.test(name || '');
 
 // Groups spelling variants of the same donor ("T&M" / "T And M", "Collier" / "Colliers").
