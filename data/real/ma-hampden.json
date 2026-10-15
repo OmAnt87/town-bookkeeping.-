@@ -399,6 +399,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -409,8 +419,88 @@
     "Property tax is the certified tax levy ($108,089,742). The rest of the taxes on Schedule A ($9,917,900) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($17,663,031) and transfers from the town's own funds ($0), which are not new revenue.",
-    "Political money counts contributions from PACs and unions to 2 candidates for mayor who file with the MA Office of Campaign and Political Finance, since 2023. Business and corporate contributions to candidates are banned in Massachusetts. Individual donors ($92,809 in the same period) and party and candidate committees are not counted. City council candidates here file with the city clerk, so their money is not included."
-   ]
+    "Political money counts contributions from PACs and unions to 2 candidates for mayor who file with the MA Office of Campaign and Political Finance, since 2023. Business and corporate contributions to candidates are banned in Massachusetts. Individual donors ($92,809 in the same period) and party and candidate committees are not counted. City council candidates here file with the city clerk, so their money is not included.",
+    "Transparency: City of Chicopee has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: 9 license-plate cameras are mapped inside City of Chicopee's borders in OpenStreetMap (9 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "9 Flock Safety license-plate cameras are mapped inside City of Chicopee's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "",
+     "agency": "Chicopee Police Department",
+     "date": "2025-10-21",
+     "detail": "The Chicopee Police Department uses automated license plate readers, as of July 2025.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS018367, citing 25 News",
+      "url": "https://www.boston25news.com/news/local/cambridge-shuts-off-flock-safety-automatic-license-plate-readers-until-further-notice/CQAAJTXCIRAGBBCHV2AJWPM444/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Chicopee Police Department",
+     "date": "2022-12-06",
+     "detail": "The Chicopee Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012861, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    },
+    {
+     "kind": "surveillance",
+     "label": "Video analytics",
+     "vendor": "BriefCam",
+     "agency": "Chicopee Police Department",
+     "date": "",
+     "detail": "The Chicopee Police Department has purchased BriefCam video analytics software, however as of July 2020, the agency said it was not using the technology.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS004499, citing City of Chicopee website",
+      "url": "https://www.chicopeema.gov/Search?searchPhrase=briefcam"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "Axon",
+     "agency": "Chicopee Police Department",
+     "date": "",
+     "detail": "The Chicopee Police Department maintains a camera registry via Axon.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS015141, citing Axon",
+      "url": "https://connectchicopee.org/camera-registration/"
+     }
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 9,
+    "flock": 9,
+    "townOperated": 0,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-holyoke-ma",
@@ -772,6 +862,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -782,8 +882,52 @@
     "Property tax is the certified tax levy ($59,975,992). The rest of the taxes on Schedule A ($7,565,209) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($0) and transfers from the town's own funds ($1,863,962), which are not new revenue.",
-    "Political money counts contributions from PACs and unions to 2 candidates for mayor who file with the MA Office of Campaign and Political Finance, since 2023. Business and corporate contributions to candidates are banned in Massachusetts. Individual donors ($93,699 in the same period) and party and candidate committees are not counted. City council candidates here file with the city clerk, so their money is not included."
-   ]
+    "Political money counts contributions from PACs and unions to 2 candidates for mayor who file with the MA Office of Campaign and Political Finance, since 2023. Business and corporate contributions to candidates are banned in Massachusetts. Individual donors ($93,699 in the same period) and party and candidate committees are not counted. City council candidates here file with the city clerk, so their money is not included.",
+    "Transparency: City of Holyoke's latest Schedule A annual financial report on file with the Division of Local Services is for FY 2023; most MA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: 9 license-plate cameras are mapped inside City of Holyoke's borders in OpenStreetMap (9 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "9 Flock Safety license-plate cameras are mapped inside City of Holyoke's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Holyoke Police Department",
+     "date": "2022-12-06",
+     "detail": "The Holyoke Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013129, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    }
+   ],
+   "transparency": {
+    "auditOnTime": false
+   },
+   "surveillanceMap": {
+    "cameras": 9,
+    "flock": 9,
+    "townOperated": 0,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-springfield-ma",
@@ -2030,6 +2174,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -2040,8 +2194,124 @@
     "Property tax is the certified tax levy ($272,088,050). The rest of the taxes on Schedule A ($34,701,653) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($3,812,137) and transfers from the town's own funds ($4,518,927), which are not new revenue.",
-    "Political money counts contributions from PACs and unions to 44 candidates for mayor and city council who file with the MA Office of Campaign and Political Finance, since 2023. Business and corporate contributions to candidates are banned in Massachusetts. Individual donors ($1,340,262 in the same period) and party and candidate committees are not counted."
-   ]
+    "Political money counts contributions from PACs and unions to 44 candidates for mayor and city council who file with the MA Office of Campaign and Political Finance, since 2023. Business and corporate contributions to candidates are banned in Massachusetts. Individual donors ($1,340,262 in the same period) and party and candidate committees are not counted.",
+    "Transparency: City of Springfield has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: 45 license-plate cameras are mapped inside City of Springfield's borders in OpenStreetMap (44 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "44 Flock Safety license-plate cameras are mapped inside City of Springfield's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Springfield Police Department",
+     "date": "2022-12-06",
+     "detail": "The Springfield Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012852, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    },
+    {
+     "kind": "surveillance",
+     "label": "Video analytics",
+     "vendor": "BriefCam",
+     "agency": "Springfield Police Department",
+     "date": "2020-06-12",
+     "detail": "The Springfield Police Department purchased BriefCam video analytics software in 2018 as part of $1 million public safety upgrade.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS000762, citing Buzzfeed",
+      "url": "https://www.buzzfeednews.com/article/carolinehaskins1/police-software-briefcam"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Real-time crime center",
+     "vendor": "",
+     "agency": "Springfield Police Department",
+     "date": "2018-04-29",
+     "detail": "The Springfield Real Time Crime Analysis and Intelligence Center opened in 2018. Located on the second floor of the Springfield Police Department headquarters, the center receives live feeds from cameras owned by the city as well as some privatelly owned cameras. Staff access gunshot detection software and assorted police databases.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS006572, citing WAMC Northeast Public Radio",
+      "url": "https://www.wamc.org/post/springfield-police-activate-real-time-crime-analysis-unit"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "ELSAG",
+     "agency": "Springfield Police Department",
+     "date": "2016-03-15",
+     "detail": "The Springfield Police Department acquired automated license plate readers as early as 2009 and received a grant for more systems in 2010.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS008930, citing Mass Live",
+      "url": "https://www.masslive.com/politics/2016/03/massachusetts_lawmakers_weigh_2.html"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Gunshot detection (ShotSpotter)",
+     "vendor": "ShotSpotter",
+     "agency": "Springfield Police Department",
+     "date": "2013-03-14",
+     "detail": "The Springfield Police Department upgraded its ShotSpotter gunshot detection system in 2013.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS006750, citing Business Wire",
+      "url": "https://www.businesswire.com/news/home/20130314005484/en/Springfield-MA-Police-Department-Partners-New-North"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "Motorola Solutions",
+     "agency": "Springfield Police Department",
+     "date": "",
+     "detail": "The Springfield Police Department maintains a voluntary registry of private and personal surveillance cameras through Motorola Solutions' CityProtect platform.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS002577, citing CityProtect",
+      "url": "https://www.cityprotect.com/agency/c6914a4b-456b-42ee-a645-b0755939c4f3"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "Thomson Reuters",
+     "agency": "Springfield Police Department",
+     "date": "",
+     "detail": "The Springfield Police Department uses the Thomson Reuters CLEAR investigative platform.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013270, citing Thomson Reuters",
+      "url": "https://legal.thomsonreuters.com/en/insights/case-studies/springfield-pd-case-study"
+     }
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 45,
+    "flock": 44,
+    "townOperated": 3,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-westfield-ma",
@@ -2401,6 +2671,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -2411,8 +2691,64 @@
     "Property tax is the certified tax levy ($88,402,461). The rest of the taxes on Schedule A ($8,793,624) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($0) and transfers from the town's own funds ($2,645,661), which are not new revenue.",
-    "Political money counts contributions from PACs and unions to 2 candidates for mayor who file with the MA Office of Campaign and Political Finance, since 2023. Business and corporate contributions to candidates are banned in Massachusetts. Individual donors ($60,847 in the same period) and party and candidate committees are not counted. City council candidates here file with the city clerk, so their money is not included."
-   ]
+    "Political money counts contributions from PACs and unions to 2 candidates for mayor who file with the MA Office of Campaign and Political Finance, since 2023. Business and corporate contributions to candidates are banned in Massachusetts. Individual donors ($60,847 in the same period) and party and candidate committees are not counted. City council candidates here file with the city clerk, so their money is not included.",
+    "Transparency: City of Westfield has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: 8 license-plate cameras are mapped inside City of Westfield's borders in OpenStreetMap (3 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "3 Flock Safety license-plate cameras are mapped inside City of Westfield's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Westfield Police Department",
+     "date": "2022-12-06",
+     "detail": "The Westfield Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012879, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    },
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "",
+     "agency": "Westfield Police Department",
+     "date": "",
+     "detail": "The Westfield Police Department operates one drone as of 2017, according to data compiled by the Center for the Study of the Drone at Bard College.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS004006, citing Center for the Study of the Drone at Bard College",
+      "url": "https://dronecenter.bard.edu/projects/public-safety-drones-project/public-safety-drones-3rd-edition/"
+     }
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 8,
+    "flock": 3,
+    "townOperated": 2,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "town-of-agawam-ma",
@@ -2723,6 +3059,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -2733,8 +3079,52 @@
     "Property tax is the certified tax levy ($75,384,493). The rest of the taxes on Schedule A ($4,717,416) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($0) and transfers from the town's own funds ($215,200), which are not new revenue.",
-    "Political money counts contributions from PACs and unions to 4 candidates for mayor who file with the MA Office of Campaign and Political Finance, since 2023. Business and corporate contributions to candidates are banned in Massachusetts. Individual donors ($19,849 in the same period) and party and candidate committees are not counted. City council candidates here file with the city clerk, so their money is not included."
-   ]
+    "Political money counts contributions from PACs and unions to 4 candidates for mayor who file with the MA Office of Campaign and Political Finance, since 2023. Business and corporate contributions to candidates are banned in Massachusetts. Individual donors ($19,849 in the same period) and party and candidate committees are not counted. City council candidates here file with the city clerk, so their money is not included.",
+    "Transparency: Town of Agawam has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: 5 license-plate cameras are mapped inside Town of Agawam's borders in OpenStreetMap (5 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "5 Flock Safety license-plate cameras are mapped inside Town of Agawam's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Agawam Police Department",
+     "date": "2022-12-06",
+     "detail": "The Agawam Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012896, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 5,
+    "flock": 5,
+    "townOperated": 2,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "town-of-blandford-ma",
@@ -2990,6 +3380,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -3000,8 +3400,40 @@
     "Property tax is the certified tax levy ($3,620,278). The rest of the taxes on Schedule A ($448,159) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($0) and transfers from the town's own funds ($172,546), which are not new revenue.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: Town of Blandford has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: 2 license-plate cameras are mapped inside Town of Blandford's borders in OpenStreetMap (0 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Blandford Police Department",
+     "date": "2022-12-06",
+     "detail": "The Blandford Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013083, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 2,
+    "flock": 0,
+    "townOperated": 0,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "town-of-brimfield-ma",
@@ -3268,6 +3700,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -3278,8 +3720,52 @@
     "Property tax is the certified tax levy ($9,216,717). The rest of the taxes on Schedule A ($805,233) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($13,349) and transfers from the town's own funds ($291,827), which are not new revenue.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: Town of Brimfield has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: 1 license-plate camera is mapped inside Town of Brimfield's borders in OpenStreetMap (1 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "1 Flock Safety license-plate camera is mapped inside Town of Brimfield's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Brimfield Police Department",
+     "date": "2022-12-06",
+     "detail": "The Brimfield Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013096, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 1,
+    "flock": 1,
+    "townOperated": 0,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "town-of-chester-ma",
@@ -3545,6 +4031,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -3555,8 +4046,14 @@
     "Property tax is the certified tax levy ($3,149,379). The rest of the taxes on Schedule A ($118,885) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($0) and transfers from the town's own funds ($23,970), which are not new revenue.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: Town of Chester has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-east-longmeadow-ma",
@@ -3832,6 +4329,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -3842,8 +4344,29 @@
     "Property tax is the certified tax levy ($52,595,904). The rest of the taxes on Schedule A ($3,741,439) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($0) and transfers from the town's own funds ($642,782), which are not new revenue.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: Town of East Longmeadow has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "East Longmeadow Police Department",
+     "date": "2022-12-06",
+     "detail": "The East Longmeadow Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012961, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-granville-ma",
@@ -4109,6 +4632,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -4119,8 +4647,14 @@
     "Property tax is the certified tax levy ($3,936,303). The rest of the taxes on Schedule A ($523,659) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($0) and transfers from the town's own funds ($85,700), which are not new revenue.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: Town of Granville has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-hampden-ma",
@@ -4377,6 +4911,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -4387,8 +4926,29 @@
     "Property tax is the certified tax levy ($14,751,073). The rest of the taxes on Schedule A ($656,805) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($0) and transfers from the town's own funds ($650,000), which are not new revenue.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: Town of Hampden has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Hampden Police Department",
+     "date": "2022-12-06",
+     "detail": "The Hampden Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013029, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-holland-ma",
@@ -4654,6 +5214,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -4664,8 +5229,29 @@
     "Property tax is the certified tax levy ($6,827,463). The rest of the taxes on Schedule A ($517,696) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($0) and transfers from the town's own funds ($134,764), which are not new revenue.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: Town of Holland has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Holland Police Department",
+     "date": "2022-12-06",
+     "detail": "The Holland Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013082, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-longmeadow-ma",
@@ -4950,6 +5536,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -4960,8 +5556,40 @@
     "Property tax is the certified tax levy ($64,126,692). The rest of the taxes on Schedule A ($3,005,237) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($926,804) and transfers from the town's own funds ($0), which are not new revenue.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: Town of Longmeadow has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: 2 license-plate cameras are mapped inside Town of Longmeadow's borders in OpenStreetMap (0 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Longmeadow Police Department",
+     "date": "2022-12-06",
+     "detail": "The Longmeadow Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012951, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 2,
+    "flock": 0,
+    "townOperated": 0,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "town-of-ludlow-ma",
@@ -5238,6 +5866,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -5248,8 +5886,78 @@
     "Property tax is the certified tax levy ($53,515,260). The rest of the taxes on Schedule A ($3,824,091) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($8,214) and transfers from the town's own funds ($2,231,748), which are not new revenue.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: Town of Ludlow has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: 15 license-plate cameras are mapped inside Town of Ludlow's borders in OpenStreetMap (13 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "13 Flock Safety license-plate cameras are mapped inside Town of Ludlow's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "",
+     "agency": "Ludlow Police Department",
+     "date": "2025-10-21",
+     "detail": "The Ludlow Police Department uses automated license plate readers, as of July 2025.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS018366, citing 25 News",
+      "url": "https://www.boston25news.com/news/local/cambridge-shuts-off-flock-safety-automatic-license-plate-readers-until-further-notice/CQAAJTXCIRAGBBCHV2AJWPM444/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Hampden County Sheriff's Office",
+     "date": "2022-12-06",
+     "detail": "The Hampden County Sheriff's Office has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012803, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Ludlow Police Department",
+     "date": "2022-12-06",
+     "detail": "The Ludlow Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012919, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 15,
+    "flock": 13,
+    "townOperated": 6,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "town-of-monson-ma",
@@ -5544,6 +6252,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -5554,8 +6272,64 @@
     "Property tax is the certified tax levy ($17,447,509). The rest of the taxes on Schedule A ($1,584,881) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($814,659) and transfers from the town's own funds ($47,477), which are not new revenue.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: Town of Monson has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: 6 license-plate cameras are mapped inside Town of Monson's borders in OpenStreetMap (3 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "3 Flock Safety license-plate cameras are mapped inside Town of Monson's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "Flock Safety",
+     "agency": "Monson Police Department",
+     "date": "2024-12-03",
+     "detail": "The Monson Police Department uses Flock Safety license plate readers.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS015107, citing WWLP",
+      "url": "https://www.wwlp.com/news/crime/driver-in-stolen-vehicle-evade-monson-police/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Monson Police Department",
+     "date": "2022-12-06",
+     "detail": "The Monson Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012818, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 6,
+    "flock": 3,
+    "townOperated": 0,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "town-of-montgomery-ma",
@@ -5802,6 +6576,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -5811,8 +6595,38 @@
     "Fixed costs ($151,576: health insurance, pensions and other benefits, including for school staff) are spread across departments, including schools, in proportion to their size. Debt service is left out of that spread.",
     "Property tax is the certified tax levy ($1,881,981). The rest of the taxes on Schedule A ($127,892) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: Town of Montgomery has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: 1 license-plate camera is mapped inside Town of Montgomery's borders in OpenStreetMap (1 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "1 Flock Safety license-plate camera is mapped inside Town of Montgomery's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     }
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 1,
+    "flock": 1,
+    "townOperated": 0,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "town-of-palmer-ma",
@@ -6088,6 +6902,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -6098,8 +6917,29 @@
     "Property tax is the certified tax levy ($24,263,571). The rest of the taxes on Schedule A ($2,891,581) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($0) and transfers from the town's own funds ($396,865), which are not new revenue.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: Town of Palmer has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Palmer Police Department",
+     "date": "2022-12-06",
+     "detail": "The Palmer Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012972, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-russell-ma",
@@ -6374,6 +7214,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -6383,8 +7233,38 @@
     "Fixed costs ($468,793: health insurance, pensions and other benefits, including for school staff) and other expenditures ($307) are spread across departments, including schools, in proportion to their size. Debt service is left out of that spread.",
     "Property tax is the certified tax levy ($4,220,857). The rest of the taxes on Schedule A ($228,154) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: Town of Russell has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: 1 license-plate camera is mapped inside Town of Russell's borders in OpenStreetMap (1 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "1 Flock Safety license-plate camera is mapped inside Town of Russell's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     }
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 1,
+    "flock": 1,
+    "townOperated": 0,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "town-of-southwick-ma",
@@ -6659,6 +7539,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -6669,8 +7554,41 @@
     "Property tax is the certified tax levy ($24,754,614). The rest of the taxes on Schedule A ($1,640,816) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($0) and transfers from the town's own funds ($590,367), which are not new revenue.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: Town of Southwick has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "",
+     "agency": "Southwick Police Department",
+     "date": "2022-12-29",
+     "detail": "The Southwick Police Department has a drone that can be flown indoors.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS010867, citing Southwick Police Department Facebook",
+      "url": "https://www.facebook.com/permalink.php?story_fbid=pfbid038P84fahT1qjqSaW7S8txWezMd4FtbJNRJbnveFoc7DBQkE7Z6fMcJauhCjqd4t8cl&id=100083322933470"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Southwick Police Department",
+     "date": "2022-12-06",
+     "detail": "The Southwick Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012997, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-tolland-ma",
@@ -6936,6 +7854,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -6946,8 +7869,14 @@
     "Property tax is the certified tax levy ($1,992,970). The rest of the taxes on Schedule A ($139,868) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($0) and transfers from the town's own funds ($4,000), which are not new revenue.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: Town of Tolland has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-wales-ma",
@@ -7232,6 +8161,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -7242,8 +8176,29 @@
     "Property tax is the certified tax levy ($3,947,079). The rest of the taxes on Schedule A ($275,829) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($0) and transfers from the town's own funds ($150,600), which are not new revenue.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: Town of Wales has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Wales Police Department",
+     "date": "2022-12-06",
+     "detail": "The Wales Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013097, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-west-springfield-ma",
@@ -7602,6 +8557,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -7612,8 +8577,64 @@
     "Property tax is the certified tax levy ($75,530,020). The rest of the taxes on Schedule A ($7,426,765) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($0) and transfers from the town's own funds ($1,383,525), which are not new revenue.",
-    "Political money counts contributions from PACs and unions to 2 candidates for mayor who file with the MA Office of Campaign and Political Finance, since 2023. Business and corporate contributions to candidates are banned in Massachusetts. Individual donors ($144,720 in the same period) and party and candidate committees are not counted. City council candidates here file with the city clerk, so their money is not included."
-   ]
+    "Political money counts contributions from PACs and unions to 2 candidates for mayor who file with the MA Office of Campaign and Political Finance, since 2023. Business and corporate contributions to candidates are banned in Massachusetts. Individual donors ($144,720 in the same period) and party and candidate committees are not counted. City council candidates here file with the city clerk, so their money is not included.",
+    "Transparency: Town of West Springfield has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: 5 license-plate cameras are mapped inside Town of West Springfield's borders in OpenStreetMap (5 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "5 Flock Safety license-plate cameras are mapped inside Town of West Springfield's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "West Springfield Police Department",
+     "date": "2022-12-06",
+     "detail": "The West Springfield Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012878, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    },
+    {
+     "kind": "surveillance",
+     "label": "Predictive policing",
+     "vendor": "Geolitica",
+     "agency": "West Springfield Police Department",
+     "date": "2021-12-02",
+     "detail": "According to reporting from The Markup, the West Springfield Town Police Department used PredPol (now Geolitica) between 02/23/18 and 11/30/19.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS010060, citing The Markup",
+      "url": "https://themarkup.org/show-your-work/2021/12/02/how-we-determined-crime-prediction-software-disproportionately-targeted-low-income-black-and-latino-neighborhoods"
+     }
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 5,
+    "flock": 5,
+    "townOperated": 3,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "town-of-wilbraham-ma",
@@ -7889,6 +8910,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -7898,8 +8924,29 @@
     "Fixed costs ($5,573,128: health insurance, pensions and other benefits, including for school staff) are spread across departments, including schools, in proportion to their size. Debt service is left out of that spread.",
     "Property tax is the certified tax levy ($47,337,113). The rest of the taxes on Schedule A ($2,516,096) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: Town of Wilbraham has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Wilbraham Police Department",
+     "date": "2022-12-06",
+     "detail": "The Wilbraham Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012956, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   }
  ]
 }

@@ -1245,6 +1245,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -1254,8 +1264,112 @@
     "Fixed costs ($927,382,178: health insurance, pensions and other benefits, including for school staff) are spread across departments, including schools, in proportion to their size. Debt service is left out of that spread.",
     "Property tax is the certified tax levy ($3,357,989,105). The rest of the taxes on Schedule A ($388,364,701) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
-    "Political money counts contributions from PACs and unions to 107 candidates for mayor and city council who file with the MA Office of Campaign and Political Finance, since 2023. Business and corporate contributions to candidates are banned in Massachusetts. Individual donors ($12,604,526 in the same period) and party and candidate committees are not counted."
-   ]
+    "Political money counts contributions from PACs and unions to 107 candidates for mayor and city council who file with the MA Office of Campaign and Political Finance, since 2023. Business and corporate contributions to candidates are banned in Massachusetts. Individual donors ($12,604,526 in the same period) and party and candidate committees are not counted.",
+    "Transparency: City of Boston has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: 38 license-plate cameras are mapped inside City of Boston's borders in OpenStreetMap (18 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "18 Flock Safety license-plate cameras are mapped inside City of Boston's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Boston Police Department",
+     "date": "2022-12-06",
+     "detail": "The Boston Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013104, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "LexisNexis",
+     "agency": "Boston Regional Intelligence Center",
+     "date": "2020-07-22",
+     "detail": "The Boston Regional Intelligence Center uses LexisNexis' Accurint investigative platform.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS014778, citing ACLU",
+      "url": "https://data.aclum.org/2020/07/22/break-up-with-the-bric-unpacking-the-boston-regional-intelligence-center-budget/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "",
+     "agency": "Boston Police Department",
+     "date": "",
+     "detail": "The Boston Police Department operates three drones as of 2017, according to data compiled by the Center for the Study of the Drone at Bard College.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS003061, citing Center for the Study of the Drone at Bard College",
+      "url": "https://dronecenter.bard.edu/projects/public-safety-drones-project/public-safety-drones-3rd-edition/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Cell-site simulator",
+     "vendor": "Tactical Support Equipment",
+     "agency": "Boston Police Department",
+     "date": "",
+     "detail": "The Boston Police Department uses a cell-site simulator, as of 2024.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS004047, citing City of Boston",
+      "url": "https://www.boston.gov/sites/default/files/file/2024/07/2023%20City%20of%20Boston%20Annual%20Surveillance%20Reports_0.pdf"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Gunshot detection (ShotSpotter)",
+     "vendor": "ShotSpotter",
+     "agency": "Boston Police Department",
+     "date": "",
+     "detail": "The Boston Police Department used ShotSpotter gunshot detection technology, as of 2024.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS006755, citing City of Boston",
+      "url": "https://www.boston.gov/sites/default/files/file/2024/07/2023%20City%20of%20Boston%20Annual%20Surveillance%20Reports_0.pdf"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "ELSAG",
+     "agency": "Boston Police Department",
+     "date": "",
+     "detail": "The Boston Police Department used automated license plate readers as of 2024.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS008931, citing City of Boston",
+      "url": "https://www.boston.gov/sites/default/files/file/2024/07/2023%20City%20of%20Boston%20Annual%20Surveillance%20Reports_0.pdf"
+     }
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 38,
+    "flock": 18,
+    "townOperated": 2,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-chelsea-ma",
@@ -1550,6 +1664,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -1560,8 +1684,76 @@
     "Property tax is the certified tax levy ($84,585,313). The rest of the taxes on Schedule A ($24,492,690) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($0) and transfers from the town's own funds ($2,761,712), which are not new revenue.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: City of Chelsea has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: 9 license-plate cameras are mapped inside City of Chelsea's borders in OpenStreetMap (8 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "8 Flock Safety license-plate cameras are mapped inside City of Chelsea's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Chelsea Police Department",
+     "date": "2022-12-06",
+     "detail": "The Chelsea Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012869, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    },
+    {
+     "kind": "surveillance",
+     "label": "Gunshot detection (ShotSpotter)",
+     "vendor": "ShotSpotter",
+     "agency": "Chelsea Police Department",
+     "date": "2019-08-27",
+     "detail": "The Chelsea Police Department uses ShotSpotter gunshot detection technology.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS004453, citing Chelsea Police Department",
+      "url": "https://chelseapolice.com/2019/08/27/calibrating-gunshot-detection-system-on-wednesday-august-28th/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "ELSAG",
+     "agency": "Chelsea Police Department",
+     "date": "2013-02-11",
+     "detail": "The Chelsea Police Department acquired automated license plate readers in 2010.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS008925, citing MuckRock",
+      "url": "https://www.MuckRock.com/foi/chelsea-334/chelsea-ma-alpr-2343/"
+     }
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 9,
+    "flock": 8,
+    "townOperated": 0,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-revere-ma",
@@ -2394,6 +2586,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -2404,8 +2606,76 @@
     "Property tax is the certified tax levy ($120,249,280). The rest of the taxes on Schedule A ($12,974,622) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($0) and transfers from the town's own funds ($4,566,971), which are not new revenue.",
-    "Political money counts contributions from PACs and unions to 4 candidates for mayor who file with the MA Office of Campaign and Political Finance, since 2023. Business and corporate contributions to candidates are banned in Massachusetts. Individual donors ($763,486 in the same period) and party and candidate committees are not counted. City council candidates here file with the city clerk, so their money is not included."
-   ]
+    "Political money counts contributions from PACs and unions to 4 candidates for mayor who file with the MA Office of Campaign and Political Finance, since 2023. Business and corporate contributions to candidates are banned in Massachusetts. Individual donors ($763,486 in the same period) and party and candidate committees are not counted. City council candidates here file with the city clerk, so their money is not included.",
+    "Transparency: City of Revere has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: 10 license-plate cameras are mapped inside City of Revere's borders in OpenStreetMap (10 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "10 Flock Safety license-plate cameras are mapped inside City of Revere's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Revere Police Department",
+     "date": "2022-12-06",
+     "detail": "The Revere Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012871, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "ELSAG",
+     "agency": "Revere Police Department",
+     "date": "2010-09-02",
+     "detail": "The Revere Police Department had one ELSAG system as of 2010 and acquired L3 automated license plate readers after receiving the Edward Byrne Memorial Justice Assistance Grant in 2010.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS008921, citing Bureau of Justice Assistance",
+      "url": "https://bja.ojp.gov/funding/awards/2010-dj-bx-1489"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Gunshot detection (ShotSpotter)",
+     "vendor": "ShotSpotter",
+     "agency": "Revere Police Department",
+     "date": "",
+     "detail": "The Revere Police Department employs ShopSpotter gunshot detection technology.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS007506, citing ShotSpotter.com",
+      "url": "https://www.shotspotter.com/cities/"
+     }
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 10,
+    "flock": 10,
+    "townOperated": 0,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "town-of-winthrop-ma",
@@ -2700,6 +2970,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "red-flags.mjs"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "red-flags.mjs"
     }
    ],
    "notes": [
@@ -2710,8 +2990,52 @@
     "Property tax is the certified tax levy ($39,336,929). The rest of the taxes on Schedule A ($5,982,373) is shown as other taxes and excises: motor vehicle excise, local-option meals and room excises, and penalties and interest. Taxes collected in a year can differ slightly from the levy, so this split is close but not exact.",
     "Covers the general fund. Water, sewer and other enterprise funds, and regional school districts and other separate authorities, are not included.",
     "Left out: other financing sources such as bond proceeds ($0) and transfers from the town's own funds ($1,925,560), which are not new revenue.",
-    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance."
-   ]
+    "Political money is not scored: candidates for office here file campaign reports with the city or town clerk, not the state. Only candidates for mayor, and for city council in some cities, file itemized reports with the MA Office of Campaign and Political Finance.",
+    "Transparency: Town of Winthrop has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-15. A government with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: 6 license-plate cameras are mapped inside Town of Winthrop's borders in OpenStreetMap (6 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "6 Flock Safety license-plate cameras are mapped inside Town of Winthrop's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     }
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "SoundThinking",
+     "agency": "Winthrop Police Department",
+     "date": "2022-12-06",
+     "detail": "The Winthrop Police Department has access to SoundThinking's CrimeTracer (formerly Coplink X) investigative platform through a statewide contract announced in December 2022.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS012929, citing ShotSpotter",
+      "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
+     },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision."
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 6,
+    "flock": 6,
+    "townOperated": 0,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   }
  ]
 }
