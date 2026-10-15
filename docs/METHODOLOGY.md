@@ -62,7 +62,7 @@ For Connecticut, figures are **actual general-fund results** reported to the Off
 
 Only practices that have been checked count. Each checked practice is worth one sixth of the 20 points, so a town checked on one practice is scored on 3.3 points for it, and the rest of the score is rescaled to 100 as with any part that has no data. Practices not checked yet show as "Not checked" and count neither for nor against the town.
 
-For real towns, "Files its annual audit on time" is checked from the state's own records: whether the government has filed its annual financial report with the state (NJ adopted budget, NY Comptroller annual report, PA DCED annual audit and financial report, CT OPM financial indicators, MA DLS Schedule A) for the latest year most governments have filed. It is a filing check, not an audit opinion.
+For real towns, "Files its annual audit on time" is checked from the state's own records (`scripts/transparency.mjs`): whether the government has filed its annual audit or annual financial report with the state (NY Comptroller annual financial report, PA DCED annual audit and financial report, CT OPM audited financial statements, MA DLS Schedule A) for the latest fiscal year most governments in the state have filed. It is a filing check, not an opinion on the report. New Jersey is not checked yet: its statewide data is adopted budgets, which says nothing about audits.
 
 ## Limits
 
