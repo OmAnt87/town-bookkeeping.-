@@ -30,6 +30,7 @@ const ATLAS_URL = 'https://atlasofsurveillance.org/download.csv';
 const ATLAS_PAGE = 'https://atlasofsurveillance.org/';
 const TIGER = 'https://www2.census.gov/geo/tiger/TIGER2024';
 const OSM_PAGE = 'https://deflock.org/';
+const DEFLOCK_INDEX = 'https://cdn.deflock.me/regions/index.json';
 const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter', 'https://overpass.private.coffee/api/interpreter'];
 const TODAY = new Date().toISOString().slice(0, 10);
 
@@ -37,12 +38,26 @@ const TODAY = new Date().toISOString().slice(0, 10);
 // names repeat across counties; Connecticut and Massachusetts town names are unique
 // statewide (and Connecticut's files use planning regions, not counties).
 // aliases: Atlas agency spellings that differ from the state's municipal names, keyed "agency|county".
+// counties: misspelled Atlas county names.
 const STATES = {
   NJ: { fips: '34', byCounty: true, aliases: { 'bayhead borough|ocean': 'Bay Head Borough', 'neptune city|monmouth': 'Neptune City Borough', 'orange|essex': 'City of Orange Township' } },
   NY: { fips: '36', byCounty: true, aliases: {} },
-  PA: { fips: '42', byCounty: true, aliases: {} },
+  PA: {
+    fips: '42',
+    byCounty: true,
+    aliases: { 'gettysberg borough|adams': 'Gettysburg Borough', 'west lampter|lancaster': 'West Lampeter Township' },
+    counties: { landcaster: 'Lancaster', lawerence: 'Lawrence' },
+  },
   CT: { fips: '09', byCounty: false, aliases: {} },
-  MA: { fips: '25', byCounty: false, aliases: {} },
+  MA: {
+    fips: '25',
+    byCounty: false,
+    aliases: {
+      'eashhampton|hampshire': 'City of Easthampton', 'foxboro|norfolk': 'Town of Foxborough', 'dennis ma|barnstable': 'Town of Dennis',
+      'north attleboro|bristol': 'Town of North Attleborough', 'middleboro|plymouth': 'Town of Middleborough',
+      'tyngsboro|middlesex': 'Town of Tyngsborough', 'lanesboro|berkshire': 'Town of Lanesborough',
+    },
+  },
 };
 
 const args = parseArgs();
@@ -70,7 +85,30 @@ if (args.download) {
     const ok = OVERPASS.some((url) => {
       try { curl('-G', url, '--data-urlencode', `data=${query}`, '-o', join(dir, 'osm-alpr.json')); return true; } catch { return false; }
     });
-    if (!ok) console.warn(`${st}: no Overpass mirror answered; OSM cameras will be skipped.`);
+    if (!ok) {
+      // Fallback: DeFlock publishes the same OpenStreetMap camera nodes as 20-degree tiles.
+      // Take every tile that overlaps the state's Census bounding box; cameras outside the
+      // state's towns are dropped when they are placed.
+      try {
+        const shp = readFileSync(join(dir, `tl_2024_${STATES[st].fips}_cousub.shp`));
+        const [x0, y0, x1, y1] = [36, 44, 52, 60].map((o) => shp.readDoubleLE(o));
+        const tile = (v) => Math.floor(v / 20) * 20;
+        const index = JSON.parse(execFileSync('curl', ['-sSfL', '-m', '120', DEFLOCK_INDEX]).toString());
+        const elements = [];
+        for (let lat = tile(y0); lat <= tile(y1); lat += 20) {
+          for (let lon = tile(x0); lon <= tile(x1); lon += 20) {
+            if (!index.regions.includes(`${lat}/${lon}`)) continue;
+            const url = index.tile_url.replace('{lat}', lat).replace('{lon}', lon);
+            const nodes = JSON.parse(execFileSync('curl', ['-sSfL', '-m', '600', url], { maxBuffer: 1 << 30 }).toString());
+            elements.push(...nodes.filter((n) => n.lat >= y0 && n.lat <= y1 && n.lon >= x0 && n.lon <= x1));
+          }
+        }
+        writeFileSync(join(dir, 'osm-alpr.json'), JSON.stringify({ source: 'DeFlock region tiles', osm3s: { timestamp_osm_base: `${TODAY}T00:00:00Z` }, elements }));
+        console.log(`${st}: no Overpass mirror answered; took ${elements.length} cameras from DeFlock's copy of OpenStreetMap.`);
+      } catch (e) {
+        console.warn(`${st}: no Overpass mirror or DeFlock tile answered (${e.message.split('\n')[0]}); OSM cameras will be skipped.`);
+      }
+    }
     console.log(`${st}: downloaded`);
   }
   console.log('Now run: node scripts/red-flags.mjs ' + (args.all ? '--all' : `--state ${picked[0]}`));
@@ -174,8 +212,10 @@ const agencyTown = (agency) => agency
   .replace(/\btwp\b/gi, 'Township')
   .replace(/\s+/g, ' ').trim();
 const TYPE_RX = /\b(township|borough|city|town|village)\b/i;
-// "Town of Colonie", "Colonie Town" and "Colonie" all become "colonie".
-const normName = (s) => String(s).toLowerCase().replace(/[.'’]/g, '').replace(/\b(township|borough|city|town|village|of)\b/g, '').replace(/\s+/g, ' ').trim();
+// "Town of Colonie", "Colonie Town" and "Colonie" all become "colonie";
+// "Mount" and "Saint" match the "Mt" and "St" some states file under.
+const normName = (s) => String(s).toLowerCase().replace(/[.'’]/g, '').replace(/\b(township|borough|city|town|village|of)\b/g, '')
+  .replace(/\bmount\b/g, 'mt').replace(/\bsaint\b/g, 'st').replace(/\s+/g, ' ').trim();
 const usDate = (s) => {
   const m = String(s || '').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
   return m ? `${m[3]}-${m[1].padStart(2, '0')}-${m[2].padStart(2, '0')}` : '';
@@ -184,6 +224,7 @@ const countyOf = (t) => t.county.replace(/ County$/, '');
 // Cameras run by stores, malls, schools, or state and regional agencies are not the town's.
 const NOT_TOWN = /home depot|lowe|simon|mall|port authority|panynj|turnpike|parkway|thruway|school|university|college|nj transit|mbta|state police|county/i;
 const MARK = 'red-flags.mjs';
+const STATEWIDE = /\bstatewide contract\b/i;
 const atlasRows = existsSync(join(RAW, 'atlas.csv')) ? parseCSVRows(readFileSync(join(RAW, 'atlas.csv'), 'utf8')) : null;
 if (!atlasRows) console.warn('data/raw/atlas.csv is missing: run with --download first. Atlas records will be skipped.');
 
@@ -205,6 +246,7 @@ for (const st of picked) {
   }
 
   const matchTown = (name, county, city) => {
+    county = cfg.counties?.[county.toLowerCase()] || county;
     const alias = cfg.aliases[`${name.toLowerCase()}|${county.toLowerCase()}`];
     if (alias) name = alias;
     const pool = cfg.byCounty ? towns.filter((t) => countyOf(t).toLowerCase() === county.toLowerCase()) : towns;
@@ -236,6 +278,9 @@ for (const st of picked) {
       date: usDate(r['Link 1 Date']),
       detail: r.Summary,
       source: { label: `EFF Atlas of Surveillance ${r.AOSNUMBER}${r['Link 1 Source'] ? `, citing ${r['Link 1 Source']}` : ''}`, url: r['Link 1'] || ATLAS_PAGE },
+      // Access every department in the state gets through a state contract is shown but
+      // not scored: the town didn't choose it.
+      ...(STATEWIDE.test(r.Summary) ? { scored: false, unscoredReason: 'Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.' } : {}),
     });
   }
 
@@ -310,6 +355,6 @@ for (const st of picked) {
   }
   for (const d of datasets) writeFileSync(join(OUT, d.file), `${JSON.stringify(d.data, null, 1)}\n`);
 
-  console.log(`${st}: Atlas records matched ${report.atlas} (${report.atlasUnmatched.length} unmatched); OSM cameras ${report.cameras}, placed in towns ${report.camerasPlaced}, towns with mapped cameras ${towns.filter((t) => t.surveillanceMap).length}; deals ${report.deals}; towns with at least one red flag ${towns.filter((t) => t.redFlags.length).length} of ${towns.length}`);
+  console.log(`${st}: Atlas records matched ${report.atlas} (${report.atlasUnmatched.length} unmatched); OSM cameras ${report.cameras}, placed in towns ${report.camerasPlaced}, towns with mapped cameras ${towns.filter((t) => t.surveillanceMap).length}; deals ${report.deals}; towns with at least one scored red flag ${towns.filter((t) => t.redFlags.some((f) => f.scored !== false)).length} of ${towns.length}`);
   if (args.verbose) console.log('  Unmatched Atlas agencies:\n    ' + report.atlasUnmatched.join('\n    '));
 }

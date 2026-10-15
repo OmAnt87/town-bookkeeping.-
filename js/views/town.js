@@ -272,8 +272,9 @@ export function renderTown(root, state, id) {
 function redFlagBox(title, intro, flags, cams) {
   const rows = flags.map((f) => {
     const srcs = f.sources || (f.source ? [f.source] : []);
-    return `<li><div class="rf-top"><span class="pill pill-influence">${escapeHTML(f.label)}</span>${f.vendor ? `<span class="small">${escapeHTML(f.vendor)}</span>` : ''}${f.date ? `<span class="small muted">${formatDate(f.date)}</span>` : ''}</div>
+    return `<li><div class="rf-top"><span class="pill ${f.scored === false ? '' : 'pill-influence'}">${escapeHTML(f.label)}</span>${f.vendor ? `<span class="small">${escapeHTML(f.vendor)}</span>` : ''}${f.date ? `<span class="small muted">${formatDate(f.date)}</span>` : ''}</div>
       <p class="small">${escapeHTML(f.detail)}</p>
+      ${f.scored === false ? `<p class="small muted">${escapeHTML(f.unscoredReason || 'Not scored.')}</p>` : ''}
       ${srcs.length ? `<p class="small muted">Source: ${srcs.map((x) => (x.url ? `<a href="${escapeHTML(x.url)}" target="_blank" rel="noopener">${escapeHTML(x.label)}</a>` : escapeHTML(x.label))).join('; ')}</p>` : ''}</li>`;
   });
   const camLine = cams
