@@ -354,6 +354,11 @@ for (const st of picked) {
     if (t.surveillanceMap) t.notes.push(`Red flags: ${t.surveillanceMap.cameras} license-plate camera${t.surveillanceMap.cameras === 1 ? ' is' : 's are'} mapped inside ${t.name}'s borders in OpenStreetMap (${t.surveillanceMap.flock} made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.`);
   }
   for (const d of datasets) writeFileSync(join(OUT, d.file), `${JSON.stringify(d.data, null, 1)}\n`);
+  // Kept for the state's status doc (scripts/common/status.mjs).
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, 'red-flags-report.json'), JSON.stringify({
+    date: TODAY, ...report, camerasFrom: existsSync(osmFile) && JSON.parse(readFileSync(osmFile, 'utf8')).source ? 'DeFlock' : 'Overpass',
+  }, null, 1));
 
   console.log(`${st}: Atlas records matched ${report.atlas} (${report.atlasUnmatched.length} unmatched); OSM cameras ${report.cameras}, placed in towns ${report.camerasPlaced}, towns with mapped cameras ${towns.filter((t) => t.surveillanceMap).length}; deals ${report.deals}; towns with at least one scored red flag ${towns.filter((t) => t.redFlags.some((f) => f.scored !== false)).length} of ${towns.length}`);
   if (args.verbose) console.log('  Unmatched Atlas agencies:\n    ' + report.atlasUnmatched.join('\n    '));

@@ -17,6 +17,7 @@ Plain-language bookkeeping for U.S. towns and townships. Town Ledger shows where
 - **Ledger.** Individual transactions you can search, filter, sort and export to CSV.
 - **Five-year trend** of revenue against spending.
 - **Rankings.** A sortable, filterable table of every town, exportable to CSV.
+- **States.** One card per state: governments loaded, median score, grade spread, red flags, late annual reports, and which parts of the score have data. Each card links to the map and rankings for that state (`#/map?state=MA`).
 - **Compare.** Up to three towns side by side.
 - **Bring your own data.** Import a JSON file in the browser, or build one with the scripts below.
 - Light and dark themes, works on phones, no build step, no tracking.
@@ -101,7 +102,30 @@ node scripts/ct/build-county.mjs --all && node scripts/ct/status.mjs
 node scripts/build-summary.mjs
 ```
 
-The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
+### Massachusetts (all 351 cities and towns)
+
+`data/real/ma-<county>.json` holds every Massachusetts city and town, grouped by the 14 Census counties. Figures come from the Division of Local Services [Municipal Databank](https://www.mass.gov/info-details/division-of-local-services-municipal-databank): Schedule A general-fund revenue and spending (actual results, history back to FY 2016), certified tax levies (to separate property tax from motor vehicle and other excises) and outstanding long-term debt. Like Connecticut, cities and towns pay for their schools, so school spending is shown but left out of the services and overhead shares. Political money comes from [OCPF](https://www.ocpf.us/) itemized receipts of candidates for mayor, and for city council where council candidates file with the state (47 cities); everyone else files with the city or town clerk. Coverage and gaps: [docs/MA_DATA_STATUS.md](docs/MA_DATA_STATUS.md).
+
+```bash
+node scripts/ma/download.mjs
+pip install openpyxl && python3 scripts/ma/dls-to-json.py
+node scripts/ma/fetch-ocpf.mjs                     # mayoral and council candidates' receipts (cached)
+node scripts/ma/build-county.mjs --all && node scripts/ma/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Red flags and the filing check (every state)
+
+After any county build, add red flags and the annual-report filing check, then rebuild the summary:
+
+```bash
+node scripts/red-flags.mjs --download --all       # Atlas of Surveillance, OSM/DeFlock cameras, Census boundaries
+node scripts/red-flags.mjs --all                  # or --state NY
+node scripts/transparency.mjs --all               # has each government filed its latest annual report with the state?
+node scripts/build-summary.mjs
+```
+
+The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build, `scripts/red-flags.mjs` or `scripts/transparency.mjs` run.
 
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Verified data**, and lets you filter to them on the map and rankings.
 
@@ -111,7 +135,7 @@ See [docs/DATA_SCHEMA.md](docs/DATA_SCHEMA.md) for every field and [docs/METHODO
 
 ```
 index.html, css/, js/app.js     app shell, styles, router
-js/views/                       map, town report, rankings, compare, method, data
+js/views/                       map, town report, rankings, states, compare, method, data
 js/engine/                      pure scoring + ledger logic (shared by app, scripts, tests)
 js/charts.js                    small SVG chart helpers
 data/towns.json                 demo dataset
