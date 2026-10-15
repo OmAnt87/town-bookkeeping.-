@@ -10,7 +10,7 @@ The score runs from 0 to 100 and is the sum of six parts. Each part scales linea
 | Low overhead | 10 | 30% | 6% | (Administration + consultants & legal) / total spending (not counting schools) |
 | No surveillance or corporate giveaways | 10 | 5% or 4 documented | 0% and none | The lower of: (surveillance tech + corporate deals + corporate tax breaks) / total spending, and 1 − ¼ per documented program or deal |
 | Low outside political money | 20 | $12.00 | $0.50 | (Corporate lobbying + PAC + developer/contractor + union contributions + town-paid lobbying) / population |
-| Transparency | 20 | 0 of 6 | 6 of 6 | Practices followed (see below) |
+| Transparency | 20 × checked / 6 | none followed | all checked followed | Practices followed, out of those checked (see below) |
 | Fiscal health | 15 | | | 65%: debt per resident ($6,000 → $300). 35%: operating balance ((revenue − spending) / revenue, −10% → +2%) |
 
 **Grades:** A 85+, B 70–84, C 55–69, D 40–54, F below 40.
@@ -60,7 +60,9 @@ For Connecticut, figures are **actual general-fund results** reported to the Off
 5. Records and posts public meetings
 6. Officials file conflict-of-interest disclosures
 
-Unknown practices count as not followed, and the report shows them as "Unknown".
+Only practices that have been checked count. Each checked practice is worth one sixth of the 20 points, so a town checked on one practice is scored on 3.3 points for it, and the rest of the score is rescaled to 100 as with any part that has no data. Practices not checked yet show as "Not checked" and count neither for nor against the town.
+
+For real towns, "Files its annual audit on time" is checked from the state's own records: whether the government has filed its annual financial report with the state (NJ adopted budget, NY Comptroller annual report, PA DCED annual audit and financial report, CT OPM financial indicators, MA DLS Schedule A) for the latest year most governments have filed. It is a filing check, not an audit opinion.
 
 ## Limits
 

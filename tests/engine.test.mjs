@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { scoreTown, gradeFor, totals, COMPONENTS, redFlagEntries, corporateTies } from '../js/engine/scoring.js';
+import { scoreTown, gradeFor, totals, COMPONENTS, redFlagEntries, corporateTies, transparencyChecked } from '../js/engine/scoring.js';
 import { filterLedger, summarizeLedger, sortLedger, toCSV, validateDataset } from '../js/engine/ledger.js';
 import { mapCensusItem } from '../scripts/census-codes.mjs';
 import { classifyContributor } from '../scripts/contributor-types.mjs';
@@ -453,4 +453,27 @@ test('CT town committees match their town and SEEC receipts are classified', () 
   assert.equal(out.influence.pacContributions, 500);
   assert.equal(out.individuals, 40);
   assert.equal(out.counted, 1);
+});
+
+test('transparency counts only the practices that were checked', () => {
+  const tr = (town) => scoreTown(town).components.find((c) => c.key === 'transparency');
+  const all = tr(base());
+  assert.equal(all.max, 20);
+  assert.equal(all.points, Math.round((4 / 6) * 20 * 10) / 10);
+
+  const one = base();
+  one.transparency = { auditOnTime: true };
+  assert.equal(transparencyChecked(one), 1);
+  assert.equal(tr(one).max, 3.3);
+  assert.equal(tr(one).points, 3.3);
+  assert.match(tr(one).detail, /1 of 1 checked/);
+
+  const late = base();
+  late.transparency = { auditOnTime: false };
+  assert.equal(tr(late).points, 0);
+  // A town with one failed check loses at most that check's share, not 20 points.
+  const unchecked = base();
+  unchecked.transparency = {};
+  assert.equal(tr(unchecked).available, false);
+  assert.ok(scoreTown(unchecked).score - scoreTown(late).score < 4);
 });
