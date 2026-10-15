@@ -17,10 +17,13 @@ const COLS = [
 
 const ui = { sort: 'score', dir: 'desc', state: 'all', grade: 'all', q: '', realOnly: null };
 
-export function renderRankings(root, state) {
+export function renderRankings(root, state, _arg, query) {
   // Show only real towns by default once any are loaded; the checkbox shows demo towns too.
   if (ui.realOnly === null) ui.realOnly = state.towns.some((t) => isVerified(t.town));
   const states = [...new Set(state.towns.map((t) => t.town.state))].sort();
+  // #/rankings?state=MA opens filtered to one state (the States page links here).
+  const wanted = query?.get('state')?.toUpperCase();
+  if (wanted && states.includes(wanted)) ui.state = wanted;
   root.innerHTML = `
   <div class="page">
     <div class="page-head">

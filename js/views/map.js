@@ -57,10 +57,13 @@ const stateStyle = () => ({ color: cssVar('--baseline'), weight: 1, fillColor: c
 
 const ui = { metric: 'score', layer: 'towns', state: 'all', query: '', realOnly: null };
 
-export function renderMap(root, state) {
+export function renderMap(root, state, _arg, query) {
   // Show only real towns by default once any are loaded; the checkbox shows demo towns too.
   if (ui.realOnly === null) ui.realOnly = state.towns.some((t) => isVerified(t.town));
   const states = [...new Set(state.towns.map((t) => t.town.state))].sort();
+  // #/map?state=MA opens filtered to one state (the States page links here).
+  const wanted = query?.get('state')?.toUpperCase();
+  if (wanted && states.includes(wanted)) ui.state = wanted;
   root.innerHTML = `
   <div class="map-layout">
     <aside class="map-side">

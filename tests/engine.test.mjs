@@ -6,6 +6,7 @@ import { filterLedger, summarizeLedger, sortLedger, toCSV, validateDataset } fro
 import { mapCensusItem } from '../scripts/census-codes.mjs';
 import { classifyContributor } from '../scripts/contributor-types.mjs';
 import { parseCSV } from '../scripts/lib.mjs';
+import { stateSummary } from '../js/engine/states.js';
 
 const base = () => ({
   id: 't', name: 'Test Township', state: 'PA', lat: 40, lng: -77, population: 10000,
@@ -476,4 +477,27 @@ test('transparency counts only the practices that were checked', () => {
   unchecked.transparency = {};
   assert.equal(tr(unchecked).available, false);
   assert.ok(scoreTown(unchecked).score - scoreTown(late).score < 4);
+});
+
+test('state summary groups towns and takes medians over towns with data', () => {
+  const mk = (state, patch = {}) => { const t = { ...base(), state, stateName: state === 'MA' ? 'Massachusetts' : 'Connecticut', type: 'Town', ...patch }; return { town: t, s: scoreTown(t) }; };
+  const entries = [
+    mk('MA'),
+    mk('MA', { influence: {}, transparency: { auditOnTime: false } }),
+    mk('MA', { population: 30000 }),
+    mk('CT', { type: 'City', transparency: {} }),
+  ];
+  const [ct, ma] = stateSummary(entries);
+  assert.equal(ct.state, 'CT');
+  assert.equal(ma.towns, 3);
+  assert.equal(ma.population, 50000);
+  assert.deepEqual(ma.types, { Town: 3 });
+  assert.equal(Object.values(ma.grades).reduce((a, b) => a + b, 0), 3);
+  assert.equal(ma.medianScore, [...entries.slice(0, 3)].map((e) => e.s.score).sort((a, b) => a - b)[1]);
+  // The town with no political money loaded is left out of that median and that coverage.
+  assert.equal(ma.coverage.find((c) => c.key === 'influence').share, 2 / 3);
+  assert.equal(ma.medianInfluencePerResident, (0.3 + 0.1) / 2);
+  assert.equal(ma.filingChecked, 3);
+  assert.equal(ma.lateFilers, 1);
+  assert.equal(ct.lateFilers, null);
 });
