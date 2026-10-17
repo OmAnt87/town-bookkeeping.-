@@ -1,4 +1,4 @@
-import { setDataset, persistDataset, resetToDemo } from '../app.js';
+import { setDataset, persistDataset, resetToDefault, loadDemoOnly } from '../app.js';
 import { downloadFile, ICONS } from '../charts.js';
 import { escapeHTML } from '../engine/format.js';
 
@@ -35,9 +35,10 @@ export function renderData(root, state) {
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
           <button class="btn" id="dl-all" type="button">${ICONS.download} Download loaded data</button>
           <button class="btn" id="dl-sample" type="button">${ICONS.download} Sample file</button>
-          <button class="btn" id="reset" type="button">Restore demo data</button>
+          <button class="btn" id="reset" type="button">Restore default data</button>
+          <button class="btn" id="demo" type="button">Load demo towns</button>
         </div>
-        <p class="small muted" style="margin:14px 0 0">Loaded now: <strong>${state.towns.length} towns</strong> (${{ demo: 'fictional demo data', mixed: 'demo towns plus verified real towns', import: 'your imported file' }[state.source] || state.source}).</p>
+        <p class="small muted" style="margin:14px 0 0">Loaded now: <strong>${state.towns.length} towns</strong> (${{ real: 'verified real towns', demo: 'fictional demo data', mixed: 'demo towns plus verified real towns', import: 'your imported file' }[state.source] || state.source}).</p>
       </section>
       <section class="card prose">
         <h2 style="margin:0 0 8px">Where real numbers come from</h2>
@@ -80,7 +81,19 @@ export function renderData(root, state) {
   $('#dl-all').addEventListener('click', () => downloadFile('town-ledger-data.json', JSON.stringify(state.dataset, null, 2), 'application/json'));
   $('#dl-sample').addEventListener('click', () => downloadFile('town-ledger-sample.json', JSON.stringify(SAMPLE, null, 2), 'application/json'));
   $('#reset').addEventListener('click', async () => {
-    await resetToDemo();
-    say('Demo data restored.', true);
+    try {
+      await resetToDefault();
+      renderData(root, state);
+    } catch (err) {
+      say(`Could not restore the default data: ${escapeHTML(err.message)}`, false);
+    }
+  });
+  $('#demo').addEventListener('click', async () => {
+    try {
+      await loadDemoOnly();
+      renderData(root, state);
+    } catch (err) {
+      say(`Could not load the demo towns: ${escapeHTML(err.message)}`, false);
+    }
   });
 }

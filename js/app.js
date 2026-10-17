@@ -46,13 +46,13 @@ export function persistDataset(dataset) {
   }
 }
 
-export function resetToDemo() {
+export function resetToDefault() {
   try { sessionStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
-  return loadDemo();
+  return loadDefault();
 }
 
-// Real towns live in data/real/, listed in data/real/index.json. They are
-// shown alongside the demo towns and replace any demo town with the same id.
+// Real towns live in data/real/, listed in data/real/index.json. When any are
+// present the site shows only them; the fictional demo towns load on request.
 async function loadRealTowns() {
   try {
     // Prefer the light summary (built by scripts/build-summary.mjs); town reports
@@ -85,12 +85,20 @@ export async function loadTownDetail(town) {
   return Object.assign(town, full, { demo: false });
 }
 
-async function loadDemo() {
-  const [res, real] = await Promise.all([fetch('data/towns.json'), loadRealTowns()]);
+// Fictional demo towns only (data/towns.json), so every feature can be tried out.
+export async function loadDemoOnly() {
+  try { sessionStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
+  const res = await fetch('data/towns.json');
   if (!res.ok) throw new Error(`Could not load data/towns.json (${res.status})`);
-  const demo = await res.json();
-  const realIds = new Set(real.map((t) => t.id));
-  const errors = setDataset({ towns: [...real, ...demo.towns.filter((t) => !realIds.has(t.id))] }, real.length ? 'mixed' : 'demo');
+  const errors = setDataset(await res.json(), 'demo');
+  if (errors.length) throw new Error(errors.join(' '));
+}
+
+// Real towns when there are any, otherwise the demo towns.
+async function loadDefault() {
+  const real = await loadRealTowns();
+  if (!real.length) return loadDemoOnly();
+  const errors = setDataset({ towns: real }, 'real');
   if (errors.length) throw new Error(errors.join(' '));
 }
 
@@ -102,7 +110,7 @@ async function init() {
   } catch { /* ignore */ }
   if (!restored) {
     try {
-      await loadDemo();
+      await loadDefault();
     } catch (err) {
       main.innerHTML = `<div class="page"><div class="card"><h2>Could not load data</h2>
         <p class="muted">${err.message}. Serve this folder with <code>npm start</code> instead of opening the file directly.</p></div></div>`;

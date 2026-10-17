@@ -231,6 +231,11 @@ button, input, select { font: inherit; color: inherit; }
 .map-stats span { display: block; font-size: 11px; color: var(--text-2); }
 .map-stats strong { font-size: 15px; }
 .leaflet-container { font: inherit; }
+.basemap { filter: grayscale(1) contrast(0.85) brightness(1.08); }
+:root[data-theme="dark"] .basemap { filter: grayscale(1) invert(1) contrast(0.8) brightness(0.85); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .basemap { filter: grayscale(1) invert(1) contrast(0.8) brightness(0.85); }
+}
 .leaflet-bar a { background: var(--surface); color: var(--text); border-color: var(--border); }
 .leaflet-bar a:hover { background: var(--surface-2); }
 .leaflet-container .leaflet-control-attribution.leaflet-control { background: color-mix(in srgb, var(--surface) 85%, transparent); color: var(--text-2); }

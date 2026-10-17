@@ -24,8 +24,9 @@ function quantile(sorted, q) {
   return sorted[lo] + (sorted[Math.min(lo + 1, sorted.length - 1)] - sorted[lo]) * (pos - lo);
 }
 
-const TILE_URL = (dark) =>
-  `https://{s}.basemaps.cartocdn.com/${dark ? 'dark_all' : 'light_all'}/{z}/{x}/{y}{r}.png`;
+// OpenStreetMap's standard tiles need no API key. CSS mutes them to gray and
+// inverts them in dark mode (.basemap in styles.css).
+const TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
 const HEAT_GRADIENT = { 0.2: '#cde2fb', 0.45: '#6da7ec', 0.7: '#2a78d6', 1: '#0d366b' };
 const US_BOUNDS = [[25.5, -123.5], [48.5, -68]];
@@ -123,10 +124,10 @@ export function renderMap(root, state) {
   if (L) {
     map = L.map('map', { zoomControl: true, minZoom: 2, zoomSnap: 0.25, worldCopyJump: true, preferCanvas: true });
     map.fitBounds(US_BOUNDS);
-    tiles = L.tileLayer(TILE_URL(isDark()), {
-      attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-      subdomains: 'abcd',
-      maxZoom: 18,
+    tiles = L.tileLayer(TILE_URL, {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors',
+      className: 'basemap',
+      maxZoom: 19,
     }).addTo(map);
     map.createPane('states').style.zIndex = 150;
     loadStates()
@@ -285,7 +286,6 @@ export function renderMap(root, state) {
   });
 
   const onTheme = () => {
-    if (tiles) tiles.setUrl(TILE_URL(isDark()));
     if (statesLayer) statesLayer.setStyle(stateStyle());
     if (countyLines) countyLines.setStyle(countyLineStyle());
     if (stateLines) stateLines.setStyle(stateLineStyle());
