@@ -28,11 +28,19 @@ npm start          # http://localhost:8080  (Node 18+, no dependencies to instal
 npm test           # engine, ledger, importer tests
 ```
 
-It's a static site, so any static host works, including GitHub Pages (Settings > Pages > deploy from branch, root folder).
+## Deploy
+
+It's a static site with no build step. `netlify.toml` and `vercel.json` set the cache and security headers, and the hosts compress the JSON data. The repository is about 350 MB, mostly `data/real/`, so Netlify is the safer choice; Vercel's Hobby plan may reject a deployment that large.
+
+- **Netlify (recommended):** Add new site > Import from Git > pick this repo and the `main` branch. Leave the build command empty and set the publish directory to `.` (both are read from `netlify.toml`).
+- **Vercel:** Add New > Project > import this repo. Set Framework Preset to "Other" and leave the build command empty. The output directory is `.` (from `vercel.json`).
+- **Custom domain:** once the site is live, add the domain under the site's Domain settings (Netlify) or Project > Settings > Domains (Vercel), then point your DNS records where the host tells you to. Both hosts issue HTTPS certificates automatically.
+
+Routing uses `#/` hashes, so no rewrite rules are needed. Any other static host works too.
 
 ## Data
 
-The app ships with **fictional demo towns** (`data/towns.json`, made by `npm run generate:demo`) so every feature works out of the box. The app shows a banner while demo data is loaded.
+The site shows only public-record towns (`data/real/`) by default. It also ships **fictional demo towns** (`data/towns.json`, made by `npm run generate:demo`) so every feature can be tried out. They load from **Load demo towns** on the Data page, or automatically if the public records can't load. The app shows a banner while demo data is loaded.
 
 To use real figures, build a dataset with the pipeline scripts, then load it on the **Data** page or replace `data/towns.json`:
 
@@ -401,7 +409,7 @@ node scripts/build-summary.mjs
 
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or red-flags run.
 
-Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Public-record data**, and lets you filter to them on the map and rankings.
+Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them by default, marks them **Public-record data**, and lets you filter to them on the map and rankings.
 
 See [docs/DATA_SCHEMA.md](docs/DATA_SCHEMA.md) for every field and [docs/METHODOLOGY.md](docs/METHODOLOGY.md) for how scores are calculated.
 
@@ -418,7 +426,7 @@ tests/                          node --test suite
 vendor/                         Leaflet 1.9.4 and Leaflet.heat 0.2.0 (BSD-2-Clause)
 ```
 
-Map tiles come from CARTO with OpenStreetMap data. State outlines (`data/us-states.json`) are built from the [us-atlas](https://github.com/topojson/us-atlas) package (ISC, U.S. Census Bureau boundaries) and show underneath the tiles, so the map stays usable when tiles are unavailable.
+Map tiles come from Esri's World Light Gray and Dark Gray Canvas basemaps. State outlines (`data/us-states.json`) are built from the [us-atlas](https://github.com/topojson/us-atlas) package (ISC, U.S. Census Bureau boundaries) and show underneath the tiles, so the map stays usable when tiles are unavailable.
 
 ## Trust and usability
 
