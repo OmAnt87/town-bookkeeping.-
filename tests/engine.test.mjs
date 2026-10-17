@@ -1,11 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { scoreTown, gradeFor, totals, COMPONENTS, redFlagEntries, corporateTies } from '../js/engine/scoring.js';
+import { scoreTown, gradeFor, totals, COMPONENTS, redFlagEntries, corporateTies, transparencyChecked } from '../js/engine/scoring.js';
 import { filterLedger, summarizeLedger, sortLedger, toCSV, validateDataset } from '../js/engine/ledger.js';
 import { mapCensusItem } from '../scripts/census-codes.mjs';
 import { classifyContributor } from '../scripts/contributor-types.mjs';
 import { parseCSV } from '../scripts/lib.mjs';
+import { stateSummary } from '../js/engine/states.js';
 
 const base = () => ({
   id: 't', name: 'Test Township', state: 'PA', lat: 40, lng: -77, population: 10000,
@@ -453,6 +454,52 @@ test('CT town committees match their town and SEEC receipts are classified', () 
   assert.equal(out.influence.pacContributions, 500);
   assert.equal(out.individuals, 40);
   assert.equal(out.counted, 1);
+});
+
+test('transparency counts only the practices that were checked', () => {
+  const tr = (town) => scoreTown(town).components.find((c) => c.key === 'transparency');
+  const all = tr(base());
+  assert.equal(all.max, 20);
+  assert.equal(all.points, Math.round((4 / 6) * 20 * 10) / 10);
+
+  const one = base();
+  one.transparency = { auditOnTime: true };
+  assert.equal(transparencyChecked(one), 1);
+  assert.equal(tr(one).max, 3.3);
+  assert.equal(tr(one).points, 3.3);
+  assert.match(tr(one).detail, /1 of 1 checked/);
+
+  const late = base();
+  late.transparency = { auditOnTime: false };
+  assert.equal(tr(late).points, 0);
+  // A town with one failed check loses at most that check's share, not 20 points.
+  const unchecked = base();
+  unchecked.transparency = {};
+  assert.equal(tr(unchecked).available, false);
+  assert.ok(scoreTown(unchecked).score - scoreTown(late).score < 4);
+});
+
+test('state summary groups towns and takes medians over towns with data', () => {
+  const mk = (state, patch = {}) => { const t = { ...base(), state, stateName: state === 'MA' ? 'Massachusetts' : 'Connecticut', type: 'Town', ...patch }; return { town: t, s: scoreTown(t) }; };
+  const entries = [
+    mk('MA'),
+    mk('MA', { influence: {}, transparency: { auditOnTime: false } }),
+    mk('MA', { population: 30000 }),
+    mk('CT', { type: 'City', transparency: {} }),
+  ];
+  const [ct, ma] = stateSummary(entries);
+  assert.equal(ct.state, 'CT');
+  assert.equal(ma.towns, 3);
+  assert.equal(ma.population, 50000);
+  assert.deepEqual(ma.types, { Town: 3 });
+  assert.equal(Object.values(ma.grades).reduce((a, b) => a + b, 0), 3);
+  assert.equal(ma.medianScore, [...entries.slice(0, 3)].map((e) => e.s.score).sort((a, b) => a - b)[1]);
+  // The town with no political money loaded is left out of that median and that coverage.
+  assert.equal(ma.coverage.find((c) => c.key === 'influence').share, 2 / 3);
+  assert.equal(ma.medianInfluencePerResident, (0.3 + 0.1) / 2);
+  assert.equal(ma.filingChecked, 3);
+  assert.equal(ma.lateFilers, 1);
+  assert.equal(ct.lateFilers, null);
 });
 
 import { aggregateMa } from '../scripts/ma/dls-map.mjs';

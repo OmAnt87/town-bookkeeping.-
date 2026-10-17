@@ -1,7 +1,7 @@
 import { metricText, coverageText } from '../engine/metrics.js';
 import { reportingText } from '../engine/reporting.js';
 import { requestIsCurrent } from '../data/loading.js';
-import { revenueRows, spendingRows, influenceRows, taxBreakRows, transparencyCount, redFlagEntries, documentedRedFlags, redFlagReason, corporateTies } from '../engine/scoring.js';
+import { revenueRows, spendingRows, influenceRows, taxBreakRows, transparencyCount, transparencyChecked, redFlagEntries, documentedRedFlags, redFlagReason, corporateTies } from '../engine/scoring.js';
 import { TRANSPARENCY_CHECKS, REVENUE_CATEGORIES, SPENDING_CATEGORIES, INFLUENCE_CATEGORIES } from '../engine/categories.js';
 import { filterLedger, summarizeLedger, sortLedger, ledgerToCSV, categoryLabel, FLOWS } from '../engine/ledger.js';
 import { money, number, escapeHTML, formatDate } from '../engine/format.js';
@@ -187,10 +187,10 @@ export function renderTown(root, state, id) {
           .join('')}</tbody></table></div>` : '<p class="muted small">No contributor records loaded.</p>'}
       </section>
       <section class="card" aria-labelledby="h-tr">
-        <div class="card-head"><div><h2 id="h-tr">Transparency check</h2><p>${Object.values(town.transparency || {}).some((v) => typeof v === 'boolean') ? `${transparencyCount(town)} of ${TRANSPARENCY_CHECKS.length} good-government practices confirmed.` : 'Not checked yet for this town.'}</p></div></div>
+        <div class="card-head"><div><h2 id="h-tr">Transparency check</h2><p>${transparencyChecked(town) ? `${transparencyCount(town)} of ${transparencyChecked(town)} checked good-government practices confirmed.${transparencyChecked(town) < TRANSPARENCY_CHECKS.length ? ' Practices not checked yet are left out of the score, not counted against the town.' : ''}` : 'Not checked yet for this town.'}</p></div></div>
         <ul class="checklist">${TRANSPARENCY_CHECKS.map((c) => {
           const v = town.transparency?.[c.key];
-          const [cls, icon, word] = v === true ? ['yes', ICONS.check, 'Yes'] : v === false ? ['no', ICONS.cross, 'No'] : ['unk', ICONS.unknown, 'Unknown'];
+          const [cls, icon, word] = v === true ? ['yes', ICONS.check, 'Yes'] : v === false ? ['no', ICONS.cross, 'No'] : ['unk', ICONS.unknown, 'Not checked'];
           return `<li><span class="${cls}">${icon}</span><span>${c.label}</span><span class="state ${cls}">${word}</span></li>`;
         }).join('')}</ul>
         <h3 style="margin:22px 0 8px">Trend over time</h3>
@@ -287,8 +287,9 @@ export function renderTown(root, state, id) {
 function redFlagBox(title, intro, flags, cams) {
   const rows = flags.map((f) => {
     const srcs = f.sources || (f.source ? [f.source] : []);
-    return `<li><div class="rf-top"><span class="pill pill-influence">${escapeHTML(f.label)}</span>${f.vendor ? `<span class="small">${escapeHTML(f.vendor)}</span>` : ''}${f.date ? `<span class="small muted">${formatDate(f.date)}</span>` : ''}</div>
+    return `<li><div class="rf-top"><span class="pill ${f.scored === false ? '' : 'pill-influence'}">${escapeHTML(f.label)}</span>${f.vendor ? `<span class="small">${escapeHTML(f.vendor)}</span>` : ''}${f.date ? `<span class="small muted">${formatDate(f.date)}</span>` : ''}</div>
       <p class="small">${escapeHTML(f.detail)}</p>
+      ${f.scored === false ? `<p class="small muted">${escapeHTML(f.unscoredReason || 'Not scored.')}</p>` : ''}
       ${srcs.length ? `<p class="small muted">Source: ${srcs.map((x) => (x.url ? `<a href="${escapeHTML(x.url)}" target="_blank" rel="noopener">${escapeHTML(x.label)}</a>` : escapeHTML(x.label))).join('; ')}</p>` : ''}</li>`;
   });
   const camLine = cams

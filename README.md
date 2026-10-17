@@ -17,6 +17,7 @@ Plain-language bookkeeping for U.S. towns and townships. Town Ledger shows where
 - **Ledger.** Individual transactions you can search, filter, sort and export to CSV.
 - **Five-year trend** of revenue against spending.
 - **Rankings.** A sortable, filterable table of every town, exportable to CSV.
+- **States.** One card per state: governments loaded, median score, grade spread, red flags, late annual reports, and which parts of the score have data. Each card links to the map and rankings for that state (`#/map?state=MA`).
 - **Compare.** Up to three towns side by side.
 - **Bring your own data.** Import a JSON file in the browser, or build one with the scripts below.
 - Light and dark themes, works on phones, no build step, no tracking.
@@ -403,11 +404,15 @@ For every state built with `scripts/common/town-census-build.mjs` (New Hampshire
 Surveillance programs from the [EFF Atlas of Surveillance](https://atlasofsurveillance.org/) are matched to municipal police departments, and to sheriffs and county police where a state's counties are listed, so the red-flag part is scored in every state. Builds rewrite their county files, so re-run it after any build:
 
 ```bash
-node scripts/red-flags.mjs --download && node scripts/red-flags.mjs   # every state except NJ (NJ: scripts/nj/red-flags.mjs)
+node scripts/cameras.mjs --download --all && node scripts/cameras.mjs --all   # NY, PA, CT, MA: OpenStreetMap / DeFlock cameras
+node scripts/red-flags.mjs --download && node scripts/red-flags.mjs   # every state except NJ (NJ: scripts/nj/red-flags.mjs); --state MA,TN for some
+node scripts/transparency.mjs --all                 # NY, PA, CT, MA: has each government filed its latest annual report?
 node scripts/build-summary.mjs
 ```
 
-The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or red-flags run.
+License-plate cameras mapped in OpenStreetMap are placed inside Census town and village boundaries for New York, Pennsylvania, Connecticut and Massachusetts (`scripts/cameras.mjs`); any Flock camera is a red flag, other brands only when the town is the recorded operator. Atlas records for access every police department gets through a statewide contract (for example, Massachusetts's and Tennessee's CrimeTracer contracts) are shown but not scored. `scripts/transparency.mjs` checks one transparency practice from state records where the state publishes annual-report filings.
+
+The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build, red-flags, cameras or transparency run.
 
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them by default, marks them **Public-record data**, and lets you filter to them on the map and rankings.
 
@@ -417,7 +422,7 @@ See [docs/DATA_SCHEMA.md](docs/DATA_SCHEMA.md) for every field and [docs/METHODO
 
 ```
 index.html, css/, js/app.js     app shell, styles, router
-js/views/                       map, town report, rankings, compare, method, data
+js/views/                       map, town report, rankings, states, compare, method, data
 js/engine/                      pure scoring + ledger logic (shared by app, scripts, tests)
 js/charts.js                    small SVG chart helpers
 data/towns.json                 demo dataset

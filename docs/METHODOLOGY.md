@@ -10,7 +10,7 @@ The score runs from 0 to 100 and is the sum of six parts. Each part scales linea
 | Low overhead | 10 | 30% | 6% | (Administration + consultants & legal) / total spending (not counting schools) |
 | No surveillance or corporate giveaways | 10 | 5% or 4 documented | 0% and none | The lower of: (surveillance tech + corporate deals + corporate tax breaks) / total spending, and 1 − ¼ per documented program or deal |
 | Low outside political money | 20 | $12.00 | $0.50 | (Corporate lobbying + PAC + developer/contractor + union contributions + town-paid lobbying) / population |
-| Transparency | 20 | 0 of 6 | 6 of 6 | Practices followed (see below) |
+| Transparency | 20 × checked / 6 | none followed | all checked followed | Practices followed, out of those checked (see below) |
 | Fiscal health | 15 | | | 65%: debt per resident ($6,000 → $300). 35%: operating balance ((revenue − spending) / revenue, −10% → +2%) |
 
 **Grades:** A 85+, B 70–84, C 55–69, D 40–54, F below 40.
@@ -33,7 +33,7 @@ Some spending works against residents, so it counts against the score:
 - **Corporate deals:** data center contracts (water, power and road work built for a data center), subsidies to private developers.
 - **Corporate tax breaks** (`taxBreaks`): data center abatements, discounted PILOT agreements and other corporate abatements. These are revenue the town gave up, so they are shown next to Money in, not inside it.
 
-Most public records say a town *uses* a technology or *approved* a deal, not what it cost. Those go in `redFlags` and are scored by count: each distinct documented program or deal (license-plate readers, police drones, a data center tax break, corporate lobbying of officials, ...) costs a quarter of the part's points. Several records about the same program count once. Flock cameras are the deliberate exception: any Flock camera mapped inside a town is its own flag ("Flock camera network"), on top of any police license-plate-reader record, because Flock pools every scan into a search network shared with agencies nationwide.
+Most public records say a town *uses* a technology or *approved* a deal, not what it cost. Those go in `redFlags` and are scored by count: each distinct documented program or deal (license-plate readers, police drones, a data center tax break, corporate lobbying of officials, ...) costs a quarter of the part's points. Several records about the same program count once. Flock cameras are the deliberate exception: any Flock camera mapped inside a town is its own flag ("Flock camera network"), on top of any police license-plate-reader record, because Flock pools every scan into a search network shared with agencies nationwide. Access every police department in a state gets through a statewide contract (Massachusetts's CrimeTracer contract, for example) is shown on the report but not scored, since the town did not choose it.
 
 Surveillance programs come from the [EFF Atlas of Surveillance](https://atlasofsurveillance.org/) in every state. Each record about a municipal police department is matched to its town by name and county, and each sheriff or county police record to its county where the state's counties are listed; ambiguous names (a city and a town of the same name, both with police) are skipped rather than guessed (`scripts/red-flags.mjs`; `scripts/nj/red-flags.mjs` for New Jersey). New Jersey also has license-plate cameras mapped in OpenStreetMap and a hand-checked list of data center deals and corporate lobbying; those have not been gathered for other states yet.
 
@@ -104,7 +104,9 @@ For every state built from the Census unit files with the shared town builder (N
 5. Records and posts public meetings
 6. Officials file conflict-of-interest disclosures
 
-Unknown practices count as not followed, and the report shows them as "Unknown".
+Only practices that have been checked count. Each checked practice is worth one sixth of the 20 points, so a town checked on one practice is scored on 3.3 points for it, and the rest of the score is rescaled to 100 as with any part that has no data. Practices not checked yet show as "Not checked" and count neither for nor against the town.
+
+For real towns, "Files its annual audit on time" is checked from the state's own records (`scripts/transparency.mjs`): whether the government has filed its annual audit or annual financial report with the state (NY Comptroller annual financial report, PA DCED annual audit and financial report, CT OPM audited financial statements, MA DLS Schedule A) for the latest fiscal year most governments in the state have filed. It is a filing check, not an opinion on the report. New Jersey is not checked yet: its statewide data is adopted budgets, which says nothing about audits.
 
 ## Limits
 

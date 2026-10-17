@@ -6,6 +6,7 @@ import { validateDataset } from './engine/ledger.js';
 import { renderMap } from './views/map.js';
 import { renderTown } from './views/town.js';
 import { renderRankings } from './views/rankings.js';
+import { renderStates } from './views/states.js';
 import { renderCompare } from './views/compare.js';
 import { renderMethod } from './views/method.js';
 import { renderData } from './views/data.js';
@@ -157,7 +158,8 @@ async function init() {
 let cleanup = null;
 export function route() {
   state.routeRevision++;
-  const hash = location.hash.replace(/^#\/?/, '') || 'map';
+  const [hash, search = ''] = (location.hash.replace(/^#\/?/, '') || 'map').split('?');
+  const query = new URLSearchParams(search);
   const [view, ...rest] = hash.split('/');
   const arg = decodeURIComponent(rest.join('/'));
   if (typeof cleanup === 'function') cleanup();
@@ -172,14 +174,15 @@ export function route() {
     map: renderMap,
     town: renderTown,
     rankings: renderRankings,
+    states: renderStates,
     compare: renderCompare,
     method: renderMethod,
     data: renderData,
   };
   const render = views[view] || renderMap;
-  cleanup = render(main, state, arg);
+  cleanup = render(main, state, arg, query);
   if (view !== 'map') window.scrollTo(0, 0);
-  const titles = { map: 'Map', rankings: 'Rankings', compare: 'Compare', method: 'How scores work', data: 'Data' };
+  const titles = { map: 'Map', rankings: 'Rankings', states: 'States', compare: 'Compare', method: 'How scores work', data: 'Data' };
   const town = view === 'town' && state.byId.get(arg);
   document.title = town ? `${town.town.name}, ${town.town.state} - Town Ledger` : `${titles[view] || 'Map'} - Town Ledger`;
 }

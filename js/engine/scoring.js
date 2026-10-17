@@ -129,9 +129,14 @@ export const COMPONENTS = [
     key: 'transparency',
     label: 'Transparency',
     max: 20,
-    available: (_t, town) => Object.values(town.transparency || {}).some((v) => typeof v === 'boolean'),
-    measure: (_t, town) => transparencyCount(town) / TRANSPARENCY_CHECKS.length,
-    detail: (_t, town) => `${transparencyCount(town)} of ${TRANSPARENCY_CHECKS.length} transparency practices`,
+    available: (_t, town) => transparencyChecked(town) > 0,
+    // Only practices that were checked count; the part weighs in proportion to
+    // how many were checked, so one check can't swing all 20 points.
+    weight: (_t, town) => transparencyChecked(town) / TRANSPARENCY_CHECKS.length,
+    measure: (_t, town) => transparencyCount(town) / transparencyChecked(town),
+    detail: (_t, town) => transparencyChecked(town) === TRANSPARENCY_CHECKS.length
+      ? `${transparencyCount(town)} of ${TRANSPARENCY_CHECKS.length} transparency practices`
+      : `${transparencyCount(town)} of ${transparencyChecked(town)} checked transparency practice${transparencyChecked(town) === 1 ? '' : 's'} (${TRANSPARENCY_CHECKS.length - transparencyChecked(town)} not checked yet)`,
   },
   {
     key: 'fiscal',
@@ -224,6 +229,11 @@ export function transparencyCount(town) {
   return TRANSPARENCY_CHECKS.filter((c) => town.transparency?.[c.key] === true).length;
 }
 
+// Practices with a yes or no answer; unchecked ones are neither.
+export function transparencyChecked(town) {
+  return TRANSPARENCY_CHECKS.filter((c) => typeof town.transparency?.[c.key] === 'boolean').length;
+}
+
 export function gradeFor(score) {
   if (score >= 85) return 'A';
   if (score >= 70) return 'B';
@@ -237,12 +247,13 @@ export function scoreTown(town) {
   const components = COMPONENTS.map((c) => {
     const available = c.available(t, town);
     const ratio = available ? clamp(c.measure(t, town)) : 0;
+    const max = available && c.weight ? Math.round(c.max * c.weight(t, town) * 10) / 10 : c.max;
     return {
       key: c.key,
       label: c.label,
-      max: c.max,
+      max,
       available,
-      points: available ? Math.round(ratio * c.max * 10) / 10 : null,
+      points: available ? Math.round(ratio * max * 10) / 10 : null,
       ratio,
       detail: available ? c.detail(t, town) : (c.unavailable?.(t, town) || 'Not scored: no data loaded for this part yet'),
     };
