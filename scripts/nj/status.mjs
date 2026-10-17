@@ -6,7 +6,6 @@ import { fileURLToPath } from 'node:url';
 import { NJ_COUNTIES } from './ufb-map.mjs';
 import { slugify } from '../lib.mjs';
 
-import { redFlagLines, filingLines, stateTowns } from '../common/status.mjs';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const ufbPath = join(ROOT, 'data', 'raw', 'nj', 'ufb.json');
 const filed = existsSync(ufbPath)
@@ -46,9 +45,8 @@ ${rows.join('\n')}
 
 ## Known gaps
 - **Political money** covers municipal candidates only. Small campaigns can file without itemizing, so a town showing $0 may still have unreported small contributions. Contractor pay-to-play disclosures (ELEC Form BE) are not loaded yet: that search was refused from this environment.
-- **Data center deals and corporate lobbying** come from a short, hand-checked list (\`scripts/nj/corporate-deals.json\`); proposed deals that were later dropped or banned (Andover, Logan, Holmdel) are left out. Corporate tax abatements in general (long-term PILOTs for warehouses, housing and redevelopment) are not loaded yet: the state has no central, machine-readable list.
-${redFlagLines('NJ', stateTowns('NJ')).join('\n')}
-- **Transparency practices** have not been checked town by town yet, so they are not scored. The statewide database holds adopted budgets, which says nothing about whether audits are filed on time.
+- **Red flags** are only as complete as public reporting. A town with none listed may still use surveillance tech nobody has reported, and most records give no dollar amount, so red flags are scored by count rather than as spending. The data center list is short and hand-checked; proposed deals that were later dropped or banned (Andover, Logan, Holmdel) are left out. Corporate tax abatements in general (long-term PILOTs for warehouses, housing and redevelopment) are not loaded yet: the state has no central, machine-readable list. 11 Atlas records were not matched because the name fits two towns (e.g. Chester Borough and Chester Township) or Atlas lists the wrong county.
+- **Transparency practices** have not been checked town by town yet, so they are not scored.
 - The state budget format does not separate outside legal and engineering costs from general government, so "consultants" is not broken out for NJ towns.
 - Towns without a usable filing in the database are left out rather than estimated. The build prints any it skips.
 `);

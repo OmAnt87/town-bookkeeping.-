@@ -29,11 +29,19 @@ npm start          # http://localhost:8080  (Node 18+, no dependencies to instal
 npm test           # engine, ledger, importer tests
 ```
 
-It's a static site, so any static host works, including GitHub Pages (Settings > Pages > deploy from branch, root folder).
+## Deploy
+
+It's a static site with no build step. `netlify.toml` and `vercel.json` set the cache and security headers, and the hosts compress the JSON data. The repository is about 350 MB, mostly `data/real/`, so Netlify is the safer choice; Vercel's Hobby plan may reject a deployment that large.
+
+- **Netlify (recommended):** Add new site > Import from Git > pick this repo and the `main` branch. Leave the build command empty and set the publish directory to `.` (both are read from `netlify.toml`).
+- **Vercel:** Add New > Project > import this repo. Set Framework Preset to "Other" and leave the build command empty. The output directory is `.` (from `vercel.json`).
+- **Custom domain:** once the site is live, add the domain under the site's Domain settings (Netlify) or Project > Settings > Domains (Vercel), then point your DNS records where the host tells you to. Both hosts issue HTTPS certificates automatically.
+
+Routing uses `#/` hashes, so no rewrite rules are needed. Any other static host works too.
 
 ## Data
 
-The app ships with **fictional demo towns** (`data/towns.json`, made by `npm run generate:demo`) so every feature works out of the box. The app shows a banner while demo data is loaded.
+The site shows only public-record towns (`data/real/`) by default. It also ships **fictional demo towns** (`data/towns.json`, made by `npm run generate:demo`) so every feature can be tried out. They load from **Load demo towns** on the Data page, or automatically if the public records can't load. The app shows a banner while demo data is loaded.
 
 To use real figures, build a dataset with the pipeline scripts, then load it on the **Data** page or replace `data/towns.json`:
 
@@ -104,30 +112,309 @@ node scripts/build-summary.mjs
 
 ### Massachusetts (all 351 cities and towns)
 
-`data/real/ma-<county>.json` holds every Massachusetts city and town, grouped by the 14 Census counties. Figures come from the Division of Local Services [Municipal Databank](https://www.mass.gov/info-details/division-of-local-services-municipal-databank): Schedule A general-fund revenue and spending (actual results, history back to FY 2016), certified tax levies (to separate property tax from motor vehicle and other excises) and outstanding long-term debt. Like Connecticut, cities and towns pay for their schools, so school spending is shown but left out of the services and overhead shares. Political money comes from [OCPF](https://www.ocpf.us/) itemized receipts of candidates for mayor, and for city council where council candidates file with the state (47 cities); everyone else files with the city or town clerk. Coverage and gaps: [docs/MA_DATA_STATUS.md](docs/MA_DATA_STATUS.md).
+`data/real/ma-<county>.json` holds every MA city and town, built from the Division of Local Services' [Schedule A general fund reports](https://www.mass.gov/lists/schedule-a-reports-revenues-expenditures-and-more) (actual revenue and spending by function, history back to 2014), DLS [local receipts](https://dls-gw.dor.state.ma.us/reports/rdPage.aspx?rdReport=TaxRateRecap.PAGE3.LocalReceiptsAct_vs_Est) (to separate excise taxes from property tax) and [long-term debt](https://dls-gw.dor.state.ma.us/reports/rdPage.aspx?rdReport=Dashboard.Cat_6_Reports.LongTermDebt351), and Census 2025 population estimates. Like Connecticut, Massachusetts towns pay for their schools, so school spending is on each report but left out of the services and overhead shares. Political money comes from the [Office of Campaign and Political Finance](https://www.ocpf.us/): union and PAC contributions to party ward, town and city committees and to candidates for mayor and city council. Coverage and gaps: [docs/MA_DATA_STATUS.md](docs/MA_DATA_STATUS.md).
 
 ```bash
-node scripts/ma/download.mjs
+node scripts/ma/download.mjs                       # DLS Schedule A, receipts, debt; Census files
 pip install openpyxl && python3 scripts/ma/dls-to-json.py
-node scripts/ma/fetch-ocpf.mjs                     # mayoral and council candidates' receipts (cached)
+node scripts/ma/fetch-ocpf.mjs                     # campaign contributions (cached)
 node scripts/ma/build-county.mjs --all && node scripts/ma/status.mjs
 node scripts/build-summary.mjs
 ```
 
-### Red flags and the filing check (every state)
+### Rhode Island (all 39 cities and towns)
 
-After any county build, add red flags and the annual-report filing check, then rebuild the summary:
+`data/real/ri-<county>.json` holds every RI city and town, built from the Division of Municipal Finance's [Municipal Transparency Portal](https://municipalfinance.ri.gov/municipal-transparency) (audited actual revenue and spending under the state's uniform chart of accounts, history back to FY 2016) and Census 2025 population estimates. School departments report separately, so reports show each town's appropriation to its schools. Debt outstanding is not available, so fiscal health is not scored. Political money comes from the Board of Elections' [ERTS](https://ricampaignfinance.com/RIPublic/Contributions.aspx): PAC contributions to local candidates and party city and town committees. The portal is behind a browser check, so `download.mjs` uses Playwright when installed (`npm i playwright`); otherwise save "MTP All Data" by hand as `data/raw/ri/mtp.csv`. Coverage and gaps: [docs/RI_DATA_STATUS.md](docs/RI_DATA_STATUS.md).
 
 ```bash
-node scripts/red-flags.mjs --download --all       # Atlas of Surveillance, OSM/DeFlock cameras, Census boundaries
-node scripts/red-flags.mjs --all                  # or --state NY
-node scripts/transparency.mjs --all               # has each government filed its latest annual report with the state?
+node scripts/ri/download.mjs                       # transparency portal data; Census files
+node scripts/ri/fetch-erts.mjs                     # campaign contributions and filers (cached)
+node scripts/ri/build-county.mjs --all && node scripts/ri/status.mjs
 node scripts/build-summary.mjs
 ```
 
-The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build, `scripts/red-flags.mjs` or `scripts/transparency.mjs` run.
+### Maryland (all reporting municipalities and Baltimore City)
 
-Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Verified data**, and lets you filter to them on the map and rankings.
+`data/real/md-<county>.json` holds every Maryland municipality that reported to the Department of Legislative Services, and Baltimore City, from DLS's [Local Government Finances in Maryland](https://dls.maryland.gov/budget/local-finances/) (actual revenue by source, spending by function and public debt, reconciled to audits; FY 2021 on) and Census 2025 population estimates. The reports are PDFs; `lgf-to-json.py` reads their tables with pdfplumber. Counties run schools and most services, and municipal candidates file campaign reports locally, so political money is not scored. Coverage and gaps: [docs/MD_DATA_STATUS.md](docs/MD_DATA_STATUS.md).
+
+```bash
+node scripts/md/download.mjs                       # DLS reports (PDF); Census files
+pip install pdfplumber && python3 scripts/md/lgf-to-json.py
+node scripts/md/build-county.mjs --all && node scripts/md/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Virginia (counties, independent cities and reporting towns)
+
+`data/real/va-<county-or-city>.json` holds Virginia's counties (each with its towns) and independent cities, from the Auditor of Public Accounts' [Comparative Report of Local Government Revenues and Expenditures](https://www.apa.virginia.gov/local-government/reports?type=comparative-reports) (actual revenue, spending by function, capital, debt service, enterprise funds and debt from audited statements; FY 2023 on) and Census 2025 population estimates. Virginia has no townships, so counties are listed with cities and towns. Political money comes from the Department of Elections' [bulk campaign finance files](https://apps.elections.virginia.gov/SBE_CSV/CF/): business, union and PAC contributions to local candidates. Coverage and gaps: [docs/VA_DATA_STATUS.md](docs/VA_DATA_STATUS.md).
+
+```bash
+node scripts/va/download.mjs                       # APA comparative reports (Excel); Census files
+pip install openpyxl && python3 scripts/va/apa-to-json.py
+node scripts/va/fetch-elect.mjs                    # campaign finance (cached)
+curl -o data/raw/va/zcta-county.txt https://www2.census.gov/geo/docs/maps-data/data/rel2020/zcta520/tab20_zcta520_county20_natl.txt
+node scripts/va/build-county.mjs --all && node scripts/va/status.mjs
+node scripts/build-summary.mjs
+```
+
+### North Carolina (counties, cities, towns and villages)
+
+`data/real/nc-<county>.json` holds each North Carolina county and the municipalities whose people mostly live in it, from the Annual Financial Information Report each government files with the Local Government Commission on the Census Bureau's template, as published in the Census Bureau's [individual unit files](https://www.census.gov/programs-surveys/gov-finances.html) (actual revenue, spending by function, capital, debt service, utilities and debt; FY 2022 for every government, a sample in FY 2023 and 2024), and Census 2025 population estimates. Units whose figures the Census mostly estimated are left out. Political money comes from the State Board of Elections' [transaction search](https://cf.ncsbe.gov/CFTxnLkup/): PAC, union and other organizational contributions to county and municipal candidates. Coverage and gaps: [docs/NC_DATA_STATUS.md](docs/NC_DATA_STATUS.md).
+
+```bash
+node scripts/nc/download.mjs                       # Census unit files, population, gazetteers, ZIP areas
+node scripts/nc/fetch-ncsbe.mjs                    # campaign finance (cached)
+node scripts/nc/build-county.mjs --all && node scripts/nc/status.mjs
+node scripts/build-summary.mjs
+```
+
+### South Carolina (counties, cities and towns)
+
+`data/real/sc-<county>.json` holds each South Carolina county and the municipalities whose people mostly live in it, from what each government reported to the Census Bureau's [Annual Survey of State and Local Government Finances](https://www.census.gov/programs-surveys/gov-finances.html) (individual unit files: actual revenue, spending by function, capital, debt service, utilities and debt; FY 2022 for every government, a sample in FY 2023 and 2024) and Census 2025 population estimates. Units whose figures the Census mostly estimated, or that are incomplete, are left out, so about half of the municipalities are listed. School districts are separate governments. Political money comes from the State Ethics Commission's [public contribution search](https://ethicsfiling.sc.gov/public/campaign-reports/contributions): business, union and PAC contributions to county and municipal candidates, placed by the office sought. Coverage and gaps: [docs/SC_DATA_STATUS.md](docs/SC_DATA_STATUS.md).
+
+```bash
+node scripts/sc/download.mjs                       # Census unit files, population, gazetteers
+node scripts/sc/fetch-ethics.mjs                   # campaign finance (cached)
+node scripts/sc/build-county.mjs --all && node scripts/sc/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Georgia (counties, consolidated governments, cities and towns)
+
+`data/real/ga-<county>.json` holds each Georgia county (or consolidated city-county government) and the cities whose people mostly live in it, from the Report of Local Government Finance each government files with the Department of Community Affairs ([viewer](https://apps.dca.ga.gov/RLGF/Default.aspx); actual revenue by UCOA account, spending by function including capital, enterprise funds, payments to other governments and debt, from audited figures where available; FY 2022 on) and Census 2025 population estimates. School districts are separate governments. Local candidates file campaign reports with their county or city, so political money is not scored. Coverage and gaps: [docs/GA_DATA_STATUS.md](docs/GA_DATA_STATUS.md).
+
+```bash
+node scripts/ga/download.mjs                       # DCA reports (Excel); Census files
+pip install xlrd openpyxl && python3 scripts/ga/rlgf-to-json.py
+node scripts/ga/build-county.mjs --all && node scripts/ga/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Florida (counties, cities, towns and villages)
+
+`data/real/fl-<county>.json` holds each Florida county and the municipalities whose people mostly live in it (Jacksonville, consolidated with Duval County, heads Duval's file), from the Annual Financial Report each government files with the Department of Financial Services, as compiled by the Office of Economic and Demographic Research ([counties](https://www.edr.state.fl.us/Content/local-government/data/revenues-expenditures/cntyfiscal.cfm), [municipalities](https://www.edr.state.fl.us/Content/local-government/data/revenues-expenditures/munifiscal.cfm): actual revenue and spending by account code and fund type; FY 2022 on) and Census 2025 population estimates. School districts are separate governments. Debt outstanding is not in the EDR data, so fiscal health is not scored, and local candidates file campaign reports with their county or city, so political money is not scored. Coverage and gaps: [docs/FL_DATA_STATUS.md](docs/FL_DATA_STATUS.md).
+
+```bash
+node scripts/fl/download.mjs                       # EDR workbooks (Excel); Census files
+pip install openpyxl && python3 scripts/fl/edr-to-json.py
+node scripts/fl/build-county.mjs --all && node scripts/fl/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Delaware (counties, cities and towns)
+
+`data/real/de-<county>.json` holds each Delaware county and the municipalities whose people mostly live in it, from what each government reported to the Census Bureau's [Annual Survey of State and Local Government Finances](https://www.census.gov/programs-surveys/gov-finances.html) (individual unit files, the same mapping as North and South Carolina; FY 2022 for every government, a sample in FY 2023 and 2024) and Census 2025 population estimates. Delaware has no statewide compilation of local finances, and the Census estimated rather than received Kent County's, Wilmington's and Dover's figures, so those are not listed. Political money comes from the Department of Elections' [Campaign Finance Reporting System](https://cfrs.elections.delaware.gov/Public/ViewReceiptsMain): business, union and PAC contributions to county candidates and to municipal candidates who raise more than $5,000, placed by committee. Coverage and gaps: [docs/DE_DATA_STATUS.md](docs/DE_DATA_STATUS.md).
+
+```bash
+node scripts/de/download.mjs                       # Census unit files, population, gazetteers
+NODE_PATH=$(npm root -g) node scripts/de/fetch-cfrs.mjs   # campaign finance (Playwright; cached)
+node scripts/de/build-county.mjs --all && node scripts/de/status.mjs
+node scripts/build-summary.mjs
+```
+
+### New Hampshire (counties, cities and towns)
+
+`data/real/nh-<county>.json` holds each New Hampshire county and its cities and towns, from what each government reported to the Census Bureau's [Annual Survey of State and Local Government Finances](https://www.census.gov/programs-surveys/gov-finances.html) (individual unit files, the same mapping as the Carolinas and Delaware; the Census counts New Hampshire towns as township governments) and Census 2025 population estimates. Towns collect the school district's, county's and state education tax shares on the same bill; where a town reported the whole levy as its own, only the town's share is kept, and the few towns that filed their school and county assessments as their own spending have those left out (`scripts/common/levy.mjs`; New Hampshire, Vermont and Maine share `scripts/common/town-census-build.mjs`). The Census estimated rather than received about 100 governments' figures, including Concord's and Portsmouth's, so those are not listed. Political money is not scored: local candidates file with their town or city clerk. Coverage and gaps: [docs/NH_DATA_STATUS.md](docs/NH_DATA_STATUS.md).
+
+```bash
+node scripts/nh/download.mjs                       # Census unit files, population, gazetteers
+node scripts/nh/build-county.mjs --all && node scripts/nh/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Vermont (counties, cities, towns and villages)
+
+`data/real/vt-<county>.json` holds each Vermont county and its cities, towns and incorporated villages, built the same way as New Hampshire from the Census unit files and Census 2025 population estimates. Towns collect the state education tax and the county tax on the same bill, so where a town reported the whole levy as its own, only the town's share is kept; villages are a second layer inside a town and are listed separately. The Census estimated rather than received about 120 governments' figures, including Bennington and Washington Counties'. Political money is not scored: local candidates do not file with the state. Coverage and gaps: [docs/VT_DATA_STATUS.md](docs/VT_DATA_STATUS.md).
+
+```bash
+node scripts/vt/download.mjs
+node scripts/vt/build-county.mjs --all && node scripts/vt/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Maine (counties, cities, towns and plantations)
+
+`data/real/me-<county>.json` holds each Maine county and its cities, towns and plantations, built the same way as New Hampshire. Towns collect their school unit's assessment and the county tax on the same bill, handled as in New Hampshire. The Census estimated rather than received over 200 governments' figures, including York County's. Political money is not scored: local candidates file with their municipal clerk. Coverage and gaps: [docs/ME_DATA_STATUS.md](docs/ME_DATA_STATUS.md).
+
+```bash
+node scripts/me/download.mjs
+node scripts/me/build-county.mjs --all && node scripts/me/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Ohio (counties, cities, villages and townships)
+
+`data/real/oh-<county>.json` holds each Ohio county and the cities, villages and townships whose people mostly live in it, built with the same shared Census unit-file builder as northern New England (`scripts/common/town-census-build.mjs`) but without its property tax rules, since county treasurers collect every levy. The Census estimated rather than received about 1,000 Ohio governments' figures (mostly small townships and villages, plus Youngstown and 35 counties), so those are not listed. Townships with the same name in different counties carry the county in their id. Political money is not scored: local candidates file with their county board of elections. Coverage and gaps: [docs/OH_DATA_STATUS.md](docs/OH_DATA_STATUS.md).
+
+```bash
+node scripts/oh/download.mjs
+node scripts/oh/build-county.mjs --all && node scripts/oh/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Michigan (counties, cities, villages and townships)
+
+`data/real/mi-<county>.json` holds each Michigan county and the cities, villages, townships and charter townships whose people mostly live in it, built the same way as Ohio. Nearly every Michigan government reported to the Census in 2022. Political money is not scored: local candidates file with their county clerk. Coverage and gaps: [docs/MI_DATA_STATUS.md](docs/MI_DATA_STATUS.md).
+
+```bash
+node scripts/mi/download.mjs
+node scripts/mi/build-county.mjs --all && node scripts/mi/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Indiana (counties, cities, towns and townships)
+
+`data/real/in-<county>.json` holds each Indiana county and the cities, towns and townships whose people mostly live in it, built the same way as Ohio and Michigan. Indianapolis is consolidated with Marion County, but the Census estimated most of its figures, so it is not listed; many township records in the Census files are incomplete, so about 250 townships are left out. Political money is not scored: local candidates file with their county election board. Coverage and gaps: [docs/IN_DATA_STATUS.md](docs/IN_DATA_STATUS.md).
+
+```bash
+node scripts/in/download.mjs
+node scripts/in/build-county.mjs --all && node scripts/in/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Illinois (counties, cities, villages, towns and townships)
+
+`data/real/il-<county>.json` holds each Illinois county and the cities, villages, towns and townships whose people mostly live in it, built the same way as Ohio and Michigan. Political money comes from the [State Board of Elections](https://www.elections.il.gov/campaigndisclosure/downloadcddatafiles.aspx), where every Illinois committee files: business, union and PAC contributions to county, municipal and township candidates, placed by the office each candidate filed for. Coverage and gaps: [docs/IL_DATA_STATUS.md](docs/IL_DATA_STATUS.md).
+
+```bash
+node scripts/il/download.mjs
+node scripts/il/fetch-isbe.mjs                     # campaign finance (~1 GB download; cached)
+node scripts/il/build-county.mjs --all && node scripts/il/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Wisconsin (counties, cities, villages and towns)
+
+`data/real/wi-<county>.json` holds each Wisconsin county and the cities, villages and towns whose people mostly live in it, built the same way as Ohio and Michigan. Every Wisconsin government reported to the Census in 2022, so coverage is nearly complete. Political money is not scored: local candidates file with their municipal clerk. Coverage and gaps: [docs/WI_DATA_STATUS.md](docs/WI_DATA_STATUS.md).
+
+```bash
+node scripts/wi/download.mjs
+node scripts/wi/build-county.mjs --all && node scripts/wi/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Minnesota (counties, cities and townships)
+
+`data/real/mn-<county>.json` holds each Minnesota county and the cities and townships whose people mostly live in it, built the same way as Ohio and Michigan. Political money is not scored: local candidates file locally, not with the Campaign Finance Board. Coverage and gaps: [docs/MN_DATA_STATUS.md](docs/MN_DATA_STATUS.md).
+
+```bash
+node scripts/mn/download.mjs
+node scripts/mn/build-county.mjs --all && node scripts/mn/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Iowa (counties and cities)
+
+`data/real/ia-<county>.json` holds each Iowa county and the cities whose people mostly live in it, built the same way as Ohio and Michigan. Iowa's townships are not governments in the Census count, so none are listed. Almost every city reported to the Census; about 40 counties' figures were estimated and are left out. Political money is not scored yet. Coverage and gaps: [docs/IA_DATA_STATUS.md](docs/IA_DATA_STATUS.md).
+
+```bash
+node scripts/ia/download.mjs
+node scripts/ia/build-county.mjs --all && node scripts/ia/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Missouri (counties, St. Louis, cities, towns, villages and townships)
+
+`data/real/mo-<county>.json` holds each Missouri county and the governments whose people mostly live in it, and `mo-st-louis-city.json` the independent City of St. Louis, built the same way as Ohio and Michigan. The Census estimated or has incomplete records for about 730 Missouri governments, including 57 counties, so coverage is about half. Political money is not scored yet. Coverage and gaps: [docs/MO_DATA_STATUS.md](docs/MO_DATA_STATUS.md).
+
+```bash
+node scripts/mo/download.mjs
+node scripts/mo/build-county.mjs --all && node scripts/mo/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Kansas (counties, cities and townships)
+
+`data/real/ks-<county>.json` holds each Kansas county and the cities and townships whose people mostly live in it, built the same way as Ohio and Michigan. Kansas City is unified with Wyandotte County and reports as one city. The Census estimated, or has incomplete records for, about 1,200 Kansas governments, so coverage is about a third. Political money is not scored yet. Coverage and gaps: [docs/KS_DATA_STATUS.md](docs/KS_DATA_STATUS.md).
+
+```bash
+node scripts/ks/download.mjs
+node scripts/ks/build-county.mjs --all && node scripts/ks/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Nebraska (counties, cities and villages)
+
+`data/real/ne-<county>.json` holds each Nebraska county and the cities and villages whose people mostly live in it, built the same way as Ohio and Michigan. Township governments are left out: their Census records show road spending about twice their reported revenue, so their revenue appears incomplete. Political money is not scored yet. Coverage and gaps: [docs/NE_DATA_STATUS.md](docs/NE_DATA_STATUS.md).
+
+```bash
+node scripts/ne/download.mjs
+node scripts/ne/build-county.mjs --all && node scripts/ne/status.mjs
+node scripts/build-summary.mjs
+```
+
+### North Dakota and South Dakota (counties, cities, towns and townships)
+
+`data/real/nd-<county>.json` and `data/real/sd-<county>.json` hold each county and the cities, towns and townships whose people mostly live in it, built the same way as Ohio and Michigan. The Census estimated, or has incomplete records for, about 800 governments in each state (mostly townships and small towns), so coverage is about half in North Dakota and a third in South Dakota. Political money is not scored yet. Coverage and gaps: [docs/ND_DATA_STATUS.md](docs/ND_DATA_STATUS.md), [docs/SD_DATA_STATUS.md](docs/SD_DATA_STATUS.md).
+
+```bash
+node scripts/nd/download.mjs && node scripts/nd/build-county.mjs --all && node scripts/nd/status.mjs
+node scripts/sd/download.mjs && node scripts/sd/build-county.mjs --all && node scripts/sd/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Texas and California (counties, cities, towns and villages)
+
+`data/real/tx-<county>.json` and `data/real/ca-<county>.json` hold each county and the municipalities whose people mostly live in it, built the same way as Ohio and Michigan (neither state has townships). San Francisco is a consolidated city and county and reports as one city. California coverage is nearly complete; in Texas the Census estimated, or has incomplete records for, about 700 governments, mostly small cities and towns and about 110 counties. Political money is not scored yet. Coverage and gaps: [docs/TX_DATA_STATUS.md](docs/TX_DATA_STATUS.md), [docs/CA_DATA_STATUS.md](docs/CA_DATA_STATUS.md).
+
+```bash
+node scripts/tx/download.mjs && node scripts/tx/build-county.mjs --all && node scripts/tx/status.mjs
+node scripts/ca/download.mjs && node scripts/ca/build-county.mjs --all && node scripts/ca/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Washington and Oregon (counties, cities and towns)
+
+`data/real/wa-<county>.json` and `data/real/or-<county>.json` hold each county and the cities and towns whose people mostly live in it, built the same way as Texas and California. Washington coverage is nearly complete; in Oregon the Census estimated, or has incomplete records for, 86 governments, including 8 counties and Beaverton. Political money is not scored yet. Coverage and gaps: [docs/WA_DATA_STATUS.md](docs/WA_DATA_STATUS.md), [docs/OR_DATA_STATUS.md](docs/OR_DATA_STATUS.md).
+
+```bash
+node scripts/wa/download.mjs && node scripts/wa/build-county.mjs --all && node scripts/wa/status.mjs
+node scripts/or/download.mjs && node scripts/or/build-county.mjs --all && node scripts/or/status.mjs
+node scripts/build-summary.mjs
+```
+
+### Arizona and Colorado (counties, cities and towns)
+
+`data/real/az-<county>.json` and `data/real/co-<county>.json` hold each county and the cities and towns whose people mostly live in it, built the same way as Texas and California. Denver and Broomfield are consolidated cities and counties and report as one city each. Colorado coverage is nearly complete; in Arizona the Census estimated, or has incomplete records for, 39 governments, including 4 counties and small cities such as Nogales, Bisbee and Globe. Political money is not scored yet. Coverage and gaps: [docs/AZ_DATA_STATUS.md](docs/AZ_DATA_STATUS.md), [docs/CO_DATA_STATUS.md](docs/CO_DATA_STATUS.md).
+
+```bash
+node scripts/az/download.mjs && node scripts/az/build-county.mjs --all && node scripts/az/status.mjs
+node scripts/co/download.mjs && node scripts/co/build-county.mjs --all && node scripts/co/status.mjs
+node scripts/build-summary.mjs
+```
+
+### The remaining states and DC (counties, cities, towns and villages)
+
+`data/real/<state>-<county>.json` for Alabama, Alaska, Arkansas, Hawaii, Idaho, Kentucky, Louisiana, Mississippi, Montana, Nevada, New Mexico, Oklahoma, Tennessee, Utah, West Virginia, Wyoming and the District of Columbia holds each county (borough in Alaska, parish in Louisiana) and the municipalities whose people mostly live in it, built the same way as Texas and California. Consolidated city-counties the Census files as municipalities (Anchorage, Juneau, Sitka, Wrangell, Honolulu, Lexington-Fayette, Louisville Metro, Anaconda-Deer Lodge, Butte-Silver Bow, Carson City, Metro Nashville and Lynchburg-Moore) are placed at their county with the `consolidated` option. Tennessee, Alaska and DC run schools inside county, borough or city governments, so school spending is included there and kept out of the services and overhead shares. Coverage is lowest where many small towns did not report to the Census (Oklahoma, Alabama, Arkansas, Louisiana, Mississippi, Tennessee).
+
+Political money is scored for four of them. Hawaii comes from the Campaign Spending Commission's open data (county mayor, council and prosecuting attorney candidates), DC from the Office of Campaign Finance (mayor, council and attorney general), Kentucky from the Registry of Election Finance's public search (county and city candidates, matched by name to their office and location), and Louisiana from the Board of Ethics' e-filed contributions, matched by filer name to the office each candidate typed (partial coverage). In the other twelve, local candidates file with counties or cities, or the state's data is behind a login, a bot wall or unreachable, so political money is not scored yet. Coverage and gaps: `docs/<ST>_DATA_STATUS.md`.
+
+```bash
+node scripts/hi/fetch-csc.mjs && node scripts/dc/fetch-ocf.mjs && node scripts/ky/fetch-kref.mjs && node scripts/la/fetch-ethics.mjs   # political money (optional)
+for st in al ak ar dc hi id ky la ms mt nv nm ok tn ut wv wy; do
+  node scripts/$st/download.mjs && node scripts/$st/build-county.mjs --all && node scripts/$st/status.mjs
+done
+node scripts/build-summary.mjs
+```
+
+For every state built with `scripts/common/town-census-build.mjs` (New Hampshire through the remaining states above), principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out of debt service. Wisconsin governments roll over short-term notes often, so it matters most there.
+
+### Red flags in every state
+
+Surveillance programs from the [EFF Atlas of Surveillance](https://atlasofsurveillance.org/) are matched to municipal police departments, and to sheriffs and county police where a state's counties are listed, so the red-flag part is scored in every state. Builds rewrite their county files, so re-run it after any build:
+
+```bash
+node scripts/cameras.mjs --download --all && node scripts/cameras.mjs --all   # NY, PA, CT, MA: OpenStreetMap / DeFlock cameras
+node scripts/red-flags.mjs --download && node scripts/red-flags.mjs   # every state except NJ (NJ: scripts/nj/red-flags.mjs); --state MA,TN for some
+node scripts/transparency.mjs --all                 # NY, PA, CT, MA: has each government filed its latest annual report?
+node scripts/build-summary.mjs
+```
+
+License-plate cameras mapped in OpenStreetMap are placed inside Census town and village boundaries for New York, Pennsylvania, Connecticut and Massachusetts (`scripts/cameras.mjs`); any Flock camera is a red flag, other brands only when the town is the recorded operator. Atlas records for access every police department gets through a statewide contract (for example, Massachusetts's and Tennessee's CrimeTracer contracts) are shown but not scored. `scripts/transparency.mjs` checks one transparency practice from state records where the state publishes annual-report filings.
+
+The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build, red-flags, cameras or transparency run.
+
+Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them by default, marks them **Public-record data**, and lets you filter to them on the map and rankings.
 
 See [docs/DATA_SCHEMA.md](docs/DATA_SCHEMA.md) for every field and [docs/METHODOLOGY.md](docs/METHODOLOGY.md) for how scores are calculated.
 
@@ -144,4 +431,30 @@ tests/                          node --test suite
 vendor/                         Leaflet 1.9.4 and Leaflet.heat 0.2.0 (BSD-2-Clause)
 ```
 
-Map tiles come from CARTO with OpenStreetMap data. State outlines (`data/us-states.json`) are built from the [us-atlas](https://github.com/topojson/us-atlas) package (ISC, U.S. Census Bureau boundaries) and show underneath the tiles, so the map stays usable when tiles are unavailable.
+Map tiles come from Esri's World Light Gray and Dark Gray Canvas basemaps. State outlines (`data/us-states.json`) are built from the [us-atlas](https://github.com/topojson/us-atlas) package (ISC, U.S. Census Bureau boundaries) and show underneath the tiles, so the map stays usable when tiles are unavailable.
+
+## Trust and usability
+
+- Missing figures display as **Not available**, while reported zero stays zero.
+  Towns below the grading coverage threshold display **Not graded**. Grades show
+  fiscal year, retrieval date, component coverage and available scoring weight.
+- **Public-record data** describes provenance, not independent verification.
+  Reports and comparisons show financial basis/scope and political period/recipients.
+- Compare starts empty, supports three searchable town selectors, and highlights
+  winners only where the available measures have compatible reporting context.
+- Rankings display 50 results per page; CSV export includes every filtered result
+  with availability explanations. Map and rankings list only states in the active
+  data filter; unknown measures are excluded from heat and color scales.
+- Failed county requests can be retried. Navigation and dataset changes invalidate
+  pending report rendering. Public-data loading failures are displayed explicitly.
+- The Data page offers **Download summary**, **Download complete records**, and
+  **Restore bundled data**. Complete exports hydrate county records and never
+  silently omit a failed county. Imported JSON is validated before replacing data.
+
+Run `npm test` for scoring, import, availability, loading, export, and all-county
+summary/detail consistency checks. Scoring weights and thresholds are unchanged.
+See [release validation](docs/RELEASE_VALIDATION.md) for browser checks and limits.
+
+Next planned work: shareable filters and comparisons, printable reports with
+sources, and a coverage explorer. Geographic expansion and methodology changes
+remain separate projects.

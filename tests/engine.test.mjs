@@ -501,3 +501,563 @@ test('state summary groups towns and takes medians over towns with data', () => 
   assert.equal(ma.lateFilers, 1);
   assert.equal(ct.lateFilers, null);
 });
+
+import { aggregateMa } from '../scripts/ma/dls-map.mjs';
+
+test('MA Schedule A maps, reconciles, separates excises and spreads fixed costs', () => {
+  const gf = {
+    revenue: {
+      Taxes: 700, 'Service Charges': 20, 'Licenses and Permits': 10, 'Federal Revenue': 0, 'State Revenue': 200, 'Revenue from Other Governments': 0,
+      'Special Assessments': 0, 'Fines and Forfeitures': 5, Miscellaneous: 15, 'Other Financing Sources': 30, Transfers: 20, 'Total Revenues': 1000,
+    },
+    spending: {
+      'General Government': 50, 'Public Safety': 150, Education: 500, 'Public Works': 100, 'Human Services': 0, 'Culture and Recreation': 0,
+      'Fixed Costs': 160, 'Intergov Assessments': 40, 'Other Expenditures': 0, 'Debt Service': 0, 'Total Expenditures': 1000,
+    },
+  };
+  const a = aggregateMa(gf, { 'Motor Vehicle Excise': 60, 'A.Meals': 40, Fees: 99 });
+  assert.deepEqual(a.revenue, { propertyTax: 600, salesTax: 100, feesPermits: 30, stateAid: 200, finesForfeitures: 5, localRevenue: 15 });
+  assert.equal(a.lineTotals.revenue, a.reported.revenue);
+  assert.equal(a.lineTotals.spending, a.reported.spending);
+  assert.deepEqual(a.excluded, { 'Other Financing Sources': 30, Transfers: 20 });
+  // Fixed costs (160) and assessments (40) spread by size over 800 of departments.
+  assert.deepEqual(a.spending, { administration: 63, publicSafety: 188, education: 625, roads: 125 });
+  assert.equal(Object.values(a.spending).reduce((x, y) => x + y, 0), 1001); // rounding
+
+  // Fixed costs skip debt service.
+  const d = aggregateMa({ revenue: gf.revenue, spending: { Education: 300, 'Debt Service': 100, 'Fixed Costs': 60, 'Total Expenditures': 460 } }, null);
+  assert.deepEqual(d.spending, { education: 360, debtService: 100 });
+  assert.equal(d.taxSplit, false);
+  assert.equal(d.revenue.propertyTax, 700);
+
+  // Only a total reported: not broken down.
+  const t = aggregateMa({ revenue: gf.revenue, spending: { 'Total Expenditures': 900 } }, null);
+  assert.deepEqual(t.spending, { otherSpending: 900 });
+});
+
+import { townMatcher, localFilers, classifyOcpf, summarizeMaReceipts } from '../scripts/ma/ocpf-map.mjs';
+
+test('MA OCPF filers match their town and receipts are classified', () => {
+  const match = townMatcher(['Boston', 'Manchester By The Sea', 'North Andover', 'Agawam']);
+  assert.equal(match('Manchester'), 'Manchester By The Sea');
+  assert.equal(match('north andover'), 'North Andover');
+  assert.equal(match('Andover'), null);
+  const filers = localFilers({
+    lpc: [{ cpfId: 1, filerName: 'Boston Ward 6 DEMWC' }, { cpfId: 2, filerName: 'North Andover REPTC' }, { cpfId: 3, filerName: 'Somewhere Else DEMTC' }],
+    mayoral: [{ cpfId: 4, filerName: 'Johnson, Christopher', officeSought: 'Mayoral, Agawam' }],
+    cc: [{ cpfId: 5, filerName: 'Flynn, Edward Michael', officeSought: 'City Councilor, Boston' }],
+  }, match);
+  assert.deepEqual(filers.get(1), { town: 'Boston', label: 'Boston Ward 6 Democratic Ward Committee' });
+  assert.equal(filers.get(2).label, 'North Andover Republican Town Committee');
+  assert.equal(filers.has(3), false);
+  assert.deepEqual(filers.get(4), { town: 'Agawam', label: 'Christopher Johnson (candidate for mayor)' });
+  assert.equal(filers.get(5).town, 'Boston');
+
+  const pac = new Set([10]);
+  const item = (o) => ({ id: 0, recordTypeId: 202, fullNameReverse: '', filerCpfId: 5, date: '5/1/2025', amount: '$500.00', reportId: 9, ...o });
+  assert.equal(classifyOcpf(item({ recordTypeId: 203, fullNameReverse: 'Boston Teachers Union' }), pac).key, 'unionContributions');
+  assert.equal(classifyOcpf(item({ fullNameReverse: 'Ibew Local 103 #80221' }), pac).key, 'unionContributions');
+  assert.equal(classifyOcpf(item({ id: 10, fullNameReverse: 'Greater Boston Real Estate Board PAC' }), pac).key, 'pacContributions');
+  assert.equal(classifyOcpf(item({ fullNameReverse: 'Committee To Elect Kevin Aguiar' }), pac), null);
+  assert.equal(classifyOcpf(item({ fullNameReverse: 'Saugus DEMTC' }), pac), null);
+  assert.equal(classifyOcpf(item({ recordTypeId: 201, fullNameReverse: 'Pat Smith' }), pac), null);
+
+  const out = summarizeMaReceipts([
+    item({ recordTypeId: 203, fullNameReverse: 'Boston Teachers Union' }),
+    item({ id: 10, fullNameReverse: 'Greater Boston Real Estate Board PAC', amount: '$1,000.00' }),
+    item({ recordTypeId: 203, fullNameReverse: 'Boston Teachers Union', date: '5/1/2020' }),
+  ], filers, pac, '2023-01-01');
+  assert.deepEqual(out.influence, { pacContributions: 1000, developerContributions: 0, unionContributions: 500 });
+  assert.equal(out.counted, 2);
+  assert.equal(out.topDonors[0].recipient, 'Edward Michael Flynn (candidate for city council)');
+  assert.match(out.ledger[0].source, /DisplayReport.*id=9/);
+});
+
+import { aggregateRi } from '../scripts/ri/mtp-map.mjs';
+
+test('RI transparency portal rows map, reconcile and spread central costs', () => {
+  const row = (control, o) => ({ control, department: '', group: '', cls: '', account: '', amount: '0', ...o });
+  const a = aggregateRi([
+    row('Revenue', { group: 'Local Revenue', cls: 'Property Tax', account: 'Current Year Levy Tax Collection', amount: '700' }),
+    row('Revenue', { group: 'Local Revenue', cls: 'Property Tax', account: 'PILOT & Tax Treaty (excluded from levy) Collection', amount: '20' }),
+    row('Revenue', { group: 'Local Revenue', cls: 'Local Non-Property Tax Revenues', account: 'Rescue Run Revenue', amount: '30' }),
+    row('Revenue', { group: 'Local Revenue', cls: 'Local Non-Property Tax Revenues', account: 'Fines and Forfeitures', amount: '10' }),
+    row('Revenue', { group: 'State Aid', cls: 'State Aid', account: 'Motor Vehicle Phase Out', amount: '200' }),
+    row('Revenue', { group: 'Federal Aid', cls: 'Federal Aid', account: 'CDBG', amount: '40' }),
+    row('Financing Sources', { amount: '500' }),
+    row('Expenditures', { department: 'Police Department', group: 'Compensation', amount: '300' }),
+    row('Expenditures', { department: 'Public Works', group: 'Operations', amount: '100' }),
+    row('Expenditures', { department: 'General Government', group: 'Operations', account: 'Purchased Services', amount: '100' }),
+    row('Expenditures', { department: 'General Government', group: 'Operations', account: 'Insurance', amount: '50' }),
+    row('Expenditures', { department: 'General Government', group: 'Operations', account: 'Capital Outlays', amount: '100' }),
+    row('Expenditures', { department: 'OPEB', group: 'Benefits', amount: '50' }),
+    row('Expenditures', { department: 'Education', group: 'Municipal Education Appropriation', amount: '400' }),
+    row('Expenditures', { department: 'Debt Service', group: 'Debt Service', amount: '100' }),
+  ]);
+  assert.deepEqual(a.revenue, { propertyTax: 700, localRevenue: 20, feesPermits: 30, finesForfeitures: 10, stateAid: 200, federalGrants: 40 });
+  assert.equal(a.lineTotals.revenue, a.reported.revenue);
+  assert.equal(a.lineTotals.spending, a.reported.spending);
+  assert.deepEqual(a.excluded, { financingSources: 500, financingUses: 0 });
+  assert.equal(a.shared, 100);
+  assert.equal(a.benefitsSpread, 100); // insurance + OPEB
+  // Capital outlay (100) over 1000 of departments, then benefits (100) over police, works and admin only.
+  assert.deepEqual(a.spending, { publicSafety: 390, roads: 130, administration: 130, education: 440, debtService: 110 });
+  assert.deepEqual(a.unmapped, []);
+});
+
+import { townMatcher as riTownMatcher, localFilers as riLocalFilers, recipientTown, classifyErts, summarizeRiReceipts } from '../scripts/ri/erts-map.mjs';
+
+test('RI filers and party committees match their town and ERTS receipts are classified', () => {
+  const match = riTownMatcher(['Providence', 'South Kingstown', 'North Kingstown', 'Cumberland', 'Pawtucket']);
+  assert.equal(match('WAKEFIELD'), 'South Kingstown');
+  assert.equal(match('North Kingston'), 'North Kingstown');
+  assert.equal(match('Groton'), null);
+  const filers = riLocalFilers([
+    { name: 'PAT SMITH', city: 'WAKEFIELD', state: 'RI', office: 'City/Town Council' },
+    { name: 'DANIEL J MCKEE', city: 'CUMBERLAND', state: 'RI', office: 'Mayor/Administrator' },
+    { name: 'SAM LEE', city: 'PROVIDENCE', state: 'RI', office: 'School Committee' },
+    { name: 'SAM LEE', city: 'PAWTUCKET', state: 'RI', office: 'City/Town Council' },
+  ], match, [{ name: 'Daniel J McKee', city: 'CUMBERLAND', office: 'Governor' }]);
+  assert.deepEqual(filers.get('PAT SMITH'), { town: 'South Kingstown', label: 'Pat Smith (city/town council candidate)' });
+  assert.equal(filers.has('DANIEL J MCKEE'), false); // also ran for state office
+  assert.equal(filers.has('SAM LEE'), false); // two towns
+  assert.deepEqual(recipientTown('PROVIDENCE DEMOCRATIC CITY COMMITTEE', filers, match), { town: 'Providence', label: 'Providence Democratic City Committee' });
+  assert.equal(recipientTown('RI DEMOCRATIC STATE COMMITTEE', filers, match), null);
+  assert.equal(recipientTown('Pat  Smith', filers, match).town, 'South Kingstown');
+
+  const pac = (name, o) => ({ fullname: name, transtype: 'Contribution', receiptdate: '05/01/2025', amount: '500.0000', ...o });
+  assert.equal(classifyErts(pac('PROVIDENCE FIRE FIGHTERS HEALTH AND SAFETY PAC')).key, 'unionContributions');
+  assert.equal(classifyErts(pac("RI LABORER'S POLITICAL LEAGUE")).key, 'unionContributions');
+  assert.equal(classifyErts(pac('REALTORS PAC OF RI')).key, 'pacContributions');
+  assert.equal(classifyErts(pac('RI SENATE DEMOCRATS PAC')), null);
+  assert.equal(classifyErts(pac('REALTORS PAC OF RI', { transtype: 'Expenditure' })), null);
+
+  const recipient = { town: 'Providence', label: 'Providence Democratic City Committee' };
+  const out = summarizeRiReceipts([
+    { ...pac('REALTORS PAC OF RI'), recipient },
+    { ...pac('IBEW LOCAL 99', { amount: '250' }), recipient },
+    { ...pac('IBEW LOCAL 99', { receiptdate: '05/01/2020' }), recipient },
+  ], '2023-01-01');
+  assert.deepEqual(out.influence, { pacContributions: 500, developerContributions: 0, unionContributions: 250 });
+  assert.equal(out.counted, 2);
+});
+
+import { aggregateMd } from '../scripts/md/lgf-map.mjs';
+
+test('MD statements map all funds, split utility charges, leave out debt proceeds and spread miscellaneous', () => {
+  const a = aggregateMd({
+    'revenues/Taxes - Local - Property': [500, 0, 0, 500],
+    'revenues/Taxes - Local - Income': [100, 0, 0, 100],
+    'revenues/Service Charges': [20, 0, 180, 200],
+    'revenues/County Grants': [50, 0, 0, 50],
+    'revenues/Debt Proceeds': [0, 150, 0, 150],
+    'revenues/Total': [670, 150, 180, 1000],
+    'expenditures/General Government': [100, 0, 0, 100],
+    'expenditures/Police': [200, 0, 0, 200],
+    'expenditures/Transportation': [100, 100, 0, 200],
+    'expenditures/Sewer/Solid Waste/Water': [0, 0, 200, 200],
+    'expenditures/Principal': [50, 0, 50, 100],
+    'expenditures/Miscellaneous': [70, 0, 0, 70],
+    'expenditures/Total': [520, 100, 250, 870],
+  });
+  assert.deepEqual(a.revenue, { propertyTax: 500, salesTax: 100, utilityCharges: 180, feesPermits: 20, grants: 50 });
+  assert.deepEqual(a.excluded, { 'Debt Proceeds': 150 });
+  assert.equal(a.lineTotals.revenue, a.reported.revenue);
+  assert.equal(a.lineTotals.spending, a.reported.spending);
+  // Miscellaneous (70) over 700 of departments, not debt service.
+  assert.deepEqual(a.spending, { administration: 110, publicSafety: 220, roads: 220, utilities: 220, debtService: 100 });
+  assert.equal(a.benefitsSpread, 70);
+  assert.deepEqual(aggregateMd({ 'expenditures/Mystery': [1, 0, 0, 1] }).unmapped, ['expenditures/Mystery']);
+});
+
+import { aggregateVa } from '../scripts/va/apa-map.mjs';
+
+test('VA comparative report maps all funds, reconciles to Exhibit A and spreads shared costs', () => {
+  const a = aggregateVa({
+    A: { 'Local Revenue': 700, 'Maintenance and Operation Expenditures': 1000, 'Non-Revenue Receipts': 5 },
+    B: { 'Real Property': 500, 'Personal Property - General': 100, 'Other Local Taxes (Exhibit B-2)': 60, 'Charges for Services': 30, 'Interest (25)': 10 },
+    B1: { 'Categorical State Aid': 200, 'Categorical Federal Aid': 50 },
+    C: { 'General Government Administration (Exhibit C-1)': 100, 'Public Safety (Exhibit C-3)': 200, 'Public Works (Exhibit C-4)': 100, 'Education (Exhibit C-6)': 500, 'Non- Departmental': 100 },
+    C4: { 'Maintenance of Highways, Streets, Bridges, and Sidewalks': 60, 'Sanitation and Waste Removal': 40 },
+    D: { 'Debt Proceeds': 300, Education: 0, 'Streets, Roads, and Bridges': 0 },
+    E: { 'Redemption of Debt Education': 50, 'Debt Interest Costs Education': 20 },
+    F: { 'User Charges': 80, 'General Operating Expenses': 70, Depreciation: 15 },
+    G: { 'Bonds and Bond Issue Anticipation Loans': 900, 'Literary Fund Loans': 100 },
+  });
+  assert.deepEqual(a.check, { localRevenue: [700, 700], operations: [1000, 1000] });
+  assert.deepEqual(a.revenue, { propertyTax: 600, salesTax: 60, feesPermits: 30, localRevenue: 10, stateAid: 200, federalGrants: 50, utilityCharges: 80 });
+  // Non-departmental (100) spread over 970 of departments (not debt service).
+  assert.equal(a.shared, 100);
+  assert.equal(Math.round(Object.values(a.spending).reduce((x, y) => x + y, 0)), 1140);
+  assert.equal(a.spending.debtService, 70);
+  assert.equal(a.spending.education, Math.round(500 + 100 * (500 / 970)));
+  assert.deepEqual(a.excluded, { debtProceeds: 300, nonRevenue: 5, depreciation: 15 });
+  assert.equal(a.debt, 1000);
+});
+
+import { localityFor, classifyVa, isLocalReport, summarizeVaReceipts } from '../scripts/va/elect-map.mjs';
+
+test('VA local committees are placed by district, office or address and receipts are classified', () => {
+  const ctx = {
+    zipCounty: new Map([['20176', '51107'], ['23219', '51760']]),
+    countyKey: new Map([['51107', 'County|Loudoun'], ['51760', 'City|Richmond']]),
+    towns: new Map([['leesburg', 'Town|Leesburg']]),
+    byName: new Map([['richmond', 'City|Richmond']]),
+    placeCounty: new Map([['ashburn', '51107']]),
+  };
+  assert.equal(localityFor({ officesought: 'Member Town Council - Leesburg', district: '', city: 'Leesburg', zipcode: '20176' }, ctx), 'Town|Leesburg');
+  assert.equal(localityFor({ officesought: 'Member Board Of Supervisors', district: 'Election - Broad Run District', city: 'Leesburg', zipcode: '20176-1234' }, ctx), 'County|Loudoun');
+  assert.equal(localityFor({ officesought: 'Mayor', district: '', city: 'Richmond', zipcode: '23219' }, ctx), 'City|Richmond');
+  assert.equal(localityFor({ officesought: 'Sheriff', district: '', city: 'Ashburn', zipcode: '20146' }, ctx), 'County|Loudoun'); // PO box ZIP
+  assert.equal(localityFor({ officesought: 'Member Town Council', district: 'Town - Hamilton', city: 'Hamilton', zipcode: '20158' }, ctx), null);
+  assert.equal(isLocalReport({ islocal: 'True', officesought: 'Member, House Of Delegates', district: '' }), false);
+  assert.equal(isLocalReport({ islocal: 'True', officesought: 'Member School Board', district: '' }), true);
+
+  const rec = (name, o) => ({ isindividual: 'False', firstname: '', lastorcompanyname: name, transactiondate: '05/01/2025', amount: '500.00', recipient: 'Friends of Pat (board of supervisors)', ...o });
+  assert.equal(classifyVa(rec('Firepac Local 2068')).key, 'unionContributions');
+  assert.equal(classifyVa(rec('Dominion Political Action Committee')).key, 'pacContributions');
+  assert.equal(classifyVa(rec('Pruitt Corporation')).key, 'developerContributions');
+  assert.equal(classifyVa(rec('Kannan For Delegate')), null);
+  assert.equal(classifyVa(rec('Loudoun County Republican Committee')), null);
+  assert.equal(classifyVa(rec('Pat Smith', { isindividual: 'True' })), null);
+  const out = summarizeVaReceipts([rec('Pruitt Corporation'), rec('Pruitt Corporation'), rec('Firepac Local 2068', { amount: '250' }), rec('Pruitt Corporation', { transactiondate: '05/01/2020' })], '2023-01-01');
+  assert.deepEqual(out.influence, { pacContributions: 0, developerContributions: 500, unionContributions: 250 });
+  assert.equal(out.counted, 2); // the amended duplicate is dropped
+});
+
+import { mapItem as ncMapItem, aggregateUnit as aggregateNc } from '../scripts/common/census-units.mjs';
+
+test('NC Census items map to categories, leave out intergovernmental payments and flag imputed units', () => {
+  assert.equal(ncMapItem('T01').key, 'propertyTax');
+  assert.equal(ncMapItem('A91').key, 'utilityCharges');
+  assert.equal(ncMapItem('E12').key, 'education');
+  assert.equal(ncMapItem('F44').key, 'roads');
+  assert.equal(ncMapItem('39U').key, 'debtService');
+  assert.equal(ncMapItem('M89').group, 'excluded');
+  assert.equal(ncMapItem('29U').group, 'excluded');
+  assert.equal(ncMapItem('Q99'), null);
+  const it = (code, amount, flag = 'R') => ({ code, amount, flag });
+  const a = aggregateNc([it('T01', 100), it('C89', 50), it('A91', 20), it('E62', 60), it('F62', 10), it('E91', 15), it('I89', 5), it('39U', 10), it('M89', 30), it('29U', 40), it('49U', 300), it('64V', 20)]);
+  assert.deepEqual(a.revenue, { propertyTax: 100000, stateAid: 50000, utilityCharges: 20000 });
+  assert.deepEqual(a.spending, { publicSafety: 70000, utilities: 15000, debtService: 15000 });
+  assert.equal(a.debt, 320000);
+  assert.equal(a.proceeds, 40000);
+  assert.equal(a.intergovernmental, 30000);
+  assert.deepEqual(a.lineTotals, { revenue: 170000, spending: 100000 });
+  assert.equal(a.imputed, false);
+  assert.equal(aggregateNc([it('T01', 1, 'I'), it('E62', 1, 'I'), it('C89', 1)]).imputed, true);
+  assert.equal(a.incomplete, false);
+  assert.equal(aggregateNc([it('A90', 5000), it('E90', 4500), it('T10', 185), it('49U', 3450)]).incomplete, true); // only the ABC board
+  assert.equal(aggregateNc([it('39U', 1288), it('49U', 19995)]).incomplete, true); // only debt
+});
+
+import { localityFor as ncLocalityFor, classifyNc, summarizeNcReceipts } from '../scripts/nc/ncsbe-map.mjs';
+
+test('NC local committees are placed by office and address and receipts are classified', () => {
+  const ctx = {
+    zipCounty: new Map([['27601', '37183'], ['27513', '37183'], ['28202', '37119']]),
+    countyKey: new Map([['37183', 'County|37183'], ['37119', 'County|37119']]),
+    munis: new Map([['raleigh', [{ key: 'Place|55000', county: '37183' }]], ['cary', [{ key: 'Place|10740', county: '37183' }]]]),
+    placeCounty: new Map([['charlotte', '37119']]),
+  };
+  assert.equal(ncLocalityFor({ CandOfficeCode: 'COUM', CommCity: 'RALEIGH', CommZip: '27601', CommName: 'X' }, ctx), 'Place|55000');
+  assert.equal(ncLocalityFor({ CandOfficeCode: 'MAY', CommCity: 'APEX', CommZip: '27513', CommName: 'COMMITTEE TO ELECT JO FOR CARY TOWN COUNCIL' }, ctx), 'Place|10740');
+  assert.equal(ncLocalityFor({ CandOfficeCode: 'CYCM', CommCity: 'RALEIGH', CommZip: '27601', CommName: 'X' }, ctx), 'County|37183');
+  assert.equal(ncLocalityFor({ CandOfficeCode: 'SHER', CommCity: 'CHARLOTTE', CommZip: '28299', CommName: 'X' }, ctx), 'County|37119'); // PO box ZIP
+  assert.equal(ncLocalityFor({ CandOfficeCode: 'NSHS', CommCity: 'RALEIGH', CommZip: '27601', CommName: 'X' }, ctx), null);
+
+  const rec = (name, o) => ({ TransSubTypeCode: 'CPCM', OrgName: name, OccurDate: '05/01/2025', Amount: 500, SboeID: '183-1', recipient: 'Committee to Elect Pat (county commissioner)', ...o });
+  assert.equal(classifyNc(rec('Wake County Professional Firefighters Local 548')).key, 'unionContributions');
+  assert.equal(classifyNc(rec('NC Realtors PAC')).key, 'pacContributions');
+  assert.equal(classifyNc(rec('Self Help Credit Union', { TransSubTypeCode: 'OUTS' })), null);
+  assert.equal(classifyNc(rec('Committee to Elect Jane Doe')), null);
+  assert.equal(classifyNc(rec('Jim Perry Committee')), null);
+  assert.equal(classifyNc(rec('Wake County Democratic Party')), null);
+  const out = summarizeNcReceipts([rec('NC Realtors PAC'), rec('NC Realtors PAC'), rec('Wake County Professional Firefighters Local 548', { Amount: 250 }), rec('NC Realtors PAC', { OccurDate: '05/01/2020' })], '2023-01-01');
+  assert.deepEqual(out.influence, { pacContributions: 500, developerContributions: 0, unionContributions: 250 });
+  assert.equal(out.counted, 2);
+});
+
+import { parseOffice, localityFor as scLocalityFor, classifySc, summarizeScReceipts } from '../scripts/sc/ethics-map.mjs';
+
+test('SC candidates are placed by office name and Ethics Commission contributions are classified', () => {
+  const ctx = {
+    counties: new Map([['charleston', 'County|45019'], ['spartanburg', 'County|45083'], ['horry', 'County|45051']]),
+    munis: new Map([['charleston', 'Place|13330'], ['mount pleasant', 'Place|48535'], ['north myrtle beach', 'Place|50695']]),
+  };
+  assert.equal(scLocalityFor('Charleston City Council District 3', ctx), 'Place|13330');
+  assert.equal(scLocalityFor('Charleston County Council District 8', ctx), 'County|45019');
+  assert.equal(scLocalityFor('Mt. Pleasant City Council At Large', ctx), 'Place|48535');
+  assert.equal(scLocalityFor('North Myrtle Beach Mayor ', ctx), 'Place|50695');
+  assert.equal(scLocalityFor('Spartanburg Sheriff ', ctx), 'County|45083');
+  assert.equal(scLocalityFor('Horry County Council Chairman/Supervisor', ctx), 'County|45051');
+  assert.equal(parseOffice('Charleston Solicitor'), null);
+  assert.equal(parseOffice('School Board Trustee District SPARTANBURG #2'), null);
+  assert.equal(parseOffice('SC House of Representatives District 4'), null);
+  assert.equal(parseOffice('4'), null);
+  assert.equal(parseOffice('State Treasurer'), null);
+  assert.equal(scLocalityFor('Sullivans Island Mayor', { counties: new Map(), munis: new Map([['sullivans island', 'Place|70090']]) }), 'Place|70090');
+
+  const rec = (name, o) => ({ contributionId: Math.random(), group: 'Yes', contributorName: ` ${name}`, date: '2025-05-01T04:00:00', amount: 500, recipient: 'Pat Doe (council)', ...o });
+  assert.equal(classifySc(rec('Charleston Firefighters Local 1146')).key, 'unionContributions');
+  assert.equal(classifySc(rec('SC Realtors PAC')).key, 'pacContributions');
+  assert.equal(classifySc(rec('Greystar Development LLC')).key, 'developerContributions');
+  assert.equal(classifySc(rec('Founders Federal Credit Union')).key, 'developerContributions');
+  assert.equal(classifySc(rec('COR Employees Credit Union')).key, 'developerContributions');
+  assert.equal(classifySc(rec('Ross Appel for City Council')), null);
+  assert.equal(classifySc(rec('Ripley Yacht Club Investors, LLC')).key, 'developerContributions');
+  assert.equal(classifySc(rec('First Citizens Bank')).key, 'developerContributions');
+  assert.equal(classifySc(rec('Union Heights Residential')).key, 'developerContributions');
+  assert.equal(classifySc(rec("International Longshoreman's Association")).key, 'unionContributions');
+  assert.equal(classifySc(rec('Friends of Jane Doe')), null);
+  assert.equal(classifySc(rec('Charleston County Republican Party')), null);
+  assert.equal(classifySc(rec('Pat Smith', { group: 'No' })), null);
+  const out = summarizeScReceipts([rec('Greystar Development LLC', { contributionId: 1 }), rec('Greystar Development LLC', { contributionId: 1 }), rec('SC Realtors PAC', { contributionId: 2, amount: 250 }), rec('SC Realtors PAC', { contributionId: 3, date: '2020-05-01T04:00:00' })], '2023-01-01');
+  assert.deepEqual(out.influence, { pacContributions: 250, developerContributions: 500, unionContributions: 0 });
+  assert.equal(out.counted, 2); // the repeated contribution is dropped
+});
+
+import { aggregateGa, functionKey as gaFunctionKey } from '../scripts/ga/rlgf-map.mjs';
+
+test('GA RLGF maps revenue and spending, reconciles to the form, and nets out intergovernmental payments', () => {
+  assert.equal(gaFunctionKey('2650'), 'administration');
+  assert.equal(gaFunctionKey('3500'), 'publicSafety');
+  assert.equal(gaFunctionKey('4200'), 'roads');
+  assert.equal(gaFunctionKey('4400'), 'utilities');
+  assert.equal(gaFunctionKey('4960'), null);
+  assert.equal(gaFunctionKey('6100'), 'parks');
+  const blocks = {
+    R1: { '31_1100': 600, '31_9000': 10, '31_3100': 300, '31_4100': 50, '32_1200': 40, TTL_Part1: 1000 },
+    R2: { '33_9999A': 20, '33_7100B': 30, '33_1000C': 15, '34_2100': 5, TTL_2A: 20, TTL_2B: 30, TTL_2C: 15 },
+    R3: { '35_1100': 8, '36_1000': 12, '34_4210': 200, '34_6000': 3, TTL_Part3: 25, TTL_Part4: 203 },
+    E1: { '1300A': 100, '1565B': 20 },
+    E3: { '3200A': 300, '3200C': 25 },
+    E4: { '4200A': 80, '4200B': 40 },
+    E5: { '4960A': 60 },
+    E6: { '6100A': 50, TTL_PART5_A: 590, TTL_PART5_B: 60, TTL_PART5_C: 25, TTL_PART5_D: 0 },
+    E7: { '505CO': 150, '505IE': 30, '550CO': 70 },
+    E9: { '3200B': 25, '4960B': 60, '5540B': 5 },
+    D1: { TTL_10A_C: 40, TTL_10A_D: 500, TTL_10A_E: 30 },
+    D2: { TTL_10B_C: 10, TTL_10B_D: 100, TTL_10B_E: 4 },
+    D4: { SE_STN_C: 99, SE_STN_D: 7, SE_STN_E: 1 },
+  };
+  const a = aggregateGa(blocks);
+  assert.deepEqual(a.revenue, { propertyTax: 610, salesTax: 350, feesPermits: 45, stateAid: 20, grants: 30, federalGrants: 15, finesForfeitures: 8, localRevenue: 12, utilityCharges: 203 });
+  assert.deepEqual(a.check.revenue, [1293, 1293]);
+  assert.deepEqual(a.check.partV, [675, 675]);
+  // Police less its payment to another government; SPLOST paid to cities left out; the transit
+  // payment (5540, not on Part V) comes out of health and welfare, absent here, so it is dropped.
+  assert.deepEqual(a.spending, { administration: 120, publicSafety: 300, roads: 190, parks: 50, utilities: 150, debtService: 85 });
+  assert.equal(a.debt, 607); // long-term 600 plus short-term notes 7; short-term notes retired are not debt service
+  assert.equal(a.intergovernmental, 90);
+  assert.equal(a.empty, false);
+  assert.equal(aggregateGa({ R1: { TTL_Part1: 0 } }).empty, true);
+  assert.equal(a.inconsistent, false);
+  assert.equal(aggregateGa({ ...blocks, R3: { ...blocks.R3, '39_9999': 7e9 } }).inconsistent, true);
+});
+
+import { aggregateFl, revenueKey as flRevenueKey, expenditureKey as flExpenditureKey } from '../scripts/fl/edr-map.mjs';
+
+test('FL EDR rows map by account code and fund, leaving out internal service, fiduciary and financing items', () => {
+  assert.equal(flRevenueKey('311')[0], 'propertyTax');
+  assert.equal(flRevenueKey('312.41')[0], 'salesTax');
+  assert.equal(flRevenueKey('323.1')[0], 'feesPermits');
+  assert.equal(flRevenueKey('335.18')[0], 'stateAid');
+  assert.equal(flRevenueKey('343.3')[0], 'utilityCharges');
+  assert.equal(flRevenueKey('381'), null);
+  assert.equal(flExpenditureKey('517')[0], 'debtService');
+  assert.equal(flExpenditureKey('522')[0], 'publicSafety');
+  assert.equal(flExpenditureKey('535')[0], 'utilities');
+  assert.equal(flExpenditureKey('572')[0], 'parks');
+  assert.equal(flExpenditureKey('581'), null);
+  const f = (o) => ({ general: 0, specialRevenue: 0, debtService: 0, capitalProjects: 0, permanent: 0, enterprise: 0, internalService: 0, custodial: 0, pension: 0, trust: 0, privatePurpose: 0, componentUnits: 0, ...o });
+  const rev = [
+    ['311', 'Ad Valorem Taxes', f({ general: 1000 })],
+    ['343.3', 'Water Utility', f({ enterprise: 500 })],
+    ['341.2', 'Internal Service Charges', f({ internalService: 300 })],
+    ['381', 'Inter-fund Transfer In', f({ general: 200 })],
+  ];
+  const exp = [
+    ['521', 'Law Enforcement', f({ general: 700, capitalProjects: 50 })],
+    ['533', 'Water Utility Services', f({ enterprise: 450 })],
+    ['517', 'Debt Service Payments', f({ debtService: 80 })],
+    ['518', 'Pension Benefits', f({ pension: 900 })],
+    ['581', 'Inter-fund Group Transfers Out', f({ general: 200 })],
+  ];
+  const a = aggregateFl(rev, exp);
+  assert.deepEqual(a.revenue, { propertyTax: 1000, utilityCharges: 500 });
+  assert.deepEqual(a.spending, { publicSafety: 750, utilities: 450, debtService: 80 });
+  assert.deepEqual(a.leftOut, { otherSources: 200, otherUses: 200 });
+  assert.equal(a.empty, false);
+  assert.equal(a.inconsistent, false);
+  assert.equal(aggregateFl(rev, []).empty, true);
+});
+
+import { parseCommitteeOffice, classifyDe, summarizeDeReceipts } from '../scripts/de/cfrs-map.mjs';
+
+test('DE committees are placed by their office and CFRS contributor types classify the money', () => {
+  assert.deepEqual(parseCommitteeOffice('County Office - Sussex County - County Council - District 3'), { level: 'county', place: 'Sussex', office: 'county council' });
+  assert.deepEqual(parseCommitteeOffice('Municipal Office - Newark - City Council - District 03'), { level: 'municipal', place: 'Newark', office: 'city council' });
+  assert.equal(parseCommitteeOffice('State Office - State Senator - District 16'), null);
+  const rec = (name, type, o) => ({ contributor_name: name, contributor_type: type, contribution_type: 'Check', contribution_date: '5/1/2025', contribution_amount: '500.0000', cf_id: '01000001', recipient: 'Friends of Pat (county council)', ...o });
+  assert.equal(classifyDe(rec('Rickman Management LLC', 'Corporation  Partnership  and Other Entity')).key, 'developerContributions');
+  assert.equal(classifyDe(rec('Laborers Local 199', 'Labor Union')).key, 'unionContributions');
+  assert.equal(classifyDe(rec('Delaware Realtors', 'Political Action Committee')).key, 'pacContributions');
+  assert.equal(classifyDe(rec('Scaor Political Action Committee', 'Corporation  Partnership  and Other Entity')).key, 'pacContributions');
+  assert.equal(classifyDe(rec('Pat Smith', 'Individual')), null);
+  assert.equal(classifyDe(rec('Friends of Lee', 'Candidate Committee')), null);
+  assert.equal(classifyDe(rec('Acme Inc', 'Corporation  Partnership  and Other Entity', { contribution_type: 'Refund/Rebate' })), null);
+  const out = summarizeDeReceipts([rec('Acme Inc', 'Corporation  Partnership  and Other Entity'), rec('Acme Inc', 'Corporation  Partnership  and Other Entity'), rec('Laborers Local 199', 'Labor Union', { contribution_amount: '250' }), rec('Acme Inc', 'Corporation  Partnership  and Other Entity', { contribution_date: '5/1/2020' })], '2023-01-01');
+  assert.deepEqual(out.influence, { pacContributions: 0, developerContributions: 500, unionContributions: 250 });
+  assert.equal(out.counted, 2);
+});
+
+import { aggregateLevy as aggregateNh } from '../scripts/common/levy.mjs';
+
+test('NH keeps only the town share of a property tax levy that includes school and county shares', () => {
+  const it = (code, amount, flag = 'R') => ({ code, amount, flag });
+  // Levy of 900 covers the school district and county; the town spends 400 and has 100 of other revenue.
+  const gross = aggregateNh([it('T01', 900), it('C89', 100), it('E62', 250), it('E44', 150)]);
+  assert.equal(gross.passThrough, 600000);
+  assert.deepEqual(gross.revenue, { propertyTax: 300000, stateAid: 100000 });
+  assert.deepEqual(gross.lineTotals, { revenue: 400000, spending: 400000 });
+  assert.equal(gross.lines.find((l) => l.key === 'propertyTax').amount, 300000);
+  // A levy within 10% of what spending needs is the town's own, surplus included.
+  const own = aggregateNh([it('T01', 320), it('C89', 100), it('E62', 250), it('E44', 150)]);
+  assert.equal(own.passThrough, 0);
+  assert.equal(own.revenue.propertyTax, 320000);
+  // Counties levy only their own tax.
+  assert.equal(aggregateNh([it('T01', 900), it('E62', 400)], true).passThrough, 0);
+});
+
+test('Northern New England towns that file school and county assessments as general government spending have them left out', () => {
+  const it = (code, amount, flag = 'R') => ({ code, amount, flag });
+  // 600 of "other general government" in a 900 budget with no schools: the assessments.
+  const a = aggregateNh([it('T01', 850), it('C89', 50), it('E89', 600), it('E62', 200), it('E44', 100)]);
+  assert.equal(a.assessments, 600000);
+  assert.deepEqual(a.spending, { publicSafety: 200000, roads: 100000 });
+  assert.equal(a.revenue.propertyTax, 250000);
+  assert.equal(a.passThrough, 600000);
+  // A town with its own school department keeps its general government spending.
+  assert.equal(aggregateNh([it('T01', 850), it('E89', 600), it('E12', 200), it('E62', 100)]).assessments, 0);
+  assert.equal(aggregateNh([it('T01', 300), it('E89', 100), it('E62', 200)]).assessments, 0);
+});
+
+import { candidatePlacer, classifyIl, committeeTypes, summarizeIlReceipts } from '../scripts/il/isbe-map.mjs';
+
+test('IL candidates are placed by office and ISBE receipts are classified', () => {
+  const place = candidatePlacer([
+    { key: 'Place|14000', level: 'municipal', name: 'Chicago', county: 'Cook' },
+    { key: 'Place|51622', level: 'municipal', name: 'Mount Prospect', county: 'Cook' },
+    { key: 'Cousub|1', level: 'township', name: 'Washington', county: 'Tazewell' },
+    { key: 'Cousub|2', level: 'township', name: 'Washington', county: 'Will' },
+    { key: 'County|17031', level: 'county', name: 'Cook', county: 'Cook' },
+  ]);
+  assert.equal(place({ DistrictType: 'Ward', District: 'Chicago 24  ', ResidenceCounty: 'Cook' }).key, 'Place|14000');
+  assert.equal(place({ DistrictType: 'Village', District: 'Mt. Prospect', ResidenceCounty: 'Cook' }).key, 'Place|51622');
+  assert.equal(place({ DistrictType: 'Township', District: 'Washington', ResidenceCounty: 'Will' }).key, 'Cousub|2');
+  assert.equal(place({ DistrictType: 'Township', District: 'Washington', ResidenceCounty: '' }), null); // ambiguous
+  assert.equal(place({ DistrictType: 'County Board', District: 'Cook 14  ', ResidenceCounty: 'Cook' }).key, 'County|17031');
+  assert.equal(place({ DistrictType: 'Representative', District: '5', ResidenceCounty: 'Cook' }), null);
+
+  const rec = (LastOnlyName, D2Part, extra = {}) => ({ ID: String(Math.random()), LastOnlyName, FirstName: '', D2Part, Amount: '500', RcvDate: '2024-03-01 00:00:00', Archived: 'False', recipient: 'Jane Doe (Mayor)', ...extra });
+  assert.equal(classifyIl(rec('Knowles Construction, Inc', '1A')).key, 'developerContributions');
+  assert.equal(classifyIl(rec('Ibew Local 134', '1A')).key, 'unionContributions');
+  assert.equal(classifyIl(rec('Realtors PAC', '2A')).key, 'pacContributions');
+  assert.equal(classifyIl(rec('Illinois Hospital Assn', '2A')).key, 'pacContributions');
+  assert.equal(classifyIl(rec('Woodford Co Dem Central Cmte', '2A')), null);
+  assert.equal(classifyIl(rec('Friends of Bob Smith', '2A')), null);
+  assert.equal(classifyIl(rec('Friends For Vicki Scaman', '1A')), null);
+  assert.equal(classifyIl(rec('Isdf', '2A')), null); // Illinois Senate Democratic Fund
+  const types = committeeTypes([{ Name: 'Committee to Elect Jones', TypeOfCommittee: 'Candidate' }, { Name: 'Good Roads Fund', TypeOfCommittee: 'Political Action' }]);
+  assert.equal(classifyIl(rec('Committee To Elect Jones', '2A'), types), null);
+  assert.equal(classifyIl(rec('Good Roads Fund', '1A'), types).key, 'pacContributions');
+  assert.equal(classifyIl(rec('Smith', '1A', { FirstName: 'Bob' })), null);
+  assert.equal(classifyIl(rec('First Bank', '3A')), null);
+  assert.equal(classifyIl(rec('Acme Inc', '1A', { Archived: 'True' })), null);
+  const out = summarizeIlReceipts([rec('Acme Inc', '1A', { ID: '1' }), rec('Acme Inc', '1A', { ID: '1' }), rec('Laborers Local 25', '1A', { ID: '2', Amount: '250' }), rec('Acme Inc', '1A', { ID: '3', RcvDate: '2020-01-01 00:00:00' })], '2023-01-01');
+  assert.deepEqual(out.influence, { pacContributions: 0, developerContributions: 500, unionContributions: 250 });
+  assert.equal(out.counted, 2);
+});
+
+test('Census principal repaid with new borrowing beyond capital outlay is left out as refinancing', () => {
+  const it = (code, amount, flag = 'R') => ({ code, amount, flag });
+  const items = [it('T01', 1000), it('E62', 600), it('F44', 100), it('29U', 900), it('39U', 1000), it('I89', 50)];
+  const plain = aggregateNc(items);
+  assert.equal(plain.spending.debtService, 1050000);
+  assert.equal(plain.refinanced, 0);
+  // 900 borrowed, 100 spent on capital: 800 of the 1,000 repaid was refinancing.
+  const net = aggregateNc(items, { refinancing: true });
+  assert.equal(net.refinanced, 800000);
+  assert.equal(net.spending.debtService, 250000);
+  assert.equal(net.lineTotals.spending, 950000);
+  assert.equal(net.lines.find((l) => l.label === 'Debt service: principal repaid').amount, 200000);
+  // Borrowing that all went to capital leaves principal repaid as is.
+  assert.equal(aggregateNc([it('T01', 1000), it('E62', 600), it('F44', 900), it('29U', 900), it('39U', 100)], { refinancing: true }).refinanced, 0);
+});
+
+import { atlasLink, agencyTown, ATLAS_PAGE } from '../scripts/common/atlas.mjs';
+test('Atlas of Surveillance helpers clean agency names and links', () => {
+  assert.equal(agencyTown('Springfield Police Department'), 'Springfield');
+  assert.equal(agencyTown('Lower Merion Twp Police'), 'Lower Merion Township');
+  assert.equal(atlasLink({ 'Link 1': 'https://example.org/story' }), 'https://example.org/story');
+  // Some rows hold an agency name instead of a link; the Atlas itself is cited then.
+  assert.equal(atlasLink({ 'Link 1': 'Greenfield Police Department' }), ATLAS_PAGE);
+  assert.equal(atlasLink({}), ATLAS_PAGE);
+});
+
+import { countyFor as hiCountyFor, classifyHi } from '../scripts/hi/csc-map.mjs';
+test('Hawaii contributions are placed by county office and classified by contributor type', () => {
+  assert.equal(hiCountyFor({ office: 'Maui Council' }), 'Maui');
+  assert.equal(hiCountyFor({ office: 'Mayor', county: 'Honolulu' }), 'Honolulu');
+  // A blank county is filled from the candidate's other rows.
+  assert.equal(hiCountyFor({ office: 'Mayor', county: '', reg_no: 'CC1' }, new Map([['CC1', 'Kauai']])), 'Kauai');
+  assert.equal(hiCountyFor({ office: 'House' }), null);
+  assert.deepEqual(classifyHi({ contributor_type: 'Other Entity', contributor_name: 'ILWU Local 142' }), { key: 'unionContributions' });
+  assert.deepEqual(classifyHi({ contributor_type: 'Other Entity', contributor_name: 'Matson Navigation Company, Inc.' }), { key: 'developerContributions' });
+  assert.deepEqual(classifyHi({ contributor_type: 'Noncandidate Committee', contributor_name: 'Hawaii Realtors PAC' }), { key: 'pacContributions' });
+  assert.equal(classifyHi({ contributor_type: 'Individual', contributor_name: 'Jane Doe' }), null);
+  assert.equal(classifyHi({ contributor_type: 'Political Party', contributor_name: 'Democratic Party of Hawaii' }), null);
+});
+
+import { classifyDc } from '../scripts/dc/ocf-map.mjs';
+test('DC contributions leave out shadow congressional seats and candidate transfers', () => {
+  const row = (o) => ({ committee_name: 'Smith for Ward 3', contribution_type: 'Check', contributor_type: 'Corporation', contributor_organization_name: 'Acme Inc', ...o });
+  assert.deepEqual(classifyDc(row()), { key: 'developerContributions' });
+  assert.deepEqual(classifyDc(row({ contributor_type: 'Labor', contributor_organization_name: 'Local 25' })), { key: 'unionContributions' });
+  assert.equal(classifyDc(row({ committee_name: 'Jain for Senate' })), null);
+  assert.equal(classifyDc(row({ contributor_type: 'Other PAC or Committee', contributor_organization_name: 'Cynthia Phillips 4 DC' })), null);
+  assert.equal(classifyDc(row({ contributor_type: 'Individual' })), null);
+});
+
+import { placeCandidate as kyPlace, classifyKy } from '../scripts/ky/kref-map.mjs';
+test('Kentucky candidates are placed by office and location', () => {
+  assert.deepEqual(kyPlace({ office: 'Magistrate/Justice Of The Peace', location: 'Pike-District 5' }), { level: 'county', county: 'pike' });
+  assert.deepEqual(kyPlace({ office: 'City Council Member (A)', location: 'Park Hills-Kenton' }), { level: 'city', city: 'park hills', county: 'kenton' });
+  assert.deepEqual(kyPlace({ office: 'Legislative Council - Even', location: 'Jefferson-Dist 4' }), { level: 'merged', county: 'jefferson' });
+  assert.deepEqual(kyPlace({ office: 'Mayor (J2)', location: 'Lexington-Urban County-Fayette' }), { level: 'merged', county: 'fayette' });
+  assert.equal(kyPlace({ office: 'Circuit Court Clerk', location: 'Pike' }), null);
+  assert.deepEqual(classifyKy({ contributor: 'Ibew Pac Voluntary Fund', contributionType: 'Kypac' }), { key: 'unionContributions' });
+  assert.deepEqual(classifyKy({ contributor: 'Kentucky Realtors PAC', contributionType: 'Kypac' }), { key: 'pacContributions' });
+  assert.equal(classifyKy({ contributor: 'Clark County Republicans', contributionType: 'Contributingorganization' }), null);
+});
+
+import { placeOffice as laPlace, nameKey as laNameKey, classifyLa, norm as laNorm } from '../scripts/la/ethics-map.mjs';
+test('Louisiana offices typed by filers are placed in a parish or municipality', () => {
+  const places = {
+    parishes: new Map([[laNorm('Calcasieu'), 'calcasieu'], [laNorm('Lafayette'), 'lafayette-parish'], [laNorm('East Baton Rouge'), 'ebr']]),
+    munis: [{ name: laNorm('Lake Charles'), key: 'lake-charles', parish: laNorm('Calcasieu') }, { name: laNorm('Lafayette'), key: 'lafayette', parish: laNorm('Lafayette') }, { name: laNorm('Baton Rouge'), key: 'baton-rouge', parish: laNorm('East Baton Rouge') }],
+  };
+  assert.equal(laPlace('Police Juror / Calcasieu/Lake Charles / 5', places), 'calcasieu');
+  assert.equal(laPlace('Mayor / Lake Charles / Calcasieu', places), 'lake-charles');
+  assert.equal(laPlace('City Council / Lafayette / 1', places), 'lafayette');
+  assert.equal(laPlace('Sheriff / Lafayette Parish /', places), 'lafayette-parish');
+  assert.equal(laPlace('Councilman / EBR/Baton Rouge / At-Large', places), 'baton-rouge');
+  assert.equal(laPlace('District Court Judge / Calcasieu / 14', places), null);
+  assert.equal(laNameKey('Kristopher W.', 'Cloessner'), 'kristopher cloessner');
+  assert.equal(laNameKey('Linton F. Broussard, Jr.'), 'linton broussard');
+  assert.deepEqual(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'BUS', contributorname: 'FEDEX CORP' }), { key: 'developerContributions' });
+  assert.deepEqual(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'PAC', contributorname: 'OPERATORS POLITICAL ARM LOCAL, IUOE' }), { key: 'unionContributions' });
+  assert.equal(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'IND', contributorname: 'JANE DOE' }), null);
+  assert.equal(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'ORG', contributorname: 'AVOYELLES PARISH CLERK OF COURT' }), null);
+});

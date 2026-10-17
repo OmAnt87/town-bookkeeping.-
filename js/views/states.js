@@ -11,14 +11,14 @@ export function renderStates(root, state) {
   root.innerHTML = `
   <div class="page">
     <div class="page-head"><div><h1>States</h1><p>${real.length
-      ? `Every state with verified data: how many governments are loaded, how they grade, and which parts of the score have data behind them. ${plural(real.length, 'government')} in ${plural(list.length, 'state')}.`
+      ? `Every state with verified data: how many governments are loaded, how they grade, and which parts of the score have data behind them. ${plural(real.length, 'government')} in ${plural(list.filter((x) => x.state !== 'DC').length, 'state')}${list.some((x) => x.state === 'DC') ? ' and DC' : ''}.`
       : 'No verified data is loaded, so this shows the fictional demo towns by state.'}</p></div></div>
     <div class="grid grid-2 states-grid">${list.map(card).join('')}</div>
   </div>`;
 }
 
 function card(s) {
-  const types = Object.entries(s.types).sort((a, b) => b[1] - a[1]).map(([k, n]) => plural(n, k.toLowerCase(), k === 'City' ? 'cities' : `${k.toLowerCase()}s`)).join(', ');
+  const types = Object.entries(s.types).sort((a, b) => b[1] - a[1]).map(([k, n]) => plural(n, k.toLowerCase(), k.toLowerCase().replace(/y$/, 'ie') + 's')).join(', ');
   const graded = GRADES.filter((g) => s.grades[g]);
   const q = `state=${encodeURIComponent(s.state)}`;
   return `

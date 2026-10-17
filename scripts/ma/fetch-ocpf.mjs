@@ -1,65 +1,51 @@
 #!/usr/bin/env node
-// Downloads Massachusetts Office of Campaign and Political Finance (OCPF) receipts for
-// municipal candidates who file with the state into data/raw/ma/ocpf/ (gitignored):
-// candidates for mayor, and candidates for city council in the cities where council
-// candidates file with OCPF. Everyone else running for city or town office files with
-// the city or town clerk.
+// Caches Massachusetts campaign finance data from the Office of Campaign and Political Finance
+// (OCPF, api.ocpf.us) into data/raw/ma/ocpf/:
+//   - local filers: party town, city and ward committees (year-end reports) and mayoral and
+//     city council candidates (bank depository reports), for this year and the three before
+//   - every committee, union/association and registered PAC contribution statewide since
+//     January 1 three years ago; build-county.mjs keeps the ones to local filers
 //
-//   node scripts/ma/fetch-ocpf.mjs          (re-running only fetches committees not cached yet;
-//                                            --refresh fetches everything again)
+//   node scripts/ma/fetch-ocpf.mjs [--force]
 
 import { execFileSync } from 'node:child_process';
-import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
+import { mkdirSync, existsSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from '../lib.mjs';
 
-const RAW = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'data', 'raw', 'ma', 'ocpf');
+const DIR = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'data', 'raw', 'ma', 'ocpf');
 const API = 'https://api.ocpf.us';
-const PAGE = 1000;
 const args = parseArgs();
-const get = (path) => {
-  for (let i = 1; ; i++) {
-    try {
-      return JSON.parse(execFileSync('curl', ['-sSf', '-m', '300', '-A', 'Mozilla/5.0', `${API}/${path}`], { maxBuffer: 1 << 28 }).toString());
-    } catch (e) { if (i === 3) throw e; }
-  }
-};
+const get = (path) => JSON.parse(execFileSync('curl', ['-sSf', '--retry', '4', '--retry-all-errors', '-m', '300', `${API}/${path}`], { maxBuffer: 1 << 28 }).toString());
+const save = (file, data) => { writeFileSync(join(DIR, file), JSON.stringify(data)); console.log(`OCPF -> ${file}`); };
+const fresh = (file) => args.force || !existsSync(join(DIR, file));
 
-mkdirSync(RAW, { recursive: true });
+mkdirSync(DIR, { recursive: true });
 const thisYear = new Date().getFullYear();
 const since = thisYear - 3;
-
-// Who files with OCPF: the year-to-date depository reports for mayor and city council.
-const councils = get('districts').filter((d) => d.office === 'City Councilor');
-const filers = new Map();
 for (let y = since; y <= thisYear; y++) {
-  const lists = [get(`reports/mayoral/depository/${y}?onBallot=false`)];
-  for (const d of councils) lists.push(get(`reports/cc/ytd/${y}?PageSize=1000&districtCodeSought=${d.code}&onBallot=false`));
-  for (const l of lists) {
-    for (const r of Array.isArray(l) ? l : l.reports || []) {
-      const [office, place] = String(r.officeSought || '').split(',').map((s) => s.trim());
-      if (place && !filers.has(r.cpfId)) filers.set(r.cpfId, { cpfId: r.cpfId, name: r.filerName, office, municipality: place });
-    }
-  }
-  console.log(`OCPF ${y}: ${filers.size} municipal filers so far`);
+  // The current year's lists change as filers report, so they are always refreshed.
+  const always = y === thisYear;
+  if (always || fresh(`lpc-${y}.json`)) save(`lpc-${y}.json`, ['D', 'R'].flatMap((p) => get(`reports/lpc/${y}?reportTypeId=&partyAffiliation=${p}&pageSize=1000`)));
+  if (always || fresh(`mayoral-${y}.json`)) save(`mayoral-${y}.json`, get(`reports/mayoral/depository/${y}?onBallot=false`));
+  if (always || fresh(`cc-${y}.json`)) save(`cc-${y}.json`, get(`reports/cc/ytd/${y}?PageSize=1000&districtCodeSought=&SortField=Cash%20On%20Hand&SortDirection=desc&onBallot=false`).reports);
 }
-writeFileSync(join(RAW, 'filers.json'), JSON.stringify([...filers.values()], null, 1));
 
-// Each filer's itemized receipts since January 1 three years back, a page at a time.
-let fetched = 0;
-for (const f of filers.values()) {
-  const file = join(RAW, `${f.cpfId}.json`);
-  if (existsSync(file) && !args.refresh) continue;
+// 202 committee, 203 union/association, 299 registered PACs (a subset of 202, kept to tell PACs apart).
+const PAGE = 1000;
+for (const rt of [202, 203, 299]) {
   const items = [];
-  for (let i = 0; ; i += PAGE) {
-    const page = get(`search/items?searchTypeCategory=A&filerCpfId=${f.cpfId}&startDate=1/1/${since}&endDate=12/31/${thisYear}&pageSize=${PAGE}&currentIndex=${i}`).items || [];
-    items.push(...page);
-    if (page.length < PAGE) break;
+  for (let start = 1; ; start += PAGE) {
+    const q = new URLSearchParams({
+      searchTypeCategory: 'A', startDate: `01/01/${since}`, endDate: '', pagesize: PAGE, startIndex: start, sortField: '', sortDirection: 'DESC',
+      cpfId: '', recordTypeId: rt, name: '', cityCode: '-1', state: '', zipCode: '', occupation: '', employer: '', minAmount: '', maxAmount: '',
+      description: '', filerFullNameReverse: '', withSummary: 'true',
+    });
+    const page = get(`search/items?${q}`);
+    items.push(...page.items);
+    if (items.length >= page.summary.count || !page.items.length) break;
   }
-  writeFileSync(file, JSON.stringify(items.map(({ id, reportId, date, amountValue, amount, recordTypeDescription, fullNameReverse, firstName, lastName, employer, occupation, principalOfficer, contributorCpfId, isTransfer }) => ({
-    id, reportId, date, amount: amountValue ?? Number(String(amount).replace(/[$,]/g, '')), recordTypeDescription, fullNameReverse, firstName, lastName, employer, occupation, principalOfficer, contributorCpfId, isTransfer,
-  }))));
-  fetched++;
+  save(`items-${rt}.json`, items);
 }
-console.log(`OCPF receipts: ${fetched} committees fetched, ${filers.size} in all (data/raw/ma/ocpf/)`);
+console.log('Done. Next: node scripts/ma/build-county.mjs --all');
