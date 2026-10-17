@@ -366,8 +366,9 @@ export function renderMap(root, state) {
   mq.addEventListener('change', onTheme);
 
   draw();
-  // Open on the towns being shown: with public-record data loaded, that's where the real records are.
-  if (map && (ui.realOnly || ui.state !== 'all')) {
+  // Open on the lower 48 (set above) unless a single state is picked; fitting
+  // every town would zoom out to take in Alaska and Hawaii.
+  if (map && ui.state !== 'all') {
     const pts = visible().map(({ town }) => [town.lat, town.lng]);
     if (pts.length) map.fitBounds(pts, { padding: [40, 40], maxZoom: 9 });
   }
