@@ -231,11 +231,6 @@ button, input, select { font: inherit; color: inherit; }
 .map-stats span { display: block; font-size: 11px; color: var(--text-2); }
 .map-stats strong { font-size: 15px; }
 .leaflet-container { font: inherit; }
-.basemap { filter: grayscale(1) contrast(0.85) brightness(1.08); }
-:root[data-theme="dark"] .basemap { filter: grayscale(1) invert(1) contrast(0.8) brightness(0.85); }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .basemap { filter: grayscale(1) invert(1) contrast(0.8) brightness(0.85); }
-}
 .leaflet-bar a { background: var(--surface); color: var(--text); border-color: var(--border); }
 .leaflet-bar a:hover { background: var(--surface-2); }
 .leaflet-container .leaflet-control-attribution.leaflet-control { background: color-mix(in srgb, var(--surface) 85%, transparent); color: var(--text-2); }
@@ -410,3 +405,35 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
 @media (prefers-reduced-motion: no-preference) {
   .track > span, .bar-row .bar > span { transition: width 0.4s ease; }
 }
+
+/* State names on the map */
+.state-label { pointer-events: none; }
+.state-label span {
+  display: block; transform: translate(-50%, -50%); white-space: nowrap;
+  font: 700 11px/1 system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase;
+  color: #2b2b27; text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 6px #fff;
+}
+:root[data-theme="dark"] .state-label span { color: #f0f0ea; text-shadow: 0 0 3px #000, 0 0 3px #000, 0 0 6px #000; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .state-label span { color: #f0f0ea; text-shadow: 0 0 3px #000, 0 0 3px #000, 0 0 6px #000; }
+}
+
+.state-label b { font-weight: inherit; }
+.state-label .abbr { display: none; }
+.labels-short .state-label .full { display: none; }
+.labels-short .state-label .abbr { display: inline; }
+
+/* Keep all destinations visible, including in the narrow in-app preview. */
+@media (max-width: 640px) {
+  .topbar { height: auto; min-height: 60px; }
+  .nav { flex-wrap: wrap; overflow: visible; min-width: 0; }
+  .nav a { min-height: 36px; display: inline-flex; align-items: center; }
+  .compare-pickers { grid-template-columns: 1fr; }
+  .compare-table th:first-child { max-width: 125px; min-width: 110px; }
+}
+.compare-table th:first-child { position: sticky; left: 0; z-index: 1; background: var(--surface); white-space: normal; }
+.compare-table td, .compare-table thead th:not(:first-child) { min-width: 210px; white-space: normal; }
+.compare-table tbody th { text-align: left; font-weight: 500; }
+.compare-table .small { font-weight: 400; }
+.scroll-cue { margin-top: 16px; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }

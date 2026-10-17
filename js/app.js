@@ -1,3 +1,6 @@
+import { reportingFor } from './engine/reporting.js';
+import { createDetailLoader } from './data/loading.js';
+import { escapeHTML } from './engine/format.js';
 import { scoreTown } from './engine/scoring.js';
 import { validateDataset } from './engine/ledger.js';
 import { renderMap } from './views/map.js';
@@ -16,11 +19,14 @@ export const state = {
   towns: [], // [{ town, s }] where s = scoreTown(town)
   byId: new Map(),
   source: 'demo',
+  routeRevision: 0,
 };
 
 export function setDataset(dataset, source) {
   const errors = validateDataset(dataset);
   if (errors.length) return errors;
+  if (dataset.demo === true) dataset = { ...dataset, towns: dataset.towns.map((town) => ({ ...town, demo: true })) };
+  loadDetail = createDetailLoader();
   state.dataset = dataset;
   state.source = source;
   state.towns = dataset.towns.map((town) => ({ town, s: scoreTown(town) }));
@@ -31,7 +37,7 @@ export function setDataset(dataset, source) {
   banner.hidden = demoCount === 0;
   if (demoCount) {
     banner.innerHTML = realCount
-      ? `<strong>${realCount} town${realCount === 1 ? '' : 's'} use${realCount === 1 ? 's' : ''} real public records</strong> (marked Verified data). The other ${demoCount} are <strong>fictional demo towns</strong> with illustrative figures.`
+      ? `<strong>${realCount} town${realCount === 1 ? '' : 's'} use${realCount === 1 ? 's' : ''} real public records</strong> (marked Public-record data). The other ${demoCount} are <strong>fictional demo towns</strong> with illustrative figures.`
       : 'Showing <strong>fictional demo towns</strong>. Figures are illustrative, not real records. Load real data on the <a href="#/data">Data</a> page.';
   }
   document.body.classList.toggle('has-banner', demoCount > 0);
@@ -54,52 +60,79 @@ export function resetToDefault() {
 // Real towns live in data/real/, listed in data/real/index.json. When any are
 // present the site shows only them; the fictional demo towns load on request.
 async function loadRealTowns() {
-  try {
-    // Prefer the light summary (built by scripts/build-summary.mjs); town reports
-    // fetch their county file on demand (see loadTownDetail).
-    const summary = await fetch('data/real/summary.json');
-    if (summary.ok) return (await summary.json()).towns.map((t) => ({ ...t, demo: false }));
-    const res = await fetch('data/real/index.json');
-    if (!res.ok) return [];
-    const { files = [] } = await res.json();
-    const sets = await Promise.all(files.map((f) => fetch(`data/real/${f}`).then((r) => (r.ok ? r.json() : { towns: [] }))));
-    return sets.flatMap((d) => d.towns || []).map((t) => ({ ...t, demo: false }));
-  } catch {
-    return [];
+  const summary = await fetch('data/real/summary.json');
+  if (summary.ok) {
+    const data = await summary.json();
+    if (!data.towns?.length) throw new Error('Public-record summary is empty');
+    const errors = validateDataset(data);
+    if (errors.length) throw new Error(errors.join(' '));
+    return data.towns.map((t) => ({ ...t, demo: false }));
   }
+  const res = await fetch('data/real/index.json');
+  if (!res.ok) throw new Error(`Public-record index unavailable (${res.status})`);
+  const { files } = await res.json();
+  if (!Array.isArray(files) || !files.length) throw new Error('Public-record index is empty');
+  const sets = await Promise.all(files.map(async (f) => {
+    const response = await fetch(`data/real/${f}`);
+    if (!response.ok) throw new Error(`Could not load ${f} (${response.status})`);
+    return response.json();
+  }));
+  for (const data of sets) {
+    const errors = validateDataset(data);
+    if (errors.length) throw new Error(errors.join(' '));
+  }
+  return sets.flatMap((d) => d.towns).map((t) => ({ ...t, reporting: reportingFor(t), demo: false }));
 }
 
-// Full records (ledger, history, donors, sources, notes) for a summary town.
-const detailCache = new Map();
+let loadDetail = createDetailLoader();
 export async function loadTownDetail(town) {
-  if (!town.detailFile || town.ledger) return town;
-  if (!detailCache.has(town.detailFile)) {
-    detailCache.set(town.detailFile, fetch(`data/real/${town.detailFile}`).then((r) => {
-      if (!r.ok) throw new Error(`Could not load ${town.detailFile} (${r.status})`);
-      return r.json();
-    }));
+  const dataset = state.dataset;
+  const full = await loadDetail(town);
+  if (state.dataset === dataset && state.byId.get(town.id)?.town === town) {
+    Object.assign(town, full);
+    state.byId.get(town.id).s = scoreTown(town);
   }
-  const file = await detailCache.get(town.detailFile);
-  const full = file.towns.find((t) => t.id === town.id);
-  if (!full) throw new Error(`${town.name} is missing from ${town.detailFile}`);
-  return Object.assign(town, full, { demo: false });
+  return full;
 }
 
 // Fictional demo towns only (data/towns.json), so every feature can be tried out.
 export async function loadDemoOnly() {
+  const previousDataset = state.dataset;
   try { sessionStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
   const res = await fetch('data/towns.json');
   if (!res.ok) throw new Error(`Could not load data/towns.json (${res.status})`);
-  const errors = setDataset(await res.json(), 'demo');
+  const demo = await res.json();
+  if (state.dataset !== previousDataset) return false;
+  const errors = setDataset(demo, 'demo');
   if (errors.length) throw new Error(errors.join(' '));
+  return true;
 }
 
-// Real towns when there are any, otherwise the demo towns.
+// Public-record towns on their own. If they can't load, fall back to the demo
+// towns and say so in the banner.
 async function loadDefault() {
-  const real = await loadRealTowns();
-  if (!real.length) return loadDemoOnly();
+  const previousDataset = state.dataset;
+  let real;
+  try {
+    real = await loadRealTowns();
+  } catch (publicError) {
+    if (!(await loadDemoOnly())) return false;
+    const banner = document.getElementById('demo-banner');
+    banner.hidden = false;
+    banner.innerHTML = `<strong>Public-record data could not load.</strong> Showing fictional examples only. ${escapeHTML(publicError.message)} <button type="button" id="retry-data">Retry public records</button>`;
+    document.body.classList.add('has-banner');
+    document.getElementById('retry-data').onclick = async () => {
+      const button = document.getElementById('retry-data');
+      button.disabled = true;
+      try { if (await loadDefault()) route(); }
+      catch (error) { if (document.contains(button)) { button.disabled = false; button.textContent = 'Retry public records'; button.title = error.message; } }
+    };
+    return true;
+  }
+  if (state.dataset !== previousDataset) return false;
   const errors = setDataset({ towns: real }, 'real');
   if (errors.length) throw new Error(errors.join(' '));
+  return true;
 }
 
 async function init() {
@@ -113,7 +146,7 @@ async function init() {
       await loadDefault();
     } catch (err) {
       main.innerHTML = `<div class="page"><div class="card"><h2>Could not load data</h2>
-        <p class="muted">${err.message}. Serve this folder with <code>npm start</code> instead of opening the file directly.</p></div></div>`;
+        <p class="muted">${escapeHTML(err.message)}. Serve this folder with <code>npm start</code> instead of opening the file directly.</p></div></div>`;
       return;
     }
   }
@@ -123,6 +156,7 @@ async function init() {
 
 let cleanup = null;
 export function route() {
+  state.routeRevision++;
   const hash = location.hash.replace(/^#\/?/, '') || 'map';
   const [view, ...rest] = hash.split('/');
   const arg = decodeURIComponent(rest.join('/'));

@@ -1,8 +1,11 @@
+import { completeDataset, summaryDataset } from '../data/loading.js';
+import { loadTownDetail } from '../app.js';
 import { setDataset, persistDataset, resetToDefault, loadDemoOnly } from '../app.js';
 import { downloadFile, ICONS } from '../charts.js';
 import { escapeHTML } from '../engine/format.js';
 
 const SAMPLE = {
+  demo: true,
   towns: [{
     id: 'example-township-pa', name: 'Example Township', state: 'PA', stateName: 'Pennsylvania', county: 'Example County',
     type: 'Township', lat: 40.8, lng: -77.7, population: 12000, fiscalYear: 2026, asOf: '2026-09-30',
@@ -33,12 +36,13 @@ export function renderData(root, state) {
         </label>
         <div id="msg" role="status"></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
-          <button class="btn" id="dl-all" type="button">${ICONS.download} Download loaded data</button>
+          <button class="btn" id="dl-all" type="button">${ICONS.download} Download summary</button>
+          <button class="btn" id="dl-complete" type="button">Download complete records</button>
           <button class="btn" id="dl-sample" type="button">${ICONS.download} Sample file</button>
           <button class="btn" id="reset" type="button">Restore default data</button>
           <button class="btn" id="demo" type="button">Load demo towns</button>
         </div>
-        <p class="small muted" style="margin:14px 0 0">Loaded now: <strong>${state.towns.length} towns</strong> (${{ real: 'verified real towns', demo: 'fictional demo data', mixed: 'demo towns plus verified real towns', import: 'your imported file' }[state.source] || state.source}).</p>
+        <p class="small muted">Summary exports omit ledgers, history, donors and source notes. Complete exports load every required county file; no partial file is downloaded if any request fails.</p><p class="small muted" style="margin:14px 0 0">Loaded now: <strong>${state.towns.length} town${state.towns.length === 1 ? '' : 's'}</strong> (${{ real: 'public-record towns', demo: 'fictional demo data', mixed: 'demo towns plus public-record towns', import: 'your imported file' }[state.source] || state.source}).</p>
       </section>
       <section class="card prose">
         <h2 style="margin:0 0 8px">Where real numbers come from</h2>
@@ -68,6 +72,7 @@ export function renderData(root, state) {
       const errors = setDataset(data, 'import');
       if (errors.length) return say(`This file has problems:<ul>${errors.map((e) => `<li>${escapeHTML(e)}</li>`).join('')}</ul>`, false);
       persistDataset(data);
+      renderData(root, state);
       say(`Loaded ${data.towns.length} town${data.towns.length === 1 ? '' : 's'}. <a href="#/map">View the map</a>.`, true);
     } catch (err) {
       say(`Could not read that file: ${escapeHTML(err.message)}`, false);
@@ -78,22 +83,44 @@ export function renderData(root, state) {
   drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('over'); });
   drop.addEventListener('dragleave', () => drop.classList.remove('over'));
   drop.addEventListener('drop', (e) => { e.preventDefault(); drop.classList.remove('over'); if (e.dataTransfer.files[0]) load(e.dataTransfer.files[0]); });
-  $('#dl-all').addEventListener('click', () => downloadFile('town-ledger-data.json', JSON.stringify(state.dataset, null, 2), 'application/json'));
+  $('#dl-all').addEventListener('click', () => downloadFile('town-ledger-summary.json', JSON.stringify(summaryDataset(state.dataset), null, 2), 'application/json'));
+  $('#dl-complete').addEventListener('click', async () => {
+    const dataset = state.dataset;
+    const button = $('#dl-complete');
+    button.disabled = true;
+    say('Loading full county records for the complete export…', true);
+    try {
+      const full = await completeDataset(dataset, loadTownDetail);
+      if (state.dataset !== dataset || !root.contains(button)) return;
+      downloadFile('town-ledger-complete.json', JSON.stringify(full, null, 2), 'application/json');
+      say(`Complete records for ${full.towns.length} towns downloaded.`, true);
+    } catch (error) {
+      if (state.dataset === dataset && root.contains(button)) say(escapeHTML(error.message) + ' No partial file was downloaded. Try again.', false);
+    } finally { button.disabled = false; }
+  });
   $('#dl-sample').addEventListener('click', () => downloadFile('town-ledger-sample.json', JSON.stringify(SAMPLE, null, 2), 'application/json'));
   $('#reset').addEventListener('click', async () => {
+    const button = $('#reset');
+    button.disabled = true;
     try {
-      await resetToDefault();
-      renderData(root, state);
-    } catch (err) {
-      say(`Could not restore the default data: ${escapeHTML(err.message)}`, false);
-    }
+      const restored = await resetToDefault();
+      if (restored && root.contains(button)) {
+        renderData(root, state);
+        say('Public records restored. Check the banner for any loading failures.', true);
+      }
+    } catch (error) { if (root.contains(button)) say(escapeHTML(error.message), false); }
+    finally { button.disabled = false; }
   });
   $('#demo').addEventListener('click', async () => {
+    const button = $('#demo');
+    button.disabled = true;
     try {
-      await loadDemoOnly();
-      renderData(root, state);
-    } catch (err) {
-      say(`Could not load the demo towns: ${escapeHTML(err.message)}`, false);
-    }
+      const loaded = await loadDemoOnly();
+      if (loaded && root.contains(button)) {
+        renderData(root, state);
+        say('Fictional demo towns loaded. Use Restore default data to go back to public records.', true);
+      }
+    } catch (error) { if (root.contains(button)) say(`Could not load the demo towns: ${escapeHTML(error.message)}`, false); }
+    finally { button.disabled = false; }
   });
 }

@@ -31,3 +31,29 @@ Required fields: `id`, `name`, `state`, `lat`, `lng`, `population`, `revenue`, `
 `ledger[].flow` is one of `in` (into the treasury), `out` (paid by the town) or `influence` (political money around the town). `category` is one of the keys above. Amounts are always positive; the flow gives the direction.
 
 The canonical lists live in `js/engine/categories.js`. Validation is `validateDataset` in `js/engine/ledger.js`.
+
+## Reporting context and availability
+
+`reporting` is an optional object containing `basis`, `scope`, `politicalPeriod`,
+and `politicalScope` strings. These describe the financial reporting basis and
+fund coverage, and the political record window and recipient population. The
+county builders derive them from their existing source notes; the summary builder
+retains them. Older datasets remain supported and display **Not recorded** for
+missing metadata. Do not fill metadata from a state abbreviation alone.
+
+Missing fields differ from explicit zero. Displays use **Not available** for
+unknown figures and **Not graded** below the existing 50-point coverage threshold.
+A documented surveillance program with no price does not establish zero cost.
+Coverage shows both component count and the available original scoring weight.
+Comparison highlights require known, matching relevant reporting context and
+available values. Red-flag and tax-break comparisons do not declare winners,
+because the schema does not establish comparable investigation coverage.
+
+Imports validate unique URL-safe IDs, finite numeric amounts and population,
+coordinate bounds, object/array shapes, source URLs, and required ledger fields.
+Signed ledger adjustments remain supported because public filings include them.
+A top-level `demo: true` marks every imported town as fictional.
+
+Summary downloads omit ledger, history, donors, source notes and source lists.
+Complete downloads fetch all referenced county details before producing a file;
+a failed request identifies the town/file and produces no partial download.
