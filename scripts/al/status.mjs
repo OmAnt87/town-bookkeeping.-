@@ -15,7 +15,7 @@ writeStatus({
       '**Payments to other governments are left out**, as in the Carolinas and Delaware.',
     ],
     gaps: [
-      '**Political money is not scored.** Contributions to Alabama local candidates were not loaded.',
+      '**Political money** comes from the Secretary of State\'s Fair Campaign Practices Act site (`node scripts/al/fetch-fcpa.mjs`): its yearly bulk contribution files, joined by committee ID to its list of candidate committees. County offices (commission, sheriff, revenue commissioner, tax assessor and collector, license commissioner, treasurer, coroner, constable) are placed by the county the committee lists; mayor and city council candidates are listed with no municipality, so they are placed by the city of their mailing address, which can be wrong for candidates with a mailing address in a neighboring town. Only itemized cash contributions are counted.',
     ],
   }),
 });

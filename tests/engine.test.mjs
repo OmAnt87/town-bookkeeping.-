@@ -1193,3 +1193,77 @@ test('Louisiana offices typed by filers are placed in a parish or municipality',
   assert.equal(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'IND', contributorname: 'JANE DOE' }), null);
   assert.equal(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'ORG', contributorname: 'AVOYELLES PARISH CLERK OF COURT' }), null);
 });
+
+import { placeCommittee as alPlace, classifyAl, norm as alNorm } from '../scripts/al/fcpa-map.mjs';
+test('Alabama committees are placed by office, county jurisdiction or mailing city', () => {
+  const places = { counties: new Map([[alNorm('Washington'), 'washington'], [alNorm('St. Clair'), 'st-clair']]), cities: new Map([[alNorm('Mobile'), ['mobile']], [alNorm('Midway'), ['midway-1', 'midway-2']]]) };
+  assert.equal(alPlace({ office: 'County Commissioner', jurisdiction: 'WASHINGTON COUNTY' }, places), 'washington');
+  assert.equal(alPlace({ office: 'Sheriff', jurisdiction: 'ST. CLAIR COUNTY' }, places), 'st-clair');
+  assert.equal(alPlace({ office: 'Mayor', city: 'MOBILE, ALABAMA' }, places), 'mobile');
+  assert.equal(alPlace({ office: 'City Council', city: 'Midway' }, places), null);
+  assert.equal(alPlace({ office: 'Circuit Court Judge', jurisdiction: 'WASHINGTON COUNTY' }, places), null);
+  assert.equal(alPlace({ office: 'County Board of Education', jurisdiction: 'WASHINGTON COUNTY' }, places), null);
+  const row = (o) => ({ contributiontype: 'Cash (Itemized)', contributortype: 'Group/Business/Corporation', lastname: 'WINWOOD LLC', candidatelast: 'DRUMMOND', ...o });
+  assert.deepEqual(classifyAl(row()), { key: 'developerContributions' });
+  assert.deepEqual(classifyAl(row({ lastname: 'Alabama Realtors Political Action Committee' })), { key: 'pacContributions' });
+  assert.deepEqual(classifyAl(row({ contributortype: 'PAC', lastname: 'IBEW LOCAL 136 PAC' })), { key: 'unionContributions' });
+  assert.equal(classifyAl(row({ lastname: 'Team Drummond' })), null);
+  assert.equal(classifyAl(row({ contributiontype: 'In-Kind (Itemized)' })), null);
+  assert.equal(classifyAl(row({ contributortype: 'Individual', lastname: 'Smith' })), null);
+});
+
+import { placeMunicipality as akPlace, classifyAk, norm as akNorm } from '../scripts/ak/apoc-map.mjs';
+test('Alaska APOC municipalities map to boroughs, cities and consolidated city-boroughs', () => {
+  const places = { boroughs: new Map([[akNorm('Fairbanks North Star Borough'), 'fnsb'], [akNorm('Municipality of Anchorage'), 'anchorage']]), cities: new Map([[akNorm('Fairbanks'), 'fairbanks']]) };
+  assert.equal(akPlace('Fairbanks, City of', places), 'fairbanks');
+  assert.equal(akPlace('Fairbanks Northstar Borough', places), 'fnsb');
+  assert.equal(akPlace('Anchorage, City and Borough', places), 'anchorage');
+  assert.equal(akPlace('Palmer, City of', places), null);
+  const row = (o) => ({ 'Payment Type': 'Check', 'Last/Business Name': 'IBEW PAC', 'First Name': '', Occupation: 'PAC', ...o });
+  assert.deepEqual(classifyAk(row()), { key: 'unionContributions' });
+  assert.deepEqual(classifyAk(row({ 'Last/Business Name': 'Anchorage Home Builders Association BUILD-PAC' })), { key: 'pacContributions' });
+  assert.deepEqual(classifyAk(row({ 'Last/Business Name': 'Turnagain Training', Occupation: 'Business' })), { key: 'developerContributions' });
+  assert.equal(classifyAk(row({ 'Last/Business Name': 'Anchorage Democrats', Occupation: 'Party Committee' })), null);
+  assert.equal(classifyAk(row({ 'Last/Business Name': 'Lee', 'First Name': 'Amber' })), null);
+  assert.equal(classifyAk(row({ 'Payment Type': 'Bank Interest', 'Last/Business Name': 'Global Federal Credit Union' })), null);
+});
+
+import { officeLevel as nvLevel, classifyNv, nameKey as nvNameKey, norm as nvNorm, parseOffice as nvOffice } from '../scripts/nv/sos-map.mjs';
+test('Nevada candidates are placed by jurisdiction and office; organizations recognized by name', () => {
+  assert.equal(nvLevel('Clark County Commissioner, District A', 'CLARK COUNTY'), 'county');
+  assert.equal(nvLevel('City of Reno, City Council, Ward 1', 'CITY OF RENO'), 'city');
+  assert.equal(nvLevel('Carson City, Supervisor, Ward 2', 'CARSON CITY'), 'county');
+  assert.equal(nvLevel('City of Las Vegas, Municipal Court Judge, Dept 3', 'CITY OF LAS VEGAS'), null);
+  assert.equal(nvLevel('City of Reno, Assistant City Manager', 'CITY OF RENO'), null);
+  assert.equal(nvLevel('Clark County School Trustee, District C', 'CLARK COUNTY'), null);
+  assert.equal(nvNorm('CITY OF NORTH LAS VEGAS'), 'north las vegas');
+  assert.equal(nvNorm('BOULDER CITY'), nvNorm('Boulder City'));
+  assert.equal(nvNameKey('Michael Corey Thomas'), 'michael thomas');
+  assert.equal(nvOffice('<span id="ctl00_MainContent_lblOffice">Clark County Commissioner, District A</span>'), 'Clark County Commissioner, District A');
+  const row = (o) => ({ Type: 'Monetary Contribution', Contributor: '19 Enterprises LLC', ...o });
+  assert.deepEqual(classifyNv(row()), { key: 'developerContributions' });
+  assert.deepEqual(classifyNv(row({ Contributor: 'IBEW Local 357' })), { key: 'unionContributions' });
+  assert.deepEqual(classifyNv(row({ Contributor: 'Nevada Realtors PAC' })), { key: 'pacContributions' });
+  assert.equal(classifyNv(row({ Contributor: 'Jane Doe' })), null);
+  assert.equal(classifyNv(row({ Contributor: 'Accrued Account Interest' })), null);
+  assert.equal(classifyNv(row({ Type: 'In Kind Contribution' })), null);
+});
+
+import { placeCandidate as mtPlace, classifyMt, parsePipes as mtParse, norm as mtNorm } from '../scripts/mt/copp-map.mjs';
+test('Montana candidates are placed by county of residence or mailing city', () => {
+  const places = { counties: new Map([['yellowstone', 'yellowstone'], ['silver bow', 'butte']]), consolidated: new Set(['silver bow']), cities: new Map([['billings', [{ key: 'billings', county: 'yellowstone' }]], ['great falls', [{ key: 'great-falls', county: 'cascade' }]]]) };
+  assert.equal(mtPlace({ officeTitle: 'County Commissioner', resCountyDescr: 'Yellowstone' }, 'CN', places), 'yellowstone');
+  assert.equal(mtPlace({ officeTitle: 'County Attorney', resCountyDescr: 'Yellowstone' }, 'CN', places), null);
+  assert.equal(mtPlace({ officeTitle: 'City Council', resCountyDescr: 'Yellowstone', candidateAddress: '123 Main St, Billings, MT 59101' }, 'CT', places), 'billings');
+  assert.equal(mtPlace({ officeTitle: 'Councilman', resCountyDescr: 'Cascade', candidateAddress: 'PO BOX 6156, GREAT FALLS, MT 59406' }, 'CT', places), 'great-falls');
+  assert.equal(mtPlace({ officeTitle: 'Commissioner', resCountyDescr: 'Silver Bow', candidateAddress: 'Butte, MT' }, 'CT', places), 'butte');
+  assert.equal(mtPlace({ officeTitle: 'City Judge', resCountyDescr: 'Yellowstone', candidateAddress: 'Billings, MT' }, 'CT', places), null);
+  assert.equal(mtNorm('St. Ignatius'), 'saint ignatius');
+  const rows = mtParse('Candidate ID|Contributor Name|Description|Line Item|Amount|Amount Subtype\n1|Smith, Jo|signs|Individual Contributions|50.00|Cash\n2|MEA-MFT COPE|long\ndescription|Independent Committee Contributions|500.00|Cash\n');
+  assert.equal(rows.length, 2);
+  assert.equal(rows[1].Description, 'long description');
+  assert.equal(classifyMt(rows[0]), null);
+  assert.deepEqual(classifyMt(rows[1]), { key: 'unionContributions' });
+  assert.deepEqual(classifyMt({ 'Contributor Name': 'Yellowstone Realty LLC', 'Line Item': 'Individual Contributions', 'Amount Subtype': 'Cash' }), { key: 'developerContributions' });
+  assert.equal(classifyMt({ 'Contributor Name': 'Montana Republican Party', 'Line Item': 'Political Party Committee Contributions', 'Amount Subtype': 'Cash' }), null);
+});
