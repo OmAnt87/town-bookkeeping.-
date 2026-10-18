@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { parseCSV, slugify } from '../lib.mjs';
 import { totals } from '../../js/engine/scoring.js';
 
+import { redFlagLines, filingLines, stateTowns } from '../common/status.mjs';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const pop = parseCSV(readFileSync(join(ROOT, 'data', 'raw', 'ct', 'popest.csv'), 'latin1'));
 const regions = pop.filter((r) => r.sumlev === '050').map((r) => r.name.replace(/ Planning Region$/, '')).sort();
@@ -60,7 +61,7 @@ ${rows.join('\n')}
 
 ## Known gaps
 - **Political money comes from town party committees.** Candidates for town office file campaign reports with their town clerk, so their own committees are not included. Each town's party town committees file with the [State Elections Enforcement Commission](https://seec.ct.gov/Portal/eCRIS/CurPreYears). Counted since ${since}: contributions from PACs and unions, program-book ads bought by businesses (corporate contributions are banned in CT), and gifts SEEC flags as from registered lobbyists or state contractors. ${withMoney} of ${covered} towns had some, $${Math.round(polTotal).toLocaleString('en-US')} in all. Town committees also support state candidates. The City of Groton has no committees of its own, so it is not scored.
-- **Transparency practices** have not been checked yet, so they are not scored.
+${[...redFlagLines('CT', stateTowns('CT')), ...filingLines(stateTowns('CT'), 'audited financial statements with OPM')].join('\n')}
 - **Spending not broken down by department** (services and overhead not scored): ${notItemized.length ? notItemized.join(', ') : 'none'}. The state either has no department breakdown for these towns or its total does not match the financial statements.
 - **Older year used** because FY 2023's department breakdown is missing or does not match: ${older.length ? older.join(', ') : 'none'}.
 - Transfers between a town's own funds and other financing sources (such as bond proceeds) are left out. Enterprise funds (often water and sewer), fire districts, and boroughs and special districts inside towns are separate and not included, except the City of Groton.

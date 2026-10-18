@@ -10,6 +10,7 @@
 // Figures are actual general-fund results reported to the CT Office of Policy and
 // Management (Municipal Fiscal Indicators), published on data.ct.gov.
 
+import { reportingFor } from '../../js/engine/reporting.js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -208,6 +209,7 @@ for (const region of pick) {
   const report = reports[region] = { skipped: [], mismatch: [], unmapped: [], notItemized: [], older: [] };
   const towns = (built.get(region) || []).map((n) => buildTown(n, byTown.get(n), report)).filter(Boolean).sort((x, y) => x.name.localeCompare(y.name));
   const file = `ct-${slugify(region)}.json`;
+  for (const town of towns) town.reporting = reportingFor(town);
   writeFileSync(join(OUT, file), `${JSON.stringify({ towns }, null, 1)}\n`);
   if (!index.files.includes(file)) index.files.push(file);
   index.files.sort();
