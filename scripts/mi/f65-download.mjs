@@ -8,6 +8,7 @@
 //     county subdivisions)
 //
 //   node scripts/mi/f65-download.mjs      then: node scripts/mi/f65-build.mjs --all
+//   node scripts/mi/f65-download.mjs --only metrics      (one layer: expenditure, revenue or metrics)
 
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -23,7 +24,8 @@ export const F65_YEARS = [2023, 2024, 2025];
 const LAYERS = {
   expenditure: { id: 0, year: 'FiscalYear', fields: 'LocalUnitID,Name,Type,CountyCd,FIPSCode,FiscalYear,YEMonth,Fund,Account,ExpenditureDescription,Amount' },
   revenue: { id: 2, year: 'FiscalYear', fields: 'LocalUnitID,Name,Type,CountyCd,FIPSCode,FiscalYear,YEMonth,Fund,Account,RevenueDescription,SubCategory,Amount' },
-  metrics: { id: 1, year: 'FY', fields: 'LU_ID,LU_NAME,FY,FIELD_NAME,FIELD_VALUE', where: "FIELD_NAME IN ('Total Long Term Debt','Total General Fund Revenue','Total General Fund Expenditure')" },
+  // The service refuses filters on FIELD_NAME, so the metrics wanted are picked out here.
+  metrics: { id: 1, year: 'FY', fields: 'LU_ID,LU_NAME,FY,FIELD_NAME,FIELD_VALUE', keep: new Set(['Total Long Term Debt', 'Total General Fund Revenue', 'Total General Fund Expenditure']) },
 };
 const GAZ = 'https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2024_Gazetteer';
 const POP = 'https://www2.census.gov/programs-surveys/popest/datasets/2020-2025/cities/totals/sub-est2025_26.csv';
@@ -41,12 +43,13 @@ const query = (layer, params) => {
 // that hits the 2,000-record limit.
 function fetchLayer(layer, year) {
   const idField = layer.id === 1 ? 'LU_ID' : 'LocalUnitID';
-  const base = `${layer.year}=${year}${layer.where ? ` AND ${layer.where}` : ''}`;
+  const base = `${layer.year}=${year}`;
   const ids = query(layer, { where: base, groupByFieldsForStatistics: idField, outStatistics: JSON.stringify([{ statisticType: 'count', onStatisticField: idField, outStatisticFieldName: 'n' }]) })
     .features.map((f) => f.attributes[idField]).sort((a, b) => a - b);
   const rows = [];
   const fetchBatch = (batch) => {
-    const page = query(layer, { where: `${base} AND ${idField} IN (${batch.join(',')})`, outFields: layer.fields, resultRecordCount: '2000' });
+    // The metrics table has no object id, so it takes no record count (its batches stay small).
+    const page = query(layer, { where: `${base} AND ${idField} IN (${batch.join(',')})`, outFields: layer.fields, ...(layer.keep ? {} : { resultRecordCount: '2000' }) });
     if ((page.exceededTransferLimit || page.features.length >= 2000) && batch.length > 1) {
       fetchBatch(batch.slice(0, batch.length >> 1));
       fetchBatch(batch.slice(batch.length >> 1));
@@ -55,23 +58,26 @@ function fetchLayer(layer, year) {
     for (const f of page.features) {
       const a = f.attributes;
       if (a.Amount !== undefined && !Number(a.Amount)) continue;
+      if (layer.keep && !layer.keep.has(a.FIELD_NAME)) continue;
       rows.push(a);
     }
   };
-  const size = layer.id === 1 ? 300 : 40;
-  for (let i = 0; i < ids.length; i += size) fetchBatch(ids.slice(i, i + size));
+  for (let i = 0; i < ids.length; i += 40) fetchBatch(ids.slice(i, i + 40));
   return { units: ids.length, rows };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   mkdirSync(DIR, { recursive: true });
-  for (const [name, layer] of Object.entries(LAYERS)) {
+  // --only metrics re-fetches one layer.
+  const only = process.argv.includes('--only') ? process.argv[process.argv.indexOf('--only') + 1] : null;
+  for (const [name, layer] of Object.entries(LAYERS).filter(([n]) => !only || n === only)) {
     for (const y of F65_YEARS) {
       const { units, rows } = fetchLayer(layer, y);
       writeFileSync(join(DIR, `${name}-${y}.json`), JSON.stringify(rows));
       console.log(`${name} ${y}: ${units} units, ${rows.length} rows`);
     }
   }
+  if (only) process.exit(0);
   execFileSync('curl', ['-sSfL', '--retry', '4', '-m', '300', '-o', join(RAW, 'popest.csv'), POP], { stdio: 'inherit' });
   for (const g of ['counties', 'place', 'cousubs']) {
     execFileSync('curl', ['-sSfL', '--retry', '4', '-m', '300', '-o', join(RAW, `gaz-${g}.zip`), `${GAZ}/2024_Gaz_${g}_national.zip`], { stdio: 'inherit' });

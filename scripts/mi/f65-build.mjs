@@ -39,7 +39,10 @@ const cousubXY = gaz('2024_Gaz_cousubs_national.txt', (id) => id.slice(2), 9);
 const placeXY = gaz('2024_Gaz_place_national.txt', (id) => id.slice(2), 10);
 const fileOf = (county) => slugify(county.replace(/ County$/, ''));
 const KINDS = { city: 'City', 'charter township': 'Charter Township', township: 'Township', village: 'Village' };
-const displayName = (kind, base) => (/Township$/.test(kind) ? `${base} ${kind}` : `${kind} of ${base}`);
+// "Village of Clarkston city" is the City of Clarkston, as in the Census build.
+const displayName = (kind, base) => (/Township$/.test(kind) ? `${base} ${kind}` : `${kind} of ${base.replace(/^Village of /, '')}`);
+const norm = (s) => String(s).toLowerCase().replace(/^(city|village) of (the village of )?/, '').replace(/ (city|village)( of the village)?$/, '').replace(/[^a-z0-9]/g, '');
+const placeByName = new Map(); // 'Village|lakeisabella' -> place key, for codes that differ from the Census
 
 const countyName = new Map();
 const geo = new Map(); // 'County|163', 'Cousub|22000', 'Place|22000'
@@ -64,13 +67,15 @@ for (const r of pop.filter((p) => p.sumlev === '162')) {
   if (!m) continue;
   const kind = KINDS[m[2]];
   geo.set(`Place|${r.place}`, { kind, display: displayName(kind, m[1]), geoid: `26${r.place}`, pop: Number(r[POP_YEAR]), xy: placeXY.get(r.place), county: countyName.get(placeCounty.get(r.place)?.county) });
+  const n = `${kind}|${norm(m[1].replace(/^Village of /, ''))}`;
+  placeByName.set(n, placeByName.has(n) ? null : `Place|${r.place}`);
 }
 // Treasury's FIPSCode is the county code for counties, the place code for cities and villages and
 // the county subdivision code for townships.
 function geoKeyOf(u) {
   if (u.Type === 'COUNTY') return `County|${u.FIPSCode}`;
   if (u.Type === 'TOWNSHIP') return `Cousub|${u.FIPSCode}`;
-  if (u.Type === 'VILLAGE') return `Place|${u.FIPSCode}`;
+  if (u.Type === 'VILLAGE') return geo.has(`Place|${u.FIPSCode}`) ? `Place|${u.FIPSCode}` : placeByName.get(`Village|${norm(u.Name)}`) || null;
   const cousub = geo.get(`Cousub|${u.FIPSCode}`);
   const place = geo.get(`Place|${u.FIPSCode}`);
   return !cousub || /Township$/.test(cousub.kind) || (place && place.pop > cousub.pop) ? `Place|${u.FIPSCode}` : `Cousub|${u.FIPSCode}`;
@@ -98,7 +103,7 @@ for (const y of F65_YEARS) {
 }
 
 const aggregate = (y) => aggregateF65(y.exp, y.rev);
-const report = { skipped: [...new Set(unmatched)], empty: [], inconsistent: [], older: [], noResidents: [], unclassified: [], refinanced: [], noDebt: [] };
+const report = { skipped: [...new Set(unmatched)], empty: [], inconsistent: [], older: [], noResidents: [], unclassified: [], noDebt: [] };
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 function buildUnit(u) {
   const g = geo.get(u.key);
@@ -113,7 +118,6 @@ function buildUnit(u) {
   const y = u.byYear[year];
   const a = aggregate(y);
   if (a.spending.otherSpending) report.unclassified.push(g.display);
-  if (a.refinanced) report.refinanced.push(`${g.display} (${money(a.refinanced)})`);
   const hasDebt = Number.isFinite(y.debt);
   if (!hasDebt) report.noDebt.push(g.display);
   const isCounty = g.kind === 'County';
@@ -147,8 +151,8 @@ function buildUnit(u) {
       reporting: {
         basis: 'Actual results for the fiscal year, from the F-65 Annual Local Unit Fiscal Report filed with the Michigan Department of Treasury',
         scope: isCounty
-          ? 'County general, other governmental and enterprise funds by function, including the sheriff, jail, courts, health department and county roads where the county runs them'
-          : `All ${kindText} general, other governmental and enterprise funds by function, including water and sewer; schools are run by separate school districts`,
+          ? 'County general, other governmental and enterprise funds and component units by function, including the road commission, including the sheriff, jail, courts, health department and county roads where the county runs them'
+          : `All ${kindText} general, other governmental and enterprise funds and component units by function, including water and sewer; schools are run by separate school districts`,
       },
       history,
       ledger,
@@ -164,9 +168,10 @@ function buildUnit(u) {
           ? 'Public schools are run by separate school districts with their own taxes, so they are not included.'
           : `Public schools are run by separate school districts with their own taxes, so they are not included. Residents also pay ${g.county}${g.kind === 'Village' ? ' and the township the village is part of' : ''}.`,
         ...(g.kind === 'Village' ? ['Village residents also pay the township the village is part of, which is listed separately.'] : []),
-        'Spending is reported by function for the general fund, other governmental funds and enterprise funds (water, sewer and other utilities). Capital outlay has no function, so enterprise capital counts as utilities and the rest is spread over the other spending in proportion.',
-        ...(a.leftOut.otherFunds ? [`Internal service funds and component units (separate authorities such as downtown development authorities; ${money(a.leftOut.otherFunds)} of their revenue and spending) are left out.`] : []),
-        `Borrowing, transfers between funds, sales of capital assets, depreciation and extraordinary items are left out.${a.refinanced ? ` Debt service also leaves out ${money(a.refinanced)} paid with new borrowing the ${kindText} did not spend on capital that year, most likely refinancing.` : ''}`,
+        'Spending is reported by function for the general fund, other governmental funds, enterprise funds (water, sewer and other utilities) and component units (such as downtown development authorities). Capital outlay has no function, so enterprise capital counts as utilities and the rest is spread over the other spending in proportion.',
+        ...(isCounty ? ['Component units are included: the county road commission and other authorities the county appoints and funds.'] : []),
+        ...(a.leftOut.otherFunds ? [`Internal service funds (${money(a.leftOut.otherFunds)} of their revenue and spending) are left out, since the departments they serve report that spending.`] : []),
+        'Borrowing, transfers between funds, sales of capital assets, depreciation and extraordinary items are left out.',
         ...(a.spending.otherSpending ? [`${money(a.spending.otherSpending)} of miscellaneous spending is more than 15% of the total, so it is shown as not broken down and the ${kindText} is not scored on services or overhead.`] : []),
         'General government, courts, community and economic development, and redevelopment and public housing count as overhead.',
         hasDebt ? 'Debt is total long-term debt at year end, as reported on the F-65.' : 'Long-term debt is not in the Treasury dashboard for this year, so debt is not scored.',

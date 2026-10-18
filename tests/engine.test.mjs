@@ -1438,3 +1438,25 @@ test('Missouri committees are placed by the jurisdiction ending the office they 
   assert.equal(classifyMo(row), null);
   assert.equal(classifyMo({ ...row, company: 'Acme', contribution_type: 'In-Kind' }), null);
 });
+
+import { aggregateF65 } from '../scripts/mi/f65-map.mjs';
+
+test('MI F-65 lines map by function account, count component units, spread capital and leave out internal service funds and financing', () => {
+  const ex = (Fund, Account, Amount) => ({ Fund, Account, Amount: String(Amount) });
+  const a = aggregateF65(
+    [
+      ex('General Fund', '301, 305, 310, 315-320, 330-332', 600), ex('General Fund', '101-128', 100), ex('All Other Governmental Funds', '449-520', 300),
+      ex('Enterprise Funds', '536-566', 400), ex('Enterprise Funds', '901-904', 50), ex('Enterprise Funds', '968', 90),
+      ex('All Other Governmental Funds', '901-904', 200), ex('All Other Governmental Funds', '906-929', 80), ex('General Fund', '995', 70),
+      ex('Component Units', '728, 730-732', 100), ex('Internal Service Funds', '100-279', 300),
+    ],
+    [
+      ex('General Fund', '401-449', 1000), ex('General Fund', '574', 300), ex('Enterprise Funds', '626-637', 450), ex('General Fund', '655-663', 20),
+      ex('All Other Governmental Funds', '696-698', 500), ex('General Fund', '699', 70), ex('Internal Service Funds', '626-637', 300),
+    ],
+  );
+  assert.deepEqual(a.revenue, { propertyTax: 1000, stateAid: 300, utilityCharges: 450, finesForfeitures: 20 });
+  // Capital outlay (200) spread over the 1,550 of other spending (component units and enterprise capital included); debt service as reported.
+  assert.deepEqual(a.spending, { publicSafety: 677, administration: 226, roads: 339, utilities: 508, debtService: 80 });
+  assert.deepEqual(a.leftOut, { otherFunds: 600, financing: 640, depreciation: 90, borrowing: 500 });
+});

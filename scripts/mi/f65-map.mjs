@@ -1,18 +1,19 @@
 // Maps a Michigan local unit's F-65 Annual Local Unit Fiscal Report (expenditure and revenue lines
 // by fund, as published by the Department of Treasury) to Town Ledger categories.
 //
-// The general fund, other governmental funds and enterprise funds are counted. Internal service
-// funds (the departments they serve report that spending) and component units (separate
-// authorities) are left out. Spending is by the F-65 function account; capital outlay has no
+// The general fund, other governmental funds, enterprise funds and component units (county road
+// commissions, downtown development and brownfield authorities and the like, which the unit
+// appoints and funds) are counted. Internal service funds are left out: the departments they serve
+// report that spending. Spending is by the F-65 function account; capital outlay has no
 // function, so enterprise-fund capital counts as utilities and the rest is spread over the
 // unit's other spending in proportion. Depreciation, transfers, extraordinary items, bond and note
 // proceeds and sales of capital assets are left out. Courts, community and economic development,
 // and redevelopment and public housing count as overhead, like general government.
 //
-// Principal repaid with new borrowing is left out of debt service as refinancing: bond and note
-// proceeds beyond the year's capital outlay, up to the debt service paid, as in the Census builder.
+// Debt service (906-929) is counted as reported. The F-65 shows refunding bonds as borrowing but not
+// the escrow payments they fund, so no refinancing adjustment is made.
 
-export const COUNTED_FUNDS = new Set(['General Fund', 'All Other Governmental Funds', 'Enterprise Funds']);
+export const COUNTED_FUNDS = new Set(['General Fund', 'All Other Governmental Funds', 'Enterprise Funds', 'Component Units']);
 export const UNCLASSIFIED_SHARE = 0.15;
 
 const first = (account) => Number(String(account).match(/\d{3}/)?.[0]);
@@ -106,12 +107,6 @@ export function aggregateF65(exp = [], rev = []) {
     if (total) for (const [k, v] of base) add('spending', k, 'Capital outlay (spread over services by spending)', (capital * v) / total);
     else add('spending', 'administration', 'Capital outlay', capital);
   }
-  // Refinancing: borrowing beyond the year's capital outlay, up to the debt service paid.
-  const refinanced = Math.max(0, Math.min(spending.debtService || 0, borrowing - capital - enterpriseCapital));
-  if (refinanced) {
-    spending.debtService -= refinanced;
-    lines.set('spending|debtService|Debt service', lines.get('spending|debtService|Debt service') - refinanced);
-  }
   if (spending.otherSpending && spending.otherSpending <= UNCLASSIFIED_SHARE * sum(spending)) {
     spending.administration = (spending.administration || 0) + spending.otherSpending;
     delete spending.otherSpending;
@@ -130,7 +125,6 @@ export function aggregateF65(exp = [], rev = []) {
     spending: s,
     lines: [...lines].map(([id, amount]) => { const [group, key, label] = id.split('|'); return { group, key, label, amount: Math.round(amount) }; }).filter((l) => l.amount),
     capital: Math.round(capital),
-    refinanced: Math.round(refinanced),
     leftOut: Object.fromEntries(Object.entries({ ...leftOut, borrowing }).map(([k, v]) => [k, Math.round(v)])),
     empty: !sum(r) || !sum(s),
     // More than four times apart means an entry error or a part left out.

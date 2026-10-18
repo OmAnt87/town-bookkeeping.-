@@ -255,7 +255,7 @@ node scripts/build-summary.mjs
 
 ### Michigan (counties, cities, villages and townships)
 
-`data/real/mi-<county>.json` holds each Michigan county and the cities, villages, townships and charter townships whose people mostly live in it, from each unit's F-65 Annual Local Unit Fiscal Report to the Department of Treasury, as published by the [MI Community Financial Dashboard](https://micommunityfinancials.michigan.gov/) (FY 2023-2025: spending by function and revenue by source for the general fund, other governmental funds and enterprise funds, and long-term debt; `scripts/mi/f65-map.mjs`) rather than the Census unit files. Political money is not scored: local candidates file with their county clerk. Coverage and gaps: [docs/MI_DATA_STATUS.md](docs/MI_DATA_STATUS.md).
+`data/real/mi-<county>.json` holds each Michigan county and the cities, villages, townships and charter townships whose people mostly live in it, from each unit's F-65 Annual Local Unit Fiscal Report to the Department of Treasury, as published by the [MI Community Financial Dashboard](https://micommunityfinancials.michigan.gov/) (FY 2023-2025: spending by function and revenue by source for the general fund, other governmental funds, enterprise funds and component units, and long-term debt; `scripts/mi/f65-map.mjs`) rather than the Census unit files. Political money is not scored: local candidates file with their county clerk. Coverage and gaps: [docs/MI_DATA_STATUS.md](docs/MI_DATA_STATUS.md).
 
 ```bash
 node scripts/mi/f65-download.mjs                  # Treasury F-65 lines (feature service), population, gazetteers
