@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Kansas's counties, cities and townships from the Census
+// Builds real TownView records for Kansas's counties, cities and townships from the Census
 // individual unit files (see scripts/common/town-census-build.mjs). Each county's file holds the
 // county and the governments whose people mostly live in it. Kansas City is unified with
 // Wyandotte County and reports as one city.

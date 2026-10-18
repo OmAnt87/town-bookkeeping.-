@@ -1,4 +1,4 @@
-// Turns Hawaii Campaign Spending Commission contributions into Town Ledger political-money fields.
+// Turns Hawaii Campaign Spending Commission contributions into TownView political-money fields.
 //
 // Every candidate for state and county office files with the Commission, so county races (mayor,
 // council, prosecuting attorney) are all here. Each row names the office; council offices name

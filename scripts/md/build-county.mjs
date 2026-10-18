@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Maryland's 157 incorporated municipalities and Baltimore
+// Builds real TownView records for Maryland's 157 incorporated municipalities and Baltimore
 // City, one county per file (Baltimore City is its own file, as an independent city).
 //
 //   node scripts/md/download.mjs && python3 scripts/md/lgf-to-json.py

@@ -1,6 +1,8 @@
-# Town Ledger
+# TownView
 
-Plain-language bookkeeping for U.S. towns and townships. Town Ledger shows where a town's money comes from (including everything besides property tax), where it goes, and what political money flows around local officials. It then grades how well that money comes back to residents.
+**Live at [townview.org](https://townview.org).**
+
+Plain-language bookkeeping for U.S. towns and townships. TownView shows where a town's money comes from (including everything besides property tax), where it goes, and what political money flows around local officials. It then grades how well that money comes back to residents.
 
 ![Town report: score, money in, money out, political money, transparency and ledger](docs/town-report.png)
 
@@ -39,6 +41,16 @@ It's a static site with no build step. `netlify.toml` and `vercel.json` set the 
 - **Custom domain:** once the site is live, add the domain under the site's Domain settings (Netlify) or Project > Settings > Domains (Vercel), then point your DNS records where the host tells you to. Both hosts issue HTTPS certificates automatically.
 
 Routing uses `#/` hashes, so no rewrite rules are needed. Any other static host works too.
+
+### GitHub Pages (townview.org)
+
+The live site is published by `.github/workflows/pages.yml`: every push to `main` runs `npm test`, assembles the site and deploys it to GitHub Pages (Settings > Pages > Source: **GitHub Actions**). Actions deployments ignore the `CNAME` file, so the custom domain is set once in the repository settings:
+
+1. **Settings > Pages > Custom domain:** enter `townview.org` and save. When the certificate is ready (up to an hour), tick **Enforce HTTPS**.
+2. **DNS at the registrar (IONOS):** replace the `@` A record with four A records pointing to GitHub Pages: `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`. Optionally add AAAA records `2606:50c0:8000::153`, `2606:50c0:8001::153`, `2606:50c0:8002::153`, `2606:50c0:8003::153`. Add a `CNAME` record for `www` pointing to `omant87.github.io`.
+3. Optional: verify `townview.org` under your GitHub profile's Settings > Pages to protect it from takeover.
+
+`robots.txt`, `sitemap.xml`, `site.webmanifest` and the social preview image (`img/og-image.png`) assume the townview.org domain.
 
 ## Data
 

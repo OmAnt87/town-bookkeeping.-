@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Indiana's counties, townships, cities and towns, and the
+// Builds real TownView records for Indiana's counties, townships, cities and towns, and the
 // Consolidated City of Indianapolis, from each government's Annual Financial Report on Indiana
 // Gateway (see gateway-map.mjs). Each county's file holds the county and the governments whose
 // people mostly live in it.

@@ -1,4 +1,4 @@
-// Turns Montana Commissioner of Political Practices (COPP) campaign finance data into Town Ledger
+// Turns Montana Commissioner of Political Practices (COPP) campaign finance data into TownView
 // political-money fields.
 //
 // Every county and city candidate in Montana files with COPP. The candidate list gives each one's

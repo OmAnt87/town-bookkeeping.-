@@ -1,4 +1,4 @@
-// Turns Alabama Fair Campaign Practices Act (FCPA) data into Town Ledger political-money fields.
+// Turns Alabama Fair Campaign Practices Act (FCPA) data into TownView political-money fields.
 //
 // Every candidate for county and municipal office in Alabama forms a principal campaign committee
 // with the Secretary of State. The committee list names the office and, for county offices, the

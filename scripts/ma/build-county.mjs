@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Massachusetts's 351 cities and towns, one county per file.
+// Builds real TownView records for Massachusetts's 351 cities and towns, one county per file.
 //
 //   node scripts/ma/download.mjs && python3 scripts/ma/dls-to-json.py
 //   node scripts/ma/fetch-ocpf.mjs                      # campaign finance (optional)

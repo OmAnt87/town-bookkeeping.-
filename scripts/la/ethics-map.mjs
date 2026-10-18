@@ -1,4 +1,4 @@
-// Turns Louisiana Board of Ethics campaign finance data into Town Ledger political-money fields.
+// Turns Louisiana Board of Ethics campaign finance data into TownView political-money fields.
 //
 // Every candidate for parish and municipal office in Louisiana files with the Board of Ethics.
 // The bulk contribution files name the filer but not the office, so each filer is matched by name

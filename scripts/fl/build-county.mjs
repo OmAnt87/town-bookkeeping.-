@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Florida's counties, cities, towns and villages. Each
+// Builds real TownView records for Florida's counties, cities, towns and villages. Each
 // county's file holds the county and the municipalities whose people mostly live in it;
 // Jacksonville, consolidated with Duval County, heads Duval's file.
 //

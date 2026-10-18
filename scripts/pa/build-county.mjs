@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Pennsylvania municipalities (townships, boroughs,
+// Builds real TownView records for Pennsylvania municipalities (townships, boroughs,
 // cities and the town of Bloomsburg), one county per file.
 //
 //   node scripts/pa/download.mjs                 # DCED statewide reports, Census estimates, gazetteer

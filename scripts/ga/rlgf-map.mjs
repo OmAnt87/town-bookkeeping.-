@@ -1,4 +1,4 @@
-// Maps a Georgia Report of Local Government Finance (RLGF, FY 2020+ UCOA form) to Town Ledger
+// Maps a Georgia Report of Local Government Finance (RLGF, FY 2020+ UCOA form) to TownView
 // categories. Input is the form's LOAD1 sheet as blocks of { code: value }:
 //   R1  Part I taxes, licenses and permits (31_xxxx, 32_xxxx)
 //   R2  Part II intergovernmental revenue (33_xxxxA state, B other local, C federal) and

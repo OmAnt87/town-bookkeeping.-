@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds the real Town Ledger record for the District of Columbia from the Census
+// Builds the real TownView record for the District of Columbia from the Census
 // individual unit files (see scripts/common/town-census-build.mjs). Its file holds the District
 // alone.
 //

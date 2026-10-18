@@ -1,4 +1,4 @@
-// Classifies a campaign-finance contributor into a Town Ledger influence category.
+// Classifies a campaign-finance contributor into a TownView influence category.
 // Returns null for individuals and anything that is not organized outside money.
 export function classifyContributor(type = '', name = '') {
   const t = `${type} ${name}`.toLowerCase();

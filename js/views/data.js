@@ -82,7 +82,7 @@ export function renderData(root, state) {
   drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('over'); });
   drop.addEventListener('dragleave', () => drop.classList.remove('over'));
   drop.addEventListener('drop', (e) => { e.preventDefault(); drop.classList.remove('over'); if (e.dataTransfer.files[0]) load(e.dataTransfer.files[0]); });
-  $('#dl-all').addEventListener('click', () => downloadFile('town-ledger-summary.json', JSON.stringify(summaryDataset(state.dataset), null, 2), 'application/json'));
+  $('#dl-all').addEventListener('click', () => downloadFile('townview-summary.json', JSON.stringify(summaryDataset(state.dataset), null, 2), 'application/json'));
   $('#dl-complete').addEventListener('click', async () => {
     const dataset = state.dataset;
     const button = $('#dl-complete');
@@ -91,13 +91,13 @@ export function renderData(root, state) {
     try {
       const full = await completeDataset(dataset, loadTownDetail);
       if (state.dataset !== dataset || !root.contains(button)) return;
-      downloadFile('town-ledger-complete.json', JSON.stringify(full, null, 2), 'application/json');
+      downloadFile('townview-complete.json', JSON.stringify(full, null, 2), 'application/json');
       say(`Complete records for ${full.towns.length} towns downloaded.`, true);
     } catch (error) {
       if (state.dataset === dataset && root.contains(button)) say(escapeHTML(error.message) + ' No partial file was downloaded. Try again.', false);
     } finally { button.disabled = false; }
   });
-  $('#dl-sample').addEventListener('click', () => downloadFile('town-ledger-sample.json', JSON.stringify(SAMPLE, null, 2), 'application/json'));
+  $('#dl-sample').addEventListener('click', () => downloadFile('townview-sample.json', JSON.stringify(SAMPLE, null, 2), 'application/json'));
   $('#reset').addEventListener('click', async () => {
     const button = $('#reset');
     button.disabled = true;

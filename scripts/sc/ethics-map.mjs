@@ -1,4 +1,4 @@
-// Turns South Carolina State Ethics Commission contributions into Town Ledger political-money
+// Turns South Carolina State Ethics Commission contributions into TownView political-money
 // fields.
 //
 // Every candidate files with the Ethics Commission, and each contribution names the office

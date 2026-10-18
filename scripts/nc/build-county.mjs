@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for North Carolina's 100 counties and its cities, towns and
+// Builds real TownView records for North Carolina's 100 counties and its cities, towns and
 // villages. Each county's file holds the county and the municipalities whose people mostly live
 // in it.
 //

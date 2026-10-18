@@ -1,4 +1,4 @@
-// Maps Census of Governments finance item codes to Town Ledger categories.
+// Maps Census of Governments finance item codes to TownView categories.
 // Best-effort mapping of the common codes. Check unusual codes against the Census
 // "Government Finance and Employment Classification Manual" before relying on them.
 

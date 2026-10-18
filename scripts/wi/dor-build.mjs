@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Wisconsin's counties, cities, villages and towns from the
+// Builds real TownView records for Wisconsin's counties, cities, villages and towns from the
 // Department of Revenue's County and Municipal Revenues and Expenditures workbook (see
 // dor-map.mjs). Each county's file holds the county and the governments whose people mostly live
 // in it.

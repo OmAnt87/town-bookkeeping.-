@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Missouri's counties, cities, towns, villages and townships
+// Builds real TownView records for Missouri's counties, cities, towns, villages and townships
 // from the Census individual unit files (see scripts/common/town-census-build.mjs). Each
 // county's file holds the county and the governments whose people mostly live in it. St. Louis
 // is an independent city outside any county.

@@ -3,10 +3,26 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Town Ledger</title>
-  <meta name="description" content="Plain-language bookkeeping for U.S. towns and townships: where the money comes from, where it goes, and who is funding local officials.">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231f5fae'/%3E%3Cpath d='M9 22V12h3v10zm5.5 0V8h3v14zM20 22v-7h3v7z' fill='white'/%3E%3C/svg%3E">
-  <link rel="preconnect" href="https://server.arcgisonline.com" crossorigin>
+  <title>TownView: where your town's money goes</title>
+  <meta name="description" content="TownView puts public money in plain view: where U.S. towns' money comes from, where it goes, and who is funding local officials, with a Community Return Score for every town.">
+  <link rel="canonical" href="https://townview.org/">
+  <meta name="theme-color" content="#1b3768" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0b1424" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="TownView">
+  <meta property="og:url" content="https://townview.org/">
+  <meta property="og:title" content="TownView: where your town's money goes">
+  <meta property="og:description" content="Revenue, spending, political money and a Community Return Score for more than 28,000 local governments in all 50 states and DC.">
+  <meta property="og:image" content="https://townview.org/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+  <link rel="preconnect" href="https://server.arcgisonline.com">
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="css/styles.css">
   <script>
@@ -17,9 +33,9 @@
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="topbar">
-    <a class="brand" href="#/map" aria-label="Town Ledger home">
-      <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect width="32" height="32" rx="7" fill="var(--accent)"/><path d="M9 22V12h3v10zm5.5 0V8h3v14zM20 22v-7h3v7z" fill="#fff"/></svg>
-      <span>Town Ledger</span>
+    <a class="brand" href="#/map" aria-label="TownView home">
+      <svg class="brand-mark" viewBox="0 0 32 32" width="34" height="34" aria-hidden="true"><rect width="32" height="32" rx="8" fill="var(--brand)"/><path d="M6.5 23v-8l4.25-3.75L15 15v8z" fill="#fff"/><path d="M16.5 23V8.5h4.5V23z" fill="#fff"/><path d="M22.5 23v-6.5h3V23z" fill="var(--accent-2)"/><rect x="5.5" y="24.5" width="21" height="1.8" rx=".9" fill="var(--accent-2)"/></svg>
+      <span class="brand-text"><span class="brand-name">Town<span>View</span></span><span class="brand-tag">Public money, in plain view</span></span>
     </a>
     <nav class="nav" aria-label="Main">
       <a href="#/map" data-nav="map">Map</a>
@@ -30,13 +46,35 @@
       <a href="#/data" data-nav="data">Data</a>
     </nav>
     <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch color theme" title="Switch color theme">
-      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.39 5.39 0 0 1-4.4 2.26 5.4 5.4 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+      <svg class="i-moon" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><path fill="currentColor" d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.39 5.39 0 0 1-4.4 2.26 5.4 5.4 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+      <svg class="i-sun" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.55 1.55M17.15 17.15l1.55 1.55M5.3 18.7l1.55-1.55M17.15 6.85l1.55-1.55" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
     </button>
   </header>
-  <div class="demo-banner" id="demo-banner" hidden>
+  <div class="demo-banner" id="demo-banner" role="status" hidden>
     Showing <strong>fictional demo towns</strong>. Figures are illustrative, not real records. Load real data on the <a href="#/data">Data</a> page.
   </div>
   <main id="main" tabindex="-1"></main>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="brand-name">Town<span>View</span></span>
+        <p>Plain-language bookkeeping for U.S. towns and townships. Every figure links back to the public record it came from.</p>
+        <a href="https://townview.org/">townview.org</a>
+      </div>
+      <div>
+        <h2>Explore</h2>
+        <ul><li><a href="#/map">Map</a></li><li><a href="#/rankings">Rankings</a></li><li><a href="#/states">States</a></li><li><a href="#/compare">Compare towns</a></li><li><a href="#/method">How scores work</a></li><li><a href="#/data">Data &amp; downloads</a></li></ul>
+      </div>
+      <div>
+        <h2>Sources</h2>
+        <ul><li><a href="https://www.census.gov/programs-surveys/gov-finances.html" rel="noopener">Census local government finances</a></li><li><a href="https://www.usaspending.gov" rel="noopener">USAspending.gov</a></li><li>State budget, audit and campaign-finance portals</li></ul>
+      </div>
+    </div>
+    <div class="footer-base">
+      <span>&copy; <span id="year">2026</span> TownView. Open data, no tracking.</span>
+      <a href="https://github.com/OmAnt87/town-bookkeeping.-" rel="noopener">Source on GitHub</a>
+    </div>
+  </footer>
 
   <script defer src="vendor/leaflet/leaflet.js"></script>
   <script defer src="vendor/leaflet-heat/leaflet-heat.js"></script>

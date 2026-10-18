@@ -1,4 +1,4 @@
-// Turns Illinois State Board of Elections (ISBE) campaign disclosure data into Town Ledger
+// Turns Illinois State Board of Elections (ISBE) campaign disclosure data into TownView
 // political-money fields.
 //
 // Every Illinois political committee files with the State Board, local candidates included, so

@@ -1,4 +1,4 @@
-// Turns Colorado Secretary of State TRACER contributions into Town Ledger political-money fields.
+// Turns Colorado Secretary of State TRACER contributions into TownView political-money fields.
 //
 // County candidates file with the Secretary of State; city and town candidates file with their
 // municipal clerk and are not in TRACER. TRACER's bulk files give each candidate committee's

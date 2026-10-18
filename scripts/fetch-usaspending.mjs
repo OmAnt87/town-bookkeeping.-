@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Pulls federal grants awarded to a town government from USAspending.gov and
-// writes them into a Town Ledger dataset file (revenue.federalGrants + ledger rows).
+// writes them into a TownView dataset file (revenue.federalGrants + ledger rows).
 //
 //   node scripts/fetch-usaspending.mjs --state NJ --city "Cherry Hill" \
 //     --recipient "CHERRY HILL" --id cherry-hill-township-nj --name "Cherry Hill Township" \

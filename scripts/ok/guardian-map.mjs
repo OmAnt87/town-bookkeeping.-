@@ -1,4 +1,4 @@
-// Turns Oklahoma Ethics Commission ("Guardian") contributions into Town Ledger political-money fields.
+// Turns Oklahoma Ethics Commission ("Guardian") contributions into TownView political-money fields.
 //
 // County and municipal candidates file with the Ethics Commission. The bulk contribution files
 // name the candidate but not the office, so each committee is placed by the jurisdiction on its

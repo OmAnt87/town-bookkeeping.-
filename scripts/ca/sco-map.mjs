@@ -1,5 +1,5 @@
 // Maps California State Controller Financial Transactions Report lines (cities and counties) to
-// Town Ledger categories.
+// TownView categories.
 //
 // Rows are { category, subcategory_1, subcategory_2, line_description, value } as served by
 // bythenumbers.sco.ca.gov. Governmental funds report revenue by source and spending by function;

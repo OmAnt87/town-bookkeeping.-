@@ -1,4 +1,4 @@
-// Builds real Town Ledger records for a state whose towns or townships are Census township
+// Builds real TownView records for a state whose towns or townships are Census township
 // governments (New Hampshire, Vermont, Maine, Ohio, Michigan) from the Census individual unit
 // files: its counties, cities and towns or townships, plus villages or plantations where the
 // state has them. Each county's file holds

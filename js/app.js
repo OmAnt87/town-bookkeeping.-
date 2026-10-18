@@ -151,11 +151,13 @@ export function route() {
     data: renderData,
   };
   const render = views[view] || renderMap;
+  // The map fills the viewport, so the footer is hidden there (see [data-view="map"] in styles.css).
+  document.body.dataset.view = views[view] ? view : 'map';
   cleanup = render(main, state, arg, query);
   if (view !== 'map') window.scrollTo(0, 0);
   const titles = { map: 'Map', rankings: 'Rankings', states: 'States', compare: 'Compare', method: 'How scores work', data: 'Data' };
   const town = view === 'town' && state.byId.get(arg);
-  document.title = town ? `${town.town.name}, ${town.town.state} - Town Ledger` : `${titles[view] || 'Map'} - Town Ledger`;
+  document.title = town ? `${town.town.name}, ${town.town.state} - TownView` : `${titles[view] || 'Map'} - TownView`;
 }
 
 // Theme toggle: cycles light/dark and remembers the choice per viewer.
@@ -172,5 +174,7 @@ export function isDark() {
   const root = document.documentElement;
   return root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
 }
+
+document.getElementById('year').textContent = new Date().getFullYear();
 
 init();

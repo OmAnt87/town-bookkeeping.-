@@ -1,4 +1,4 @@
-// Turns Virginia Department of Elections receipts into Town Ledger political-money fields.
+// Turns Virginia Department of Elections receipts into TownView political-money fields.
 //
 // Local candidates file with the state: board of supervisors, city and town council, mayor,
 // school board and the constitutional officers (sheriff, Commonwealth's attorney, treasurer,

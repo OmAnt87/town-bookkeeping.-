@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Nebraska's counties, cities and villages from the Census
+// Builds real TownView records for Nebraska's counties, cities and villages from the Census
 // individual unit files (see scripts/common/town-census-build.mjs). Each county's file holds the
 // county and the governments whose people mostly live in it.
 //

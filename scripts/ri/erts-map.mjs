@@ -1,4 +1,4 @@
-// Turns Rhode Island Board of Elections (ERTS) PAC contributions into Town Ledger
+// Turns Rhode Island Board of Elections (ERTS) PAC contributions into TownView
 // political-money fields.
 //
 // All Rhode Island candidates file with the Board of Elections, local ones included. Local

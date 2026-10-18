@@ -100,12 +100,12 @@ export function renderTown(root, state, id) {
     </div>
 
     <section class="scorecard" aria-label="Score">
-      <div class="card">
+      <div class="card g-${/^[A-F]$/.test(s.grade) ? s.grade : 'none'}">
         <div class="eyebrow">Community Return Score</div>
         <div class="score-main" style="margin-top:12px">
           ${gradeBadge(s.grade, 'lg')}
           <div class="score-text">
-            <div class="score-value num">${metricText(entry, 'score')}</div>
+            <div class="score-value num">${escapeHTML(metricText(entry, 'score')).replace(' / 100', '<small> / 100</small>')}</div>
             <div ${s.grade === '?' ? 'hidden' : ''} class="track g-${s.grade}" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${s.score}" aria-label="Score"><span style="width:${s.score}%"></span></div>
             ${s.grade === '?' ? '<div class="small muted"><strong>Not graded yet:</strong> a letter grade needs data for at least half of the score.</div>' : `<div class="small muted">Ranked ${number(rank)} of ${number(peers.length)} ${peerLabel}</div>`}
           </div>

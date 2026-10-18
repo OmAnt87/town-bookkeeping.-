@@ -1,4 +1,4 @@
-// Turns Alaska Public Offices Commission (APOC) campaign disclosure income into Town Ledger
+// Turns Alaska Public Offices Commission (APOC) campaign disclosure income into TownView
 // political-money fields.
 //
 // Candidates for municipal office (borough and city mayors, assemblies and councils) report to

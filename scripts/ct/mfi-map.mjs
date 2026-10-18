@@ -1,4 +1,4 @@
-// Maps Connecticut OPM Municipal Fiscal Indicators to Town Ledger categories.
+// Maps Connecticut OPM Municipal Fiscal Indicators to TownView categories.
 //
 // Revenue comes from the financial statement section (property tax, state, federal, all other).
 // Spending comes from the Uniform Chart of Accounts (UCOA) departments when the town's UCOA

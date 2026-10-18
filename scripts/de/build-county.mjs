@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Delaware's counties, cities and towns. Each county's file
+// Builds real TownView records for Delaware's counties, cities and towns. Each county's file
 // holds the county and the municipalities whose people mostly live in it.
 //
 //   node scripts/de/download.mjs

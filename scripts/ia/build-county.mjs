@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Iowa's counties and cities from the Census individual unit
+// Builds real TownView records for Iowa's counties and cities from the Census individual unit
 // files (see scripts/common/town-census-build.mjs). Each county's file holds the county and the
 // cities whose people mostly live in it. Iowa's townships are not governments in the Census
 // count (their trustees mostly run cemeteries and contract for fire protection), so none are listed.

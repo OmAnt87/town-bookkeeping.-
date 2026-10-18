@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for South Dakota's counties, cities, towns and townships from
+// Builds real TownView records for South Dakota's counties, cities, towns and townships from
 // the Census individual unit files (see scripts/common/town-census-build.mjs). Each county's
 // file holds the county and the governments whose people mostly live in it.
 //

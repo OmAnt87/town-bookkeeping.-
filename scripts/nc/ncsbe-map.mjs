@@ -1,4 +1,4 @@
-// Turns North Carolina State Board of Elections receipts into Town Ledger political-money fields.
+// Turns North Carolina State Board of Elections receipts into TownView political-money fields.
 //
 // Local candidates file with the State Board: county commissioners, sheriffs, registers of
 // deeds, school boards, mayors and municipal councils. Receipts do not name the jurisdiction, so

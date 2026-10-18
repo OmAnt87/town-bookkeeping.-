@@ -1,4 +1,4 @@
-// Turns Delaware Campaign Finance Reporting System (CFRS) data into Town Ledger political-money
+// Turns Delaware Campaign Finance Reporting System (CFRS) data into TownView political-money
 // fields.
 //
 // County office candidates file with the Department of Elections, and so do municipal candidates

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Rhode Island's 39 cities and towns, one county per file.
+// Builds real TownView records for Rhode Island's 39 cities and towns, one county per file.
 //
 //   node scripts/ri/download.mjs
 //   node scripts/ri/fetch-erts.mjs                       # campaign finance (optional)

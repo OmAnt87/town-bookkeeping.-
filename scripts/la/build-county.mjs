@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Louisiana's parishes, cities, towns and villages from the
+// Builds real TownView records for Louisiana's parishes, cities, towns and villages from the
 // Census individual unit files (see scripts/common/town-census-build.mjs). Each parish's file
 // holds the parish and the municipalities whose people mostly live in it.
 //

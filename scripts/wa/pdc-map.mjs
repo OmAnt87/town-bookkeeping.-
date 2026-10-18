@@ -1,4 +1,4 @@
-// Turns Washington Public Disclosure Commission contributions into Town Ledger political-money fields.
+// Turns Washington Public Disclosure Commission contributions into TownView political-money fields.
 //
 // Every candidate for county and city office files with the PDC, and each contribution row names
 // the candidate's office and jurisdiction ("KING CO", "CITY OF SPOKANE", "TOWN OF WINTHROP";

@@ -1,4 +1,4 @@
-// Maps Rhode Island Municipal Transparency Portal (MTP) rows to Town Ledger categories.
+// Maps Rhode Island Municipal Transparency Portal (MTP) rows to TownView categories.
 //
 // The MTP holds each city and town's audited actual results under the state's uniform
 // chart of accounts: revenue by account and spending by department. Schools are a separate

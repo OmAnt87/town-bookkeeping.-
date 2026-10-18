@@ -1,4 +1,4 @@
-// Maps the Virginia Auditor of Public Accounts Comparative Report to Town Ledger categories.
+// Maps the Virginia Auditor of Public Accounts Comparative Report to TownView categories.
 //
 // Revenue (Exhibits B, B1, D, E, F): general government local revenue, aid from the
 // Commonwealth and the federal government, capital project grants and income, and enterprise

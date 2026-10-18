@@ -1,4 +1,4 @@
-// Turns Nebraska Accountability and Disclosure Commission (NADC) contributions into Town Ledger
+// Turns Nebraska Accountability and Disclosure Commission (NADC) contributions into TownView
 // political-money fields.
 //
 // County and city candidates file with the NADC once they raise or spend more than $5,000. The bulk

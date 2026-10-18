@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Hawaii's counties from the Census individual unit files
+// Builds real TownView records for Hawaii's counties from the Census individual unit files
 // (see scripts/common/town-census-build.mjs). Each county has its own file.
 //
 //   node scripts/hi/download.mjs

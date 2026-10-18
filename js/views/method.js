@@ -43,7 +43,7 @@ export function renderMethod(root) {
     <p>Overhead is not wasted money. Towns need clerks, audits and lawyers, and debt pays for roads and buildings. But when overhead grows faster than services, residents get less for what they pay.</p>
 
     <h2>Red flags: surveillance and corporate giveaways</h2>
-    <p>Some spending works against the people paying for it, so Town Ledger counts it against the score instead of as a service:</p>
+    <p>Some spending works against the people paying for it, so TownView counts it against the score instead of as a service:</p>
     <ul>
       <li><strong>Surveillance tech.</strong> Flock and other license-plate cameras log every car that drives past, store the data, and often share it with other agencies and private companies. Facial recognition, ShotSpotter and real-time crime centers add more tracking of residents who have done nothing wrong.</li>
       <li><strong>Data center contracts.</strong> Data centers ask towns for tax breaks, discounted PILOT deals, and new water, power and road infrastructure, while bringing few local jobs and raising utility costs for everyone else.</li>
@@ -58,7 +58,7 @@ export function renderMethod(root) {
     <p>Property tax is the line most people see on a bill, but many towns get half or more of their money elsewhere: sales tax, state aid, federal grants, fees, fines and borrowing. Fines and borrowing need extra attention. Heavy reliance on fines can mean residents are being used as a revenue source, and borrowing must be repaid with interest by future taxpayers.</p>
 
     <h2>Political money</h2>
-    <p>Corporate lobbying and PAC, developer, contractor and union contributions to local officials never pass through the town's books, but they can shape who wins contracts, tax breaks and zoning decisions. Corporate lobbying gets extra attention: the report shows how much of a town's political money comes from corporations, and lines it up against the tax breaks and contracts those corporations received. Town Ledger tracks them next to the budget so you can see both at once. A contribution is not proof of wrongdoing; it is context.</p>
+    <p>Corporate lobbying and PAC, developer, contractor and union contributions to local officials never pass through the town's books, but they can shape who wins contracts, tax breaks and zoning decisions. Corporate lobbying gets extra attention: the report shows how much of a town's political money comes from corporations, and lines it up against the tax breaks and contracts those corporations received. TownView tracks them next to the budget so you can see both at once. A contribution is not proof of wrongdoing; it is context.</p>
 
     <h2>Glossary</h2>
     <dl class="glossary">

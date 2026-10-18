@@ -34,4 +34,4 @@ createServer(async (req, res) => {
   } catch {
     res.writeHead(404, { 'Content-Type': 'text/plain' }).end('Not found');
   }
-}).listen(PORT, () => console.log(`Town Ledger running at http://localhost:${PORT}`));
+}).listen(PORT, () => console.log(`TownView running at http://localhost:${PORT}`));

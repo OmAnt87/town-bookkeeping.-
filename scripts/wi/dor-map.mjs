@@ -1,5 +1,5 @@
 // Maps a Wisconsin government's row in the Department of Revenue "County and Municipal Revenues
-// and Expenditures" workbook (compiled from its Municipal Financial Report) to Town Ledger
+// and Expenditures" workbook (compiled from its Municipal Financial Report) to TownView
 // categories.
 //
 // Governmental funds are reported by revenue source and by function; proprietary (utility and

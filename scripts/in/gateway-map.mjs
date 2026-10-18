@@ -1,5 +1,5 @@
 // Maps an Indiana government's Annual Financial Report (Gateway: detailed receipts and
-// disbursements by fund, on the state's uniform chart of accounts) to Town Ledger categories.
+// disbursements by fund, on the state's uniform chart of accounts) to TownView categories.
 //
 // Left out:
 //   - custodial funds: money a unit holds for others or passes through, such as the county's

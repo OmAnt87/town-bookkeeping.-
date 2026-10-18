@@ -1,4 +1,4 @@
-// Turns Missouri Ethics Commission (MEC) contributions into Town Ledger political-money fields.
+// Turns Missouri Ethics Commission (MEC) contributions into TownView political-money fields.
 //
 // Candidates for county and municipal office file with the MEC. Its itemized-contribution export
 // names the receiving committee (MECID) but not the office; each candidate committee's page lists

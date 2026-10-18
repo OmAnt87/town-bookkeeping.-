@@ -1,4 +1,4 @@
-// Turns Nevada Secretary of State campaign finance data into Town Ledger political-money fields.
+// Turns Nevada Secretary of State campaign finance data into TownView political-money fields.
 //
 // County and city candidates file Contributions and Expenses reports with the Secretary of State.
 // The candidate search lists each county's and city's candidates by election year, and each

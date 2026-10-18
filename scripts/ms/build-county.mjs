@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Mississippi's counties, cities, towns and villages from
+// Builds real TownView records for Mississippi's counties, cities, towns and villages from
 // the Census individual unit files (see scripts/common/town-census-build.mjs). Each county's
 // file holds the county and the municipalities whose people mostly live in it.
 //

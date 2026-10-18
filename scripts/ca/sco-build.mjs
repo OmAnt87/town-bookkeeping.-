@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for California's counties and cities from the State Controller's
+// Builds real TownView records for California's counties and cities from the State Controller's
 // Financial Transactions Reports (see sco-map.mjs). Each county's file holds the county and the
 // cities whose people mostly live in it; San Francisco is a consolidated city and county and is
 // listed once, as a city.

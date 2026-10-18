@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Virginia's 95 counties, 38 independent cities and the
+// Builds real TownView records for Virginia's 95 counties, 38 independent cities and the
 // towns that report to the Auditor of Public Accounts. Each county's file holds the county and
 // its towns; each independent city has its own file.
 //

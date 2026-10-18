@@ -1,4 +1,4 @@
-// Turns Kentucky Registry of Election Finance search results into Town Ledger political-money fields.
+// Turns Kentucky Registry of Election Finance search results into TownView political-money fields.
 //
 // Every candidate for county and city office in Kentucky files with the Registry (those who
 // raise and spend $3,000 or less file only an exemption form). The search lists each candidate's

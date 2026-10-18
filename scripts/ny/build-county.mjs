@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for New York towns, villages and cities, one county per file.
+// Builds real TownView records for New York towns, villages and cities, one county per file.
 //
 //   node scripts/ny/download.mjs                      # OSC files, Census estimates and gazetteers
 //   python3 scripts/ny/osc-to-json.py                 # condense OSC files -> data/raw/ny/osc.json

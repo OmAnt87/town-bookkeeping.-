@@ -1324,7 +1324,7 @@ test('Colorado TRACER committees count for a county only when their name shows a
 });
 
 import { revenueKey as caRevenueKey, expenditureKey as caExpenditureKey, aggregateSco } from '../scripts/ca/sco-map.mjs';
-test('California State Controller lines map to Town Ledger categories', () => {
+test('California State Controller lines map to TownView categories', () => {
   const rev = (category, subcategory_1, line_description, value = 100) => ({ category, subcategory_1, line_description, value });
   assert.equal(caRevenueKey(rev('Taxes', 'Taxes', 'Secured and Unsecured Property Taxes_General Revenues')), 'propertyTax');
   assert.equal(caRevenueKey(rev('Taxes', 'Taxes', 'Property Tax In-Lieu of Vehicle License Fees_General Revenues')), 'propertyTax');

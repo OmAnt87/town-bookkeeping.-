@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Kentucky's counties and cities from the Census individual
+// Builds real TownView records for Kentucky's counties and cities from the Census individual
 // unit files (see scripts/common/town-census-build.mjs). Each county's file holds the county and
 // the cities whose people mostly live in it.
 //

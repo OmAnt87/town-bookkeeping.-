@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Washington's counties, cities and towns from the Census
+// Builds real TownView records for Washington's counties, cities and towns from the Census
 // individual unit files (see scripts/common/town-census-build.mjs). Each county's file holds the
 // county and the cities and towns whose people mostly live in it. Washington has no townships.
 //

@@ -1,5 +1,5 @@
 // Maps Maryland Department of Legislative Services "Local Government Finances" statements to
-// Town Ledger categories.
+// TownView categories.
 //
 // Each statement has governmental operating, governmental capital and enterprise columns.
 // All three are counted, so water, sewer and other utilities a town runs are included, as is

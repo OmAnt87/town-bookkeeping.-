@@ -1,5 +1,5 @@
 // Turns Connecticut State Elections Enforcement Commission (SEEC) receipts for town
-// party committees into Town Ledger political-money fields.
+// party committees into TownView political-money fields.
 //
 // Candidates for town office file with their town clerk, so the state has no
 // statewide record of their money. Town party committees ("Greenwich Republican

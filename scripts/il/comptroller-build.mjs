@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Illinois's counties, cities, villages, towns and townships
+// Builds real TownView records for Illinois's counties, cities, villages, towns and townships
 // from each government's Annual Financial Report in the Illinois Comptroller's local government
 // database (see comptroller-map.mjs), with political money from the State Board of Elections
 // (see politics.mjs). Each county's file holds the county and the governments whose people mostly

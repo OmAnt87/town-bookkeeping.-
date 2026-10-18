@@ -4,10 +4,10 @@ import { money, number, escapeHTML } from '../engine/format.js';
 import { gradeBadge, verifiedPill, isVerified, ICONS, cssVar } from '../charts.js';
 import { isDark } from '../app.js';
 
-// Diverging scale (poor = red, middle = gray, good = blue) and a one-hue
+// Diverging scale (poor = red, middle = gray, good = teal) and a navy
 // sequential scale for metrics that are neither good nor bad.
-const DIVERGING = ['#d03b3b', '#e98a7f', '#b9b8b0', '#6da7ec', '#1c5cab'];
-const SEQUENTIAL = ['#cde2fb', '#86b6ef', '#3987e5', '#1c5cab', '#0d366b'];
+const DIVERGING = ['#d03b3b', '#e98a7f', '#b8bab6', '#5cbfb1', '#0e7a6c'];
+const SEQUENTIAL = ['#d4e1f4', '#8fb0e0', '#4a7fcb', '#24508f', '#132a52'];
 
 function lerpColor(stops, t) {
   const c = Math.max(0, Math.min(1, t)) * (stops.length - 1);
@@ -29,7 +29,7 @@ function quantile(sorted, q) {
 const TILE_URL = (dark) =>
   `https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/${dark ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`;
 
-const HEAT_GRADIENT = { 0.2: '#cde2fb', 0.45: '#6da7ec', 0.7: '#2a78d6', 1: '#0d366b' };
+const HEAT_GRADIENT = { 0.2: '#bfe6e0', 0.45: '#5cbfb1', 0.7: '#2a6fbd', 1: '#132a52' };
 const US_BOUNDS = [[25.5, -123.5], [48.5, -68]];
 
 // State outlines sit underneath the tile layer, so the map stays readable
@@ -118,12 +118,21 @@ export function renderMap(root, state, _arg, query) {
   const wanted = query?.get('state')?.toUpperCase();
   if (wanted && states.includes(wanted)) ui.state = wanted;
   if (!states.includes(ui.state)) ui.state = 'all';
+  const verified = state.towns.filter((t) => isVerified(t.town));
+  const realStates = new Set(verified.map((t) => t.town.state));
+  const residents = verified.reduce((sum, t) => sum + (Number(t.town.population) || 0), 0);
   root.innerHTML = `
   <div class="map-layout">
     <aside class="map-side">
       <div>
-        <h1>Where town money reaches people</h1>
+        <div class="eyebrow">Open data · Public records</div>
+        <h1>See where your town’s money really goes</h1>
         <p class="intro">Each dot is a town. Color shows how well it turns tax and other revenue into services residents actually use. Pick a town for its full ledger and report card.</p>
+        <div class="hero-stats">
+          <div><strong>${number(verified.length)}</strong><span>governments</span></div>
+          <div><strong>${realStates.size - (realStates.has('DC') ? 1 : 0)}</strong><span>states${realStates.has('DC') ? ' + DC' : ''}</span></div>
+          <div><strong>${residents >= 1e6 ? `${Math.round(residents / 1e6)}M` : number(residents)}</strong><span>residents</span></div>
+        </div>
       </div>
       <div class="field">
         <label for="m-search">Find a town</label>
@@ -287,7 +296,7 @@ export function renderMap(root, state, _arg, query) {
     dotLayer.clearLayers();
     markers.clear();
     if (heatLayer) { map.removeLayer(heatLayer); heatLayer = null; }
-    const ring = isDark() ? '#1a1a19' : '#ffffff';
+    const ring = isDark() ? '#111c2f' : '#ffffff';
     if (ui.layer === 'heat' && L.heatLayer) {
       heatLayer = L.heatLayer(
         list.filter((e) => displayMetric(e, m.key).available).map((e) => [e.town.lat, e.town.lng, Math.max(0.05, scale.good(displayMetric(e, m.key).value))]),
@@ -302,7 +311,7 @@ export function renderMap(root, state, _arg, query) {
         radius: ui.layer === 'heat' ? 4 : radius,
         color: ring,
         weight: 1,
-        fillColor: !displayMetric(e, m.key).available ? '#9a9890' : ui.layer === 'heat' ? (isDark() ? '#f4f4f1' : '#121211') : scale.color(displayMetric(e, m.key).value),
+        fillColor: !displayMetric(e, m.key).available ? '#9a9890' : ui.layer === 'heat' ? (isDark() ? '#eef2f8' : '#172033') : scale.color(displayMetric(e, m.key).value),
         fillOpacity: ui.layer === 'heat' ? 0.55 : 0.7,
       })
         .bindTooltip(`<strong>${escapeHTML(town.name)}</strong>, ${town.state}<br>Grade ${s.grade} &middot; ${m.label}: ${metricText(e, m.key)}`, { direction: 'top', offset: [0, -6] })

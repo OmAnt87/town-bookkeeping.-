@@ -1,5 +1,5 @@
 // U.S. Census Bureau Annual Survey of State and Local Government Finances individual unit
-// files: download, parsing and mapping of item codes to Town Ledger categories, shared by the
+// files: download, parsing and mapping of item codes to TownView categories, shared by the
 // states whose local governments are taken from them (North and South Carolina, Delaware,
 // New Hampshire).
 // Amounts in the files are in thousands of dollars.

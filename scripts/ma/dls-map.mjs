@@ -1,5 +1,5 @@
 // Maps Massachusetts Division of Local Services (DLS) Schedule A general fund figures to
-// Town Ledger categories.
+// TownView categories.
 //
 // Schedule A reports revenue by source and spending by function. "Taxes" includes motor
 // vehicle and other excises (meals, rooms, cannabis), which DLS reports separately as actual

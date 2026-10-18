@@ -1,4 +1,4 @@
-// Turns District of Columbia Office of Campaign Finance contributions into Town Ledger
+// Turns District of Columbia Office of Campaign Finance contributions into TownView
 // political-money fields.
 //
 // Every principal campaign committee for District office (mayor, council, attorney general,
