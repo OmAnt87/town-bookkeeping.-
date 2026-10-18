@@ -1298,9 +1298,19 @@
      "url": "https://ricampaignfinance.com/RIPublic/Contributions.aspx"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "label": "U.S. Census Bureau, Annual Survey of State and Local Government Finances, 2024 individual unit file (debt outstanding)",
+     "url": "https://www.census.gov/data/datasets/2024/econ/local/public-use-datasets.html",
+     "addedBy": "scripts/census-debt.mjs"
     }
    ],
    "notes": [
@@ -1311,12 +1321,26 @@
     "Retiree health benefits (OPEB) and the benefits, pension contributions, insurance and claims the town records under general government ($18,964,437 together) are spread across the town's own departments in proportion to their size, as in other states. Schools and debt service are left out of that spread.",
     "Capital outlays recorded under general government ($187,208) are spread across departments in proportion to their size.",
     "Property tax is what the town collected (current and prior years' levies, interest and penalties). The FY 2024 levy was $233,934,915.",
-    "Debt outstanding is not reported to the state in a form that can be loaded, so fiscal health is not scored.",
     "Political money counts PAC contributions, many from unions, to candidates for Warwick offices (mayor or administrator, council, school committee and other town offices, placed by their filing address) and to Warwick's party committees, filed with the Board of Elections since 2023. Corporate contributions to candidates are banned in Rhode Island. Individuals and party and candidate committee money are not counted. A filer keeps one account across offices, so local candidates who have also run for state office are left out.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Rhode Island yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 20 license-plate cameras are mapped inside City of Warwick's borders in OpenStreetMap (17 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Rhode Island yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Debt outstanding: $152,961,000 (long-term plus short-term debt at the end of the fiscal year ending 2024-06-30), as City of Warwick reported it to the U.S. Census Bureau's 2024 Annual Survey of Local Government Finances. The state's own data does not report debt.",
+    "Transparency: City of Warwick has filed its audited financial data with the Division of Municipal Finance for FY 2024, the latest year most RI governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "17 Flock Safety license-plate cameras are mapped inside City of Warwick's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Police drones",
@@ -1343,7 +1367,22 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 20,
+    "flock": 17,
+    "townOperated": 9,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "debt": 152961000,
+   "debtSource": "scripts/census-debt.mjs",
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-coventry-ri",
@@ -1938,9 +1977,19 @@
      "url": "https://ricampaignfinance.com/RIPublic/Contributions.aspx"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "label": "U.S. Census Bureau, Annual Survey of State and Local Government Finances, 2024 individual unit file (debt outstanding)",
+     "url": "https://www.census.gov/data/datasets/2024/econ/local/public-use-datasets.html",
+     "addedBy": "scripts/census-debt.mjs"
     }
    ],
    "notes": [
@@ -1951,12 +2000,26 @@
     "Retiree health benefits (OPEB) and the benefits, pension contributions, insurance and claims the town records under general government ($991,998 together) are spread across the town's own departments in proportion to their size, as in other states. Schools and debt service are left out of that spread.",
     "Capital outlays recorded under general government ($52,452) are spread across departments in proportion to their size.",
     "Property tax is what the town collected (current and prior years' levies, interest and penalties). The FY 2024 levy was $78,594,741.",
-    "Debt outstanding is not reported to the state in a form that can be loaded, so fiscal health is not scored.",
     "Political money counts PAC contributions, many from unions, to candidates for Coventry offices (mayor or administrator, council, school committee and other town offices, placed by their filing address) and to Coventry's party committees, filed with the Board of Elections since 2023. Corporate contributions to candidates are banned in Rhode Island. Individuals and party and candidate committee money are not counted. A filer keeps one account across offices, so local candidates who have also run for state office are left out.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Rhode Island yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 2 license-plate cameras are mapped inside Town of Coventry's borders in OpenStreetMap (2 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Rhode Island yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Debt outstanding: $41,149,000 (long-term plus short-term debt at the end of the fiscal year ending 2024-06-30), as Town of Coventry reported it to the U.S. Census Bureau's 2024 Annual Survey of Local Government Finances. The state's own data does not report debt.",
+    "Transparency: Town of Coventry has filed its audited financial data with the Division of Municipal Finance for FY 2024, the latest year most RI governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "2 Flock Safety license-plate cameras are mapped inside Town of Coventry's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Police drones",
@@ -1970,7 +2033,22 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 2,
+    "flock": 2,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "debt": 41149000,
+   "debtSource": "scripts/census-debt.mjs",
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-east-greenwich-ri",
@@ -2482,9 +2560,19 @@
      "url": "https://ricampaignfinance.com/RIPublic/Contributions.aspx"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "label": "U.S. Census Bureau, Annual Survey of State and Local Government Finances, 2023 individual unit file (debt outstanding)",
+     "url": "https://www.census.gov/data/datasets/2023/econ/local/public-use-datasets.html",
+     "addedBy": "scripts/census-debt.mjs"
     }
    ],
    "notes": [
@@ -2495,12 +2583,42 @@
     "Retiree health benefits (OPEB) and the benefits, pension contributions, insurance and claims the town records under general government ($1,690,922 together) are spread across the town's own departments in proportion to their size, as in other states. Schools and debt service are left out of that spread.",
     "Capital outlays recorded under general government ($218,100) are spread across departments in proportion to their size.",
     "Property tax is what the town collected (current and prior years' levies, interest and penalties). The FY 2024 levy was $62,148,144.",
-    "Debt outstanding is not reported to the state in a form that can be loaded, so fiscal health is not scored.",
     "Political money counts PAC contributions, many from unions, to candidates for East Greenwich offices (mayor or administrator, council, school committee and other town offices, placed by their filing address) and to East Greenwich's party committees, filed with the Board of Elections since 2023. Corporate contributions to candidates are banned in Rhode Island. Individuals and party and candidate committee money are not counted. A filer keeps one account across offices, so local candidates who have also run for state office are left out.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Rhode Island yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 3 license-plate cameras are mapped inside Town of East Greenwich's borders in OpenStreetMap (3 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Rhode Island yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Debt outstanding: $38,802,000 (long-term plus short-term debt at the end of the fiscal year ending 2023-06-30), as Town of East Greenwich reported it to the U.S. Census Bureau's 2023 Annual Survey of Local Government Finances. The state's own data does not report debt. That is a different year from the revenue and spending shown (FY 2024).",
+    "Transparency: Town of East Greenwich has filed its audited financial data with the Division of Municipal Finance for FY 2024, the latest year most RI governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "3 Flock Safety license-plate cameras are mapped inside Town of East Greenwich's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 3,
+    "flock": 3,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "debt": 38802000,
+   "debtSource": "scripts/census-debt.mjs",
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-west-greenwich-ri",
@@ -2920,9 +3038,19 @@
      "url": "https://ricampaignfinance.com/RIPublic/Contributions.aspx"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "label": "U.S. Census Bureau, Annual Survey of State and Local Government Finances, 2024 individual unit file (debt outstanding)",
+     "url": "https://www.census.gov/data/datasets/2024/econ/local/public-use-datasets.html",
+     "addedBy": "scripts/census-debt.mjs"
     }
    ],
    "notes": [
@@ -2933,12 +3061,42 @@
     "Retiree health benefits (OPEB) and the benefits, pension contributions, insurance and claims the town records under general government ($385,160 together) are spread across the town's own departments in proportion to their size, as in other states. Schools and debt service are left out of that spread.",
     "Capital outlays recorded under general government ($25,000) are spread across departments in proportion to their size.",
     "Property tax is what the town collected (current and prior years' levies, interest and penalties). The FY 2024 levy was $21,826,715.",
-    "Debt outstanding is not reported to the state in a form that can be loaded, so fiscal health is not scored.",
     "Political money counts PAC contributions, many from unions, to candidates for West Greenwich offices (mayor or administrator, council, school committee and other town offices, placed by their filing address) and to West Greenwich's party committees, filed with the Board of Elections since 2023. Corporate contributions to candidates are banned in Rhode Island. Individuals and party and candidate committee money are not counted. A filer keeps one account across offices, so local candidates who have also run for state office are left out.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Rhode Island yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 2 license-plate cameras are mapped inside Town of West Greenwich's borders in OpenStreetMap (2 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Rhode Island yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Debt outstanding: $1,836,000 (long-term plus short-term debt at the end of the fiscal year ending 2024-06-30), as Town of West Greenwich reported it to the U.S. Census Bureau's 2024 Annual Survey of Local Government Finances. The state's own data does not report debt.",
+    "Transparency: Town of West Greenwich has filed its audited financial data with the Division of Municipal Finance for FY 2024, the latest year most RI governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "2 Flock Safety license-plate cameras are mapped inside Town of West Greenwich's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 2,
+    "flock": 2,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "debt": 1836000,
+   "debtSource": "scripts/census-debt.mjs",
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-west-warwick-ri",
@@ -3408,9 +3566,19 @@
      "url": "https://ricampaignfinance.com/RIPublic/Contributions.aspx"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "label": "U.S. Census Bureau, Annual Survey of State and Local Government Finances, 2023 individual unit file (debt outstanding)",
+     "url": "https://www.census.gov/data/datasets/2023/econ/local/public-use-datasets.html",
+     "addedBy": "scripts/census-debt.mjs"
     }
    ],
    "notes": [
@@ -3419,12 +3587,42 @@
     "Fire districts, water and sewer authorities and other independent districts are separate and not included.",
     "Retiree health benefits (OPEB) and the benefits, pension contributions, insurance and claims the town records under general government ($5,113,888 together) are spread across the town's own departments in proportion to their size, as in other states. Schools and debt service are left out of that spread.",
     "Property tax is what the town collected (current and prior years' levies, interest and penalties). The FY 2024 levy was $68,197,283.",
-    "Debt outstanding is not reported to the state in a form that can be loaded, so fiscal health is not scored.",
     "Political money counts PAC contributions, many from unions, to candidates for West Warwick offices (mayor or administrator, council, school committee and other town offices, placed by their filing address) and to West Warwick's party committees, filed with the Board of Elections since 2023. Corporate contributions to candidates are banned in Rhode Island. Individuals and party and candidate committee money are not counted. A filer keeps one account across offices, so local candidates who have also run for state office are left out.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Rhode Island yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 1 license-plate camera is mapped inside Town of West Warwick's borders in OpenStreetMap (1 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Rhode Island yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Debt outstanding: $45,420,000 (long-term plus short-term debt at the end of the fiscal year ending 2023-06-30), as Town of West Warwick reported it to the U.S. Census Bureau's 2023 Annual Survey of Local Government Finances. The state's own data does not report debt. That is a different year from the revenue and spending shown (FY 2024).",
+    "Transparency: Town of West Warwick has filed its audited financial data with the Division of Municipal Finance for FY 2024, the latest year most RI governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "1 Flock Safety license-plate camera is mapped inside Town of West Warwick's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 1,
+    "flock": 1,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "debt": 45420000,
+   "debtSource": "scripts/census-debt.mjs",
+   "transparency": {
+    "auditOnTime": true
+   }
   }
  ]
 }

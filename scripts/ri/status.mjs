@@ -5,6 +5,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseCSV, slugify } from '../lib.mjs';
 import { totals, scoreTown } from '../../js/engine/scoring.js';
+import { filingLines, stateTowns } from '../common/status.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const pop = parseCSV(readFileSync(join(ROOT, 'data', 'raw', 'ri', 'popest.csv'), 'latin1'));
@@ -57,11 +58,11 @@ ${rows.join('\n')}
 ## How Rhode Island differs
 - **Schools are the town's appropriation.** School departments and regional school districts report separately, and state school aid goes to them directly. Reports show the town's appropriation to its schools, left out of the services and overhead shares as in Connecticut and Massachusetts.
 - **Central costs are spread.** Retiree health (OPEB), and the benefits, pension contributions, insurance and claims many towns record under general government for the whole workforce, are spread across the town's own departments by size. Capital outlays recorded under general government are spread across all departments. The median town then spends ${Math.round(median(admin) * 100)}% of its non-school budget on general government (NJ, NY and PA are 15-17%).
-- **Fiscal health is not scored.** Debt outstanding is not reported to the state in a loadable form, so only services, overhead and political money are scored. That leaves fewer parts, and scores run higher than in states where debt is scored (median ${Math.round(median(scores))}).
+- **Debt outstanding is not reported to the state in a loadable form.** It comes from the U.S. Census Bureau's Annual Survey of Local Government Finances unit files instead (\`node scripts/census-debt.mjs --state RI\`), for the latest year each town reported itself (all 39).
 
 ## Known gaps
 - **Political money covers local candidates and party committees.** All Rhode Island candidates file with the Board of Elections. Counted since ${since}: PAC contributions (many from unions) to candidates for mayor or administrator, council, school committee and other town offices, placed in a town by their filing address, and to party city and town committees. Corporate contributions to candidates are banned in Rhode Island. A filer keeps one account across offices, so local candidates who have also run for state office are left out; their money cannot be told apart. ${withMoney} of ${covered} towns had PAC money, $${Math.round(polTotal).toLocaleString('en-US')} in all.
-- **Debt and transparency practices** are not loaded, so fiscal health and transparency are not scored.
+${filingLines(stateTowns('RI'), 'audited financial data with the Division of Municipal Finance').join('\n')}
 - **Older year used** because FY ${latest} is not on the portal yet: ${behind.length ? behind.join(', ') : 'none'}.
 - Other financing sources and uses (bond proceeds, transfers) are left out. Fire districts, water and sewer authorities and other independent districts are separate and not included.
 `);

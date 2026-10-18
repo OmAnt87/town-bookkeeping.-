@@ -18,7 +18,7 @@ writeStatus({
       '**Payments to other governments are left out**, as in the Carolinas and Delaware.',
     ],
     gaps: [
-      '**Political money is not scored.** Contributions to Alaska local candidates were not loaded.',
+      '**Political money** comes from the Alaska Public Offices Commission (`node scripts/ak/fetch-apoc.mjs`): the CSV export of its campaign disclosure income search, one report year at a time. Each report names the municipality and office, so mayor, assembly and city council candidates are placed directly. Some municipalities run their own campaign disclosure, so a borough or city with no APOC reports may still have candidates who raised money.',
     ],
   }),
 });

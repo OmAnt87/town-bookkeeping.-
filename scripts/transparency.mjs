@@ -8,7 +8,9 @@
 // auditOnTime: whether the government has filed its annual audit or annual financial
 // report with the state for the latest fiscal year most governments in the state have
 // filed. NJ is not checked: its statewide data is adopted budgets, which says nothing
-// about audits. Other practices have no statewide source yet and stay unchecked.
+// about audits. States built from the Census unit files are not checked either: their
+// years reflect the Census sample, not filing. Other practices have no statewide source
+// yet and stay unchecked.
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -21,6 +23,9 @@ const FILINGS = {
   PA: { report: 'annual audit and financial report', agency: 'the Department of Community and Economic Development' },
   CT: { report: 'audited financial statements', agency: 'the Office of Policy and Management' },
   MA: { report: 'Schedule A annual financial report', agency: 'the Division of Local Services' },
+  FL: { report: 'annual financial report', agency: 'the Department of Financial Services' },
+  RI: { report: 'audited financial data', agency: 'the Division of Municipal Finance' },
+  VA: { report: 'comparative cost report', agency: 'the Auditor of Public Accounts' },
 };
 const MARK = 'Transparency:';
 

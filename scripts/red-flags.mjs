@@ -14,7 +14,7 @@
 // agencies (sheriffs, county police) are matched to county records where a state lists them.
 // Ambiguous names are skipped, not guessed.
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -25,7 +25,6 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const RAW = join(ROOT, 'data', 'raw', 'atlas');
 const OUT = join(ROOT, 'data', 'real');
 const MARK = 'scripts/red-flags.mjs';
-const TODAY = new Date().toISOString().slice(0, 10);
 const STATEWIDE = /\bstatewide contract\b/i;
 const args = parseArgs();
 
@@ -37,6 +36,8 @@ if (args.download) {
 }
 const atlasFile = join(RAW, 'atlas.csv');
 if (!existsSync(atlasFile)) { console.error('Missing data/raw/atlas/atlas.csv. Run: node scripts/red-flags.mjs --download'); process.exit(1); }
+// The day the Atlas was downloaded, so re-running on a later day does not restamp every town.
+const SEARCHED = statSync(atlasFile).mtime.toISOString().slice(0, 10);
 
 const KIND = /\b(charter township|township|borough|city|town|village|plantation)\b/i;
 const norm = (s) => String(s || '').toLowerCase().replace(/&/g, ' and ').replace(/\bst\.?\s/g, 'saint ').replace(/\bmt\.?\s/g, 'mount ')
@@ -141,7 +142,7 @@ for (const r of rows) {
 for (const t of towns) {
   t.redFlags.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   t.sources.push({ label: 'EFF Atlas of Surveillance (police surveillance technology, searched by department)', url: ATLAS_PAGE, addedBy: MARK });
-  t.notes.push(`Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on ${TODAY}. A town or county with none listed may still have programs nobody has reported. ${t.notes.some((n) => n.startsWith('Cameras:')) ? 'Data center deals and corporate tax breaks' : 'Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers'} have not been checked for ${t.stateName} yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.`);
+  t.notes.push(`Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on ${SEARCHED}. A town or county with none listed may still have programs nobody has reported. ${t.notes.some((n) => n.startsWith('Cameras:')) ? 'Data center deals and corporate tax breaks' : 'Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers'} have not been checked for ${t.stateName} yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.`);
 }
 for (const d of datasets) writeFileSync(join(OUT, d.file), `${JSON.stringify(d.data, null, 1)}\n`);
 

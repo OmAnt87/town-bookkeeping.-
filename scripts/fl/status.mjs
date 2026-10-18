@@ -5,6 +5,7 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { totals, scoreTown } from '../../js/engine/scoring.js';
+import { filingLines, stateTowns } from '../common/status.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const OUT = join(ROOT, 'data', 'real');
@@ -39,7 +40,7 @@ ${rows.filter((r) => r.n).map((r) => `| ${label[r.kind]} | ${r.n} | ${r.fy} | ${
 - **Schools are separate.** School districts are their own governments, so county and municipal reports do not include schools.
 - **Counties include the constitutional officers** (sheriff, clerk of court, property appraiser, tax collector and supervisor of elections).
 - **Enterprise funds use accrual accounting**, so utility spending includes depreciation rather than capital purchases, and interest on enterprise debt is part of enterprise expenses.
-- **Debt outstanding is not in the EDR data**, so fiscal health is not scored.
+- **Debt outstanding is not in the EDR data.** It comes from the U.S. Census Bureau's Annual Survey of Local Government Finances unit files instead (\`node scripts/census-debt.mjs --state FL\`), for the latest year each government reported itself: 385 of 477 governments. The rest reported no debt lines or had their figures estimated by the Census, so fiscal health is not scored for them. Census debt includes enterprise (utility, airport, port) debt.
 - **Political money is not scored.** County candidates file campaign reports with the county supervisor of elections and municipal candidates with the city clerk; there is no statewide source for local candidates.
 
 ## Known gaps
@@ -47,6 +48,6 @@ ${rows.filter((r) => r.n).map((r) => `| ${label[r.kind]} | ${r.n} | ${r.fy} | ${
 - **Reports since FY 2022 left out because revenue and spending are more than four times apart** (an entry error or a part left out; ${report.inconsistent.length}): ${report.inconsistent.length ? report.inconsistent.join(', ') : 'none'}.
 - **Not matched to Census geography:** ${report.skipped.length ? report.skipped.join(', ') : 'none'}.
 - **Older year used** because the latest year is empty or inconsistent: ${report.older.length ? report.older.join(', ') : 'none'}.
-- **Transparency practices** have not been checked yet, so they are not scored.
+${filingLines(stateTowns('FL'), 'annual financial report with the Department of Financial Services').join('\n')}
 `);
 console.log(`docs/FL_DATA_STATUS.md: ${towns.length} governments`);
