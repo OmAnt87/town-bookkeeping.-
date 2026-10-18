@@ -306,11 +306,11 @@ node scripts/build-summary.mjs
 
 ### Iowa (counties and cities)
 
-`data/real/ia-<county>.json` holds each Iowa county and the cities whose people mostly live in it, built the same way as Ohio and Michigan. Iowa's townships are not governments in the Census count, so none are listed. Almost every city reported to the Census; about 40 counties' figures were estimated and are left out. Political money is not scored yet. Coverage and gaps: [docs/IA_DATA_STATUS.md](docs/IA_DATA_STATUS.md).
+`data/real/ia-<county>.json` holds each Iowa county and the cities whose people mostly live in it, from each government's Annual Financial Report as the Iowa Department of Management publishes it on data.iowa.gov (city revenues and expenditures by line item and fund, county revenues by type and expenditures by service area, FY 2023-2025) rather than the Census unit files (`scripts/ia/afr-map.mjs`). Iowa's townships are not general-purpose governments, so none are listed. Debt outstanding is not in the published data, so no debt figure is given. Political money is not scored yet. Coverage and gaps: [docs/IA_DATA_STATUS.md](docs/IA_DATA_STATUS.md).
 
 ```bash
-node scripts/ia/download.mjs
-node scripts/ia/build-county.mjs --all && node scripts/ia/status.mjs
+node scripts/ia/afr-download.mjs                  # data.iowa.gov AFR datasets (about 1 GB), population, gazetteers
+node scripts/ia/afr-build.mjs --all && node scripts/ia/afr-status.mjs
 node scripts/build-summary.mjs
 ```
 
