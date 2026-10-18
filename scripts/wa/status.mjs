@@ -16,7 +16,7 @@ writeStatus({
       '**Payments to other governments are left out**, as in the Carolinas and Delaware.',
     ],
     gaps: [
-      '**Political money is not scored.** Contributions to Washington county and city candidates were not loaded.',
+      '**Political money** comes from the Public Disclosure Commission\'s contributions dataset on data.wa.gov (`node scripts/wa/fetch-pdc.mjs`): business, PAC and union contributions to candidates for mayor, city or town council and city attorney, and for county executive, council or commission, sheriff and other county offices, since three years ago. Receipts are placed by the candidate\'s jurisdiction. Candidates who raise little can use mini-reporting and itemize nothing, so a government with none listed is not scored. Individuals, candidates\' own money and parties are not counted.',
       '**Eight governments are missing:** the Census estimated their figures.',
     ],
   }),

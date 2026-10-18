@@ -1061,3 +1061,26 @@ test('Louisiana offices typed by filers are placed in a parish or municipality',
   assert.equal(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'IND', contributorname: 'JANE DOE' }), null);
   assert.equal(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'ORG', contributorname: 'AVOYELLES PARISH CLERK OF COURT' }), null);
 });
+
+import { placeReceipt, classifyPdc, summarizeWaReceipts } from '../scripts/wa/pdc-map.mjs';
+
+test('WA PDC receipts are placed by jurisdiction and classified by contributor code', () => {
+  assert.deepEqual(placeReceipt({ office: 'MAYOR', jurisdiction: 'CITY OF AUBURN *', jurisdiction_county: 'KING' }), { level: 'city', city: 'auburn', county: 'king' });
+  assert.deepEqual(placeReceipt({ office: 'CITY COUNCIL MEMBER', jurisdiction: 'TOWN OF ELMA', jurisdiction_county: 'GRAYS HARBOR' }), { level: 'city', city: 'elma', county: 'grays harbor' });
+  assert.deepEqual(placeReceipt({ office: 'COUNTY SHERIFF', jurisdiction: 'KING CO', jurisdiction_county: 'KING' }), { level: 'county', county: 'king' });
+  assert.equal(placeReceipt({ office: 'SCHOOL DIRECTOR', jurisdiction: 'SEATTLE SD 1' }), null);
+  assert.deepEqual(classifyPdc({ code: 'Business', contributor_name: 'Acme Paving LLC' }), { key: 'developerContributions' });
+  assert.deepEqual(classifyPdc({ code: 'Political Action Committee', contributor_name: 'Realtors PAC' }), { key: 'pacContributions' });
+  assert.deepEqual(classifyPdc({ code: 'Political Action Committee', contributor_name: 'IBEW Local 46 PAC' }), { key: 'unionContributions' });
+  assert.deepEqual(classifyPdc({ code: 'Union', contributor_name: 'Teamsters 117' }), { key: 'unionContributions' });
+  assert.equal(classifyPdc({ code: 'Political Action Committee', contributor_name: 'King County Democrats' }), null);
+  assert.equal(classifyPdc({ code: 'Business', contributor_name: 'Miscellaneous Receipts' }), null);
+  const s = summarizeWaReceipts([
+    { id: '1', amount: '500', receipt_date: '2025-03-01T00:00:00.000', code: 'Business', contributor_name: 'Acme Paving LLC', filer_name: 'JANE DOE', office: 'MAYOR' },
+    { id: '1', amount: '500', receipt_date: '2025-03-01T00:00:00.000', code: 'Business', contributor_name: 'Acme Paving LLC', filer_name: 'JANE DOE', office: 'MAYOR' },
+    { id: '2', amount: '250', receipt_date: '2020-01-01T00:00:00.000', code: 'Union', contributor_name: 'Teamsters 117', filer_name: 'JANE DOE', office: 'MAYOR' },
+  ], '2023-01-01');
+  assert.equal(s.counted, 1);
+  assert.equal(s.influence.developerContributions, 500);
+  assert.equal(s.influence.unionContributions, 0);
+});
