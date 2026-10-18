@@ -142,7 +142,7 @@ for (const r of rows) {
 for (const t of towns) {
   t.redFlags.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   t.sources.push({ label: 'EFF Atlas of Surveillance (police surveillance technology, searched by department)', url: ATLAS_PAGE, addedBy: MARK });
-  t.notes.push(`Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on ${SEARCHED}. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for ${t.stateName} yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.`);
+  t.notes.push(`Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on ${SEARCHED}. A town or county with none listed may still have programs nobody has reported. ${t.notes.some((n) => n.startsWith('Cameras:')) ? 'Data center deals and corporate tax breaks' : 'Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers'} have not been checked for ${t.stateName} yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.`);
 }
 for (const d of datasets) writeFileSync(join(OUT, d.file), `${JSON.stringify(d.data, null, 1)}\n`);
 
