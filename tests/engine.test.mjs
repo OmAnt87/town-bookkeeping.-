@@ -1438,3 +1438,30 @@ test('Missouri committees are placed by the jurisdiction ending the office they 
   assert.equal(classifyMo(row), null);
   assert.equal(classifyMo({ ...row, company: 'Acme', contribution_type: 'In-Kind' }), null);
 });
+
+import { aggregateAos } from '../scripts/oh/aos-map.mjs';
+
+test('OH Auditor of State summaries map by position and function, read negative disbursements, spread capital and leave out financing', () => {
+  // Revenue columns, a total, spending columns, a total, then financing: "Interest" and "Other" are read in context.
+  const gov = [
+    ['Property Taxes', 1000], ['Income Taxes', 2000], ['Intergovernmental Revenues', 500], ['Interest', 100], ['Charges For Services', 300], ['Total', 3900],
+    ['Police', -900], ['Fire', -600], ['Other', -100], ['General Government', -800], ['Leisure Time Activities', -200], ['Intergovernmental Expenditures', -50],
+    ['Capital Outlay', -600], ['Principal Retirement', -400], ['Interest And Fiscal Charges', -100], ['Total', -3750],
+    ['Sale Of Notes', 300], ['Transfers In', 70], ['Total', 370], ['Net Change In Fund Balances', 620],
+  ];
+  const ent = [[
+    ['Charges For Services', 800], ['Total', 800], ['Salaries', 300], ['Depreciation', 100], ['Other Operating Expenses', 200], ['Total', 600],
+    ['Operating Income Loss', 200], ['Interest And Fiscal Charges', -20], ['Interest Earnings', 10], ['Total', -10], ['Transfers Out', -70],
+  ]];
+  const debt = [['General Obligation Bonds', 5000], ['Notes Payable', 300], ['Net Pension Liability', 9999], ['Un Restricted Net Assets Position', 1]];
+  const a = aggregateAos(gov, ent, debt);
+  assert.deepEqual(a.revenue, { propertyTax: 1000, salesTax: 2000, stateAid: 500, localRevenue: 110, feesPermits: 300, utilityCharges: 800 });
+  // Capital outlay (600) spread over the 3,100 of other spending (utility operations included, depreciation not);
+  // borrowing (300) is within capital outlay, so no refinancing.
+  assert.equal(a.refinanced, 0);
+  assert.deepEqual(a.spending, { publicSafety: 1910, administration: 955, parks: 239, debtService: 520, utilities: 597 });
+  assert.equal(a.debt, 5300);
+  // A summary that leaves part of a total out of its columns gets the rest as its own line.
+  const short = aggregateAos([['Property Taxes', 100], ['Total Cash Receipts', 130], ['General Government', 90], ['Total Cash Disbursements', 90]]);
+  assert.equal(short.revenue.localRevenue, 30);
+});
