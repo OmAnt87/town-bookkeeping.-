@@ -12,7 +12,7 @@ const PAGE = 50;
 let lastDataset;
 const ui = { sort: 'score', dir: 'desc', state: 'all', grade: 'all', q: '', realOnly: null };
 
-export function renderRankings(root, state) {
+export function renderRankings(root, state, _arg, query) {
   if (lastDataset !== state.dataset) {
     ui.realOnly = state.towns.some((t) => isVerified(t.town));
     ui.state = 'all'; ui.q = ''; ui.grade = 'all';
@@ -23,6 +23,9 @@ export function renderRankings(root, state) {
   let page = 0;
   const availableStates = () => [...new Set(state.towns.filter((t) => !ui.realOnly || isVerified(t.town)).map((t) => t.town.state))].sort();
   const states = availableStates();
+  // #/rankings?state=MA opens filtered to one state (the States page links here).
+  const wanted = query?.get('state')?.toUpperCase();
+  if (wanted && states.includes(wanted)) ui.state = wanted;
   if (!states.includes(ui.state)) ui.state = 'all';
   root.innerHTML = `
   <div class="page">

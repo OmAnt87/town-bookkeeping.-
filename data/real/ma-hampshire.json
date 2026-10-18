@@ -473,6 +473,11 @@
      "url": "https://www.ocpf.us/Reports/SearchItems"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -488,10 +493,24 @@
     "Fixed costs ($11,175,706: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($3,288,154: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money counts contributions from unions and registered PACs to Easthampton's party ward, town and city committees and its candidates for mayor and city council, filed with the Office of Campaign and Political Finance since 2023. Corporate contributions are banned in Massachusetts. Individuals and money passed between candidate and party committees are not counted. Candidates for other offices file with the city clerk, so their own committees are not included, and party committees also support state candidates.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 2 license-plate cameras are mapped inside City of Easthampton's borders in OpenStreetMap (1 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: City of Easthampton has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "1 Flock Safety license-plate camera is mapped inside City of Easthampton's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Third-party investigative platform",
@@ -503,9 +522,24 @@
       "label": "EFF Atlas of Surveillance AOS012849, citing ShotSpotter",
       "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
      },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.",
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 2,
+    "flock": 1,
+    "townOperated": 1,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "city-of-northampton-ma",
@@ -887,8 +921,9 @@
     "Fixed costs ($25,226,406: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($4,429,403: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money counts contributions from unions and registered PACs to Northampton's party ward, town and city committees and its candidates for mayor and city council, filed with the Office of Campaign and Political Finance since 2023. Corporate contributions are banned in Massachusetts. Individuals and money passed between candidate and party committees are not counted. Candidates for other offices file with the city clerk, so their own committees are not included, and party committees also support state candidates.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside City of Northampton's borders in OpenStreetMap as of 2026-07-15.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: City of Northampton has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
     {
@@ -902,6 +937,8 @@
       "label": "EFF Atlas of Surveillance AOS012887, citing ShotSpotter",
       "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
      },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.",
      "addedBy": "scripts/red-flags.mjs"
     },
     {
@@ -917,7 +954,10 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-amherst-ma",
@@ -1250,6 +1290,11 @@
      "url": "https://www.ocpf.us/Reports/SearchItems"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -1265,8 +1310,9 @@
     "Fixed costs ($8,788,100: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($3,615,146: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money counts contributions from unions and registered PACs to Amherst's party ward, town and city committees and its candidates for mayor and city council, filed with the Office of Campaign and Political Finance since 2023. Corporate contributions are banned in Massachusetts. Individuals and money passed between candidate and party committees are not counted. Candidates for other offices file with the city clerk, so their own committees are not included, and party committees also support state candidates.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 1 license-plate camera is mapped inside Town of Amherst's borders in OpenStreetMap (0 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Amherst has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
     {
@@ -1280,9 +1326,24 @@
       "label": "EFF Atlas of Surveillance AOS012907, citing ShotSpotter",
       "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
      },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.",
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 1,
+    "flock": 0,
+    "townOperated": 0,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-belchertown-ma",
@@ -1625,6 +1686,11 @@
      "url": "https://www.ocpf.us/Reports/SearchItems"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -1640,8 +1706,9 @@
     "Fixed costs ($10,946,456: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($2,299,616: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money counts contributions from unions and registered PACs to Belchertown's party ward, town and city committees, filed with the Office of Campaign and Political Finance since 2023. Corporate contributions are banned in Massachusetts. Individuals and money passed between candidate and party committees are not counted. Candidates for town office file with the town clerk, so their own committees are not included, and party committees also support state candidates.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 2 license-plate cameras are mapped inside Town of Belchertown's borders in OpenStreetMap (0 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Belchertown has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
     {
@@ -1655,9 +1722,24 @@
       "label": "EFF Atlas of Surveillance AOS012981, citing ShotSpotter",
       "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
      },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.",
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 2,
+    "flock": 0,
+    "townOperated": 0,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-chesterfield-ma",
@@ -1956,8 +2038,9 @@
     "Fixed costs ($262,350: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($3,278: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money is not scored: no party committee or candidate for this town files with the Office of Campaign and Political Finance, and candidates for town office file with the town clerk.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Chesterfield's borders in OpenStreetMap as of 2026-07-15.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Chesterfield has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
     {
@@ -1971,9 +2054,14 @@
       "label": "EFF Atlas of Surveillance AOS013091, citing ShotSpotter",
       "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
      },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.",
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-cummington-ma",
@@ -2272,8 +2360,9 @@
     "Fixed costs ($233,340: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($155: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money is not scored: no party committee or candidate for this town files with the Office of Campaign and Political Finance, and candidates for town office file with the town clerk.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Cummington's borders in OpenStreetMap as of 2026-07-15.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Cummington has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
     {
@@ -2287,9 +2376,14 @@
       "label": "EFF Atlas of Surveillance AOS013086, citing ShotSpotter",
       "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
      },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.",
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-goshen-ma",
@@ -2597,8 +2691,9 @@
     "Fixed costs ($182,387: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($3,387: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money is not scored: no party committee or candidate for this town files with the Office of Campaign and Political Finance, and candidates for town office file with the town clerk.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Goshen's borders in OpenStreetMap as of 2026-07-15.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Goshen has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
     {
@@ -2612,9 +2707,14 @@
       "label": "EFF Atlas of Surveillance AOS013074, citing ShotSpotter",
       "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
      },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.",
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-granby-ma",
@@ -2954,8 +3054,9 @@
     "Fixed costs ($3,666,468: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($1,367,307: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money counts contributions from unions and registered PACs to Granby's party ward, town and city committees, filed with the Office of Campaign and Political Finance since 2023. Corporate contributions are banned in Massachusetts. Individuals and money passed between candidate and party committees are not counted. Candidates for town office file with the town clerk, so their own committees are not included, and party committees also support state candidates.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Granby's borders in OpenStreetMap as of 2026-07-15.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Granby has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
     {
@@ -2969,9 +3070,14 @@
       "label": "EFF Atlas of Surveillance AOS013039, citing ShotSpotter",
       "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
      },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.",
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-hadley-ma",
@@ -3310,6 +3416,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -3325,10 +3436,24 @@
     "Fixed costs ($4,364,194: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($1,467,574: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money is not scored: no party committee or candidate for this town files with the Office of Campaign and Political Finance, and candidates for town office file with the town clerk.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 1 license-plate camera is mapped inside Town of Hadley's borders in OpenStreetMap (1 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Hadley has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "1 Flock Safety license-plate camera is mapped inside Town of Hadley's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "License-plate readers",
@@ -3353,9 +3478,24 @@
       "label": "EFF Atlas of Surveillance AOS013007, citing ShotSpotter",
       "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
      },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.",
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 1,
+    "flock": 1,
+    "townOperated": 0,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-hatfield-ma",
@@ -3710,8 +3850,9 @@
     "Fixed costs ($1,933,543: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($814,407: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money is not scored: no party committee or candidate for this town files with the Office of Campaign and Political Finance, and candidates for town office file with the town clerk.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Hatfield's borders in OpenStreetMap as of 2026-07-15.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Hatfield has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
     {
@@ -3725,9 +3866,14 @@
       "label": "EFF Atlas of Surveillance AOS013070, citing ShotSpotter",
       "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
      },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.",
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-huntington-ma",
@@ -4025,8 +4171,9 @@
     "Fixed costs ($213,052: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($6,349: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money is not scored: no party committee or candidate for this town files with the Office of Campaign and Political Finance, and candidates for town office file with the town clerk.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Huntington's borders in OpenStreetMap as of 2026-07-15.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Huntington has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
     {
@@ -4040,9 +4187,14 @@
       "label": "EFF Atlas of Surveillance AOS013088, citing ShotSpotter",
       "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
      },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.",
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-middlefield-ma",
@@ -4338,10 +4490,14 @@
     "Fixed costs ($162,822: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($28,004: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money is not scored: no party committee or candidate for this town files with the Office of Campaign and Political Finance, and candidates for town office file with the town clerk.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Middlefield's borders in OpenStreetMap as of 2026-07-15.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Middlefield has filed its Schedule A annual financial report with the Division of Local Services for FY 2026, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
-   "redFlags": []
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-pelham-ma",
@@ -4662,8 +4818,9 @@
     "Fixed costs ($622,152: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($181,264: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money counts contributions from unions and registered PACs to Pelham's party ward, town and city committees, filed with the Office of Campaign and Political Finance since 2023. Corporate contributions are banned in Massachusetts. Individuals and money passed between candidate and party committees are not counted. Candidates for town office file with the town clerk, so their own committees are not included, and party committees also support state candidates.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Pelham's borders in OpenStreetMap as of 2026-07-15.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Pelham has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
     {
@@ -4677,9 +4834,14 @@
       "label": "EFF Atlas of Surveillance AOS013080, citing ShotSpotter",
       "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
      },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.",
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-plainfield-ma",
@@ -4996,10 +5158,14 @@
     "Fixed costs ($240,192: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($12,383: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money is not scored: no party committee or candidate for this town files with the Office of Campaign and Political Finance, and candidates for town office file with the town clerk.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Plainfield's borders in OpenStreetMap as of 2026-07-15.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Plainfield has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
-   "redFlags": []
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-south-hadley-ma",
@@ -5348,6 +5514,11 @@
      "url": "https://www.ocpf.us/Reports/SearchItems"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -5363,10 +5534,24 @@
     "Fixed costs ($11,016,864: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($3,452,236: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money counts contributions from unions and registered PACs to South Hadley's party ward, town and city committees, filed with the Office of Campaign and Political Finance since 2023. Corporate contributions are banned in Massachusetts. Individuals and money passed between candidate and party committees are not counted. Candidates for town office file with the town clerk, so their own committees are not included, and party committees also support state candidates.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 1 license-plate camera is mapped inside Town of South Hadley's borders in OpenStreetMap (1 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of South Hadley has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "1 Flock Safety license-plate camera is mapped inside Town of South Hadley's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "License-plate readers",
@@ -5391,9 +5576,24 @@
       "label": "EFF Atlas of Surveillance AOS012954, citing ShotSpotter",
       "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
      },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.",
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 1,
+    "flock": 1,
+    "townOperated": 0,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-southampton-ma",
@@ -5740,8 +5940,9 @@
     "Fixed costs ($2,581,207: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($163,955: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money counts contributions from unions and registered PACs to Southampton's party ward, town and city committees, filed with the Office of Campaign and Political Finance since 2023. Corporate contributions are banned in Massachusetts. Individuals and money passed between candidate and party committees are not counted. Candidates for town office file with the town clerk, so their own committees are not included, and party committees also support state candidates.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Southampton's borders in OpenStreetMap as of 2026-07-15.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Southampton has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
     {
@@ -5755,9 +5956,14 @@
       "label": "EFF Atlas of Surveillance AOS013053, citing ShotSpotter",
       "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
      },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.",
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-ware-ma",
@@ -6068,6 +6274,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -6083,10 +6294,24 @@
     "Fixed costs ($7,542,748: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($1,795,794: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money is not scored: no party committee or candidate for this town files with the Office of Campaign and Political Finance, and candidates for town office file with the town clerk.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 1 license-plate camera is mapped inside Town of Ware's borders in OpenStreetMap (1 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Ware has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-07-15",
+     "detail": "1 Flock Safety license-plate camera is mapped inside Town of Ware's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Third-party investigative platform",
@@ -6098,9 +6323,24 @@
       "label": "EFF Atlas of Surveillance AOS012979, citing ShotSpotter",
       "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
      },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.",
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 1,
+    "flock": 1,
+    "townOperated": 0,
+    "asOf": "2026-07-15",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-westhampton-ma",
@@ -6408,8 +6648,9 @@
     "Fixed costs ($816,347: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($140,970: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money is not scored: no party committee or candidate for this town files with the Office of Campaign and Political Finance, and candidates for town office file with the town clerk.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Westhampton's borders in OpenStreetMap as of 2026-07-15.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Westhampton has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
     {
@@ -6423,9 +6664,14 @@
       "label": "EFF Atlas of Surveillance AOS013095, citing ShotSpotter",
       "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
      },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.",
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-williamsburg-ma",
@@ -6774,8 +7020,9 @@
     "Fixed costs ($1,248,034: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($3,540: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money counts contributions from unions and registered PACs to Williamsburg's party ward, town and city committees, filed with the Office of Campaign and Political Finance since 2023. Corporate contributions are banned in Massachusetts. Individuals and money passed between candidate and party committees are not counted. Candidates for town office file with the town clerk, so their own committees are not included, and party committees also support state candidates.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Williamsburg's borders in OpenStreetMap as of 2026-07-15.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Williamsburg has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
     {
@@ -6789,9 +7036,14 @@
       "label": "EFF Atlas of Surveillance AOS013090, citing ShotSpotter",
       "url": "https://www.globenewswire.com/news-release/2022/12/06/2568778/0/en/ShotSpotter-Selected-by-Commonwealth-of-Massachusetts-for-Statewide-Deployment-of-Coplink-X.html"
      },
+     "scored": false,
+     "unscoredReason": "Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.",
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "town-of-worthington-ma",
@@ -7090,10 +7342,14 @@
     "Fixed costs ($779,980: health insurance, pensions and other benefits for town and school staff) are spread across departments in proportion to their size, schools included, as with benefits in other states. Debt service is left out of that spread.",
     "Intergovernmental assessments and other spending ($376,151: charter school tuition, regional transit and county and state charges) are spread across departments in proportion to their size.",
     "Political money is not scored: no party committee or candidate for this town files with the Office of Campaign and Political Finance, and candidates for town office file with the town clerk.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Worthington's borders in OpenStreetMap as of 2026-07-15.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Massachusetts yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Worthington has filed its Schedule A annual financial report with the Division of Local Services for FY 2025, the latest year most MA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
-   "redFlags": []
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   }
  ]
 }
