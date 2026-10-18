@@ -404,13 +404,13 @@ For every state built with `scripts/common/town-census-build.mjs` (New Hampshire
 Surveillance programs from the [EFF Atlas of Surveillance](https://atlasofsurveillance.org/) are matched to municipal police departments, and to sheriffs and county police where a state's counties are listed, so the red-flag part is scored in every state. Builds rewrite their county files, so re-run it after any build:
 
 ```bash
-node scripts/cameras.mjs --download --all && node scripts/cameras.mjs --all   # NY, PA, CT, MA: OpenStreetMap / DeFlock cameras
+node scripts/cameras.mjs --all                    # every state but NJ: OpenStreetMap / DeFlock cameras
 node scripts/red-flags.mjs --download && node scripts/red-flags.mjs   # every state except NJ (NJ: scripts/nj/red-flags.mjs); --state MA,TN for some
 node scripts/transparency.mjs --all                 # NY, PA, CT, MA: has each government filed its latest annual report?
 node scripts/build-summary.mjs
 ```
 
-License-plate cameras mapped in OpenStreetMap are placed inside Census town and village boundaries for New York, Pennsylvania, Connecticut and Massachusetts (`scripts/cameras.mjs`); any Flock camera is a red flag, other brands only when the town is the recorded operator. Atlas records for access every police department gets through a statewide contract (for example, Massachusetts's and Tennessee's CrimeTracer contracts) are shown but not scored. `scripts/transparency.mjs` checks one transparency practice from state records where the state publishes annual-report filings.
+License-plate cameras mapped in OpenStreetMap (from DeFlock's published tiles) are placed inside Census city, town and village boundaries in every state, and inside independent cities and city-counties (`scripts/cameras.mjs`; NJ uses `scripts/nj/red-flags.mjs`); ordinary counties overlap their towns, so they are not placed; any Flock camera is a red flag, other brands only when the town is the recorded operator. Atlas records for access every police department gets through a statewide contract (for example, Massachusetts's and Tennessee's CrimeTracer contracts) are shown but not scored. `scripts/transparency.mjs` checks one transparency practice from state records where the state publishes annual-report filings.
 
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build, red-flags, cameras or transparency run.
 
