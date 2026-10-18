@@ -5,7 +5,7 @@
 //   - Census 2025 population estimates for CA and the 2024 gazetteers (counties, places and
 //     county subdivisions)
 //
-//   node scripts/ca/download.mjs      then: node scripts/ca/build-county.mjs --all
+//   node scripts/ca/download.mjs      then: node scripts/ca/sco-download.mjs (see sco-build.mjs)
 //
 // The Census files are used so California is built the same way as Ohio and northern New England.
 
@@ -29,4 +29,4 @@ for (const g of ['counties', 'place', 'cousubs']) {
   curl('-o', join(RAW, `gaz-${g}.zip`), `${GAZ}/2024_Gaz_${g}_national.zip`);
   execFileSync('unzip', ['-o', '-q', join(RAW, `gaz-${g}.zip`), '-d', RAW], { stdio: 'inherit' });
 }
-console.log('Done. Next: node scripts/ca/build-county.mjs --all');
+console.log('Done. Next: node scripts/ca/sco-download.mjs (State Controller reports), or node scripts/ca/build-county.mjs --all for the Census-only build');

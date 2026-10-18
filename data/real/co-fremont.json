@@ -11,7 +11,7 @@
    "lng": -105.42496,
    "population": 50039,
    "fiscalYear": 2022,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "08043",
    "revenue": {
     "feesPermits": 3933000,
@@ -29,9 +29,24 @@
     "administration": 13636000
    },
    "debt": 20637000,
+   "influence": {
+    "pacContributions": 0,
+    "developerContributions": 500,
+    "unionContributions": 0
+   },
+   "topDonors": [
+    {
+     "name": "Canon City Coins & Collectibles",
+     "type": "Business",
+     "recipient": "Greg Owen (Greg Owen For Sheriff)",
+     "amount": 500
+    }
+   ],
    "reporting": {
     "basis": "Actual results (as reported to the Census Bureau's Annual Survey of Local Government Finances)",
-    "scope": "All county funds, including the sheriff, jail, courts, public health, human services and county roads"
+    "scope": "All county funds, including the sheriff, jail, courts, public health, human services and county roads",
+    "politicalPeriod": "Since 2023; retrieved 2026-10-14",
+    "politicalScope": "County candidates whose committee names the office: commissioner, sheriff, clerk, treasurer, assessor, coroner, surveyor"
    },
    "history": [
     {
@@ -203,6 +218,15 @@
      "description": "Natural resources (construction)",
      "amount": 9000,
      "source": "https://www.census.gov/data/datasets/2022/econ/local/public-use-datasets.html"
+    },
+    {
+     "date": "2026-02-02",
+     "flow": "influence",
+     "category": "developerContributions",
+     "counterparty": "Canon City Coins & Collectibles",
+     "description": "Contribution to Greg Owen (Greg Owen For Sheriff)",
+     "amount": 500,
+     "source": "https://tracer.sos.colorado.gov/PublicSite/DataDownload.aspx"
     }
    ],
    "sources": [
@@ -219,6 +243,10 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "Colorado Secretary of State TRACER: contributions to Fremont County candidates since 2023",
+     "url": "https://tracer.sos.colorado.gov/PublicSite/DataDownload.aspx"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -233,9 +261,9 @@
     "Payments to other governments ($34,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Colorado county candidates were not loaded.",
+    "Political money counts itemized cash contributions from businesses, unions and political committees to Fremont County candidates whose committee names a county office, reported to the Secretary of State's TRACER since 2023. Committees whose names do not show the office are left out, so this is a floor. Individuals, LLC members, in-kind gifts and party and candidate committees are not counted.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
     {
@@ -277,7 +305,7 @@
    "lng": -105.2209,
    "population": 17030,
    "fiscalYear": 2024,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "0811810",
    "revenue": {
     "feesPermits": 3432000,
@@ -538,6 +566,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -549,11 +582,25 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Colorado city candidates were not loaded.",
+    "Political money is not scored: Colorado city and town candidates file campaign reports with their municipal clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 3 license-plate cameras are mapped inside City of Cañon City's borders in OpenStreetMap (3 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "3 Flock Safety license-plate cameras are mapped inside City of Cañon City's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "License-plate readers",
@@ -580,7 +627,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 3,
+    "flock": 3,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-florence-co",
@@ -593,7 +650,7 @@
    "lng": -105.10023,
    "population": 3856,
    "fiscalYear": 2024,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "0827040",
    "revenue": {
     "feesPermits": 144000,
@@ -856,9 +913,10 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Colorado city candidates were not loaded.",
+    "Political money is not scored: Colorado city and town candidates file campaign reports with their municipal clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside City of Florence's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -873,7 +931,7 @@
    "lng": -105.19094,
    "population": 235,
    "fiscalYear": 2022,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "0809115",
    "revenue": {
     "utilityCharges": 94000,
@@ -1066,9 +1124,10 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Colorado city candidates were not loaded.",
+    "Political money is not scored: Colorado city and town candidates file campaign reports with their municipal clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Brookside's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -1083,7 +1142,7 @@
    "lng": -105.1422,
    "population": 361,
    "fiscalYear": 2022,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "0815330",
    "revenue": {
     "utilityCharges": 180000,
@@ -1267,9 +1326,10 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Colorado city candidates were not loaded.",
+    "Political money is not scored: Colorado city and town candidates file campaign reports with their municipal clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Coal Creek's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -1284,7 +1344,7 @@
    "lng": -105.16452,
    "population": 530,
    "fiscalYear": 2022,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "0864970",
    "revenue": {
     "utilityCharges": 476000,
@@ -1450,9 +1510,10 @@
     "Payments to other governments ($144,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Colorado city candidates were not loaded.",
+    "Political money is not scored: Colorado city and town candidates file campaign reports with their municipal clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Rockvale's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -1467,7 +1528,7 @@
    "lng": -105.17099,
    "population": 789,
    "fiscalYear": 2022,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "0885155",
    "revenue": {
     "utilityCharges": 276000,
@@ -1643,9 +1704,10 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Colorado city candidates were not loaded.",
+    "Political money is not scored: Colorado city and town candidates file campaign reports with their municipal clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Williamsburg's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   }

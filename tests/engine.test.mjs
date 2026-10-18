@@ -36,7 +36,7 @@ test('score is bounded and components sum to the score', () => {
   assert.ok(Math.abs(sum - s.score) < 0.2);
   assert.ok(s.score >= 0 && s.score <= 100);
   for (const c of s.components) assert.ok(c.points >= 0 && c.points <= c.max, c.key);
-  assert.equal(COMPONENTS.reduce((a, c) => a + c.max, 0), 100);
+  assert.equal(COMPONENTS.filter((c) => !c.penalty).reduce((a, c) => a + c.max, 0), 100);
 });
 
 test('a well-run town outscores a poorly-run one', () => {
@@ -51,7 +51,7 @@ test('a well-run town outscores a poorly-run one', () => {
 
 test('surveillance, data center deals and corporate tax breaks cost points', () => {
   const clean = scoreTown(base());
-  assert.equal(clean.components.find((c) => c.key === 'redFlags').points, 10);
+  assert.equal(clean.components.find((c) => c.key === 'redFlags').points, 0);
   const flagged = base();
   flagged.spending.surveillance = 150_000;
   flagged.spending.corporateDeals = 200_000;
@@ -59,7 +59,8 @@ test('surveillance, data center deals and corporate tax breaks cost points', () 
   const s = scoreTown(flagged);
   assert.equal(s.totals.redFlagSpending, 350_000);
   assert.equal(s.totals.taxBreaks, 300_000);
-  assert.equal(s.components.find((c) => c.key === 'redFlags').points, 0);
+  assert.equal(s.components.find((c) => c.key === 'redFlags').points, -10);
+  assert.equal(s.penalty, 10, 'the whole penalty comes off');
   assert.ok(s.score < clean.score);
 });
 
@@ -94,7 +95,7 @@ test('documented red flags without dollar amounts still cost points', () => {
   town.redFlags = [];
   const clean = scoreTown(town).components.find((c) => c.key === 'redFlags');
   assert.equal(clean.available, true, 'an empty list means checked, none found');
-  assert.equal(clean.points, 10);
+  assert.equal(clean.points, 0);
   town.redFlags = [
     { kind: 'surveillance', label: 'License-plate readers', date: '2023-04-28' },
     { kind: 'surveillance', label: 'License-plate readers', date: '2025-01-02' },
@@ -103,7 +104,7 @@ test('documented red flags without dollar amounts still cost points', () => {
   ];
   const s = scoreTown(town);
   assert.equal(s.totals.documentedRedFlags, 2, 'same program counted once; unscored records skipped');
-  assert.equal(s.components.find((c) => c.key === 'redFlags').points, 5);
+  assert.equal(s.components.find((c) => c.key === 'redFlags').points, -5);
 });
 
 test('corporate ties match donors and lobbyists the town also pays', () => {
@@ -119,6 +120,20 @@ test('corporate ties match donors and lobbyists the town also pays', () => {
   const ties = corporateTies(town);
   assert.deepEqual(ties.map((x) => [x.name, x.paid, x.gave]), [['Valley Paving LLC', 400_000, 2_000], ['Flock Safety', 90_000, 25_000]]);
   assert.equal(totals(town).corporateMoney, 26_000);
+});
+
+test('red flags only ever lower a score', () => {
+  // A town whose other parts are weak would gain from a clean red-flag part if it
+  // were averaged in; as a penalty, finding nothing changes nothing.
+  const weak = base();
+  weak.spending.consultants = 3_000_000;
+  weak.transparency = {};
+  const unchecked = { ...weak, spending: { ...weak.spending } };
+  delete unchecked.spending.surveillance;
+  delete unchecked.spending.corporateDeals;
+  assert.equal(scoreTown(weak).score, scoreTown(unchecked).score);
+  const flagged = { ...weak, redFlags: [{ kind: 'surveillance', label: 'Flock camera network' }] };
+  assert.ok(Math.abs(scoreTown(weak).score - scoreTown(flagged).score - 2.5) < 0.2);
 });
 
 test('grade cut-offs', () => {
@@ -241,7 +256,7 @@ test('missing sections are not scored instead of counting as zero', () => {
   const inf = s.components.find((c) => c.key === 'influence');
   assert.equal(inf.available, false);
   assert.equal(inf.points, null);
-  assert.equal(s.coverage.scored, 5);
+  assert.equal(s.coverage.scored, 4);
   const full = scoreTown(base());
   assert.notEqual(s.score, full.score);
   assert.ok(s.score >= 0 && s.score <= 100);
@@ -996,6 +1011,56 @@ test('Census principal repaid with new borrowing beyond capital outlay is left o
   assert.equal(aggregateNc([it('T01', 1000), it('E62', 600), it('F44', 900), it('29U', 900), it('39U', 100)], { refinancing: true }).refinanced, 0);
 });
 
+import { taxesFor, taxYearFor } from '../scripts/vt/taxes.mjs';
+
+test('With the state\'s tax figures, the levy rule takes out the education tax a town reported as its own', () => {
+  const it = (code, amount, flag = 'R') => ({ code, amount, flag });
+  // Levy of 4,191 includes the town's 965 and education tax billed for the state.
+  const gross = aggregateNh([it('T01', 4191), it('C89', 300), it('E44', 900), it('E62', 300)], false, { taxes: { muni: 965000, edu: 3301000, taxYear: 2021 } });
+  assert.equal(gross.passThroughSource, 'state');
+  assert.equal(gross.passThrough, 3226000);
+  assert.deepEqual(gross.revenue, { propertyTax: 965000, stateAid: 300000 });
+  assert.equal(gross.lineTotals.revenue, 1265000);
+  // A levy close to the municipal tax is the town's own, surplus included (the estimate would have cut it).
+  const own = aggregateNh([it('T01', 2436), it('E44', 2000)], false, { taxes: { muni: 2200000, edu: 6000000, taxYear: 2021 } });
+  assert.equal(own.passThrough, 0);
+  assert.equal(own.revenue.propertyTax, 2436000);
+  // Assessments filed as general government spending are still left out first.
+  const both = aggregateNh([it('T01', 4000), it('E89', 3000), it('E62', 500), it('E44', 400)], false, { taxes: { muni: 900000, edu: 3100000, taxYear: 2022 } });
+  assert.equal(both.assessments, 3000000);
+  assert.equal(both.passThrough, 3100000);
+  assert.equal(both.revenue.propertyTax, 900000);
+});
+
+test('VT tax file lookup matches Census names and the tax year funding each fiscal year', () => {
+  assert.equal(taxYearFor('2022-06-30'), 2021);
+  assert.equal(taxYearFor('2022-12-31'), 2022);
+  const taxes = { barrecity: { 2021: { edu: 1, muni: 2 } }, barretown: { 2021: { edu: 3, muni: 4 } }, bristol: { 2023: { edu: 5, muni: 6 } }, essexjunction: { 2022: { edu: 7, muni: 8 } } };
+  assert.deepEqual(taxesFor(taxes, 'BARRE CITY', '2022-06-30'), { edu: 1, muni: 2, taxYear: 2021 });
+  assert.deepEqual(taxesFor(taxes, 'BARRE TOWN', '2022-06-30'), { edu: 3, muni: 4, taxYear: 2021 });
+  assert.deepEqual(taxesFor(taxes, 'BRISTOL TOWN', '2024-06-30'), { edu: 5, muni: 6, taxYear: 2023 });
+  // Essex Junction became a city in July 2022: its first tax year is the next one.
+  assert.deepEqual(taxesFor(taxes, 'ESSEX JUNCTION CITY', '2022-06-30'), { edu: 7, muni: 8, taxYear: 2022 });
+  assert.equal(taxesFor(taxes, 'GOSHEN TOWN', '2022-06-30'), null);
+});
+
+import { aggregateCmre } from '../scripts/wi/dor-map.mjs';
+
+test('WI DOR rows map by column, count utility funds as totals and leave out other financing', () => {
+  const a = aggregateCmre({
+    'General Property Taxes': 1000, 'Tax Increments': 200, 'State Shared Revenues': 300, 'Other Financing Sources': 5000,
+    'Propriety Funds - Revenues': 400, 'Law Enforcement': 500, 'Fire': 100, 'General Government': 150, 'Conservation and Development': 50,
+    'Highway Construction': 250, 'Debt Service - Principal Interest': 80, 'Other Financing Uses': 4000, 'Propriety Funds - Expenses': 390,
+    'Total General Obligation Debt': 2500,
+  });
+  assert.deepEqual(a.revenue, { propertyTax: 1200, stateAid: 300, utilityCharges: 400 });
+  assert.deepEqual(a.spending, { administration: 200, publicSafety: 600, roads: 250, debtService: 80, utilities: 390 });
+  assert.equal(a.debt, 2500);
+  assert.deepEqual(a.leftOut, { sources: 5000, uses: 4000 });
+  assert.equal(a.empty, false);
+  assert.equal(aggregateCmre({ 'General Property Taxes': 1000 }).empty, true);
+});
+
 import { aggregateGateway, custodial, receiptKey, functionKey } from '../scripts/in/gateway-map.mjs';
 
 test('IN Gateway receipts and disbursements map by code, fund and department, leaving out custodial money', () => {
@@ -1039,37 +1104,43 @@ test('IN general funds without departments are not split when they are a large s
   assert.deepEqual(aggregateGateway(rev, [ds('D101', 600, 'Township', '101001')], [], { township: true }).spending, { administration: 600 });
 });
 
-import { taxesFor, taxYearFor } from '../scripts/vt/taxes.mjs';
+import { aggregateComptroller, revenueKey as ilRevenueKey, functionKey as ilFunctionKey, debtOutstanding as ilDebt } from '../scripts/il/comptroller-map.mjs';
 
-test('With the state\'s tax figures, the levy rule takes out the education tax a town reported as its own', () => {
-  const it = (code, amount, flag = 'R') => ({ code, amount, flag });
-  // Levy of 4,191 includes the town's 965 and education tax billed for the state.
-  const gross = aggregateNh([it('T01', 4191), it('C89', 300), it('E44', 900), it('E62', 300)], false, { taxes: { muni: 965000, edu: 3301000, taxYear: 2021 } });
-  assert.equal(gross.passThroughSource, 'state');
-  assert.equal(gross.passThrough, 3226000);
-  assert.deepEqual(gross.revenue, { propertyTax: 965000, stateAid: 300000 });
-  assert.equal(gross.lineTotals.revenue, 1265000);
-  // A levy close to the municipal tax is the town's own, surplus included (the estimate would have cut it).
-  const own = aggregateNh([it('T01', 2436), it('E44', 2000)], false, { taxes: { muni: 2200000, edu: 6000000, taxYear: 2021 } });
-  assert.equal(own.passThrough, 0);
-  assert.equal(own.revenue.propertyTax, 2436000);
-  // Assessments filed as general government spending are still left out first.
-  const both = aggregateNh([it('T01', 4000), it('E89', 3000), it('E62', 500), it('E44', 400)], false, { taxes: { muni: 900000, edu: 3100000, taxYear: 2022 } });
-  assert.equal(both.assessments, 3000000);
-  assert.equal(both.passThrough, 3100000);
-  assert.equal(both.revenue.propertyTax, 900000);
+test('IL Comptroller reports map revenue by source and spending by function, counting governmental and enterprise funds', () => {
+  const row = (Category, GN = 0, EP = 0, extra = {}) => ({ Category, GN: String(GN), SR: '0', CP: String(extra.CP || 0), DS: '0', EP: String(EP), TS: String(extra.TS || 0), FD: String(extra.FD || 0), DP: '0' });
+  assert.equal(ilRevenueKey('201t')[0], 'propertyTax');
+  assert.equal(ilRevenueKey('212t')[0], 'stateAid');
+  assert.equal(ilRevenueKey('234a')[0], 'utilityCharges');
+  assert.equal(ilRevenueKey('234k')[0], 'feesPermits');
+  assert.equal(ilFunctionKey('252a')[0], 'publicSafety');
+  assert.equal(ilFunctionKey('254t')[0], 'administration');
+  assert.equal(ilFunctionKey('271c')[0], 'roads');
+  assert.equal(ilFunctionKey('272t'), null);
+  const a = aggregateComptroller(
+    // Fiduciary money (the county collector's tax distributions) is left out.
+    [row('201t', 1000, 0, { FD: 50000 }), row('234a', 0, 400), row('234t', 0, 400)],
+    // Sub-codes are used where reported, not the total as well; depreciation is left out;
+    // utility capital outlay is utilities; the other 80 is spread over all non-debt spending
+    // (500 : 300 : 300).
+    [row('252a', 500), row('252t', 500), row('251t', 300), row('271a', 0, 200), row('272t', 0, 90), row('280t', 0, 100, { CP: 80 }), row('259b', 0, 0)],
+  );
+  assert.deepEqual(a.revenue, { propertyTax: 1000, utilityCharges: 400 });
+  assert.deepEqual(a.spending, { publicSafety: 536, administration: 322, utilities: 322 });
+  assert.equal(a.capital, 80);
+  assert.equal(a.leftOut.depreciation, 90);
+  assert.equal(a.leftOut.revenue, 50000);
 });
 
-test('VT tax file lookup matches Census names and the tax year funding each fiscal year', () => {
-  assert.equal(taxYearFor('2022-06-30'), 2021);
-  assert.equal(taxYearFor('2022-12-31'), 2022);
-  const taxes = { barrecity: { 2021: { edu: 1, muni: 2 } }, barretown: { 2021: { edu: 3, muni: 4 } }, bristol: { 2023: { edu: 5, muni: 6 } }, essexjunction: { 2022: { edu: 7, muni: 8 } } };
-  assert.deepEqual(taxesFor(taxes, 'BARRE CITY', '2022-06-30'), { edu: 1, muni: 2, taxYear: 2021 });
-  assert.deepEqual(taxesFor(taxes, 'BARRE TOWN', '2022-06-30'), { edu: 3, muni: 4, taxYear: 2021 });
-  assert.deepEqual(taxesFor(taxes, 'BRISTOL TOWN', '2024-06-30'), { edu: 5, muni: 6, taxYear: 2023 });
-  // Essex Junction became a city in July 2022: its first tax year is the next one.
-  assert.deepEqual(taxesFor(taxes, 'ESSEX JUNCTION CITY', '2022-06-30'), { edu: 7, muni: 8, taxYear: 2022 });
-  assert.equal(taxesFor(taxes, 'GOSHEN TOWN', '2022-06-30'), null);
+test('IL "other" spending is not broken down when it is a large share, and debt outstanding comes from the indebtedness statement', () => {
+  const row = (Category, GN) => ({ Category, GN: String(GN), SR: '0', CP: '0', DS: '0', EP: '0', TS: '0', FD: '0', DP: '0' });
+  const rev = [row('201t', 1000)];
+  assert.deepEqual(aggregateComptroller(rev, [row('252t', 600), row('260t', 400)]).spending, { publicSafety: 600, otherSpending: 400 });
+  assert.deepEqual(aggregateComptroller(rev, [row('252t', 900), row('260t', 100)]).spending, { publicSafety: 900, administration: 100 });
+  // Sub-codes that add up to less than the code's total keep the rest under the total.
+  assert.deepEqual(aggregateComptroller(rev, [row('252a', 300), row('252t', 500), row('251t', 100)]).spending, { publicSafety: 500, administration: 100 });
+  // General obligation bonds (water): 1,000 at the start, 200 issued, 100 retired; contractual: 50 less 10.
+  assert.equal(ilDebt({ a400: '1000', a406: '200', a412: '100', t403: '50', t415: '10' }), 1140);
+  assert.equal(ilDebt(undefined), 0);
 });
 
 import { atlasLink, agencyTown, ATLAS_PAGE } from '../scripts/common/atlas.mjs';
@@ -1136,4 +1207,234 @@ test('Louisiana offices typed by filers are placed in a parish or municipality',
   assert.deepEqual(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'PAC', contributorname: 'OPERATORS POLITICAL ARM LOCAL, IUOE' }), { key: 'unionContributions' });
   assert.equal(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'IND', contributorname: 'JANE DOE' }), null);
   assert.equal(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'ORG', contributorname: 'AVOYELLES PARISH CLERK OF COURT' }), null);
+});
+
+import { placeCommittee as alPlace, classifyAl, norm as alNorm } from '../scripts/al/fcpa-map.mjs';
+test('Alabama committees are placed by office, county jurisdiction or mailing city', () => {
+  const places = { counties: new Map([[alNorm('Washington'), 'washington'], [alNorm('St. Clair'), 'st-clair']]), cities: new Map([[alNorm('Mobile'), ['mobile']], [alNorm('Midway'), ['midway-1', 'midway-2']]]) };
+  assert.equal(alPlace({ office: 'County Commissioner', jurisdiction: 'WASHINGTON COUNTY' }, places), 'washington');
+  assert.equal(alPlace({ office: 'Sheriff', jurisdiction: 'ST. CLAIR COUNTY' }, places), 'st-clair');
+  assert.equal(alPlace({ office: 'Mayor', city: 'MOBILE, ALABAMA' }, places), 'mobile');
+  assert.equal(alPlace({ office: 'City Council', city: 'Midway' }, places), null);
+  assert.equal(alPlace({ office: 'Circuit Court Judge', jurisdiction: 'WASHINGTON COUNTY' }, places), null);
+  assert.equal(alPlace({ office: 'County Board of Education', jurisdiction: 'WASHINGTON COUNTY' }, places), null);
+  const row = (o) => ({ contributiontype: 'Cash (Itemized)', contributortype: 'Group/Business/Corporation', lastname: 'WINWOOD LLC', candidatelast: 'DRUMMOND', ...o });
+  assert.deepEqual(classifyAl(row()), { key: 'developerContributions' });
+  assert.deepEqual(classifyAl(row({ lastname: 'Alabama Realtors Political Action Committee' })), { key: 'pacContributions' });
+  assert.deepEqual(classifyAl(row({ contributortype: 'PAC', lastname: 'IBEW LOCAL 136 PAC' })), { key: 'unionContributions' });
+  assert.equal(classifyAl(row({ lastname: 'Team Drummond' })), null);
+  assert.equal(classifyAl(row({ contributiontype: 'In-Kind (Itemized)' })), null);
+  assert.equal(classifyAl(row({ contributortype: 'Individual', lastname: 'Smith' })), null);
+});
+
+import { placeMunicipality as akPlace, classifyAk, norm as akNorm } from '../scripts/ak/apoc-map.mjs';
+test('Alaska APOC municipalities map to boroughs, cities and consolidated city-boroughs', () => {
+  const places = { boroughs: new Map([[akNorm('Fairbanks North Star Borough'), 'fnsb'], [akNorm('Municipality of Anchorage'), 'anchorage']]), cities: new Map([[akNorm('Fairbanks'), 'fairbanks']]) };
+  assert.equal(akPlace('Fairbanks, City of', places), 'fairbanks');
+  assert.equal(akPlace('Fairbanks Northstar Borough', places), 'fnsb');
+  assert.equal(akPlace('Anchorage, City and Borough', places), 'anchorage');
+  assert.equal(akPlace('Palmer, City of', places), null);
+  const row = (o) => ({ 'Payment Type': 'Check', 'Last/Business Name': 'IBEW PAC', 'First Name': '', Occupation: 'PAC', ...o });
+  assert.deepEqual(classifyAk(row()), { key: 'unionContributions' });
+  assert.deepEqual(classifyAk(row({ 'Last/Business Name': 'Anchorage Home Builders Association BUILD-PAC' })), { key: 'pacContributions' });
+  assert.deepEqual(classifyAk(row({ 'Last/Business Name': 'Turnagain Training', Occupation: 'Business' })), { key: 'developerContributions' });
+  assert.equal(classifyAk(row({ 'Last/Business Name': 'Anchorage Democrats', Occupation: 'Party Committee' })), null);
+  assert.equal(classifyAk(row({ 'Last/Business Name': 'Lee', 'First Name': 'Amber' })), null);
+  assert.equal(classifyAk(row({ 'Payment Type': 'Bank Interest', 'Last/Business Name': 'Global Federal Credit Union' })), null);
+});
+
+import { officeLevel as nvLevel, classifyNv, nameKey as nvNameKey, norm as nvNorm, parseOffice as nvOffice } from '../scripts/nv/sos-map.mjs';
+test('Nevada candidates are placed by jurisdiction and office; organizations recognized by name', () => {
+  assert.equal(nvLevel('Clark County Commissioner, District A', 'CLARK COUNTY'), 'county');
+  assert.equal(nvLevel('City of Reno, City Council, Ward 1', 'CITY OF RENO'), 'city');
+  assert.equal(nvLevel('Carson City, Supervisor, Ward 2', 'CARSON CITY'), 'county');
+  assert.equal(nvLevel('City of Las Vegas, Municipal Court Judge, Dept 3', 'CITY OF LAS VEGAS'), null);
+  assert.equal(nvLevel('City of Reno, Assistant City Manager', 'CITY OF RENO'), null);
+  assert.equal(nvLevel('Clark County School Trustee, District C', 'CLARK COUNTY'), null);
+  assert.equal(nvNorm('CITY OF NORTH LAS VEGAS'), 'north las vegas');
+  assert.equal(nvNorm('BOULDER CITY'), nvNorm('Boulder City'));
+  assert.equal(nvNameKey('Michael Corey Thomas'), 'michael thomas');
+  assert.equal(nvOffice('<span id="ctl00_MainContent_lblOffice">Clark County Commissioner, District A</span>'), 'Clark County Commissioner, District A');
+  const row = (o) => ({ Type: 'Monetary Contribution', Contributor: '19 Enterprises LLC', ...o });
+  assert.deepEqual(classifyNv(row()), { key: 'developerContributions' });
+  assert.deepEqual(classifyNv(row({ Contributor: 'IBEW Local 357' })), { key: 'unionContributions' });
+  assert.deepEqual(classifyNv(row({ Contributor: 'Nevada Realtors PAC' })), { key: 'pacContributions' });
+  assert.equal(classifyNv(row({ Contributor: 'Jane Doe' })), null);
+  assert.equal(classifyNv(row({ Contributor: 'Accrued Account Interest' })), null);
+  assert.equal(classifyNv(row({ Type: 'In Kind Contribution' })), null);
+});
+
+import { placeCandidate as mtPlace, classifyMt, parsePipes as mtParse, norm as mtNorm } from '../scripts/mt/copp-map.mjs';
+test('Montana candidates are placed by county of residence or mailing city', () => {
+  const places = { counties: new Map([['yellowstone', 'yellowstone'], ['silver bow', 'butte']]), consolidated: new Set(['silver bow']), cities: new Map([['billings', [{ key: 'billings', county: 'yellowstone' }]], ['great falls', [{ key: 'great-falls', county: 'cascade' }]]]) };
+  assert.equal(mtPlace({ officeTitle: 'County Commissioner', resCountyDescr: 'Yellowstone' }, 'CN', places), 'yellowstone');
+  assert.equal(mtPlace({ officeTitle: 'County Attorney', resCountyDescr: 'Yellowstone' }, 'CN', places), null);
+  assert.equal(mtPlace({ officeTitle: 'City Council', resCountyDescr: 'Yellowstone', candidateAddress: '123 Main St, Billings, MT 59101' }, 'CT', places), 'billings');
+  assert.equal(mtPlace({ officeTitle: 'Councilman', resCountyDescr: 'Cascade', candidateAddress: 'PO BOX 6156, GREAT FALLS, MT 59406' }, 'CT', places), 'great-falls');
+  assert.equal(mtPlace({ officeTitle: 'Commissioner', resCountyDescr: 'Silver Bow', candidateAddress: 'Butte, MT' }, 'CT', places), 'butte');
+  assert.equal(mtPlace({ officeTitle: 'City Judge', resCountyDescr: 'Yellowstone', candidateAddress: 'Billings, MT' }, 'CT', places), null);
+  assert.equal(mtNorm('St. Ignatius'), 'saint ignatius');
+  const rows = mtParse('Candidate ID|Contributor Name|Description|Line Item|Amount|Amount Subtype\n1|Smith, Jo|signs|Individual Contributions|50.00|Cash\n2|MEA-MFT COPE|long\ndescription|Independent Committee Contributions|500.00|Cash\n');
+  assert.equal(rows.length, 2);
+  assert.equal(rows[1].Description, 'long description');
+  assert.equal(classifyMt(rows[0]), null);
+  assert.deepEqual(classifyMt(rows[1]), { key: 'unionContributions' });
+  assert.deepEqual(classifyMt({ 'Contributor Name': 'Yellowstone Realty LLC', 'Line Item': 'Individual Contributions', 'Amount Subtype': 'Cash' }), { key: 'developerContributions' });
+  assert.equal(classifyMt({ 'Contributor Name': 'Montana Republican Party', 'Line Item': 'Political Party Committee Contributions', 'Amount Subtype': 'Cash' }), null);
+});
+
+import { placeJurisdiction as waPlace, classifyWa } from '../scripts/wa/pdc-map.mjs';
+test('Washington PDC rows are placed by office jurisdiction and classified by contributor code', () => {
+  assert.deepEqual(waPlace('KING CO'), { level: 'county', name: 'king' });
+  assert.deepEqual(waPlace('CITY OF AUBURN *'), { level: 'city', name: 'auburn' });
+  assert.deepEqual(waPlace('TOWN OF WINTHROP'), { level: 'city', name: 'winthrop' });
+  assert.equal(waPlace('PORT OF SEATTLE'), null);
+  assert.equal(waPlace('SEATTLE SCHOOL DIST 001'), null);
+  const row = (o) => ({ cash_or_in_kind: 'Cash', contributor_category: 'Organization', code: 'Business', contributor_name: 'Acme Homes LLC', ...o });
+  assert.deepEqual(classifyWa(row()), { key: 'developerContributions' });
+  assert.deepEqual(classifyWa(row({ code: 'Union', contributor_name: 'SEIU 775' })), { key: 'unionContributions' });
+  assert.deepEqual(classifyWa(row({ code: 'Political Action Committee', contributor_name: 'Electrical Workers 46 PAC' })), { key: 'unionContributions' });
+  assert.deepEqual(classifyWa(row({ code: 'Political Action Committee', contributor_name: 'Washington Realtors PAC' })), { key: 'pacContributions' });
+  assert.equal(classifyWa(row({ code: 'Other', contributor_name: 'Tulalip Tribes' })), null);
+  assert.equal(classifyWa(row({ code: 'Party', contributor_name: 'King County Democrats' })), null);
+  assert.equal(classifyWa(row({ cash_or_in_kind: 'In kind' })), null);
+  assert.equal(classifyWa(row({ contributor_category: 'Individual' })), null);
+});
+
+import { isCountyRace, classifyCo, parseTracer } from '../scripts/co/tracer-map.mjs';
+test('Colorado TRACER committees count for a county only when their name shows a county office', () => {
+  assert.equal(isCountyRace('ANGELA THOMAS 4 COMMISSIONER', 'DOUGLAS'), true);
+  assert.equal(isCountyRace('CANDACE RIVERA 4 COUNTY CLERK', 'PUEBLO'), true);
+  assert.equal(isCountyRace('CLAIRE FOR BOULDER COUNTY', 'BOULDER'), true);
+  assert.equal(isCountyRace('WYATT FOR LARIMER', 'LARIMER'), true);
+  assert.equal(isCountyRace('VALERIE FOR DOUGLAS COUNTY SCHOOLS', 'DOUGLAS'), false);
+  assert.equal(isCountyRace('KIMBERLEE SIA FOR DPS BOARD', 'DENVER'), false);
+  assert.equal(isCountyRace('COMMITTEE TO ELECT SETH BRYANT', 'TELLER'), false);
+  assert.equal(isCountyRace('GOLDSTEIN4ADAMS12', 'ADAMS'), false);
+  const row = (o) => ({ amended: 'N', contributiontype: 'Monetary (Itemized)', contributortype: 'Business', lastname: 'ACME HOMES LLC', firstname: '', ...o });
+  assert.deepEqual(classifyCo(row()), { key: 'developerContributions' });
+  assert.deepEqual(classifyCo(row({ contributortype: 'Small Donor Committee', lastname: 'IBEW LOCAL 68 SDC' })), { key: 'unionContributions' });
+  assert.deepEqual(classifyCo(row({ contributortype: 'Political Committee', lastname: 'COLORADO REALTORS PAC' })), { key: 'pacContributions' });
+  assert.equal(classifyCo(row({ amended: 'Y' })), null);
+  assert.equal(classifyCo(row({ contributiontype: 'Non-Monetary (Itemized)' })), null);
+  assert.equal(classifyCo(row({ contributortype: 'Individual', lastname: 'DOE', firstname: 'JANE' })), null);
+  // Stray quotes inside a field and a field broken across lines.
+  const rows = parseTracer('"A","B","C"\n"1","12" PIPE","x"\n"2","line\none","y"\n');
+  assert.deepEqual(rows.map((r) => r.b), ['12" PIPE', 'line one']);
+});
+
+import { revenueKey as caRevenueKey, expenditureKey as caExpenditureKey, aggregateSco } from '../scripts/ca/sco-map.mjs';
+test('California State Controller lines map to Town Ledger categories', () => {
+  const rev = (category, subcategory_1, line_description, value = 100) => ({ category, subcategory_1, line_description, value });
+  assert.equal(caRevenueKey(rev('Taxes', 'Taxes', 'Secured and Unsecured Property Taxes_General Revenues')), 'propertyTax');
+  assert.equal(caRevenueKey(rev('Taxes', 'Taxes', 'Property Tax In-Lieu of Vehicle License Fees_General Revenues')), 'propertyTax');
+  assert.equal(caRevenueKey(rev('Taxes', 'Taxes', 'Sales and Use Taxes_General Revenues')), 'salesTax');
+  assert.equal(caRevenueKey(rev('Property Taxes', 'General', 'Countywide Secured and Unsecured_General')), 'propertyTax');
+  assert.equal(caRevenueKey(rev('Water Enterprise Fund', 'Operating Revenues', 'Water Sales Revenues')), 'utilityCharges');
+  assert.equal(caRevenueKey(rev('Airport Enterprise Fund', 'Nonoperating Revenues', 'Intergovernmental – Federal')), 'federalGrants');
+  assert.equal(caRevenueKey(rev('Internal Service Fund', 'Operating Revenues', 'Charges for Services_Internal Service Fund')), null);
+  assert.equal(caRevenueKey(rev('Fines, Forfeitures, Penalties, and Revenue from Use of Money and Property', 'Fines, Forfeitures, and Penalties', 'Vehicle Code Fines')), 'finesForfeitures');
+  const exp = (category, subcategory_1, subcategory_2, value = 100) => ({ category, subcategory_1, subcategory_2, line_description: subcategory_2, value });
+  assert.equal(caExpenditureKey(exp('General Government and Public Safety', 'Public Safety', 'Police_Current Expenditures'), 'city'), 'publicSafety');
+  assert.equal(caExpenditureKey(exp('General Government and Public Safety', 'Public Safety', 'District Attorney - Prosecution_Current Expenditures'), 'city'), 'administration');
+  assert.equal(caExpenditureKey(exp('Debt Service and Capital Outlay', 'Capital Outlay', 'Transportation'), 'city'), 'roads');
+  assert.equal(caExpenditureKey(exp('Debt Service and Capital Outlay', 'Capital Outlay', 'General'), 'county'), 'roads');
+  assert.equal(caExpenditureKey(exp('Public Assistance', 'Welfare', 'General'), 'county'), 'healthServices');
+  assert.equal(caExpenditureKey(exp('Public Protection', 'Judicial', 'General'), 'county'), 'administration');
+  assert.equal(caExpenditureKey(exp('Sewer Enterprise Fund', 'Operating Expenses', 'Depreciation and Amortization Expenses_Sewer Enterprise Fund'), 'city'), null);
+  assert.equal(caExpenditureKey(exp('Water Enterprise Fund', 'Nonoperating Expenses', 'Interest Expense_Water Enterprise Fund'), 'city'), null);
+  // Enterprise interest is replaced by enterprise debt payments from the debt forms.
+  const a = aggregateSco([rev('Taxes', 'Taxes', 'Sales and Use Taxes_General Revenues', 500)], [exp('Water Enterprise Fund', 'Operating Expenses', 'Water Supply Expenses', 300)], { kind: 'city', enterpriseDebtPayments: 50 });
+  assert.deepEqual(a.revenue, { salesTax: 500 });
+  assert.deepEqual(a.spending, { utilities: 300, debtService: 50 });
+  assert.equal(a.lineTotals.spending, 350);
+});
+
+import { assignPeers, percentileOf, popBand, govKind, MIN_PEERS } from '../js/engine/peers.js';
+test('Peer groups rank towns against the same state, kind and size, widening small groups', () => {
+  assert.equal(popBand(2499).key, 'xs');
+  assert.equal(popBand(2500).key, 's');
+  assert.equal(popBand(300000).key, 'xl');
+  assert.equal(govKind({ type: 'Charter Township' }), 'township');
+  assert.equal(govKind({ type: 'Consolidated government' }), 'city');
+  assert.equal(govKind({ type: 'Borough' }), 'town');
+  assert.equal(govKind({ type: 'County' }), 'county');
+  // Ties count half; one town alone has no percentile.
+  assert.equal(percentileOf([10, 20, 30, 40, 50], 50), 100);
+  assert.equal(percentileOf([10, 20, 30, 40, 50], 10), 0);
+  assert.equal(percentileOf([10, 20, 20, 40, 50], 20), 38);
+  assert.equal(percentileOf([10], 10), null);
+  const entry = (id, state, type, population, score, possible = 80) => ({
+    town: { id, state, type, population },
+    s: { score, grade: possible >= 50 ? 'B' : '?', coverage: { possible }, components: [{ key: 'services', available: true, ratio: score / 100 }] },
+  });
+  const small = Array.from({ length: MIN_PEERS }, (_, i) => entry(`t${i}`, 'NJ', 'Township', 5000, 50 + i));
+  const big = [entry('c1', 'NJ', 'City', 300000, 90), entry('c2', 'NJ', 'City', 20000, 40)];
+  const thin = entry('thin', 'NJ', 'Township', 5000, 99, 40);
+  const all = assignPeers([...small, ...big, thin]);
+  const top = all.find((e) => e.town.id === `t${MIN_PEERS - 1}`);
+  assert.equal(top.peer.level, 0);
+  assert.equal(top.peer.rank, 1);
+  assert.equal(top.peer.percentile, 100);
+  assert.match(top.peer.label, /NJ townships with 2,500 to 10,000 people/);
+  // Two NJ cities are too few for a group of their own, at any level.
+  assert.equal(all.find((e) => e.town.id === 'c1').peer.percentile, null);
+  // Ungraded towns are provisional and left out of their peers' ranks.
+  const t = all.find((e) => e.town.id === 'thin');
+  assert.equal(t.provisional, true);
+  assert.equal(t.peer.percentile, null);
+  assert.equal(t.peer.size, MIN_PEERS);
+});
+
+import { classifyContributor as civixClassify, isoDate, normPlace as civixPlace } from '../scripts/common/civix.mjs';
+import { placeCommittee as okPlace, classifyOk } from '../scripts/ok/guardian-map.mjs';
+test('Civix sites share contributor types; Oklahoma committees are placed by their registered jurisdiction', () => {
+  assert.deepEqual(civixClassify('Political Action Committee (Registered)', 'Oklahoma Bankers PAC'), { key: 'pacContributions' });
+  assert.deepEqual(civixClassify('PAC-Separate Segregated Political Fund', 'Omaha Firefighters PAC'), { key: 'unionContributions' });
+  assert.deepEqual(civixClassify('Business (For-Profit and Non-Profit entities)', 'Acme Homes'), { key: 'developerContributions' });
+  assert.equal(civixClassify('Indian Tribe', 'Chickasaw Nation'), null);
+  assert.equal(civixClassify('Candidate Committee (Registered)', 'Pugh For Senate'), null);
+  assert.equal(isoDate('01/02/2023'), '2023-01-02');
+  assert.equal(isoDate('2024-06-30 00:00:00'), '2024-06-30');
+  assert.equal(civixPlace('CITY OF OKLAHOMA CITY'), civixPlace('Oklahoma City'));
+  assert.deepEqual(okPlace({ jurisdiction: 'OKLAHOMA COUNTY', office: 'COUNTY COMMISSIONER' }), { level: 'county', name: 'oklahoma' });
+  assert.deepEqual(okPlace({ jurisdiction: 'CITY OF TULSA', office: 'COUNCILMEMBER' }), { level: 'city', name: 'tulsa' });
+  assert.equal(okPlace({ jurisdiction: 'STATE OF OKLAHOMA', office: 'STATE SENATOR' }), null);
+  assert.equal(okPlace({ jurisdiction: 'TULSA PUBLIC SCHOOLS', office: 'BOARD MEMBER' }), null);
+  const row = { amended: 'N', 'receipt type': 'Monetary', 'receipt source type': 'Political Action Committee (Not Registered)', 'last name': 'GENEN PAC', 'first name': '' };
+  assert.deepEqual(classifyOk(row), { key: 'pacContributions' });
+  assert.equal(classifyOk({ ...row, amended: 'Y' }), null);
+  assert.equal(classifyOk({ ...row, 'receipt type': 'In-Kind' }), null);
+});
+
+import { placeCommittee as nePlace, classifyNe } from '../scripts/ne/nadc-map.mjs';
+test('Nebraska committees are placed by jurisdiction type; only mayor and council count in cities', () => {
+  assert.deepEqual(nePlace({ jurisdictionType: 'County', jurisdiction: 'LANCASTER', office: 'COUNTY COMMISSIONER' }), { level: 'county', name: 'lancaster' });
+  assert.deepEqual(nePlace({ jurisdictionType: 'Municipal', jurisdiction: 'OMAHA', office: 'MAYOR' }), { level: 'city', name: 'omaha' });
+  assert.equal(nePlace({ jurisdictionType: 'Municipal', jurisdiction: 'OMAHA', office: 'AIRPORT AUTHORITY' }), null);
+  assert.equal(nePlace({ jurisdictionType: 'State', jurisdiction: 'NEBRASKA', office: 'STATE LEGISLATURE' }), null);
+  const row = { amended: 'N', 'receipt transaction/contribution type': 'Monetary', 'contributor or transaction source type': 'Business (For-Profit and Non-Profit entities)', 'contributor or source name (individual last name)': 'Gifford Realty, Inc.', 'first name': '' };
+  assert.deepEqual(classifyNe(row), { key: 'developerContributions' });
+  assert.deepEqual(classifyNe({ ...row, 'contributor or transaction source type': 'PAC-Separate Segregated Political Fund', 'contributor or source name (individual last name)': 'Lincoln Fire Fighters Assn. Local #644' }), { key: 'unionContributions' });
+  assert.equal(classifyNe({ ...row, 'receipt transaction/contribution type': 'In-Kind Contribution' }), null);
+});
+
+import { placeOffice as moPlace, classifyMo, norm as moNorm } from '../scripts/mo/mec-map.mjs';
+test('Missouri committees are placed by the jurisdiction ending the office they sought', () => {
+  const counties = ['saint louis', 'saint charles', 'jackson', 'greene', 'charles'].sort((a, b) => b.length - a.length);
+  assert.deepEqual(moPlace('Mayor City of Creve Coeur', counties), { level: 'city', name: 'creve coeur' });
+  assert.deepEqual(moPlace('County Council District 2 St. Louis County', counties), { level: 'county', name: 'saint louis' });
+  assert.deepEqual(moPlace('Prosecuting Attorney St. Charles County', counties), { level: 'county', name: 'saint charles' });
+  assert.equal(moPlace('State Representative District 62 Missouri House of Representatives', counties), null);
+  assert.equal(moPlace('Boardmember Ferguson-Florissant School District', counties), null);
+  assert.equal(moPlace('Associate Circuit Judge Greene County', counties), null);
+  assert.equal(moNorm('St. Louis'), 'saint louis');
+  const row = { contribution_type: 'Monetary', company: '', committee: '' };
+  assert.deepEqual(classifyMo({ ...row, company: 'Clayco Inc' }), { key: 'developerContributions' });
+  assert.deepEqual(classifyMo({ ...row, committee: 'Missouri Realtors PAC' }), { key: 'pacContributions' });
+  assert.deepEqual(classifyMo({ ...row, committee: 'IBEW Local 1 PAC' }), { key: 'unionContributions' });
+  assert.equal(classifyMo({ ...row, committee: 'Friends Of Joe Vaccaro' }), null);
+  assert.equal(classifyMo({ ...row, committee: 'Jackson County Democratic Committee' }), null);
+  assert.equal(classifyMo(row), null);
+  assert.equal(classifyMo({ ...row, company: 'Acme', contribution_type: 'In-Kind' }), null);
 });

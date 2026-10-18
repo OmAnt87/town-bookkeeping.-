@@ -4,6 +4,7 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { totals, scoreTown } from '../../js/engine/scoring.js';
+import { filingLines, stateTowns } from '../common/status.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const OUT = join(ROOT, 'data', 'real');
@@ -52,6 +53,6 @@ ${rows.map((r) => `| ${r.kind === 'City' ? 'Independent cities' : `${r.kind === 
 - **Older year used** because FY ${latest} has not been reported yet: ${older.length ? older.join(', ') : 'none'}.
 - **Small towns** (most of Virginia's 95 incorporated towns) are not required to file the comparative report and are not listed.
 - **Political money:** local candidates are placed by their committee's filing address (ZIP code area, or the mailing city for PO boxes), so a few may be assigned to a neighbouring locality; committees whose locality cannot be found are left out. "Business" means a non-individual contributor not recognized as a union, PAC or campaign committee, so it may include some advocacy groups.
-- **Transparency practices** have not been checked yet, so they are not scored.
+${filingLines(stateTowns('VA'), 'comparative cost report with the Auditor of Public Accounts').join('\n')}
 `);
 console.log(`docs/VA_DATA_STATUS.md: ${towns.length} localities`);

@@ -2,6 +2,7 @@ import { reportingFor } from './engine/reporting.js';
 import { createDetailLoader } from './data/loading.js';
 import { escapeHTML } from './engine/format.js';
 import { scoreTown } from './engine/scoring.js';
+import { assignPeers } from './engine/peers.js';
 import { validateDataset } from './engine/ledger.js';
 import { renderMap } from './views/map.js';
 import { renderTown } from './views/town.js';
@@ -17,7 +18,7 @@ const main = document.getElementById('main');
 // Shared app state passed to every view.
 export const state = {
   dataset: null,
-  towns: [], // [{ town, s }] where s = scoreTown(town)
+  towns: [], // [{ town, s, peer, provisional, completeness }] where s = scoreTown(town)
   byId: new Map(),
   source: 'demo',
   routeRevision: 0,
@@ -30,7 +31,8 @@ export function setDataset(dataset, source) {
   loadDetail = createDetailLoader();
   state.dataset = dataset;
   state.source = source;
-  state.towns = dataset.towns.map((town) => ({ town, s: scoreTown(town) }));
+  // Each entry also gets its peer group, percentile and completeness (engine/peers.js).
+  state.towns = assignPeers(dataset.towns.map((town) => ({ town, s: scoreTown(town) })));
   state.byId = new Map(state.towns.map((t) => [t.town.id, t]));
   const demoCount = dataset.towns.filter((t) => t.demo === true).length;
   const realCount = dataset.towns.length - demoCount;

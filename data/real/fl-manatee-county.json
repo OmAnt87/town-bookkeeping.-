@@ -1445,6 +1445,11 @@
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "label": "U.S. Census Bureau, Annual Survey of State and Local Government Finances, 2024 individual unit file (debt outstanding)",
+     "url": "https://www.census.gov/data/datasets/2024/econ/local/public-use-datasets.html",
+     "addedBy": "scripts/census-debt.mjs"
     }
    ],
    "notes": [
@@ -1452,11 +1457,12 @@
     "Public schools are run by separate school districts with their own taxes, so they are not included. The county includes its elected constitutional officers (sheriff, clerk, property appraiser, tax collector and supervisor of elections).",
     "Covers governmental and enterprise funds, including water, sewer, electric and other utilities. Enterprise funds report expenses on an accrual basis, so their spending includes depreciation rather than capital purchases.",
     "Left out: transfers between funds, borrowing and other financing ($624,042,000 of receipts and $324,567,000 of payments), internal service funds, pension and other trust funds, and component units.",
-    "Debt service counts principal and interest paid from governmental funds; interest on enterprise debt is part of enterprise expenses. Debt outstanding is not in the EDR data, so fiscal health is not scored.",
+    "Debt service counts principal and interest paid from governmental funds; interest on enterprise debt is part of enterprise expenses.",
     "Courts, legal services, planning, housing and economic development count as overhead.",
     "Political money is not scored: Florida county candidates file campaign reports with the county supervisor of elections, not with a statewide agency.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Florida yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Florida yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Debt outstanding: $742,954,000 (long-term plus short-term debt at the end of the fiscal year ending 2024-09-30), as Manatee County reported it to the U.S. Census Bureau's 2024 Annual Survey of Local Government Finances. The state's own data does not report debt. That is a different year from the revenue and spending shown (FY 2025).",
+    "Transparency: Manatee County has filed its annual financial report with the Department of Financial Services for FY 2025, the latest year most FL governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
     {
@@ -1537,7 +1543,12 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "debt": 742954000,
+   "debtSource": "scripts/census-debt.mjs",
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "city-of-anna-maria-fl",
@@ -1885,6 +1896,11 @@
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "label": "U.S. Census Bureau, Annual Survey of State and Local Government Finances, 2022 individual unit file (debt outstanding)",
+     "url": "https://www.census.gov/data/datasets/2022/econ/local/public-use-datasets.html",
+     "addedBy": "scripts/census-debt.mjs"
     }
    ],
    "notes": [
@@ -1892,13 +1908,20 @@
     "Public schools are run by separate school districts, and Manatee County provides many other services; residents pay the city, the county and the school district.",
     "Covers governmental and enterprise funds, including water, sewer, electric and other utilities. Enterprise funds report expenses on an accrual basis, so their spending includes depreciation rather than capital purchases.",
     "Left out: transfers between funds, borrowing and other financing ($0 of receipts and $0 of payments), internal service funds, pension and other trust funds, and component units.",
-    "Debt service counts principal and interest paid from governmental funds; interest on enterprise debt is part of enterprise expenses. Debt outstanding is not in the EDR data, so fiscal health is not scored.",
+    "Debt service counts principal and interest paid from governmental funds; interest on enterprise debt is part of enterprise expenses.",
     "Courts, legal services, planning, housing and economic development count as overhead.",
     "Political money is not scored: Florida municipal candidates file campaign reports with the municipal clerk, not with a statewide agency.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Florida yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside City of Anna Maria's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Florida yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Debt outstanding: $935,000 (long-term plus short-term debt at the end of the fiscal year ending 2022-09-30), as City of Anna Maria reported it to the U.S. Census Bureau's 2022 Annual Survey of Local Government Finances. The state's own data does not report debt. That is a different year from the revenue and spending shown (FY 2024).",
+    "Transparency: City of Anna Maria has filed its annual financial report with the Department of Financial Services for FY 2024, the latest year most FL governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
-   "redFlags": []
+   "redFlags": [],
+   "debt": 935000,
+   "debtSource": "scripts/census-debt.mjs",
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "city-of-bradenton-fl",
@@ -2724,9 +2747,19 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "label": "U.S. Census Bureau, Annual Survey of State and Local Government Finances, 2022 individual unit file (debt outstanding)",
+     "url": "https://www.census.gov/data/datasets/2022/econ/local/public-use-datasets.html",
+     "addedBy": "scripts/census-debt.mjs"
     }
    ],
    "notes": [
@@ -2734,13 +2767,28 @@
     "Public schools are run by separate school districts, and Manatee County provides many other services; residents pay the city, the county and the school district.",
     "Covers governmental and enterprise funds, including water, sewer, electric and other utilities. Enterprise funds report expenses on an accrual basis, so their spending includes depreciation rather than capital purchases.",
     "Left out: transfers between funds, borrowing and other financing ($48,731,868 of receipts and $9,587,320 of payments), internal service funds, pension and other trust funds, and component units.",
-    "Debt service counts principal and interest paid from governmental funds; interest on enterprise debt is part of enterprise expenses. Debt outstanding is not in the EDR data, so fiscal health is not scored.",
+    "Debt service counts principal and interest paid from governmental funds; interest on enterprise debt is part of enterprise expenses.",
     "Courts, legal services, planning, housing and economic development count as overhead.",
     "Political money is not scored: Florida municipal candidates file campaign reports with the municipal clerk, not with a statewide agency.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Florida yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 16 license-plate cameras are mapped inside City of Bradenton's borders in OpenStreetMap (14 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Florida yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Debt outstanding: $46,206,000 (long-term plus short-term debt at the end of the fiscal year ending 2022-09-30), as City of Bradenton reported it to the U.S. Census Bureau's 2022 Annual Survey of Local Government Finances. The state's own data does not report debt. That is a different year from the revenue and spending shown (FY 2024).",
+    "Transparency: City of Bradenton has filed its annual financial report with the Department of Financial Services for FY 2024, the latest year most FL governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "14 Flock Safety license-plate cameras are mapped inside City of Bradenton's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Face recognition",
@@ -2780,7 +2828,22 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 16,
+    "flock": 14,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "debt": 46206000,
+   "debtSource": "scripts/census-debt.mjs",
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "city-of-bradenton-beach-fl",
@@ -3201,6 +3264,11 @@
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "label": "U.S. Census Bureau, Annual Survey of State and Local Government Finances, 2022 individual unit file (debt outstanding)",
+     "url": "https://www.census.gov/data/datasets/2022/econ/local/public-use-datasets.html",
+     "addedBy": "scripts/census-debt.mjs"
     }
    ],
    "notes": [
@@ -3208,13 +3276,20 @@
     "Public schools are run by separate school districts, and Manatee County provides many other services; residents pay the city, the county and the school district.",
     "Covers governmental and enterprise funds, including water, sewer, electric and other utilities. Enterprise funds report expenses on an accrual basis, so their spending includes depreciation rather than capital purchases.",
     "Left out: transfers between funds, borrowing and other financing ($142,516 of receipts and $142,516 of payments), internal service funds, pension and other trust funds, and component units.",
-    "Debt service counts principal and interest paid from governmental funds; interest on enterprise debt is part of enterprise expenses. Debt outstanding is not in the EDR data, so fiscal health is not scored.",
+    "Debt service counts principal and interest paid from governmental funds; interest on enterprise debt is part of enterprise expenses.",
     "Courts, legal services, planning, housing and economic development count as overhead.",
     "Political money is not scored: Florida municipal candidates file campaign reports with the municipal clerk, not with a statewide agency.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Florida yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside City of Bradenton Beach's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Florida yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Debt outstanding: $76,000 (long-term plus short-term debt at the end of the fiscal year ending 2022-09-30), as City of Bradenton Beach reported it to the U.S. Census Bureau's 2022 Annual Survey of Local Government Finances. The state's own data does not report debt. That is a different year from the revenue and spending shown (FY 2024).",
+    "Transparency: City of Bradenton Beach has filed its annual financial report with the Department of Financial Services for FY 2024, the latest year most FL governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
-   "redFlags": []
+   "redFlags": [],
+   "debt": 76000,
+   "debtSource": "scripts/census-debt.mjs",
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "city-of-holmes-beach-fl",
@@ -3622,6 +3697,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -3635,8 +3715,9 @@
     "Debt service counts principal and interest paid from governmental funds; interest on enterprise debt is part of enterprise expenses. Debt outstanding is not in the EDR data, so fiscal health is not scored.",
     "Courts, legal services, planning, housing and economic development count as overhead.",
     "Political money is not scored: Florida municipal candidates file campaign reports with the municipal clerk, not with a statewide agency.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Florida yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 4 license-plate cameras are mapped inside City of Holmes Beach's borders in OpenStreetMap (0 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Florida yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: City of Holmes Beach has filed its annual financial report with the Department of Financial Services for FY 2024, the latest year most FL governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
     {
@@ -3652,7 +3733,20 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 4,
+    "flock": 0,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "city-of-palmetto-fl",
@@ -4423,9 +4517,19 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "label": "U.S. Census Bureau, Annual Survey of State and Local Government Finances, 2024 individual unit file (debt outstanding)",
+     "url": "https://www.census.gov/data/datasets/2024/econ/local/public-use-datasets.html",
+     "addedBy": "scripts/census-debt.mjs"
     }
    ],
    "notes": [
@@ -4433,11 +4537,13 @@
     "Public schools are run by separate school districts, and Manatee County provides many other services; residents pay the city, the county and the school district.",
     "Covers governmental and enterprise funds, including water, sewer, electric and other utilities. Enterprise funds report expenses on an accrual basis, so their spending includes depreciation rather than capital purchases.",
     "Left out: transfers between funds, borrowing and other financing ($4,719,892 of receipts and $4,525,973 of payments), internal service funds, pension and other trust funds, and component units.",
-    "Debt service counts principal and interest paid from governmental funds; interest on enterprise debt is part of enterprise expenses. Debt outstanding is not in the EDR data, so fiscal health is not scored.",
+    "Debt service counts principal and interest paid from governmental funds; interest on enterprise debt is part of enterprise expenses.",
     "Courts, legal services, planning, housing and economic development count as overhead.",
     "Political money is not scored: Florida municipal candidates file campaign reports with the municipal clerk, not with a statewide agency.",
-    "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-17. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Florida yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 3 license-plate cameras are mapped inside City of Palmetto's borders in OpenStreetMap (0 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Florida yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Debt outstanding: $13,926,000 (long-term plus short-term debt at the end of the fiscal year ending 2024-09-30), as City of Palmetto reported it to the U.S. Census Bureau's 2024 Annual Survey of Local Government Finances. The state's own data does not report debt.",
+    "Transparency: City of Palmetto has filed its annual financial report with the Department of Financial Services for FY 2024, the latest year most FL governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
    ],
    "redFlags": [
     {
@@ -4466,7 +4572,22 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 3,
+    "flock": 0,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "debt": 13926000,
+   "debtSource": "scripts/census-debt.mjs",
+   "transparency": {
+    "auditOnTime": true
+   }
   }
  ]
 }

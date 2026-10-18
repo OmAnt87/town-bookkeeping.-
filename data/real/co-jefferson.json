@@ -11,7 +11,7 @@
    "lng": -105.24546,
    "population": 580451,
    "fiscalYear": 2024,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "08059",
    "revenue": {
     "feesPermits": 55048000,
@@ -33,9 +33,17 @@
     "utilities": 250000
    },
    "debt": 42430000,
+   "influence": {
+    "pacContributions": 0,
+    "developerContributions": 0,
+    "unionContributions": 0
+   },
+   "topDonors": [],
    "reporting": {
     "basis": "Actual results (as reported to the Census Bureau's Annual Survey of Local Government Finances)",
-    "scope": "All county funds, including the sheriff, jail, courts, public health, human services and county roads"
+    "scope": "All county funds, including the sheriff, jail, courts, public health, human services and county roads",
+    "politicalPeriod": "Since 2023; retrieved 2026-10-14",
+    "politicalScope": "County candidates whose committee names the office: commissioner, sheriff, clerk, treasurer, assessor, coroner, surveyor"
    },
    "history": [
     {
@@ -352,6 +360,10 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "Colorado Secretary of State TRACER: contributions to Jefferson County candidates since 2023",
+     "url": "https://tracer.sos.colorado.gov/PublicSite/DataDownload.aspx"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -364,9 +376,9 @@
     "Payments to other governments ($42,167,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Colorado county candidates were not loaded.",
+    "Political money counts itemized cash contributions from businesses, unions and political committees to Jefferson County candidates whose committee names a county office, reported to the Secretary of State's TRACER since 2023 (none were found). Committees whose names do not show the office are left out, so this is a floor. Individuals, LLC members, in-kind gifts and party and candidate committees are not counted.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
     {
@@ -408,7 +420,7 @@
    "lng": -105.15031,
    "population": 122901,
    "fiscalYear": 2022,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "0803455",
    "revenue": {
     "feesPermits": 11273000,
@@ -691,6 +703,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -703,11 +720,25 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Colorado city candidates were not loaded.",
+    "Political money is not scored: Colorado city and town candidates file campaign reports with their municipal clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 35 license-plate cameras are mapped inside City of Arvada's borders in OpenStreetMap (31 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "31 Flock Safety license-plate cameras are mapped inside City of Arvada's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Third-party investigative platform",
@@ -734,7 +765,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 35,
+    "flock": 31,
+    "townOperated": 1,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-edgewater-co",
@@ -747,7 +788,7 @@
    "lng": -105.06262,
    "population": 4870,
    "fiscalYear": 2024,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "0823135",
    "revenue": {
     "utilityCharges": 2089000,
@@ -978,6 +1019,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -989,11 +1035,25 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Colorado city candidates were not loaded.",
+    "Political money is not scored: Colorado city and town candidates file campaign reports with their municipal clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 7 license-plate cameras are mapped inside City of Edgewater's borders in OpenStreetMap (6 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "6 Flock Safety license-plate cameras are mapped inside City of Edgewater's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Third-party investigative platform",
@@ -1020,7 +1080,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 7,
+    "flock": 6,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-golden-co",
@@ -1033,7 +1103,7 @@
    "lng": -105.21056,
    "population": 20390,
    "fiscalYear": 2024,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "0830835",
    "revenue": {
     "feesPermits": 15366000,
@@ -1327,6 +1397,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -1338,11 +1413,25 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Colorado city candidates were not loaded.",
+    "Political money is not scored: Colorado city and town candidates file campaign reports with their municipal clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 18 license-plate cameras are mapped inside City of Golden's borders in OpenStreetMap (17 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "17 Flock Safety license-plate cameras are mapped inside City of Golden's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Third-party investigative platform",
@@ -1382,7 +1471,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 18,
+    "flock": 17,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-lakewood-co",
@@ -1395,7 +1494,7 @@
    "lng": -105.11757,
    "population": 156927,
    "fiscalYear": 2023,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "0843000",
    "revenue": {
     "feesPermits": 43105000,
@@ -1739,6 +1838,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -1751,11 +1855,25 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Colorado city candidates were not loaded.",
+    "Political money is not scored: Colorado city and town candidates file campaign reports with their municipal clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 59 license-plate cameras are mapped inside City of Lakewood's borders in OpenStreetMap (45 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "45 Flock Safety license-plate cameras are mapped inside City of Lakewood's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Real-time crime center",
@@ -1795,7 +1913,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 59,
+    "flock": 45,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-wheat-ridge-co",
@@ -1808,7 +1936,7 @@
    "lng": -105.1048,
    "population": 32081,
    "fiscalYear": 2024,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "0884440",
    "revenue": {
     "feesPermits": 4118000,
@@ -2018,6 +2146,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -2029,11 +2162,25 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Colorado city candidates were not loaded.",
+    "Political money is not scored: Colorado city and town candidates file campaign reports with their municipal clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 8 license-plate cameras are mapped inside City of Wheat Ridge's borders in OpenStreetMap (2 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "2 Flock Safety license-plate cameras are mapped inside City of Wheat Ridge's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Third-party investigative platform",
@@ -2060,7 +2207,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 8,
+    "flock": 2,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "town-of-lakeside-co",
@@ -2073,7 +2230,7 @@
    "lng": -105.05782,
    "population": 16,
    "fiscalYear": 2024,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "0842495",
    "revenue": {
     "feesPermits": 219000,
@@ -2268,9 +2425,10 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Colorado city candidates were not loaded.",
+    "Political money is not scored: Colorado city and town candidates file campaign reports with their municipal clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Lakeside's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -2285,7 +2443,7 @@
    "lng": -105.20596,
    "population": 364,
    "fiscalYear": 2022,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "0852075",
    "revenue": {
     "feesPermits": 790000,
@@ -2485,6 +2643,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -2497,11 +2660,36 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Colorado city candidates were not loaded.",
+    "Political money is not scored: Colorado city and town candidates file campaign reports with their municipal clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 3 license-plate cameras are mapped inside Town of Morrison's borders in OpenStreetMap (1 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "1 Flock Safety license-plate camera is mapped inside Town of Morrison's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 3,
+    "flock": 1,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "town-of-mountain-view-co",
@@ -2514,7 +2702,7 @@
    "lng": -105.05671,
    "population": 517,
    "fiscalYear": 2022,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "0852350",
    "revenue": {
     "utilityCharges": 124000,
@@ -2726,9 +2914,10 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Colorado city candidates were not loaded.",
+    "Political money is not scored: Colorado city and town candidates file campaign reports with their municipal clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Town of Mountain View's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Colorado yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   }

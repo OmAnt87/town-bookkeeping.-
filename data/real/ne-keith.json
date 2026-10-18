@@ -11,7 +11,7 @@
    "lng": -101.64445,
    "population": 8100,
    "fiscalYear": 2022,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "31101",
    "revenue": {
     "federalGrants": 915000,
@@ -29,9 +29,17 @@
     "parks": 19000
    },
    "debt": 0,
+   "influence": {
+    "pacContributions": 0,
+    "developerContributions": 0,
+    "unionContributions": 0
+   },
+   "topDonors": [],
    "reporting": {
     "basis": "Actual results (as reported to the Census Bureau's Annual Survey of Local Government Finances)",
-    "scope": "All county funds, including the sheriff, jail, courts and county roads"
+    "scope": "All county funds, including the sheriff, jail, courts and county roads",
+    "politicalPeriod": "Since 2023; retrieved 2026-10-14",
+    "politicalScope": "County candidates: commissioners or supervisors, sheriff, attorney, clerk, treasurer, assessor"
    },
    "history": [
     {
@@ -273,6 +281,10 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "Nebraska Accountability and Disclosure Commission: contributions to Keith County's candidates since 2023",
+     "url": "https://nadc-e.nebraska.gov/PublicSite/DataDownload.aspx"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -286,9 +298,9 @@
     "Payments to other governments ($44,000) are left out, because the government receiving them reports that spending.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Nebraska county candidates were not loaded.",
+    "Political money counts cash contributions from businesses, unions and PACs to county commissioner, sheriff, attorney and other county office candidates who filed with the NADC since 2023 (none were found). Candidates file with the NADC once they raise or spend more than $5,000, so smaller races are not included. The NADC files nonprofits with businesses, so both are counted as business money. Individuals, candidates' own money, in-kind gifts and party and candidate committees are not counted.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Nebraska yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Nebraska yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -303,7 +315,7 @@
    "lng": -101.72068,
    "population": 4698,
    "fiscalYear": 2024,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "3135980",
    "revenue": {
     "feesPermits": 364000,
@@ -660,6 +672,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -672,11 +689,36 @@
     "Debt service leaves out $1,547,000 of principal repaid with new borrowing the city did not spend on capital that year, most likely refinancing or a rolled-over note.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Nebraska local candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor and city council of City of Ogallala reported to the NADC since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Nebraska yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 2 license-plate cameras are mapped inside City of Ogallala's borders in OpenStreetMap (2 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Nebraska yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "2 Flock Safety license-plate cameras are mapped inside City of Ogallala's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 2,
+    "flock": 2,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "village-of-brule-ne",
@@ -689,7 +731,7 @@
    "lng": -101.88851,
    "population": 304,
    "fiscalYear": 2022,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "3106785",
    "revenue": {
     "feesPermits": 201000,
@@ -947,9 +989,10 @@
     "Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Nebraska local candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor and city council of Village of Brule reported to the NADC since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Nebraska yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Village of Brule's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Nebraska yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -964,7 +1007,7 @@
    "lng": -101.35196,
    "population": 502,
    "fiscalYear": 2022,
-   "asOf": "2026-10-11",
+   "asOf": "2026-10-14",
    "censusGeoid": "3138610",
    "revenue": {
     "feesPermits": 1112000,
@@ -1267,9 +1310,10 @@
     "Debt service leaves out $663,000 of principal repaid with new borrowing the village did not spend on capital that year, most likely refinancing or a rolled-over note.",
     "Courts, legal services, public buildings, housing and community development count as overhead.",
     "Debt is long-term debt outstanding plus short-term debt at year end.",
-    "Political money is not scored: contributions to Nebraska local candidates were not loaded.",
+    "Political money is not scored: no candidates for mayor and city council of Village of Paxton reported to the NADC since 2023.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Nebraska yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Village of Paxton's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Nebraska yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   }

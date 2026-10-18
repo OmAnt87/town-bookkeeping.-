@@ -2,16 +2,16 @@
 
 One question: **how much of a town's money comes back to the people who live there?**
 
-The score runs from 0 to 100 and is the sum of six parts. Each part scales linearly between a "zero points" value and a "full points" value, clamped at both ends. The code lives in `js/engine/scoring.js`.
+The score runs from 0 to 100: the sum of five parts, minus a penalty of up to 10 points for red flags. Each part scales linearly between a "zero points" value and a "full points" value, clamped at both ends. The code lives in `js/engine/scoring.js`.
 
 | Part | Points | Zero at | Full at | Measure |
 |---|---|---|---|---|
-| Money reaching residents | 25 | 50% | 88% | Direct-service spending / total spending (not counting schools) |
-| Low overhead | 10 | 30% | 6% | (Administration + consultants & legal) / total spending (not counting schools) |
-| No surveillance or corporate giveaways | 10 | 5% or 4 documented | 0% and none | The lower of: (surveillance tech + corporate deals + corporate tax breaks) / total spending, and 1 − ¼ per documented program or deal |
+| Money reaching residents | 30 | 50% | 88% | Direct-service spending / total spending (not counting schools) |
+| Low overhead | 15 | 30% | 6% | (Administration + consultants & legal) / total spending (not counting schools) |
 | Low outside political money | 20 | $12.00 | $0.50 | (Corporate lobbying + PAC + developer/contractor + union contributions + town-paid lobbying) / population |
 | Transparency | 20 × checked / 6 | none followed | all checked followed | Practices followed, out of those checked (see below) |
 | Fiscal health | 15 | | | 65%: debt per resident ($6,000 → $300). 35%: operating balance ((revenue − spending) / revenue, −10% → +2%) |
+| **Red-flag penalty** | **up to −10** | none found | 5% of spending, or 4 documented | The larger of: (surveillance tech + corporate deals + corporate tax breaks) / total spending, scaled to 10 points at 5%; and 2.5 points per documented program or deal |
 
 **Grades:** A 85+, B 70–84, C 55–69, D 40–54, F below 40.
 
@@ -25,15 +25,21 @@ For New York, figures are **actual results** from each government's Annual Finan
 
 For Pennsylvania, figures are **actual results** from each municipality's Annual Audit and Financial Report (DCED-CLGS-30). "Other financing sources and uses" (transfers between funds, borrowing, refinancing) are left out because the statewide report does not break them down. "Other expenditures" (mostly insurance, pensions and benefits) are spread across departments. Taxes the statewide report does not itemize are shown as other local taxes. Political money is not scored, because municipal campaign reports are filed with each county, not the state.
 
+## Ranking among peers
+
+Every town also gets a percentile among its peers: graded towns in the same state, of the same kind of government (county; city or consolidated city-county; town, village, borough or plantation; township) and in the same population band (under 2,500; 2,500 to 10,000; 10,000 to 50,000; 50,000 to 250,000; 250,000 and up). Peers in one state share data sources and reporting rules, so the comparison is not skewed by which records a state publishes. A group with fewer than 8 graded towns is widened to the state's towns of that kind, then to towns of that kind and size in every state, then to every town of that kind. The percentile is the share of the other towns in the group that the town scores higher than, with ties counting half; rank 1 is the highest score. Report cards show the peer median for each part of the score (`js/engine/peers.js`).
+
+A score built on less than 60 of the 100 points of data is **provisional**. It is shown, but whenever a list is ranked by score or among peers, provisional towns come after the rest. Ungraded towns (less than 50 points) have no percentile.
+
 ## Red flags: surveillance and corporate giveaways
 
-Some spending works against residents, so it counts against the score:
+Some spending works against residents, so it counts against the score. Red flags are a **penalty**, taken off after the five parts are added up and rescaled: they only ever lower a score. A town with nothing found, or not checked yet, keeps exactly what its other parts earn. (Public reporting on surveillance and corporate deals is patchy, so finding nothing is weak evidence of a clean record and earns no credit.)
 
 - **Surveillance tech:** Flock and other license-plate reader (ALPR) cameras, facial recognition, ShotSpotter, real-time crime centers.
 - **Corporate deals:** data center contracts (water, power and road work built for a data center), subsidies to private developers.
 - **Corporate tax breaks** (`taxBreaks`): data center abatements, discounted PILOT agreements and other corporate abatements. These are revenue the town gave up, so they are shown next to Money in, not inside it.
 
-Most public records say a town *uses* a technology or *approved* a deal, not what it cost. Those go in `redFlags` and are scored by count: each distinct documented program or deal (license-plate readers, police drones, a data center tax break, corporate lobbying of officials, ...) costs a quarter of the part's points. Several records about the same program count once. Flock cameras are the deliberate exception: any Flock camera mapped inside a town is its own flag ("Flock camera network"), on top of any police license-plate-reader record, because Flock pools every scan into a search network shared with agencies nationwide. Access every police department in a state gets through a statewide contract (Massachusetts's CrimeTracer contract, for example) is shown on the report but not scored, since the town did not choose it.
+Most public records say a town *uses* a technology or *approved* a deal, not what it cost. Those go in `redFlags` and are scored by count: each distinct documented program or deal (license-plate readers, police drones, a data center tax break, corporate lobbying of officials, ...) takes off 2.5 points, up to the 10-point limit. Several records about the same program count once. Flock cameras are the deliberate exception: any Flock camera mapped inside a town is its own flag ("Flock camera network"), on top of any police license-plate-reader record, because Flock pools every scan into a search network shared with agencies nationwide. Access every police department in a state gets through a statewide contract (Massachusetts's CrimeTracer contract, for example) is shown on the report but not scored, since the town did not choose it.
 
 Surveillance programs come from the [EFF Atlas of Surveillance](https://atlasofsurveillance.org/) in every state. Each record about a municipal police department is matched to its town by name and county, and each sheriff or county police record to its county where the state's counties are listed; ambiguous names (a city and a town of the same name, both with police) are skipped rather than guessed (`scripts/red-flags.mjs`; `scripts/nj/red-flags.mjs` for New Jersey). New Jersey also has license-plate cameras mapped in OpenStreetMap and a hand-checked list of data center deals and corporate lobbying; those have not been gathered for other states yet.
 
@@ -73,7 +79,9 @@ For Indiana, counties are listed alongside cities, towns and townships, and the 
 
 For Illinois, counties are listed alongside cities, villages, towns and townships, from the same Census unit files with the same mapping and exclusions, and without the northern New England property tax rules (county collectors gather every levy). Townships cover most of the state, cities and villages included, so most residents pay a county, a township and a municipality. Illinois park, library, fire and sanitary districts are separate governments, so municipal reports leave out services those districts provide. School districts are separate governments. Every Illinois committee files with the State Board of Elections, so Illinois political money counts contributions from businesses (allowed in Illinois), unions and PACs to county, municipal and township candidates, placed by the office each candidate filed for; individuals, party and candidate committees, loans and amended (archived) entries are left out.
 
-For Wisconsin and Minnesota, counties are listed alongside cities, villages and towns (Wisconsin) or cities and townships (Minnesota), from the same Census unit files, without the northern New England property tax rules: Minnesota's county auditors collect every levy, and Wisconsin's municipal treasurers collect the school, county and technical college levies but report only their own. Wisconsin towns and Minnesota townships govern the areas outside cities and villages, which are separate from them. School districts are separate governments. Local candidates file campaign reports locally, so political money is not scored.
+For Wisconsin, counties are listed alongside cities, villages and towns. Figures are **actual calendar-year results** from each government's Municipal Financial Report, as compiled by the Wisconsin Department of Revenue (County and Municipal Revenues and Expenditures), instead of the Census unit files. Governmental funds are reported by revenue source and by function (general government, law enforcement, fire, ambulance, highways, sanitation, health and human services, culture, parks, conservation and development, debt service); conservation and development counts as overhead. Utility and other enterprise funds are reported only as total revenues and expenses, counted as utility charges and utilities. Other financing sources and uses (borrowing, transfers and refunding) are left out. Debt is general obligation debt outstanding. Wisconsin towns govern the areas outside cities and villages, which are separate from them. School districts are separate governments. Local candidates file campaign reports with their municipal clerk, so political money is not scored.
+
+For Minnesota, counties are listed alongside cities and townships, from the same Census unit files, without the northern New England property tax rules: Minnesota's county auditors collect every levy. Minnesota townships govern the areas outside cities, which are separate from them. School districts are separate governments. Local candidates file campaign reports locally, so political money is not scored.
 
 For Iowa and Missouri, counties are listed alongside cities (Iowa) or cities, towns, villages and townships (Missouri), from the same Census unit files without the northern New England property tax rules, since county treasurers and collectors gather every levy. Iowa's townships are not governments in the Census count. St. Louis is an independent city outside any county, so its report covers city and county services. School districts are separate governments. Political money is not scored yet.
 
@@ -87,7 +95,7 @@ For Washington and Oregon, counties are listed alongside cities and towns (neith
 
 For Arizona and Colorado, counties are listed alongside cities and towns (neither state has townships), from the same Census unit files without the northern New England property tax rules. Denver and Broomfield are consolidated cities and counties and report as one city each. Schools and many services (fire, water, metropolitan and park districts) are separate governments, so they are not in city or county reports. Political money is not scored yet.
 
-For every state built from the Census unit files with the shared town builder (New Hampshire, Vermont, Maine, Ohio, Michigan, Illinois, Wisconsin, Minnesota, Iowa, Missouri, Kansas, Nebraska, North Dakota, South Dakota, Texas, California, Washington, Oregon, Arizona and Colorado), debt service leaves out principal repaid with new borrowing: borrowing beyond the year's capital outlay, up to the principal repaid, is treated as refinancing or a rolled-over note rather than money spent. North Carolina, South Carolina and Delaware, which use the same Census files, have not been rebuilt with this rule yet.
+For every state built from the Census unit files with the shared town builder (New Hampshire, Vermont, Maine, Ohio, Michigan, Minnesota, Iowa, Missouri, Kansas, Nebraska, North Dakota, South Dakota, Texas, California, Washington, Oregon, Arizona and Colorado), debt service leaves out principal repaid with new borrowing: borrowing beyond the year's capital outlay, up to the principal repaid, is treated as refinancing or a rolled-over note rather than money spent. North Carolina, South Carolina and Delaware, which use the same Census files, have not been rebuilt with this rule yet.
 
 ## Definitions
 
@@ -108,7 +116,7 @@ For every state built from the Census unit files with the shared town builder (N
 
 Only practices that have been checked count. Each checked practice is worth one sixth of the 20 points, so a town checked on one practice is scored on 3.3 points for it, and the rest of the score is rescaled to 100 as with any part that has no data. Practices not checked yet show as "Not checked" and count neither for nor against the town.
 
-For real towns, "Files its annual audit on time" is checked from the state's own records (`scripts/transparency.mjs`): whether the government has filed its annual audit or annual financial report with the state (NY Comptroller annual financial report, PA DCED annual audit and financial report, CT OPM audited financial statements, MA DLS Schedule A) for the latest fiscal year most governments in the state have filed. It is a filing check, not an opinion on the report. New Jersey is not checked yet: its statewide data is adopted budgets, which says nothing about audits.
+For real towns, "Files its annual audit on time" is checked from the state's own records (`scripts/transparency.mjs`): whether the government has filed its annual audit or annual financial report with the state (NY Comptroller annual financial report, PA DCED annual audit and financial report, CT OPM audited financial statements, MA DLS Schedule A, FL DFS annual financial report, RI Division of Municipal Finance audited data, VA Auditor of Public Accounts comparative cost report) for the latest fiscal year most governments in the state have filed. It is a filing check, not an opinion on the report. New Jersey is not checked yet: its statewide data is adopted budgets, which says nothing about audits. States built from the Census Bureau's unit files are not checked either, since their years reflect the Census sample, not filing.
 
 ## Limits
 
