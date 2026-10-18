@@ -1,5 +1,5 @@
 import { reportingFor } from './engine/reporting.js';
-import { createDetailLoader } from './data/loading.js';
+import { createDetailLoader, expandSummary } from './data/loading.js';
 import { escapeHTML } from './engine/format.js';
 import { scoreTown } from './engine/scoring.js';
 import { assignPeers } from './engine/peers.js';
@@ -24,8 +24,10 @@ export const state = {
   routeRevision: 0,
 };
 
-export function setDataset(dataset, source) {
-  const errors = validateDataset(dataset);
+// validated: the caller already checked the dataset (the bundled public-record summary is
+// validated by tests/trust.test.mjs, so the app skips re-checking 28,000 records on load).
+export function setDataset(dataset, source, { validated = false } = {}) {
+  const errors = validated ? [] : validateDataset(dataset);
   if (errors.length) return errors;
   if (dataset.demo === true) dataset = { ...dataset, towns: dataset.towns.map((town) => ({ ...town, demo: true })) };
   loadDetail = createDetailLoader();
@@ -65,10 +67,10 @@ export function resetToDefault() {
 async function loadRealTowns() {
   const summary = await fetch('data/real/summary.json');
   if (summary.ok) {
-    const data = await summary.json();
+    const data = expandSummary(await summary.json());
     if (!data.towns?.length) throw new Error('Public-record summary is empty');
-    const errors = validateDataset(data);
-    if (errors.length) throw new Error(errors.join(' '));
+    // Full validation of the bundled summary runs in tests/trust.test.mjs; here only check its shape.
+    if (!data.towns.every((t) => t && typeof t.id === 'string' && typeof t.name === 'string')) throw new Error('Public-record summary is malformed');
     return data.towns.map((t) => ({ ...t, demo: false }));
   }
   const res = await fetch('data/real/index.json');
@@ -133,7 +135,7 @@ async function loadDefault() {
     return true;
   }
   if (state.dataset !== previousDataset) return false;
-  const errors = setDataset({ towns: real }, 'real');
+  const errors = setDataset({ towns: real }, 'real', { validated: true });
   if (errors.length) throw new Error(errors.join(' '));
   return true;
 }

@@ -79,19 +79,20 @@ function groupLabel(level, state, kind, band) {
 // Adds `peer` and `provisional` to each entry ({ town, s }). Demo and real towns are
 // grouped apart. Ungraded towns get no percentile but still see their group.
 export function assignPeers(entries) {
-  const levels = [
-    (e) => `${e.town.demo === true}|${e.town.state}|${govKind(e.town)}|${popBand(e.town.population).key}`,
-    (e) => `${e.town.demo === true}|${e.town.state}|${govKind(e.town)}`,
-    (e) => `${e.town.demo === true}|*|${govKind(e.town)}|${popBand(e.town.population).key}`,
-    (e) => `${e.town.demo === true}|*|${govKind(e.town)}`,
-  ];
-  const groups = levels.map((key) => {
+  // Each town's kind, population band and four group keys (narrowest first), computed once.
+  const meta = entries.map((e) => {
+    const kind = govKind(e.town);
+    const band = popBand(e.town.population);
+    const demo = e.town.demo === true;
+    return { kind, band, keys: [`${demo}|${e.town.state}|${kind}|${band.key}`, `${demo}|${e.town.state}|${kind}`, `${demo}|*|${kind}|${band.key}`, `${demo}|*|${kind}`] };
+  });
+  const groups = [0, 1, 2, 3].map((level) => {
     const m = new Map();
-    for (const e of entries) {
-      if (e.s.grade === '?') continue;
-      const k = key(e);
+    entries.forEach((e, i) => {
+      if (e.s.grade === '?') return;
+      const k = meta[i].keys[level];
       (m.get(k) || m.set(k, []).get(k)).push(e);
-    }
+    });
     return m;
   });
   const cache = new Map();
@@ -108,26 +109,26 @@ export function assignPeers(entries) {
     cache.set(id, stats);
     return stats;
   };
-  for (const e of entries) {
+  entries.forEach((e, i) => {
+    const { kind, band, keys } = meta[i];
     e.provisional = isProvisional(e.s);
     e.completeness = completeness(e.s);
-    let level = levels.findIndex((key, i) => (groups[i].get(key(e))?.length || 0) >= MIN_PEERS);
+    let level = keys.findIndex((k, l) => (groups[l].get(k)?.length || 0) >= MIN_PEERS);
     if (level === -1) level = 3;
-    const k = levels[level](e);
-    const stats = statsFor(level, k);
+    const stats = statsFor(level, keys[level]);
     const graded = e.s.grade !== '?';
     // Rank 1 is the best score; ties share a rank.
     const rank = graded ? 1 + stats.scores.length - bound(stats.scores, e.s.score, true) : null;
     e.peer = {
       level,
-      label: groupLabel(level, e.town.state, govKind(e.town), popBand(e.town.population)),
+      label: groupLabel(level, e.town.state, kind, band),
       size: stats.scores.length,
       percentile: graded && stats.scores.length >= MIN_PEERS ? percentileOf(stats.scores, e.s.score) : null,
       rank: graded && stats.scores.length >= MIN_PEERS ? rank : null,
       median: stats.median,
       components: stats.components,
     };
-  }
+  });
   return entries;
 }
 

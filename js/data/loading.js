@@ -33,6 +33,14 @@ export async function completeDataset(dataset, load) {
   }
   return { ...dataset, towns };
 }
+// The bundled summary lists each distinct reporting value once; towns carry its index.
+export function expandSummary(data) {
+  if (!Array.isArray(data.reporting)) return data;
+  const table = data.reporting;
+  const towns = data.towns.map((t) => (typeof t.reporting === 'number' ? { ...t, reporting: table[t.reporting] } : t));
+  const { reporting, ...rest } = data;
+  return { ...rest, towns };
+}
 export function summaryDataset(dataset) {
   return { ...dataset, towns: dataset.towns.map(({ ledger, history, topDonors, notes, sources, ...town }) => town) };
 }

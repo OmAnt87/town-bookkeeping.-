@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { scoreTown } from '../js/engine/scoring.js';
 import { metric, metricText, compareValues, comparable } from '../js/engine/metrics.js';
 import { validateDataset } from '../js/engine/ledger.js';
-import { createDetailLoader, completeDataset, summaryDataset, requestIsCurrent } from '../js/data/loading.js';
+import { createDetailLoader, completeDataset, summaryDataset, requestIsCurrent, expandSummary } from '../js/data/loading.js';
 import { reportingFor } from '../js/engine/reporting.js';
 const base = () => ({ id: 'test', name: 'Test', state: 'PA', lat: 40, lng: -75, population: 1000, revenue: { propertyTax: 1000 }, spending: { publicSafety: 900, administration: 100 }, fiscalYear: 2024 });
 const entry = (t) => ({ town: t, s: scoreTown(t) });
@@ -78,7 +78,7 @@ test('complete export hydrates every record or rejects with failed town', async 
 });
 test('bundled summaries and full records validate and have identical scores', () => {
   const read = (f) => JSON.parse(readFileSync(new URL('../data/real/' + f, import.meta.url)));
-  const summary = read('summary.json');
+  const summary = expandSummary(read('summary.json'));
   assert.deepEqual(validateDataset(summary), []);
   const byId = new Map(summary.towns.map((t) => [t.id, t]));
   let count = 0;
