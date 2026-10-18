@@ -1029,6 +1029,23 @@ test('VT tax file lookup matches Census names and the tax year funding each fisc
   assert.equal(taxesFor(taxes, 'GOSHEN TOWN', '2022-06-30'), null);
 });
 
+import { aggregateCmre } from '../scripts/wi/dor-map.mjs';
+
+test('WI DOR rows map by column, count utility funds as totals and leave out other financing', () => {
+  const a = aggregateCmre({
+    'General Property Taxes': 1000, 'Tax Increments': 200, 'State Shared Revenues': 300, 'Other Financing Sources': 5000,
+    'Propriety Funds - Revenues': 400, 'Law Enforcement': 500, 'Fire': 100, 'General Government': 150, 'Conservation and Development': 50,
+    'Highway Construction': 250, 'Debt Service - Principal Interest': 80, 'Other Financing Uses': 4000, 'Propriety Funds - Expenses': 390,
+    'Total General Obligation Debt': 2500,
+  });
+  assert.deepEqual(a.revenue, { propertyTax: 1200, stateAid: 300, utilityCharges: 400 });
+  assert.deepEqual(a.spending, { administration: 200, publicSafety: 600, roads: 250, debtService: 80, utilities: 390 });
+  assert.equal(a.debt, 2500);
+  assert.deepEqual(a.leftOut, { sources: 5000, uses: 4000 });
+  assert.equal(a.empty, false);
+  assert.equal(aggregateCmre({ 'General Property Taxes': 1000 }).empty, true);
+});
+
 import { atlasLink, agencyTown, ATLAS_PAGE } from '../scripts/common/atlas.mjs';
 test('Atlas of Surveillance helpers clean agency names and links', () => {
   assert.equal(agencyTown('Springfield Police Department'), 'Springfield');
