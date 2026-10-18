@@ -111,7 +111,7 @@ export function renderTown(root, state, id) {
           </div>
         </div>
         ${peerBox(entry)}
-        <p class="small muted">${escapeHTML(coverageText(entry))}</p><p class="small muted">${escapeHTML(reportingText(town))}</p><p class="basis">Based on how much spending reaches residents as services, overhead, surveillance and corporate giveaways, outside political money and corporate lobbying, transparency practices, and debt.${s.coverage.scored < s.coverage.total ? ` <strong>Scored on ${s.coverage.scored} of ${s.coverage.total} parts</strong>; parts without data are left out rather than guessed.` : ''}</p>
+        <p class="small muted">${escapeHTML(coverageText(entry))}</p><p class="small muted">${escapeHTML(reportingText(town))}</p><p class="basis">Based on how much spending reaches residents as services, overhead, outside political money and corporate lobbying, transparency practices, and debt, minus a penalty for surveillance and corporate giveaways.${s.coverage.scored < s.coverage.total ? ` <strong>Scored on ${s.coverage.scored} of ${s.coverage.total} parts</strong>; parts without data are left out rather than guessed.` : ''}</p>
         <div class="callout">${plainSummary(town, s)}</div>
       </div>
       <div class="card">
@@ -122,9 +122,9 @@ export function renderTown(root, state, id) {
         <div class="components">${s.components
           .map(
             (c) => `<div class="component-row">
-              <div class="top"><strong>${c.label}</strong><span class="num ${c.available ? '' : 'muted'}">${c.available ? `${c.points} / ${c.max}` : 'Not scored'}</span></div>
-              <div class="track" aria-hidden="true"><span style="width:${c.ratio * 100}%"></span>${c.available && entry.peer?.components?.[c.key] != null ? `<i class="peer-tick" style="left:${entry.peer.components[c.key] * 100}%"></i>` : ''}</div>
-              ${c.available && entry.peer?.components?.[c.key] != null ? `<p class="small muted">Peer median ${(Math.round(entry.peer.components[c.key] * c.max * 10) / 10)} / ${c.max}</p>` : ''}
+              <div class="top"><strong>${c.label}${c.penalty ? ' <span class="small muted">(penalty)</span>' : ''}</strong><span class="num ${c.available && !(c.penalty && !c.points) ? '' : 'muted'}">${componentValue(c)}</span></div>
+              <div class="track${c.penalty ? ' track-penalty' : ''}" aria-hidden="true"><span style="width:${(c.penalty ? -(c.points || 0) / c.max : c.ratio) * 100}%"></span>${c.available && !c.penalty && entry.peer?.components?.[c.key] != null ? `<i class="peer-tick" style="left:${entry.peer.components[c.key] * 100}%"></i>` : ''}</div>
+              ${c.available && !c.penalty && entry.peer?.components?.[c.key] != null ? `<p class="small muted">Peer median ${(Math.round(entry.peer.components[c.key] * c.max * 10) / 10)} / ${c.max}</p>` : ''}
               <p>${escapeHTML(c.detail)}</p></div>`,
           )
           .join('')}</div>
@@ -304,9 +304,16 @@ function redFlagBox(title, intro, flags, cams) {
   return `<div class="flag-box"><h3>${title}</h3><p class="small">${intro}</p>${camLine}${rows.length ? `<ul class="rf-list">${rows.join('')}</ul>` : ''}</div>`;
 }
 
+// "18.9 / 30" for a part; "−2.5" or "No penalty" for the red-flag penalty.
+function componentValue(c) {
+  if (!c.available) return c.penalty ? 'Not checked' : 'Not scored';
+  if (c.penalty) return c.points ? `−${Math.abs(c.points)}` : 'No penalty';
+  return `${c.points} / ${c.max}`;
+}
+
 function plainSummary(town, s) {
   const t = s.totals;
-  const scored = s.components.filter((c) => c.available);
+  const scored = s.components.filter((c) => c.available && !c.penalty);
   if (!scored.length) return '<strong>In plain terms:</strong> not enough data is loaded to judge this town yet.';
   const strongest = [...scored].sort((a, b) => b.ratio - a.ratio)[0];
   const weakest = [...scored].sort((a, b) => a.ratio - b.ratio)[0];
@@ -317,9 +324,9 @@ function plainSummary(town, s) {
     : `for every $100 ${escapeHTML(town.name)} spends${school ? ' outside its schools' : ''}, about $${per100} pays for services residents use directly.`}
     ${strongest.ratio === weakest.ratio ? 'The available components have the same relative score.' : `Among measured components, its strongest area is <strong>${strongest.label.toLowerCase()}</strong>; its weakest is <strong>${weakest.label.toLowerCase()}</strong>.`}${
     t.redFlagSpending + t.taxBreaks > 0
-      ? ` It also put <strong>$${(t.redFlagShare * 100).toFixed(2)} of every $100</strong> toward surveillance, corporate deals or corporate tax breaks.`
+      ? ` It also put <strong>$${(t.redFlagShare * 100).toFixed(2)} of every $100</strong> toward surveillance, corporate deals or corporate tax breaks${s.penalty ? `, which cost it <strong>${s.penalty} points</strong>` : ''}.`
       : t.documentedRedFlags
-        ? ` Public records show <strong>${documentedRedFlags(town).map((f) => f.label.toLowerCase()).join(', ')}</strong>.`
+        ? ` Public records show <strong>${documentedRedFlags(town).map((f) => f.label.toLowerCase()).join(', ')}</strong>, which cost it <strong>${s.penalty} points</strong>.`
         : ''}`;
 }
 
