@@ -368,7 +368,7 @@ node scripts/build-summary.mjs
 `data/real/wa-<county>.json` and `data/real/or-<county>.json` hold each county and the cities and towns whose people mostly live in it, built the same way as Texas and California. Washington coverage is nearly complete; in Oregon the Census estimated, or has incomplete records for, 86 governments, including 8 counties and Beaverton. Political money is not scored yet. Coverage and gaps: [docs/WA_DATA_STATUS.md](docs/WA_DATA_STATUS.md), [docs/OR_DATA_STATUS.md](docs/OR_DATA_STATUS.md).
 
 ```bash
-node scripts/wa/download.mjs && node scripts/wa/build-county.mjs --all && node scripts/wa/status.mjs
+node scripts/wa/download.mjs && node scripts/wa/fetch-pdc.mjs && node scripts/wa/build-county.mjs --all && node scripts/wa/status.mjs   # fetch-pdc: Public Disclosure Commission contributions
 node scripts/or/download.mjs && node scripts/or/build-county.mjs --all && node scripts/or/status.mjs
 node scripts/build-summary.mjs
 ```
@@ -406,7 +406,8 @@ Surveillance programs from the [EFF Atlas of Surveillance](https://atlasofsurvei
 ```bash
 node scripts/cameras.mjs --all                    # every state but NJ: OpenStreetMap / DeFlock cameras
 node scripts/red-flags.mjs --download && node scripts/red-flags.mjs   # every state except NJ (NJ: scripts/nj/red-flags.mjs); --state MA,TN for some
-node scripts/transparency.mjs --all                 # NY, PA, CT, MA: has each government filed its latest annual report?
+node scripts/transparency.mjs --all                 # NY, PA, CT, MA, FL, RI, VA: has each government filed its latest annual report?
+node scripts/census-debt.mjs --state FL,RI          # debt outstanding from Census unit files where the state's data has none
 node scripts/build-summary.mjs
 ```
 
