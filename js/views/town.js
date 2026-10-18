@@ -85,7 +85,7 @@ export function renderTown(root, state, id) {
     </div>
 
     <section class="scorecard" aria-label="Score">
-      <div class="card">
+      <div class="card g-${/^[A-F]$/.test(s.grade) ? s.grade : 'none'}">
         <div class="eyebrow">Community Return Score</div>
         <div class="score-main" style="margin-top:12px">
           ${gradeBadge(s.grade, 'lg')}

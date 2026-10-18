@@ -1,5 +1,5 @@
 // Maps New Jersey municipal budget lines (the standard DLGS budget / User
-// Friendly Budget format every NJ municipality files) to Town Ledger categories.
+// Friendly Budget format every NJ municipality files) to TownView categories.
 //
 // Returns a category key, 'shared' for costs that support every department
 // (pensions, social security, group insurance), or 'exclude' for reserves that

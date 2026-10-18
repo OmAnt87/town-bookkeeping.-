@@ -1,5 +1,5 @@
 // Turns NY State Board of Elections contribution records (data.ny.gov) into
-// Town Ledger political-money fields.
+// TownView political-money fields.
 //
 // Counted (contributor type):
 //   PAC:       "Political Action Committee (PAC)", "Association" (trade and professional groups)

@@ -1,4 +1,4 @@
-// Turns NJ ELEC contribution records into Town Ledger political-money fields.
+// Turns NJ ELEC contribution records into TownView political-money fields.
 //
 // Counted as outside political money (ELEC contributor type codes):
 //   PACs:       F business/corp assoc PAC, J ideological PAC, V professional PAC,

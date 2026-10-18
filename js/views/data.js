@@ -77,8 +77,8 @@ export function renderData(root, state) {
   drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('over'); });
   drop.addEventListener('dragleave', () => drop.classList.remove('over'));
   drop.addEventListener('drop', (e) => { e.preventDefault(); drop.classList.remove('over'); if (e.dataTransfer.files[0]) load(e.dataTransfer.files[0]); });
-  $('#dl-all').addEventListener('click', () => downloadFile('town-ledger-data.json', JSON.stringify(state.dataset, null, 2), 'application/json'));
-  $('#dl-sample').addEventListener('click', () => downloadFile('town-ledger-sample.json', JSON.stringify(SAMPLE, null, 2), 'application/json'));
+  $('#dl-all').addEventListener('click', () => downloadFile('townview-data.json', JSON.stringify(state.dataset, null, 2), 'application/json'));
+  $('#dl-sample').addEventListener('click', () => downloadFile('townview-sample.json', JSON.stringify(SAMPLE, null, 2), 'application/json'));
   $('#reset').addEventListener('click', async () => {
     await resetToDemo();
     say('Demo data restored.', true);
