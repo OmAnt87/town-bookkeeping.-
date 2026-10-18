@@ -1438,3 +1438,36 @@ test('Missouri committees are placed by the jurisdiction ending the office they 
   assert.equal(classifyMo(row), null);
   assert.equal(classifyMo({ ...row, company: 'Acme', contribution_type: 'In-Kind' }), null);
 });
+
+import { aggregateCity as aggregateIaCity, aggregateCounty as aggregateIaCounty } from '../scripts/ia/afr-map.mjs';
+
+test('IA Annual Financial Reports map by type and program, spread capital projects and leave out internal and financing flows', () => {
+  const a = aggregateIaCity({
+    rev: [
+      ['Property Tax', 'Taxes levied on property', 'General Fund', 1000], ['Property Tax', 'TIF Revenues', 'TIF Special Revenue Fund', 200],
+      ['Other City Taxes', 'Other Local Option Taxes', 'Special Revenue Fund', 300], ['Intergovernmental - State', 'Road Use Taxes', 'Special Revenue Fund', 400],
+      ['Charges For Fees & Service', 'Water', 'Proprietary Fund', 500], ['Charges For Fees & Service', 'Library Charges', 'General Fund', 50],
+      ['Micellaneous', 'Fines', 'General Fund', 20], ['Micellaneous', 'Internal Service Charges', 'Proprietary Fund', 90],
+      ['Other Financing Sources', 'Proceeds of long-term debt (Excluding TIF internal borrowing)', 'Capital Projects Fund', 700],
+      ['Other Financing Sources', 'Regular transfers in and interfund loans', 'General Fund', 60],
+    ],
+    exp: [
+      ['Public Safety', 'Police Department Crime Prevention', 'General Fund', 600], ['Public Works', 'Roads Bridges Sidewalks', 'Special Revenue Fund', 300],
+      ['General Government', 'Mayor Council and City Manager', 'General Fund', 100], ['Business Type / Enterprise', 'Water - Current Operation', 'Proprietary Fund', 400],
+      ['Business Type / Enterprise', 'Self Insurance', 'Proprietary Fund', 90], ['Capital Projects', 'Subtotal Regular Capital Projects', 'Capital Projects Fund', 280],
+      ['Debt Service', 'Total Debt Service', 'Debt Service Fund', 500], ['Other Financing Uses', 'Regular transfers out', 'General Fund', 60],
+    ],
+  });
+  assert.deepEqual(a.revenue, { propertyTax: 1200, salesTax: 300, stateAid: 400, utilityCharges: 500, feesPermits: 50, finesForfeitures: 20 });
+  // Capital projects (280) are spread over the 1,400 of other spending; borrowing beyond them (420) is refinancing.
+  assert.equal(a.refinanced, 420);
+  assert.deepEqual(a.spending, { publicSafety: 720, roads: 360, administration: 120, utilities: 480, debtService: 80 });
+  assert.deepEqual(a.leftOut, { financingSources: 760, financingUses: 60, internalService: 180, borrowing: 700 });
+  const c = aggregateIaCounty({
+    rev: { net_current_property_taxes: '900', other_county_taxes_tif_tax: '100', intergovernmental: '500', general_long_term_debt: '0', operating_transfers_in: '50' },
+    exp: { public_safety_and_legal: '400', roads_transportation: '500', administration: '100', nonprogram_current: '300', capital_projects: '0', operating_transfers_out: '50' },
+  });
+  assert.deepEqual(c.revenue, { propertyTax: 900, salesTax: 100, stateAid: 500 });
+  // Nonprogram spending above 15% stays not broken down.
+  assert.deepEqual(c.spending, { publicSafety: 400, roads: 500, administration: 100, otherSpending: 300 });
+});
