@@ -20,7 +20,7 @@ export const state = {
   dataset: null,
   towns: [], // [{ town, s, peer, provisional, completeness }] where s = scoreTown(town)
   byId: new Map(),
-  source: 'demo',
+  source: 'real',
   routeRevision: 0,
 };
 
@@ -61,7 +61,7 @@ export function resetToDefault() {
 }
 
 // Real towns live in data/real/, listed in data/real/index.json. When any are
-// present the site shows only them; the fictional demo towns load on request.
+// present the site shows only them.
 async function loadRealTowns() {
   const summary = await fetch('data/real/summary.json');
   if (summary.ok) {
@@ -98,40 +98,9 @@ export async function loadTownDetail(town) {
   return full;
 }
 
-// Fictional demo towns only (data/towns.json), so every feature can be tried out.
-export async function loadDemoOnly() {
-  const previousDataset = state.dataset;
-  try { sessionStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
-  const res = await fetch('data/towns.json');
-  if (!res.ok) throw new Error(`Could not load data/towns.json (${res.status})`);
-  const demo = await res.json();
-  if (state.dataset !== previousDataset) return false;
-  const errors = setDataset(demo, 'demo');
-  if (errors.length) throw new Error(errors.join(' '));
-  return true;
-}
-
-// Public-record towns on their own. If they can't load, fall back to the demo
-// towns and say so in the banner.
 async function loadDefault() {
   const previousDataset = state.dataset;
-  let real;
-  try {
-    real = await loadRealTowns();
-  } catch (publicError) {
-    if (!(await loadDemoOnly())) return false;
-    const banner = document.getElementById('demo-banner');
-    banner.hidden = false;
-    banner.innerHTML = `<strong>Public-record data could not load.</strong> Showing fictional examples only. ${escapeHTML(publicError.message)} <button type="button" id="retry-data">Retry public records</button>`;
-    document.body.classList.add('has-banner');
-    document.getElementById('retry-data').onclick = async () => {
-      const button = document.getElementById('retry-data');
-      button.disabled = true;
-      try { if (await loadDefault()) route(); }
-      catch (error) { if (document.contains(button)) { button.disabled = false; button.textContent = 'Retry public records'; button.title = error.message; } }
-    };
-    return true;
-  }
+  const real = await loadRealTowns();
   if (state.dataset !== previousDataset) return false;
   const errors = setDataset({ towns: real }, 'real');
   if (errors.length) throw new Error(errors.join(' '));
