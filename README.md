@@ -264,11 +264,11 @@ node scripts/build-summary.mjs
 
 ### Indiana (counties, cities, towns and townships)
 
-`data/real/in-<county>.json` holds each Indiana county and the cities, towns and townships whose people mostly live in it, built the same way as Ohio and Michigan. Indianapolis is consolidated with Marion County, but the Census estimated most of its figures, so it is not listed; many township records in the Census files are incomplete, so about 250 townships are left out. Political money is not scored: local candidates file with their county election board. Coverage and gaps: [docs/IN_DATA_STATUS.md](docs/IN_DATA_STATUS.md).
+`data/real/in-<county>.json` holds each Indiana county and the cities, towns and townships whose people mostly live in it, plus the Consolidated City of Indianapolis, from each government's Annual Financial Report on [Indiana Gateway](https://gateway.ifionline.org/public/download.aspx) (cash receipts and disbursements on the state's uniform chart of accounts) rather than the Census unit files, which have estimated figures for many Indiana townships and towns. Money counties collect for other governments, payroll and clearing accounts, internal service funds, transfers, investments, borrowing and refinancing are left out (`scripts/in/gateway-map.mjs`). Indiana's accounts have no function codes, so spending is assigned to services by department or fund name; a general fund reported without departments is shown as not broken down when it is more than 15% of spending, and that government is not scored on services or overhead. Political money is not scored: local candidates file with their county election board. Coverage and gaps: [docs/IN_DATA_STATUS.md](docs/IN_DATA_STATUS.md).
 
 ```bash
-node scripts/in/download.mjs
-node scripts/in/build-county.mjs --all && node scripts/in/status.mjs
+node scripts/in/gateway-download.mjs              # Gateway AFR files, population, gazetteers
+node scripts/in/gateway-build.mjs --all && node scripts/in/gateway-status.mjs
 node scripts/build-summary.mjs
 ```
 
