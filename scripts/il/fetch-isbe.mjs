@@ -3,7 +3,7 @@
 // (gitignored) and keeps the receipts of local candidates' committees since the start of the
 // year three years back (receipts-local.tsv), so the build does not read the ~1 GB file.
 //
-//   node scripts/il/fetch-isbe.mjs [--force]      then: node scripts/il/build-county.mjs --all
+//   node scripts/il/fetch-isbe.mjs [--force]      then: node scripts/il/comptroller-build.mjs --all
 
 import { execFileSync } from 'node:child_process';
 import { createReadStream, createWriteStream, existsSync, mkdirSync, readFileSync } from 'node:fs';
