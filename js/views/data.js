@@ -1,6 +1,6 @@
 import { completeDataset, summaryDataset } from '../data/loading.js';
 import { loadTownDetail } from '../app.js';
-import { setDataset, persistDataset, resetToDemo } from '../app.js';
+import { setDataset, persistDataset, resetToDefault, loadDemoOnly } from '../app.js';
 import { downloadFile, ICONS } from '../charts.js';
 import { escapeHTML } from '../engine/format.js';
 
@@ -39,9 +39,10 @@ export function renderData(root, state) {
           <button class="btn" id="dl-all" type="button">${ICONS.download} Download summary</button>
           <button class="btn" id="dl-complete" type="button">Download complete records</button>
           <button class="btn" id="dl-sample" type="button">${ICONS.download} Sample file</button>
-          <button class="btn" id="reset" type="button">Restore bundled data</button>
+          <button class="btn" id="reset" type="button">Restore default data</button>
+          <button class="btn" id="demo" type="button">Load demo towns</button>
         </div>
-        <p class="small muted">Summary exports omit ledgers, history, donors and source notes. Complete exports load every required county file; no partial file is downloaded if any request fails.</p><p class="small muted" style="margin:14px 0 0">Loaded now: <strong>${state.towns.length} town${state.towns.length === 1 ? '' : 's'}</strong> (${{ demo: 'fictional demo data', mixed: 'demo towns plus public-record towns', import: 'your imported file' }[state.source] || state.source}).</p>
+        <p class="small muted">Summary exports omit ledgers, history, donors and source notes. Complete exports load every required county file; no partial file is downloaded if any request fails.</p><p class="small muted" style="margin:14px 0 0">Loaded now: <strong>${state.towns.length} town${state.towns.length === 1 ? '' : 's'}</strong> (${{ real: 'public-record towns', demo: 'fictional demo data', mixed: 'demo towns plus public-record towns', import: 'your imported file' }[state.source] || state.source}).</p>
       </section>
       <section class="card prose">
         <h2 style="margin:0 0 8px">Where real numbers come from</h2>
@@ -102,12 +103,24 @@ export function renderData(root, state) {
     const button = $('#reset');
     button.disabled = true;
     try {
-      const restored = await resetToDemo();
+      const restored = await resetToDefault();
       if (restored && root.contains(button)) {
         renderData(root, state);
-        say('Bundled public records and demo examples restored. Check the banner for any loading failures.', true);
+        say('Public records restored. Check the banner for any loading failures.', true);
       }
     } catch (error) { if (root.contains(button)) say(escapeHTML(error.message), false); }
+    finally { button.disabled = false; }
+  });
+  $('#demo').addEventListener('click', async () => {
+    const button = $('#demo');
+    button.disabled = true;
+    try {
+      const loaded = await loadDemoOnly();
+      if (loaded && root.contains(button)) {
+        renderData(root, state);
+        say('Fictional demo towns loaded. Use Restore default data to go back to public records.', true);
+      }
+    } catch (error) { if (root.contains(button)) say(`Could not load the demo towns: ${escapeHTML(error.message)}`, false); }
     finally { button.disabled = false; }
   });
 }

@@ -5,6 +5,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { slugify } from '../lib.mjs';
 
+import { redFlagLines, filingLines, stateTowns } from '../common/status.mjs';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const afr = JSON.parse(readFileSync(join(ROOT, 'data', 'raw', 'pa', 'afr.json'), 'utf8'));
 const counties = [...new Set(Object.values(afr).map((g) => g.county))].sort();
@@ -38,7 +39,7 @@ ${rows.join('\n')}
 
 ## Known gaps
 - **Political money is not scored for Pennsylvania.** Municipal candidates file campaign reports with their county board of elections; the Department of State's statewide data covers only state-level filers.
-- **Transparency practices** have not been checked yet, so they are not scored.
+${[...redFlagLines('PA', stateTowns('PA')), ...filingLines(stateTowns('PA'), 'annual audit and financial report with DCED')].join('\n')}
 - **Left out:** municipalities with no annual report since 2016, and two (Wheatland Borough, Upper Mahantango Township) that are not in the Census 2025 estimates.
 - **Older reports:** ${old.length ? old.join(', ') : 'none'}.
 - "Other financing sources and uses" (transfers between funds, borrowing, refinancing) are left out because the statewide report does not break them down. Independent municipal authorities (often water and sewer) file separately and are not included.

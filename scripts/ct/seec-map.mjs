@@ -11,7 +11,7 @@
 //                 registered lobbyist or a state contractor
 // Not counted: other individuals, raffles, interest, in-kind gifts from people.
 
-import { isPartyOrCandidate, summarizeContributions, title } from '../common/political.mjs';
+import { isPartyOrCandidate, summarizeContributions, title, UNION, NOT_A_PAC } from '../common/political.mjs';
 
 export const SEEC_URL = 'https://seec.ct.gov/Portal/eCRIS/CurPreYears';
 
@@ -32,8 +32,6 @@ export function committeeMatcher(towns) {
   };
 }
 
-const UNION = /\b(unions?|local\s*#?\s*\d+|brotherhood|workers|federation|afl[- ]?cio|teamsters|ibew|seiu|afscme|uaw|iuoe|aft|carpenters|laborers?'?s?|plumbers|pipefitters|machinists|electricians|firefighters|employees assoc(iation)?|education association|teachers|1199|32bj|cope|opc)\b/i;
-const NOT_A_PAC = /\b(senatorial|town|district|state central|county) committee\b|\bfor\b|\b4 (mayor|council|selectm[ae]n|board)\b|\b20\d\d\b/i;
 const BUSINESS = /\b(inc|llc|l l c|co|corp|corporation|company|companies|ltd|llp|pc|pllc|group|associates|services?|store|shop|market|restaurant|pizza|pizzeria|cafe|diner|bakery|deli|bank|insurance|agency|realty|real estate|realtors?|construction|contractors?|builders?|engineering|engineers|law (office|firm|offices)|dental|funeral home|motors|auto|automotive|garage|farms?|oil|fuel|plumbing|heating|electric|landscaping|enterprises|industries|properties|partners|studio|salon|tavern|inn|grill|pub|package|liquors?|wines?|spirits|hardware|lumber|supply|clinic|pharmacy|hotel|management|consulting|holdings|marina|nursery|florist|printing|towing|paving|excavating|trucking|sons)\b/i;
 
 // row: one SEEC receipt, with headers as scripts/lib.mjs parseCSV gives them (receipt_type, ...). Returns { key, kind } or null when not counted.

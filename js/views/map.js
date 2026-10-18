@@ -103,7 +103,7 @@ const stateStyle = () => ({ color: cssVar('--baseline'), weight: 1, fillColor: c
 let lastDataset;
 const ui = { metric: 'score', layer: 'towns', state: 'all', query: '', realOnly: null };
 
-export function renderMap(root, state) {
+export function renderMap(root, state, _arg, query) {
   if (lastDataset !== state.dataset) {
     ui.realOnly = state.towns.some((t) => isVerified(t.town));
     ui.state = 'all'; ui.query = '';
@@ -113,6 +113,9 @@ export function renderMap(root, state) {
   if (ui.realOnly === null) ui.realOnly = state.towns.some((t) => isVerified(t.town));
   const availableStates = () => [...new Set(state.towns.filter((t) => !ui.realOnly || isVerified(t.town)).map((t) => t.town.state))].sort();
   const states = availableStates();
+  // #/map?state=MA opens filtered to one state (the States page links here).
+  const wanted = query?.get('state')?.toUpperCase();
+  if (wanted && states.includes(wanted)) ui.state = wanted;
   if (!states.includes(ui.state)) ui.state = 'all';
   root.innerHTML = `
   <div class="map-layout">
@@ -366,8 +369,9 @@ export function renderMap(root, state) {
   mq.addEventListener('change', onTheme);
 
   draw();
-  // Open on the towns being shown: with public-record data loaded, that's where the real records are.
-  if (map && (ui.realOnly || ui.state !== 'all')) {
+  // Open on the lower 48 (set above) unless a single state is picked; fitting
+  // every town would zoom out to take in Alaska and Hawaii.
+  if (map && ui.state !== 'all') {
     const pts = visible().map(({ town }) => [town.lat, town.lng]);
     if (pts.length) map.fitBounds(pts, { padding: [40, 40], maxZoom: 9 });
   }
