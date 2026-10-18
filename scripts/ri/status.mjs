@@ -5,6 +5,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseCSV, slugify } from '../lib.mjs';
 import { totals, scoreTown } from '../../js/engine/scoring.js';
+import { filingLines, stateTowns } from '../common/status.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const pop = parseCSV(readFileSync(join(ROOT, 'data', 'raw', 'ri', 'popest.csv'), 'latin1'));
@@ -61,7 +62,7 @@ ${rows.join('\n')}
 
 ## Known gaps
 - **Political money covers local candidates and party committees.** All Rhode Island candidates file with the Board of Elections. Counted since ${since}: PAC contributions (many from unions) to candidates for mayor or administrator, council, school committee and other town offices, placed in a town by their filing address, and to party city and town committees. Corporate contributions to candidates are banned in Rhode Island. A filer keeps one account across offices, so local candidates who have also run for state office are left out; their money cannot be told apart. ${withMoney} of ${covered} towns had PAC money, $${Math.round(polTotal).toLocaleString('en-US')} in all.
-- **Transparency practices** are not loaded, so transparency is not scored.
+${filingLines(stateTowns('RI'), 'audited financial data with the Division of Municipal Finance').join('\n')}
 - **Older year used** because FY ${latest} is not on the portal yet: ${behind.length ? behind.join(', ') : 'none'}.
 - Other financing sources and uses (bond proceeds, transfers) are left out. Fire districts, water and sewer authorities and other independent districts are separate and not included.
 `);

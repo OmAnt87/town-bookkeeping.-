@@ -5,6 +5,7 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { totals, scoreTown } from '../../js/engine/scoring.js';
+import { filingLines, stateTowns } from '../common/status.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const OUT = join(ROOT, 'data', 'real');
@@ -47,6 +48,6 @@ ${rows.filter((r) => r.n).map((r) => `| ${label[r.kind]} | ${r.n} | ${r.fy} | ${
 - **Reports since FY 2022 left out because revenue and spending are more than four times apart** (an entry error or a part left out; ${report.inconsistent.length}): ${report.inconsistent.length ? report.inconsistent.join(', ') : 'none'}.
 - **Not matched to Census geography:** ${report.skipped.length ? report.skipped.join(', ') : 'none'}.
 - **Older year used** because the latest year is empty or inconsistent: ${report.older.length ? report.older.join(', ') : 'none'}.
-- **Transparency practices** have not been checked yet, so they are not scored.
+${filingLines(stateTowns('FL'), 'annual financial report with the Department of Financial Services').join('\n')}
 `);
 console.log(`docs/FL_DATA_STATUS.md: ${towns.length} governments`);
