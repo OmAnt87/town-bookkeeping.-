@@ -295,11 +295,11 @@ node scripts/build-summary.mjs
 
 ### Minnesota (counties, cities and townships)
 
-`data/real/mn-<county>.json` holds each Minnesota county and the cities and townships whose people mostly live in it, built the same way as Ohio and Michigan. Political money is not scored: local candidates file locally, not with the Campaign Finance Board. Coverage and gaps: [docs/MN_DATA_STATUS.md](docs/MN_DATA_STATUS.md).
+`data/real/mn-<county>.json` holds each Minnesota county and the cities and townships whose people mostly live in it, from the financial reporting form each government files with the Minnesota Office of the State Auditor ([forms, reports and data](https://www.osa.state.mn.us/forms-deadlines/forms-reports-and-data/): counties 2023-2024, cities 2022-2023, towns 2023) rather than the Census unit files: spending by function for governmental funds, enterprise funds with depreciation left out and capital outlay counted, borrowing and transfers left out (`scripts/mn/osa-map.mjs`). Political money is not scored: local candidates file locally, not with the Campaign Finance Board. Coverage and gaps: [docs/MN_DATA_STATUS.md](docs/MN_DATA_STATUS.md).
 
 ```bash
-node scripts/mn/download.mjs
-node scripts/mn/build-county.mjs --all && node scripts/mn/status.mjs
+node scripts/mn/osa-download.mjs                  # State Auditor workbooks, population, gazetteers
+node scripts/mn/osa-build.mjs --all && node scripts/mn/osa-status.mjs
 node scripts/build-summary.mjs
 ```
 

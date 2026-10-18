@@ -1094,3 +1094,34 @@ test('Louisiana offices typed by filers are placed in a parish or municipality',
   assert.equal(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'IND', contributorname: 'JANE DOE' }), null);
   assert.equal(classifyLa({ contributiontype: 'CONTRIB', contributortypecode: 'ORG', contributorname: 'AVOYELLES PARISH CLERK OF COURT' }), null);
 });
+
+import { aggregateOsa } from '../scripts/mn/osa-map.mjs';
+
+test('MN State Auditor rows map by source and function, with enterprise funds on a cash footing', () => {
+  // Column order matters: revenue before its total, spending between the two totals.
+  const gov = {
+    PropertyTaxes: 1000, 'Tax Increments': 100, SalesTax: 50, 'Total Federal Grants': 200, 'State Local Government Aid': 300, 'State Police Aid': 20,
+    'Total State Grants': 400, 'All Other Local Grants': 30, 'Total Charges for Services': 60, 'Library Fees': 5, 'Interest Earnings': 10, 'Total Revenues': 1850,
+    BondsIssued: 5000, 'Transfers From Governmental Funds': 70, 'Total Revenues & Other Sources': 6920,
+    'Governing Board Current Expend': 100, 'Police/Sheriff Current Expend': 500, 'Fire Capital Outlay': 50, 'Street & Highway Maintenance': 300,
+    'Library current Expenditures': 40, 'Economic Development Current Expenditures': 60, 'All Other Current Expend': 20,
+    'Bond Principal Payments': 150, 'Interest Payments & Fiscal Charges': 30, 'Total Expenditures': 1250,
+    'Principal Payments - Refunded Bonds': 4000, 'Transfers to Governmental Funds': 70,
+  };
+  const water = { 'Name of Enterprise': 'Water', 'Enterprise Category': 'Water', 'Operating Revenue': 800, 'Nonoperating Revenue': 25, StateGrants: 20,
+    'Operating Expenses': 600, Depreciation: 100, TotalCapOutlay: 300, Borrowing: 350, BondsPaid: 80, InterestPaid: 15, 'Nonoperating Expenses': 15 };
+  const ambulance = { 'Name of Enterprise': 'Ambulance Service', 'Enterprise Category': 'Health', 'Operating Revenue': 90, 'Operating Expenses': 95 };
+  const debt = { GenObligation: 1000, GenObRevenue: 500, OLTBegin: 100, OLTPaid: 40, ShortTermBegin: 0, ShortTermIssued: 25, ShortTermPaid: 0 };
+  const a = aggregateOsa(gov, [water, ambulance], debt);
+  assert.deepEqual(a.revenue, { propertyTax: 1100, salesTax: 50, federalGrants: 200, stateAid: 420, grants: 30, feesPermits: 150, localRevenue: 15, utilityCharges: 800 });
+  // Unitemized state aid (400 - 300 - 20) is its own line; fees are not mistaken for spending.
+  assert.equal(a.lines.find((l) => l.label.startsWith('Other state aid')).amount, 80);
+  // Depreciation out, capital outlay in; principal beyond borrowing not spent on capital (50) is refinancing.
+  assert.equal(a.refinanced, 50);
+  assert.deepEqual(a.spending, { administration: 180, publicSafety: 645, roads: 300, parks: 40, debtService: 225, utilities: 800 });
+  assert.equal(a.debt, 1585);
+  assert.deepEqual(a.leftOut, { borrowing: 5000, refunded: 4000, enterprise: 0 });
+  // A large "all other" share stays not broken down.
+  const big = aggregateOsa({ 'Total Revenues': 0, 'Total Revenues & Other Sources': 0, 'Governing Board Current Expend': 50, 'All Other Current Expend': 50, 'Total Expenditures': 100 });
+  assert.deepEqual(big.spending, { administration: 50, otherSpending: 50 });
+});
