@@ -245,11 +245,11 @@ node scripts/build-summary.mjs
 
 ### Ohio (counties, cities, villages and townships)
 
-`data/real/oh-<county>.json` holds each Ohio county and the cities, villages and townships whose people mostly live in it, built with the same shared Census unit-file builder as northern New England (`scripts/common/town-census-build.mjs`) but without its property tax rules, since county treasurers collect every levy. The Census estimated rather than received about 1,000 Ohio governments' figures (mostly small townships and villages, plus Youngstown and 35 counties), so those are not listed. Townships with the same name in different counties carry the county in their id. Political money is not scored: local candidates file with their county board of elections. Coverage and gaps: [docs/OH_DATA_STATUS.md](docs/OH_DATA_STATUS.md).
+`data/real/oh-<county>.json` holds each Ohio county and the cities, villages and townships whose people mostly live in it, from each government's unaudited annual financial report to the Auditor of State, as compiled in the Auditor's [Summarized Annual Financial Reports](https://www.ohioauditor.gov/references/SummarizedAnnualFinancialReports) (one workbook per entity type, year and basis, 2023-2025: governmental funds by function, utility funds, long-term obligations; `scripts/oh/aos-map.mjs`) rather than the Census unit files. Townships with the same name in different counties carry the county in their id. Political money is not scored: local candidates file with their county board of elections. Coverage and gaps: [docs/OH_DATA_STATUS.md](docs/OH_DATA_STATUS.md).
 
 ```bash
-node scripts/oh/download.mjs
-node scripts/oh/build-county.mjs --all && node scripts/oh/status.mjs
+node scripts/oh/aos-download.mjs                  # Auditor of State summaries, population, gazetteers
+node scripts/oh/aos-build.mjs --all && node scripts/oh/aos-status.mjs
 node scripts/build-summary.mjs
 ```
 
