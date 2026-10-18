@@ -39,7 +39,7 @@ ${rows.filter((r) => r.n).map((r) => `| ${label[r.kind]} | ${r.n} | ${r.fy} | ${
 - **Schools are separate.** School districts are their own governments, so county and municipal reports do not include schools.
 - **Counties include the constitutional officers** (sheriff, clerk of court, property appraiser, tax collector and supervisor of elections).
 - **Enterprise funds use accrual accounting**, so utility spending includes depreciation rather than capital purchases, and interest on enterprise debt is part of enterprise expenses.
-- **Debt outstanding is not in the EDR data**, so fiscal health is not scored.
+- **Debt outstanding is not in the EDR data.** It comes from the U.S. Census Bureau's Annual Survey of Local Government Finances unit files instead (\`node scripts/census-debt.mjs --state FL\`), for the latest year each government reported itself: 385 of 477 governments. The rest reported no debt lines or had their figures estimated by the Census, so fiscal health is not scored for them. Census debt includes enterprise (utility, airport, port) debt.
 - **Political money is not scored.** County candidates file campaign reports with the county supervisor of elections and municipal candidates with the city clerk; there is no statewide source for local candidates.
 
 ## Known gaps
