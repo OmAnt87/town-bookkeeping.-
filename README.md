@@ -17,6 +17,7 @@ Plain-language bookkeeping for U.S. towns and townships. Town Ledger shows where
 - **Ledger.** Individual transactions you can search, filter, sort and export to CSV.
 - **Five-year trend** of revenue against spending.
 - **Rankings.** A sortable, filterable table of every town, exportable to CSV.
+- **States.** One card per state: governments loaded, median score, grade spread, red flags, late annual reports, and which parts of the score have data. Each card links to the map and rankings for that state (`#/map?state=MA`).
 - **Compare.** Up to three towns side by side.
 - **Bring your own data.** Import a JSON file in the browser, or build one with the scripts below.
 - Light and dark themes, works on phones, no build step, no tracking.
@@ -28,11 +29,19 @@ npm start          # http://localhost:8080  (Node 18+, no dependencies to instal
 npm test           # engine, ledger, importer tests
 ```
 
-It's a static site, so any static host works, including GitHub Pages (Settings > Pages > deploy from branch, root folder).
+## Deploy
+
+It's a static site with no build step. `netlify.toml` and `vercel.json` set the cache and security headers, and the hosts compress the JSON data. The repository is about 350 MB, mostly `data/real/`, so Netlify is the safer choice; Vercel's Hobby plan may reject a deployment that large.
+
+- **Netlify (recommended):** Add new site > Import from Git > pick this repo and the `main` branch. Leave the build command empty and set the publish directory to `.` (both are read from `netlify.toml`).
+- **Vercel:** Add New > Project > import this repo. Set Framework Preset to "Other" and leave the build command empty. The output directory is `.` (from `vercel.json`).
+- **Custom domain:** once the site is live, add the domain under the site's Domain settings (Netlify) or Project > Settings > Domains (Vercel), then point your DNS records where the host tells you to. Both hosts issue HTTPS certificates automatically.
+
+Routing uses `#/` hashes, so no rewrite rules are needed. Any other static host works too.
 
 ## Data
 
-The app ships with **fictional demo towns** (`data/towns.json`, made by `npm run generate:demo`) so every feature works out of the box. The app shows a banner while demo data is loaded.
+The site shows only public-record towns (`data/real/`) by default. It also ships **fictional demo towns** (`data/towns.json`, made by `npm run generate:demo`) so every feature can be tried out. They load from **Load demo towns** on the Data page, or automatically if the public records can't load. The app shows a banner while demo data is loaded.
 
 To use real figures, build a dataset with the pipeline scripts, then load it on the **Data** page or replace `data/towns.json`:
 
@@ -215,10 +224,10 @@ node scripts/build-summary.mjs
 
 ### Vermont (counties, cities, towns and villages)
 
-`data/real/vt-<county>.json` holds each Vermont county and its cities, towns and incorporated villages, built the same way as New Hampshire from the Census unit files and Census 2025 population estimates. Towns collect the state education tax and the county tax on the same bill, so where a town reported the whole levy as its own, only the town's share is kept; villages are a second layer inside a town and are listed separately. The Census estimated rather than received about 120 governments' figures, including Bennington and Washington Counties'. Political money is not scored: local candidates do not file with the state. Coverage and gaps: [docs/VT_DATA_STATUS.md](docs/VT_DATA_STATUS.md).
+`data/real/vt-<county>.json` holds each Vermont county and its cities, towns and incorporated villages, built the same way as New Hampshire from the Census unit files and Census 2025 population estimates. Towns collect the state education tax and the county tax on the same bill; where a town reported the whole levy as its own, the education tax the Department of Taxes lists for that town ([PVR annual report data](https://tax.vermont.gov/pvr-annual-report)) is taken out, so the town's real surplus or deficit is kept; villages are a second layer inside a town and are listed separately. The Census estimated rather than received about 120 governments' figures, including Bennington and Washington Counties'. Political money is not scored: local candidates do not file with the state. Coverage and gaps: [docs/VT_DATA_STATUS.md](docs/VT_DATA_STATUS.md).
 
 ```bash
-node scripts/vt/download.mjs
+node scripts/vt/download.mjs                       # Census unit files, population, gazetteers, VT tax file
 node scripts/vt/build-county.mjs --all && node scripts/vt/status.mjs
 node scripts/build-summary.mjs
 ```
@@ -395,13 +404,17 @@ For every state built with `scripts/common/town-census-build.mjs` (New Hampshire
 Surveillance programs from the [EFF Atlas of Surveillance](https://atlasofsurveillance.org/) are matched to municipal police departments, and to sheriffs and county police where a state's counties are listed, so the red-flag part is scored in every state. Builds rewrite their county files, so re-run it after any build:
 
 ```bash
-node scripts/red-flags.mjs --download && node scripts/red-flags.mjs   # every state except NJ (NJ: scripts/nj/red-flags.mjs)
+node scripts/cameras.mjs --download --all && node scripts/cameras.mjs --all   # NY, PA, CT, MA: OpenStreetMap / DeFlock cameras
+node scripts/red-flags.mjs --download && node scripts/red-flags.mjs   # every state except NJ (NJ: scripts/nj/red-flags.mjs); --state MA,TN for some
+node scripts/transparency.mjs --all                 # NY, PA, CT, MA: has each government filed its latest annual report?
 node scripts/build-summary.mjs
 ```
 
-The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or red-flags run.
+License-plate cameras mapped in OpenStreetMap are placed inside Census town and village boundaries for New York, Pennsylvania, Connecticut and Massachusetts (`scripts/cameras.mjs`); any Flock camera is a red flag, other brands only when the town is the recorded operator. Atlas records for access every police department gets through a statewide contract (for example, Massachusetts's and Tennessee's CrimeTracer contracts) are shown but not scored. `scripts/transparency.mjs` checks one transparency practice from state records where the state publishes annual-report filings.
 
-Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Public-record data**, and lets you filter to them on the map and rankings.
+The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build, red-flags, cameras or transparency run.
+
+Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them by default, marks them **Public-record data**, and lets you filter to them on the map and rankings.
 
 See [docs/DATA_SCHEMA.md](docs/DATA_SCHEMA.md) for every field and [docs/METHODOLOGY.md](docs/METHODOLOGY.md) for how scores are calculated.
 
@@ -409,7 +422,7 @@ See [docs/DATA_SCHEMA.md](docs/DATA_SCHEMA.md) for every field and [docs/METHODO
 
 ```
 index.html, css/, js/app.js     app shell, styles, router
-js/views/                       map, town report, rankings, compare, method, data
+js/views/                       map, town report, rankings, states, compare, method, data
 js/engine/                      pure scoring + ledger logic (shared by app, scripts, tests)
 js/charts.js                    small SVG chart helpers
 data/towns.json                 demo dataset
@@ -418,7 +431,7 @@ tests/                          node --test suite
 vendor/                         Leaflet 1.9.4 and Leaflet.heat 0.2.0 (BSD-2-Clause)
 ```
 
-Map tiles come from CARTO with OpenStreetMap data. State outlines (`data/us-states.json`) are built from the [us-atlas](https://github.com/topojson/us-atlas) package (ISC, U.S. Census Bureau boundaries) and show underneath the tiles, so the map stays usable when tiles are unavailable.
+Map tiles come from Esri's World Light Gray and Dark Gray Canvas basemaps. State outlines (`data/us-states.json`) are built from the [us-atlas](https://github.com/topojson/us-atlas) package (ISC, U.S. Census Bureau boundaries) and show underneath the tiles, so the map stays usable when tiles are unavailable.
 
 ## Trust and usability
 

@@ -22,6 +22,9 @@
 //   politicalNote(isCounty)       why political money is or is not scored
 //   memberNote(g)                 optional extra note for a city, town or village
 //   ownLevyKinds                  kinds whose tax bill carries only their own levy (['Village'])
+//   levyTaxes(unit, g)            optional: the state's published taxes for the unit's tax year,
+//                                 { edu, muni, taxYear } or null, used instead of the estimate
+//   levyTaxesSource(tax)          source entry ({ label, url }) for those figures
 //   politics(geo)                 optional political money: given the geography Map (key ->
 //                                 { key, kind, base, county, ... }), returns { results: Map(key ->
 //                                 summary), filers: Set(key), since, sourceLabel(g), sourceUrl,
@@ -67,7 +70,7 @@ export function buildState(cfg) {
   const OPTS = { refinancing: true };
   const aggregate = cfg.levy === false
     ? (items) => ({ ...aggregateUnit(items, OPTS), passThrough: 0, assessments: 0 })
-    : (items, ownLevyOnly) => aggregateLevy(items, ownLevyOnly, OPTS);
+    : (items, ownLevyOnly, taxes) => aggregateLevy(items, ownLevyOnly, { ...OPTS, taxes });
 
   // Census geography: counties by FIPS, cities and towns by county subdivision code, villages
   // and other governments inside a town by place code (in the county holding most of their people).
@@ -142,7 +145,9 @@ export function buildState(cfg) {
     if (!g || !g.xy || !g.file) { report.skipped.push(`${label}: no Census match`); return null; }
     const u = byYear[year];
     const ownLevyOnly = isCounty || (cfg.ownLevyKinds || []).includes(g.kind);
-    const a = aggregate(u.items, ownLevyOnly);
+    const taxesOf = (unit) => (!ownLevyOnly && cfg.levyTaxes ? cfg.levyTaxes(unit, g) : null);
+    const tax = taxesOf(u);
+    const a = aggregate(u.items, ownLevyOnly, tax);
     if (a.unmapped.length) report.unmapped.push(`${g.display} ${year}: ${a.unmapped.join(' ')}`);
     if (Math.abs(sum(a.revenue) - a.lineTotals.revenue) > 2 || Math.abs(sum(a.spending) - a.lineTotals.spending) > 2) report.mismatch.push(`${g.display} ${year}`);
     if (a.passThrough) report.passThrough.push(`${g.display} (${money(a.passThrough)})`);
@@ -152,7 +157,7 @@ export function buildState(cfg) {
     if (lastYear > year) report.older.push(`${g.display} (FY ${year}; FY ${lastYear} ${aggregateUnit(byYear[lastYear].items).imputed ? 'estimated' : 'incomplete'})`);
 
     const history = reported.map((y) => {
-      const h = aggregate(byYear[y].items, ownLevyOnly);
+      const h = aggregate(byYear[y].items, ownLevyOnly, taxesOf(byYear[y]));
       return { year: Number(y), revenue: sum(h.revenue), spending: sum(h.spending), basis: 'actual' };
     });
     const src = CENSUS_PAGE(year);
@@ -197,6 +202,7 @@ export function buildState(cfg) {
         ledger: [...ledger, ...(pol ? pol.ledger.slice(0, LEDGER_POLITICAL_MAX) : [])],
         sources: [
           { label: `U.S. Census Bureau, ${year} Annual Survey of State and Local Government Finances, individual unit file`, url: src },
+          ...(a.passThroughSource === 'state' && a.passThrough ? [cfg.levyTaxesSource(tax)] : []),
           { label: `U.S. Census Bureau ${POP_YEAR.slice(-4)} population estimates`, url: POP_PAGE },
           { label: 'U.S. Census Bureau 2024 Gazetteer (map location)', url: GAZ_PAGE },
           ...(pol ? [{ label: politics.sourceLabel(g), url: politics.sourceUrl }] : []),
@@ -215,7 +221,8 @@ export function buildState(cfg) {
               : `Public schools are run by a separate school district. The ${kindText}'s tax bill also collects the taxes for ${cfg.sharesText}; residents pay all of them, but only the ${kindText}'s share is counted here.`,
           ...(memberNote ? [memberNote] : []),
           ...(a.assessments ? [`The ${kindText} reported ${money(a.assessments)} of "other general government" spending, more than ${Math.round(ASSESSMENT_SHARE * 100)}% of its budget. That is almost certainly its assessments for ${cfg.sharesText} filed as its own spending, so it is treated as a payment to other governments and left out.`] : []),
-          ...(a.passThrough ? [`The ${kindText} reported ${money(a.passThrough + (a.revenue.propertyTax || 0))} of property tax, which includes the shares it collects for ${cfg.sharesText}. Only the ${kindText}'s own share, ${money(a.revenue.propertyTax || 0)} (what its spending needed beyond its other revenue, which is how the ${kindText} tax rate is set), is counted, so the ${kindText} shows no surplus or deficit for the year.`] : []),
+          ...(a.passThrough && a.passThroughSource === 'state' ? [`The ${kindText} reported ${money(a.passThrough + (a.revenue.propertyTax || 0))} of property tax, which includes ${money(a.passThrough)} of education tax it collects for the state (the state lists ${money(tax.edu)} of education tax and ${money(tax.muni)} of municipal tax for tax year ${tax.taxYear}). Only the ${kindText}'s own share, ${money(a.revenue.propertyTax || 0)}, is counted.`] : []),
+          ...(a.passThrough && a.passThroughSource !== 'state' ? [`The ${kindText} reported ${money(a.passThrough + (a.revenue.propertyTax || 0))} of property tax, which includes the shares it collects for ${cfg.sharesText}. Only the ${kindText}'s own share, ${money(a.revenue.propertyTax || 0)} (what its spending needed beyond its other revenue, which is how the ${kindText} tax rate is set), is counted, so the ${kindText} shows no surplus or deficit for the year.`] : []),
           'Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.',
           ...(a.refinanced ? [`Debt service leaves out ${money(a.refinanced)} of principal repaid with new borrowing the ${kindText} did not spend on capital that year, most likely refinancing or a rolled-over note.`] : []),
           ...(a.intergovernmental ? [`Payments to other governments (${money(a.intergovernmental)}) are left out, because the government receiving them reports that spending.`] : []),

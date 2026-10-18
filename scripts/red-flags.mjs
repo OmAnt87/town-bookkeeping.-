@@ -7,6 +7,7 @@
 //   node scripts/red-flags.mjs --download      # Atlas of Surveillance CSV
 //   node scripts/red-flags.mjs                 # apply, then run scripts/build-summary.mjs
 //   node scripts/red-flags.mjs --verbose       # also list agencies that matched no town
+//   node scripts/red-flags.mjs --state MA,TN    # only these states
 //
 // Municipal police agencies are matched by name within the town's county (or statewide
 // when the name is unique and the county is not one the state's towns use). County
@@ -25,6 +26,7 @@ const RAW = join(ROOT, 'data', 'raw', 'atlas');
 const OUT = join(ROOT, 'data', 'real');
 const MARK = 'scripts/red-flags.mjs';
 const TODAY = new Date().toISOString().slice(0, 10);
+const STATEWIDE = /\bstatewide contract\b/i;
 const args = parseArgs();
 
 if (args.download) {
@@ -55,7 +57,10 @@ const aliases = (t) => {
 const countyKey = (c) => norm(String(c || '').replace(/\s+(county|parish|borough|census area|city and borough|municipality|planning region)$/i, ''));
 
 const index = JSON.parse(readFileSync(join(OUT, 'index.json'), 'utf8'));
-const datasets = index.files.filter((f) => !f.startsWith('nj-')).map((f) => ({ file: f, data: JSON.parse(readFileSync(join(OUT, f), 'utf8')) }));
+// --state NY,MA limits a run to those states' files (default: every state but NJ).
+const only = args.state ? new Set(String(args.state).toLowerCase().split(',')) : null;
+const datasets = index.files.filter((f) => !f.startsWith('nj-') && (!only || only.has(f.slice(0, 2))))
+  .map((f) => ({ file: f, data: JSON.parse(readFileSync(join(OUT, f), 'utf8')) }));
 const towns = datasets.flatMap((d) => d.data.towns);
 const byState = new Map();
 const countiesByState = new Map();
@@ -126,6 +131,9 @@ for (const r of rows) {
     date: usDate(r['Link 1 Date']),
     detail: r.Summary,
     source: { label: `EFF Atlas of Surveillance ${r.AOSNUMBER}${r['Link 1 Source'] ? `, citing ${r['Link 1 Source']}` : ''}`, url: atlasLink(r) },
+    // Access every department in the state gets through a state contract (such as
+    // Massachusetts's CrimeTracer contract) is shown but not scored: the town didn't choose it.
+    ...(STATEWIDE.test(r.Summary) ? { scored: false, unscoredReason: 'Not scored: every police department in the state has this through a statewide contract, so it is not a local decision.' } : {}),
     addedBy: MARK,
   });
 }
@@ -133,11 +141,11 @@ for (const r of rows) {
 for (const t of towns) {
   t.redFlags.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   t.sources.push({ label: 'EFF Atlas of Surveillance (police surveillance technology, searched by department)', url: ATLAS_PAGE, addedBy: MARK });
-  t.notes.push(`Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on ${TODAY}. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for ${t.stateName} yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.`);
+  t.notes.push(`Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on ${TODAY}. A town or county with none listed may still have programs nobody has reported. ${t.notes.some((n) => n.startsWith('Cameras:')) ? 'Data center deals and corporate tax breaks' : 'Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers'} have not been checked for ${t.stateName} yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.`);
 }
 for (const d of datasets) writeFileSync(join(OUT, d.file), `${JSON.stringify(d.data, null, 1)}\n`);
 
-const flagged = towns.filter((t) => t.redFlags.length).length;
+const flagged = towns.filter((t) => t.redFlags.some((f) => f.scored !== false)).length;
 console.log(`Atlas municipal and county records outside NJ for loaded states: ${rows.length}; matched ${report.matched}, ambiguous ${report.ambiguous.length}, unmatched ${report.unmatched.length}`);
-console.log(`Towns with at least one red flag: ${flagged} of ${towns.length}`);
+console.log(`Towns with at least one scored red flag: ${flagged} of ${towns.length}`);
 if (args.verbose) console.log(`Ambiguous:\n  ${report.ambiguous.join('\n  ')}\nUnmatched:\n  ${report.unmatched.join('\n  ')}`);

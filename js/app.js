@@ -6,6 +6,7 @@ import { validateDataset } from './engine/ledger.js';
 import { renderMap } from './views/map.js';
 import { renderTown } from './views/town.js';
 import { renderRankings } from './views/rankings.js';
+import { renderStates } from './views/states.js';
 import { renderCompare } from './views/compare.js';
 import { renderMethod } from './views/method.js';
 import { renderData } from './views/data.js';
@@ -52,13 +53,13 @@ export function persistDataset(dataset) {
   }
 }
 
-export function resetToDemo() {
+export function resetToDefault() {
   try { sessionStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
-  return loadDemo();
+  return loadDefault();
 }
 
-// Real towns live in data/real/, listed in data/real/index.json. They are
-// shown alongside the demo towns and replace any demo town with the same id.
+// Real towns live in data/real/, listed in data/real/index.json. When any are
+// present the site shows only them; the fictional demo towns load on request.
 async function loadRealTowns() {
   const summary = await fetch('data/real/summary.json');
   if (summary.ok) {
@@ -95,17 +96,28 @@ export async function loadTownDetail(town) {
   return full;
 }
 
-async function loadDemo() {
+// Fictional demo towns only (data/towns.json), so every feature can be tried out.
+export async function loadDemoOnly() {
   const previousDataset = state.dataset;
-  let publicError;
-  const [res, real] = await Promise.all([fetch('data/towns.json'), loadRealTowns().catch((error) => { publicError = error; return []; })]);
+  try { sessionStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
+  const res = await fetch('data/towns.json');
   if (!res.ok) throw new Error(`Could not load data/towns.json (${res.status})`);
   const demo = await res.json();
-  const realIds = new Set(real.map((t) => t.id));
   if (state.dataset !== previousDataset) return false;
-  const errors = setDataset({ towns: [...real, ...demo.towns.filter((t) => !realIds.has(t.id))] }, real.length ? 'mixed' : 'demo');
+  const errors = setDataset(demo, 'demo');
   if (errors.length) throw new Error(errors.join(' '));
-  if (publicError) {
+  return true;
+}
+
+// Public-record towns on their own. If they can't load, fall back to the demo
+// towns and say so in the banner.
+async function loadDefault() {
+  const previousDataset = state.dataset;
+  let real;
+  try {
+    real = await loadRealTowns();
+  } catch (publicError) {
+    if (!(await loadDemoOnly())) return false;
     const banner = document.getElementById('demo-banner');
     banner.hidden = false;
     banner.innerHTML = `<strong>Public-record data could not load.</strong> Showing fictional examples only. ${escapeHTML(publicError.message)} <button type="button" id="retry-data">Retry public records</button>`;
@@ -113,10 +125,14 @@ async function loadDemo() {
     document.getElementById('retry-data').onclick = async () => {
       const button = document.getElementById('retry-data');
       button.disabled = true;
-      try { if (await loadDemo()) route(); }
+      try { if (await loadDefault()) route(); }
       catch (error) { if (document.contains(button)) { button.disabled = false; button.textContent = 'Retry public records'; button.title = error.message; } }
     };
+    return true;
   }
+  if (state.dataset !== previousDataset) return false;
+  const errors = setDataset({ towns: real }, 'real');
+  if (errors.length) throw new Error(errors.join(' '));
   return true;
 }
 
@@ -128,7 +144,7 @@ async function init() {
   } catch { /* ignore */ }
   if (!restored) {
     try {
-      await loadDemo();
+      await loadDefault();
     } catch (err) {
       main.innerHTML = `<div class="page"><div class="card"><h2>Could not load data</h2>
         <p class="muted">${escapeHTML(err.message)}. Serve this folder with <code>npm start</code> instead of opening the file directly.</p></div></div>`;
@@ -142,7 +158,8 @@ async function init() {
 let cleanup = null;
 export function route() {
   state.routeRevision++;
-  const hash = location.hash.replace(/^#\/?/, '') || 'map';
+  const [hash, search = ''] = (location.hash.replace(/^#\/?/, '') || 'map').split('?');
+  const query = new URLSearchParams(search);
   const [view, ...rest] = hash.split('/');
   const arg = decodeURIComponent(rest.join('/'));
   if (typeof cleanup === 'function') cleanup();
@@ -157,14 +174,15 @@ export function route() {
     map: renderMap,
     town: renderTown,
     rankings: renderRankings,
+    states: renderStates,
     compare: renderCompare,
     method: renderMethod,
     data: renderData,
   };
   const render = views[view] || renderMap;
-  cleanup = render(main, state, arg);
+  cleanup = render(main, state, arg, query);
   if (view !== 'map') window.scrollTo(0, 0);
-  const titles = { map: 'Map', rankings: 'Rankings', compare: 'Compare', method: 'How scores work', data: 'Data' };
+  const titles = { map: 'Map', rankings: 'Rankings', states: 'States', compare: 'Compare', method: 'How scores work', data: 'Data' };
   const town = view === 'town' && state.byId.get(arg);
   document.title = town ? `${town.town.name}, ${town.town.state} - Town Ledger` : `${titles[view] || 'Map'} - Town Ledger`;
 }

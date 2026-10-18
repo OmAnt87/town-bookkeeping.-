@@ -5,6 +5,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseCSV, slugify } from '../lib.mjs';
 import { totals } from '../../js/engine/scoring.js';
+import { redFlagLines, filingLines, stateTowns } from '../common/status.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const pop = parseCSV(readFileSync(join(ROOT, 'data', 'raw', 'ma', 'popest.csv'), 'latin1'));
@@ -68,7 +69,7 @@ ${rows.join('\n')}
 
 ## Known gaps
 - **Political money covers party committees and city candidates.** Party ward, town and city committees and candidates for mayor and city council file with OCPF. Candidates for other town offices (select board, town meeting, school committee in towns) file with their town clerk and are not included. Counted since ${since}: contributions from unions and registered PACs. Corporate contributions are banned in Massachusetts. ${withFilers} of ${covered} towns have at least one filer with OCPF and are scored; ${withMoney} had union or PAC money, $${Math.round(polTotal).toLocaleString('en-US')} in all. Party committees also support state candidates.
-- **Transparency practices** have not been checked yet, so they are not scored.
+${[...redFlagLines('MA', stateTowns('MA')), ...filingLines(stateTowns('MA'), 'Schedule A annual financial report with DLS')].join('\n')}
 - **Fiscal year.** Most towns use FY ${main}. ${other.length ? `Others: ${other.join('; ')}. A town uses its latest year with actual excise collections on file; late filers use an older year.` : ''}
 - Transfers between a town's own funds and other financing sources (such as bond proceeds) are left out. Enterprise funds (often water and sewer) and fire, water and other districts are separate and not included. Debt is all long-term debt the town reports, including enterprise fund borrowing.
 `);
