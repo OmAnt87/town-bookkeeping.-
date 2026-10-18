@@ -25,6 +25,7 @@ function quantile(sorted, q) {
   return sorted[lo] + (sorted[Math.min(lo + 1, sorted.length - 1)] - sorted[lo]) * (pos - lo);
 }
 
+// Esri's gray canvas basemaps need no API key (CARTO's now do).
 const TILE_URL = (dark) =>
   `https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/${dark ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base'}/MapServer/tile/{z}/{y}/{x}`;
 
