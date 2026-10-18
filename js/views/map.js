@@ -3,10 +3,10 @@ import { money, number, escapeHTML } from '../engine/format.js';
 import { gradeBadge, verifiedPill, isVerified, ICONS, cssVar } from '../charts.js';
 import { isDark } from '../app.js';
 
-// Diverging scale (poor = red, middle = gray, good = blue) and a one-hue
+// Diverging scale (poor = red, middle = gray, good = teal) and a navy
 // sequential scale for metrics that are neither good nor bad.
-const DIVERGING = ['#d03b3b', '#e98a7f', '#b9b8b0', '#6da7ec', '#1c5cab'];
-const SEQUENTIAL = ['#cde2fb', '#86b6ef', '#3987e5', '#1c5cab', '#0d366b'];
+const DIVERGING = ['#d03b3b', '#e98a7f', '#b8bab6', '#5cbfb1', '#0e7a6c'];
+const SEQUENTIAL = ['#d4e1f4', '#8fb0e0', '#4a7fcb', '#24508f', '#132a52'];
 
 function lerpColor(stops, t) {
   const c = Math.max(0, Math.min(1, t)) * (stops.length - 1);
@@ -27,7 +27,7 @@ function quantile(sorted, q) {
 const TILE_URL = (dark) =>
   `https://{s}.basemaps.cartocdn.com/${dark ? 'dark_all' : 'light_all'}/{z}/{x}/{y}{r}.png`;
 
-const HEAT_GRADIENT = { 0.2: '#cde2fb', 0.45: '#6da7ec', 0.7: '#2a78d6', 1: '#0d366b' };
+const HEAT_GRADIENT = { 0.2: '#bfe6e0', 0.45: '#5cbfb1', 0.7: '#2a6fbd', 1: '#132a52' };
 const US_BOUNDS = [[25.5, -123.5], [48.5, -68]];
 
 // State outlines sit underneath the tile layer, so the map stays readable
@@ -51,8 +51,8 @@ function loadBorders(name) {
   });
   return borderCache[name];
 }
-const countyLineStyle = () => ({ color: isDark() ? '#8a8a82' : '#8d8c82', weight: 0.7, opacity: 0.6, dashArray: '2 3' });
-const stateLineStyle = () => ({ color: isDark() ? '#d8d8d0' : '#3d3d38', weight: 1.6, opacity: 0.85 });
+const countyLineStyle = () => ({ color: isDark() ? '#7f8aa0' : '#8d8f8c', weight: 0.7, opacity: 0.6, dashArray: '2 3' });
+const stateLineStyle = () => ({ color: isDark() ? '#cdd5e2' : '#2f3a50', weight: 1.6, opacity: 0.85 });
 const stateStyle = () => ({ color: cssVar('--baseline'), weight: 1, fillColor: cssVar('--surface'), fillOpacity: 1 });
 
 const ui = { metric: 'score', layer: 'towns', state: 'all', query: '', realOnly: null };
@@ -61,12 +61,20 @@ export function renderMap(root, state) {
   // Show only real towns by default once any are loaded; the checkbox shows demo towns too.
   if (ui.realOnly === null) ui.realOnly = state.towns.some((t) => isVerified(t.town));
   const states = [...new Set(state.towns.map((t) => t.town.state))].sort();
+  const verified = state.towns.filter((t) => isVerified(t.town));
+  const realStates = [...new Set(verified.map((t) => t.town.state))].sort();
   root.innerHTML = `
   <div class="map-layout">
     <aside class="map-side">
       <div>
-        <h1>Where town money reaches people</h1>
+        <div class="eyebrow">Open data${realStates.length ? ` · ${realStates.join(' · ')}` : ''}</div>
+        <h1>See where your town’s money really goes</h1>
         <p class="intro">Each dot is a town. Color shows how well it turns tax and other revenue into services residents actually use. Pick a town for its full ledger and report card.</p>
+        <div class="hero-stats">
+          <div><strong>${number(state.towns.length)}</strong><span>towns</span></div>
+          <div><strong>${(realStates.length ? realStates : states).length}</strong><span>states</span></div>
+          <div><strong>${number(verified.length)}</strong><span>verified</span></div>
+        </div>
       </div>
       <div class="field">
         <label for="m-search">Find a town</label>
@@ -210,7 +218,7 @@ export function renderMap(root, state) {
     dotLayer.clearLayers();
     markers.clear();
     if (heatLayer) { map.removeLayer(heatLayer); heatLayer = null; }
-    const ring = isDark() ? '#1a1a19' : '#ffffff';
+    const ring = isDark() ? '#111c2f' : '#ffffff';
     if (ui.layer === 'heat' && L.heatLayer) {
       heatLayer = L.heatLayer(
         list.map(({ town, s }) => [town.lat, town.lng, Math.max(0.05, scale.good(m.value(s)))]),
@@ -224,7 +232,7 @@ export function renderMap(root, state) {
         radius: ui.layer === 'heat' ? 4 : radius,
         color: ring,
         weight: 2,
-        fillColor: ui.layer === 'heat' ? (isDark() ? '#f4f4f1' : '#121211') : m.key === 'score' && s.grade === '?' ? '#9a9890' : scale.color(m.value(s)),
+        fillColor: ui.layer === 'heat' ? (isDark() ? '#eef2f8' : '#172033') : m.key === 'score' && s.grade === '?' ? '#9a9890' : scale.color(m.value(s)),
         fillOpacity: ui.layer === 'heat' ? 0.55 : 0.92,
       })
         .bindTooltip(`<strong>${escapeHTML(town.name)}</strong>, ${town.state}<br>Grade ${s.grade} &middot; ${m.label}: ${m.format(m.value(s))}`, { direction: 'top', offset: [0, -6] })

@@ -1,5 +1,5 @@
 // Maps Pennsylvania DCED Municipal Annual Financial Report (DCED-CLGS-30) statewide
-// columns to Town Ledger categories.
+// columns to TownView categories.
 //
 // 'shared' = "Other Expenditures" (mostly insurance, pensions and employee benefits),
 // spread across departments by size as in NJ and NY.

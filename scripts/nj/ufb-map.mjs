@@ -1,5 +1,5 @@
 // Maps the NJ DLGS User Friendly Budget (UFB) database's standardized revenue
-// sources and appropriation "service types" to Town Ledger categories.
+// sources and appropriation "service types" to TownView categories.
 //
 // Appropriations: 'shared' = costs that support every department (insurance,
 // statutory pension/social-security contributions, shared-service payments to
@@ -82,7 +82,7 @@ export function totalOf(record, group) {
   return key ? Number(record[key]) || 0 : null;
 }
 
-// Aggregates one year's lines into Town Ledger revenue/spending objects.
+// Aggregates one year's lines into TownView revenue/spending objects.
 export function aggregateUFB(revLines, appLines) {
   const revenue = {};
   const unmapped = [];

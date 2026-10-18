@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for Connecticut's 169 towns (and the City of Groton),
+// Builds real TownView records for Connecticut's 169 towns (and the City of Groton),
 // one planning region per file. Connecticut has no county governments; since 2022 the
 // Census uses its nine planning regions as county equivalents.
 //

@@ -1,5 +1,5 @@
 // Maps NY Office of the State Comptroller (OSC) annual financial report lines to
-// Town Ledger categories. Keys come from scripts/ny/osc-to-json.py:
+// TownView categories. Keys come from scripts/ny/osc-to-json.py:
 //   "<FUND>|<REVENUE|EXPENDITURE>|<LEVEL_1_CATEGORY>|<LEVEL_2_CATEGORY>|<FUNCTION>"
 //
 // Results:

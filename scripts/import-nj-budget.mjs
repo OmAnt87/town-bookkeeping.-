@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Imports a New Jersey municipal budget (or User Friendly Budget) into a Town Ledger
+// Imports a New Jersey municipal budget (or User Friendly Budget) into a TownView
 // dataset file, one ledger row per budget line.
 //
 //   node scripts/import-nj-budget.mjs --csv holmdel-2025-budget.csv --id holmdel-township-nj \

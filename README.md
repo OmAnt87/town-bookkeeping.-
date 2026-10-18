@@ -1,6 +1,8 @@
-# Town Ledger
+# TownView
 
-Plain-language bookkeeping for U.S. towns and townships. Town Ledger shows where a town's money comes from (including everything besides property tax), where it goes, and what political money flows around local officials. It then grades how well that money comes back to residents.
+**Live at [townview.org](https://townview.org).**
+
+Plain-language bookkeeping for U.S. towns and townships. TownView shows where a town's money comes from (including everything besides property tax), where it goes, and what political money flows around local officials. It then grades how well that money comes back to residents.
 
 ![Town report: score, money in, money out, political money, transparency and ledger](docs/town-report.png)
 
@@ -29,6 +31,8 @@ npm test           # engine, ledger, importer tests
 ```
 
 It's a static site, so any static host works, including GitHub Pages (Settings > Pages > deploy from branch, root folder).
+
+The `CNAME` file points GitHub Pages at **townview.org**. At your DNS provider, add `A` records for the apex domain pointing to GitHub Pages (185.199.108.153, 185.199.109.153, 185.199.110.153, 185.199.111.153) and a `CNAME` record for `www` pointing to `<user>.github.io`, then turn on "Enforce HTTPS" in Settings > Pages. `robots.txt`, `sitemap.xml`, `site.webmanifest` and the social preview image (`img/og-image.png`) assume that domain.
 
 ## Data
 

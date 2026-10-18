@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Builds real Town Ledger records for New Jersey municipalities, one county per file.
+// Builds real TownView records for New Jersey municipalities, one county per file.
 //
 //   1. Download the DLGS User Friendly Budget database and the Census gazetteer:
 //        node scripts/nj/build-county.mjs --download
