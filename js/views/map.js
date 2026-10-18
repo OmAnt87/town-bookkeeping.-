@@ -24,8 +24,12 @@ function quantile(sorted, q) {
   return sorted[lo] + (sorted[Math.min(lo + 1, sorted.length - 1)] - sorted[lo]) * (pos - lo);
 }
 
-const TILE_URL = (dark) =>
-  `https://{s}.basemaps.cartocdn.com/${dark ? 'dark_all' : 'light_all'}/{z}/{x}/{y}{r}.png`;
+// Esri's gray canvas basemaps need no API key (CARTO's keyless tiles now carry a watermark).
+// The base has no text; place names come from a separate reference layer drawn above the borders.
+const ESRI = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas';
+const TILE_URL = (dark) => `${ESRI}/World_${dark ? 'Dark' : 'Light'}_Gray_Base/MapServer/tile/{z}/{y}/{x}`;
+const LABEL_URL = (dark) => `${ESRI}/World_${dark ? 'Dark' : 'Light'}_Gray_Reference/MapServer/tile/{z}/{y}/{x}`;
+const TILE_OPTS = { maxNativeZoom: 16, maxZoom: 18 };
 
 const HEAT_GRADIENT = { 0.2: '#bfe6e0', 0.45: '#5cbfb1', 0.7: '#2a6fbd', 1: '#132a52' };
 const US_BOUNDS = [[25.5, -123.5], [48.5, -68]];
@@ -120,6 +124,7 @@ export function renderMap(root, state) {
   const L = window.L;
   let map;
   let tiles;
+  let labels;
   let dotLayer;
   let heatLayer;
   let statesLayer;
@@ -132,10 +137,13 @@ export function renderMap(root, state) {
     map = L.map('map', { zoomControl: true, minZoom: 2, zoomSnap: 0.25, worldCopyJump: true, preferCanvas: true });
     map.fitBounds(US_BOUNDS);
     tiles = L.tileLayer(TILE_URL(isDark()), {
-      attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-      subdomains: 'abcd',
-      maxZoom: 18,
+      ...TILE_OPTS,
+      attribution: 'Tiles &copy; <a href="https://www.esri.com/">Esri</a> &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors',
     }).addTo(map);
+    // Labels sit above the borders but below the town dots.
+    map.createPane('labels').style.zIndex = 380;
+    map.getPane('labels').style.pointerEvents = 'none';
+    labels = L.tileLayer(LABEL_URL(isDark()), { ...TILE_OPTS, pane: 'labels' }).addTo(map);
     map.createPane('states').style.zIndex = 150;
     loadStates()
       .then((geo) => { if (map) statesLayer = L.geoJSON(geo, { pane: 'states', interactive: false, style: stateStyle }).addTo(map); })
@@ -294,6 +302,7 @@ export function renderMap(root, state) {
 
   const onTheme = () => {
     if (tiles) tiles.setUrl(TILE_URL(isDark()));
+    if (labels) labels.setUrl(LABEL_URL(isDark()));
     if (statesLayer) statesLayer.setStyle(stateStyle());
     if (countyLines) countyLines.setStyle(countyLineStyle());
     if (stateLines) stateLines.setStyle(stateLineStyle());
