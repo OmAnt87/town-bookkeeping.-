@@ -54,7 +54,7 @@ export function renderCompare(root, state, arg) {
         <thead><tr><th scope="col">Measure</th>${entries.map((e) => `<th scope="col">${gradeBadge(e.s.grade)} <a href="#/town/${encodeURIComponent(e.town.id)}">${escapeHTML(label(e.town))}</a><p class="small muted">${escapeHTML(coverageText(e))}</p></th>`).join('')}</tr></thead>
         <tbody><tr><th scope="row">Reporting context</th>${entries.map((e) => `<td class="wrap small">${escapeHTML(reportingText(e.town))}</td>`).join('')}</tr>${rows}
         <tr><th colspan="${entries.length + 1}">Score breakdown (original component points)</th></tr>
-        ${entries[0].s.components.map((c, i) => `<tr><th scope="row">${c.label}</th>${entries.map((e) => `<td>${e.s.components[i].available ? `${e.s.components[i].points} / ${c.max}` : 'Not scored'}</td>`).join('')}</tr>`).join('')}
+        ${entries[0].s.components.map((c, i) => `<tr><th scope="row">${c.penalty ? `${c.label} (penalty)` : c.label}</th>${entries.map((e) => { const x = e.s.components[i]; return `<td>${!x.available ? (c.penalty ? 'Not checked' : 'Not scored') : c.penalty ? (x.points ? `−${Math.abs(x.points)}` : 'No penalty') : `${x.points} / ${c.max}`}</td>`; }).join('')}</tr>`).join('')}
         </tbody></table></div>`;
   }
   for (let i = 0; i < 3; i++) {

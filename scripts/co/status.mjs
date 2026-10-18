@@ -17,7 +17,7 @@ writeStatus({
       '**Payments to other governments are left out**, as in the Carolinas and Delaware.',
     ],
     gaps: [
-      '**Political money is not scored.** Contributions to Colorado county and city candidates were not loaded.',
+      '**Political money is scored for counties only**, from the Secretary of State\'s TRACER bulk files (run `node scripts/co/fetch-tracer.mjs`): itemized cash contributions from businesses, unions and political committees since three years ago to candidates whose committee name shows a county office (commissioner, sheriff, clerk, treasurer, assessor, coroner, surveyor, or "for <County> County"). TRACER gives a committee\'s county but not its office, and school board candidates file the same way, so committees whose names do not show the office are left out and the totals are a floor. City and town candidates, Denver\'s and Broomfield\'s included, file with their municipal clerk and are not scored.',
     ],
   }),
 });
