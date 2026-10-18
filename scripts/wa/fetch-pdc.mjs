@@ -2,7 +2,7 @@
 // Downloads organization contributions to Washington county, city and town candidates from the Public
 // Disclosure Commission's open data (data.wa.gov) into data/raw/wa/pdc/contributions.json (gitignored).
 //
-//   node scripts/wa/fetch-pdc.mjs      then: node scripts/wa/build-county.mjs --all
+//   node scripts/wa/fetch-pdc.mjs      then: node scripts/wa/fit-build.mjs --all
 
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -25,4 +25,4 @@ for (let offset = 0; ; offset += PAGE) {
   if (page.length < PAGE) break;
 }
 writeFileSync(join(RAW, 'contributions.json'), JSON.stringify(rows));
-console.log(`${rows.length} contributions since ${SINCE} -> data/raw/wa/pdc/contributions.json. Next: node scripts/wa/build-county.mjs --all`);
+console.log(`${rows.length} contributions since ${SINCE} -> data/raw/wa/pdc/contributions.json. Next: node scripts/wa/fit-build.mjs --all`);

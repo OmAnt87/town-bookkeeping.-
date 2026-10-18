@@ -1438,3 +1438,20 @@ test('Missouri committees are placed by the jurisdiction ending the office they 
   assert.equal(classifyMo(row), null);
   assert.equal(classifyMo({ ...row, company: 'Acme', contribution_type: 'In-Kind' }), null);
 });
+
+import { aggregateFit } from '../scripts/wa/fit-map.mjs';
+
+test('WA State Auditor Schedule 1 maps by BARS account, counts capital under its function and leaves out internal and financing flows', () => {
+  // [logical account, fund type, summary section, amount]: 20 revenues, 25 other increases, 30 expenditures, 35 other decreases.
+  const a = aggregateFit([
+    ['3111000', 0, 20, 1000], ['3131000', 0, 20, 400], ['3360000', 1, 20, 200], ['3434000', 4, 20, 900], ['3481000', 5, 20, 300], ['3611000', 0, 20, 50],
+    ['3911000', 3, 25, 700], ['3970000', 0, 25, 100],
+    ['5211000', 0, 30, 600], ['5134000', 0, 30, 100], ['5340000', 4, 30, 500], ['5182000', 5, 30, 300], ['5763000', 0, 30, 80],
+    ['5947640', 3, 35, 200], ['5950000', 1, 35, 100], ['5910000', 2, 35, 500], ['5920000', 2, 35, 40], ['5970000', 0, 35, 100], ['5010000', 4, 35, 90],
+  ]);
+  assert.deepEqual(a.revenue, { propertyTax: 1000, salesTax: 400, stateAid: 200, utilityCharges: 900, localRevenue: 50 });
+  // Capital (300) under parks and roads; borrowing beyond it (400) is refinancing, taken from principal.
+  assert.equal(a.refinanced, 400);
+  assert.deepEqual(a.spending, { publicSafety: 600, administration: 100, utilities: 500, parks: 280, roads: 100, debtService: 140 });
+  assert.deepEqual(a.leftOut, { internalService: 600, financingSources: 800, otherDecreases: 190, borrowing: 700 });
+});
