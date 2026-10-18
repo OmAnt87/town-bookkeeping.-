@@ -403,7 +403,7 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan county candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
     {
@@ -737,7 +737,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Addison Township's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -1057,6 +1058,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -1071,9 +1077,34 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 22 license-plate cameras are mapped inside Bloomfield Charter Township's borders in OpenStreetMap (22 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "22 Flock Safety license-plate cameras are mapped inside Bloomfield Charter Township's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 22,
+    "flock": 22,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "brandon-charter-township-mi",
@@ -1319,7 +1350,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Brandon Charter Township's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -1667,6 +1699,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -1680,9 +1717,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 23 license-plate cameras are mapped inside City of Auburn Hills's borders in OpenStreetMap (23 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "23 Flock Safety license-plate cameras are mapped inside City of Auburn Hills's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "License-plate readers",
@@ -1709,7 +1760,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 23,
+    "flock": 23,
+    "townOperated": 20,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-berkley-mi",
@@ -2015,7 +2076,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside City of Berkley's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
     {
@@ -2412,6 +2474,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -2426,9 +2493,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 7 license-plate cameras are mapped inside City of Birmingham's borders in OpenStreetMap (7 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "7 Flock Safety license-plate cameras are mapped inside City of Birmingham's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "License-plate readers",
@@ -2455,7 +2536,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 7,
+    "flock": 7,
+    "townOperated": 7,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-bloomfield-hills-mi",
@@ -2737,6 +2828,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -2750,9 +2846,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 2 license-plate cameras are mapped inside City of Bloomfield Hills's borders in OpenStreetMap (2 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "2 Flock Safety license-plate cameras are mapped inside City of Bloomfield Hills's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Face recognition",
@@ -2766,7 +2876,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 2,
+    "flock": 2,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-clarkston-mi",
@@ -3016,6 +3136,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -3031,9 +3156,34 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 2 license-plate cameras are mapped inside City of Clarkston's borders in OpenStreetMap (2 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "2 Flock Safety license-plate cameras are mapped inside City of Clarkston's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 2,
+    "flock": 2,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-clawson-mi",
@@ -3337,7 +3487,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside City of Clawson's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -3627,6 +3778,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -3643,9 +3799,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 4 license-plate cameras are mapped inside City of Farmington's borders in OpenStreetMap (4 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "4 Flock Safety license-plate cameras are mapped inside City of Farmington's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Face recognition",
@@ -3659,7 +3829,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 4,
+    "flock": 4,
+    "townOperated": 4,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-farmington-hills-mi",
@@ -3978,6 +4158,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -3991,9 +4176,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 42 license-plate cameras are mapped inside City of Farmington Hills's borders in OpenStreetMap (42 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "42 Flock Safety license-plate cameras are mapped inside City of Farmington Hills's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "License-plate readers",
@@ -4033,7 +4232,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 42,
+    "flock": 42,
+    "townOperated": 40,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-ferndale-mi",
@@ -4410,7 +4619,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside City of Ferndale's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
     {
@@ -4743,6 +4953,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -4757,9 +4972,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 8 license-plate cameras are mapped inside City of Hazel Park's borders in OpenStreetMap (8 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "8 Flock Safety license-plate cameras are mapped inside City of Hazel Park's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "License-plate readers",
@@ -4786,7 +5015,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 8,
+    "flock": 8,
+    "townOperated": 8,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-huntington-woods-mi",
@@ -5061,7 +5300,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside City of Huntington Woods's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
     {
@@ -5351,7 +5591,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside City of Keego Harbor's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -5606,7 +5847,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside City of Lake Angelus's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
     {
@@ -5882,6 +6124,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -5897,9 +6144,34 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 4 license-plate cameras are mapped inside City of Lathrup Village's borders in OpenStreetMap (4 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "4 Flock Safety license-plate cameras are mapped inside City of Lathrup Village's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 4,
+    "flock": 4,
+    "townOperated": 4,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-madison-heights-mi",
@@ -6256,6 +6528,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -6270,9 +6547,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 8 license-plate cameras are mapped inside City of Madison Heights's borders in OpenStreetMap (8 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "8 Flock Safety license-plate cameras are mapped inside City of Madison Heights's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Video analytics",
@@ -6299,7 +6590,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 8,
+    "flock": 8,
+    "townOperated": 6,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-northville-mi",
@@ -6638,7 +6939,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside City of Northville's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -6995,6 +7297,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -7009,9 +7316,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 13 license-plate cameras are mapped inside City of Novi's borders in OpenStreetMap (13 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "13 Flock Safety license-plate cameras are mapped inside City of Novi's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "License-plate readers",
@@ -7051,7 +7372,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 13,
+    "flock": 13,
+    "townOperated": 10,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-oak-park-mi",
@@ -7315,6 +7646,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -7330,9 +7666,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 15 license-plate cameras are mapped inside City of Oak Park's borders in OpenStreetMap (15 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "15 Flock Safety license-plate cameras are mapped inside City of Oak Park's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Face recognition",
@@ -7346,7 +7696,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 15,
+    "flock": 15,
+    "townOperated": 10,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-orchard-lake-village-mi",
@@ -7643,6 +8003,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -7659,9 +8024,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 1 license-plate camera is mapped inside City of Orchard Lake Village's borders in OpenStreetMap (1 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "1 Flock Safety license-plate camera is mapped inside City of Orchard Lake Village's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Face recognition",
@@ -7675,7 +8054,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 1,
+    "flock": 1,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-pleasant-ridge-mi",
@@ -7985,7 +8374,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside City of Pleasant Ridge's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -8325,6 +8715,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -8339,9 +8734,34 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 33 license-plate cameras are mapped inside City of Pontiac's borders in OpenStreetMap (26 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "26 Flock Safety license-plate cameras are mapped inside City of Pontiac's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 33,
+    "flock": 26,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-rochester-mi",
@@ -8625,7 +9045,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside City of Rochester's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -8918,6 +9339,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -8932,9 +9358,34 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 3 license-plate cameras are mapped inside City of Rochester Hills's borders in OpenStreetMap (2 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "2 Flock Safety license-plate cameras are mapped inside City of Rochester Hills's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 3,
+    "flock": 2,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-royal-oak-mi",
@@ -9289,6 +9740,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -9302,9 +9758,34 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 11 license-plate cameras are mapped inside City of Royal Oak's borders in OpenStreetMap (11 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "11 Flock Safety license-plate cameras are mapped inside City of Royal Oak's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 11,
+    "flock": 11,
+    "townOperated": 10,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-south-lyon-mi",
@@ -9601,6 +10082,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -9616,9 +10102,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 2 license-plate cameras are mapped inside City of South Lyon's borders in OpenStreetMap (2 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "2 Flock Safety license-plate cameras are mapped inside City of South Lyon's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "License-plate readers",
@@ -9632,7 +10132,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 2,
+    "flock": 2,
+    "townOperated": 2,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-southfield-mi",
@@ -9996,6 +10506,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -10009,9 +10524,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 56 license-plate cameras are mapped inside City of Southfield's borders in OpenStreetMap (52 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "52 Flock Safety license-plate cameras are mapped inside City of Southfield's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "License-plate readers",
@@ -10038,7 +10567,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 56,
+    "flock": 52,
+    "townOperated": 38,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-sylvan-lake-mi",
@@ -10359,7 +10898,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside City of Sylvan Lake's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
     {
@@ -10775,6 +11315,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -10788,9 +11333,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 32 license-plate cameras are mapped inside City of Troy's borders in OpenStreetMap (31 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "31 Flock Safety license-plate cameras are mapped inside City of Troy's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Third-party investigative platform",
@@ -10830,7 +11389,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 32,
+    "flock": 31,
+    "townOperated": 25,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-walled-lake-mi",
@@ -11135,6 +11704,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -11150,9 +11724,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 7 license-plate cameras are mapped inside City of Walled Lake's borders in OpenStreetMap (7 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "7 Flock Safety license-plate cameras are mapped inside City of Walled Lake's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "License-plate readers",
@@ -11166,7 +11754,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 7,
+    "flock": 7,
+    "townOperated": 6,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "city-of-wixom-mi",
@@ -11430,6 +12028,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -11443,9 +12046,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 10 license-plate cameras are mapped inside City of Wixom's borders in OpenStreetMap (10 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "10 Flock Safety license-plate cameras are mapped inside City of Wixom's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "License-plate readers",
@@ -11472,7 +12089,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 10,
+    "flock": 10,
+    "townOperated": 10,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "commerce-charter-township-mi",
@@ -11783,6 +12410,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -11798,9 +12430,34 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 1 license-plate camera is mapped inside Commerce Charter Township's borders in OpenStreetMap (1 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "1 Flock Safety license-plate camera is mapped inside Commerce Charter Township's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 1,
+    "flock": 1,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "groveland-township-mi",
@@ -12018,7 +12675,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Groveland Township's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -12302,7 +12960,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Highland Charter Township's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -12614,6 +13273,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -12628,9 +13292,34 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 9 license-plate cameras are mapped inside Independence Charter Township's borders in OpenStreetMap (9 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "9 Flock Safety license-plate cameras are mapped inside Independence Charter Township's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 9,
+    "flock": 9,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "lyon-charter-township-mi",
@@ -12952,6 +13641,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -12966,9 +13660,34 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 1 license-plate camera is mapped inside Lyon Charter Township's borders in OpenStreetMap (1 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "1 Flock Safety license-plate camera is mapped inside Lyon Charter Township's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 1,
+    "flock": 1,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "milford-charter-township-mi",
@@ -13251,6 +13970,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -13265,9 +13989,34 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 8 license-plate cameras are mapped inside Milford Charter Township's borders in OpenStreetMap (8 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "8 Flock Safety license-plate cameras are mapped inside Milford Charter Township's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 8,
+    "flock": 8,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "novi-township-mi",
@@ -13457,7 +14206,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Novi Township's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -13754,6 +14504,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -13769,9 +14524,34 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 5 license-plate cameras are mapped inside Oakland Charter Township's borders in OpenStreetMap (5 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "5 Flock Safety license-plate cameras are mapped inside Oakland Charter Township's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 5,
+    "flock": 5,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "orion-charter-township-mi",
@@ -14066,6 +14846,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -14081,9 +14866,34 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 8 license-plate cameras are mapped inside Orion Charter Township's borders in OpenStreetMap (8 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "8 Flock Safety license-plate cameras are mapped inside Orion Charter Township's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 8,
+    "flock": 8,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "oxford-charter-township-mi",
@@ -14399,6 +15209,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -14414,9 +15229,34 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 3 license-plate cameras are mapped inside Oxford Charter Township's borders in OpenStreetMap (3 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "3 Flock Safety license-plate cameras are mapped inside Oxford Charter Township's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 3,
+    "flock": 3,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "rose-township-oakland-county-mi",
@@ -14634,7 +15474,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Rose Township's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -14938,7 +15779,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Royal Oak Charter Township's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -15108,7 +15950,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Southfield Township's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -15369,6 +16212,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -15384,9 +16232,34 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 3 license-plate cameras are mapped inside Springfield Charter Township's borders in OpenStreetMap (3 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "3 Flock Safety license-plate cameras are mapped inside Springfield Charter Township's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 3,
+    "flock": 3,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "village-of-beverly-hills-mi",
@@ -15634,6 +16507,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -15649,9 +16527,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 6 license-plate cameras are mapped inside Village of Beverly Hills's borders in OpenStreetMap (6 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "6 Flock Safety license-plate cameras are mapped inside Village of Beverly Hills's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Face recognition",
@@ -15665,7 +16557,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 6,
+    "flock": 6,
+    "townOperated": 6,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "village-of-bingham-farms-mi",
@@ -15903,7 +16805,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Village of Bingham Farms's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -16202,6 +17105,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -16217,9 +17125,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 2 license-plate cameras are mapped inside Village of Franklin's borders in OpenStreetMap (2 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "2 Flock Safety license-plate cameras are mapped inside Village of Franklin's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Face recognition",
@@ -16233,7 +17155,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 2,
+    "flock": 2,
+    "townOperated": 2,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "village-of-holly-mi",
@@ -16572,7 +17504,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Village of Holly's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
     {
@@ -16864,7 +17797,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Village of Lake Orion's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
     {
@@ -17167,6 +18101,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -17182,9 +18121,34 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 7 license-plate cameras are mapped inside Village of Milford's borders in OpenStreetMap (7 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "7 Flock Safety license-plate cameras are mapped inside Village of Milford's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 7,
+    "flock": 7,
+    "townOperated": 7,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "village-of-ortonville-mi",
@@ -17400,7 +18364,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Village of Ortonville's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -17725,7 +18690,8 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: no license-plate cameras are mapped inside Village of Oxford's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": []
   },
@@ -17978,6 +18944,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -17994,9 +18965,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 2 license-plate cameras are mapped inside Village of Wolverine Lake's borders in OpenStreetMap (2 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "2 Flock Safety license-plate cameras are mapped inside Village of Wolverine Lake's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "Face recognition",
@@ -18023,7 +19008,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 2,
+    "flock": 2,
+    "townOperated": 2,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "waterford-charter-township-mi",
@@ -18331,6 +19326,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -18345,9 +19345,34 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 15 license-plate cameras are mapped inside Waterford Charter Township's borders in OpenStreetMap (15 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
-   "redFlags": []
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "15 Flock Safety license-plate cameras are mapped inside Waterford Charter Township's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 15,
+    "flock": 15,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "west-bloomfield-charter-township-mi",
@@ -18674,6 +19699,11 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
@@ -18688,9 +19718,23 @@
     "Debt is long-term debt outstanding plus short-term debt at year end.",
     "Political money is not scored: Michigan local candidates file campaign finance reports with their county clerk, not with the state.",
     "Transparency practices have not been checked yet, so they are not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-12. A town or county with none listed may still have programs nobody has reported. Data center deals, corporate tax breaks and license-plate cameras mapped by volunteers have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Cameras: 21 license-plate cameras are mapped inside West Bloomfield Charter Township's borders in OpenStreetMap (20 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Michigan yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
    "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "20 Flock Safety license-plate cameras are mapped inside West Bloomfield Charter Township's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
     {
      "kind": "surveillance",
      "label": "License-plate readers",
@@ -18717,7 +19761,17 @@
      },
      "addedBy": "scripts/red-flags.mjs"
     }
-   ]
+   ],
+   "surveillanceMap": {
+    "cameras": 21,
+    "flock": 20,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   }
  ]
 }
