@@ -16,7 +16,7 @@ writeStatus({
       '**Payments to other governments are left out**, as in the Carolinas and Delaware.',
     ],
     gaps: [
-      '**Political money is not scored.** Contributions to Nebraska county and local candidates were not loaded.',
+      '**Political money** comes from the Nebraska Accountability and Disclosure Commission\'s bulk contribution files (run `node scripts/ne/fetch-nadc.mjs`): cash from businesses, unions and PACs to county candidates and to candidates for mayor and city council since three years ago, each committee placed by the jurisdiction on its registration page. Candidates file with the NADC only after raising or spending more than $5,000, so most villages and small counties have no filings and are not scored. The NADC files nonprofits with businesses.',
       '**About half the counties are missing:** the Census estimated, or has incomplete records for, 45 Nebraska counties, including Douglas County.',
     ],
   }),

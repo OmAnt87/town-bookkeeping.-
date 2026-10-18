@@ -270,6 +270,7 @@ button, input, select { font: inherit; color: inherit; }
 .component-row .top strong { font-weight: 600; }
 .component-row .track { height: 8px; margin: 6px 0 2px; }
 .component-row .track > span { background: var(--accent); }
+.component-row .track-penalty > span { background: var(--bad); }
 .component-row p { font-size: 12.5px; color: var(--text-2); margin: 0; }
 .tiles { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
 .tile { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); min-width: 0; }
@@ -455,3 +456,44 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
 .compare-table .small { font-weight: 400; }
 .scroll-cue { margin-top: 16px; }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+/* ---------- Rankings ---------- */
+.toolbar .field-wide { flex: 2; min-width: 200px; }
+.toolbar-row { align-items: center; justify-content: flex-start; }
+.btn-quiet { border-color: transparent; background: transparent; color: var(--accent-ink); }
+.btn-quiet:hover { background: var(--accent-soft); }
+/* A bounded scroll area so the sticky header stays in view while reading a long page. */
+.table-tall { max-height: min(72vh, 900px); overflow: auto; }
+.table-tall th { z-index: 2; }
+.rank-table td { vertical-align: top; }
+.town-cell { display: flex; gap: 10px; align-items: center; }
+.pill-provisional { background: var(--warn-soft); color: var(--warn); vertical-align: middle; }
+.row-provisional td { background: color-mix(in srgb, var(--warn-soft) 35%, transparent); }
+.peer-cell { font-weight: 600; }
+.pager-controls { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.input-page { width: 72px; height: 34px; text-align: center; display: inline-block; }
+@media (max-width: 640px) {
+  .toolbar .field { min-width: calc(50% - 5px); }
+  .toolbar .field-wide { min-width: 100%; }
+  .pager { flex-direction: column; align-items: stretch; }
+  .pager-controls { justify-content: space-between; }
+  /* Keep the town name in view while the measures scroll sideways. */
+  .rank-table td:nth-child(2), .rank-table th:nth-child(2) { position: sticky; left: 0; background: var(--surface); z-index: 1; white-space: normal; min-width: 190px; max-width: 220px; }
+  .rank-table th:nth-child(2) { background: var(--surface-2); z-index: 3; }
+  .rank-table td:first-child, .rank-table th:first-child { display: none; }
+}
+
+/* ---------- Peer comparison on the report card ---------- */
+.peer-box { margin-top: 14px; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--accent-soft); color: var(--text); }
+.peer-box .peer-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.peer-box strong.big { font-size: 20px; color: var(--accent-ink); }
+.peer-box p { margin: 4px 0 0; font-size: 13px; color: var(--text-2); }
+.peer-scale { position: relative; height: 8px; margin: 10px 0 4px; border-radius: 4px; background: linear-gradient(90deg, var(--grade-f), var(--grade-c), var(--grade-a)); opacity: 0.85; }
+.peer-scale i { position: absolute; top: -4px; width: 4px; height: 16px; margin-left: -2px; border-radius: 2px; background: var(--text); box-shadow: 0 0 0 2px var(--surface); }
+.peer-ends { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--text-3); }
+.track .peer-tick { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; background: var(--text); opacity: 0.7; border-radius: 1px; }
+.component-row .track { overflow: visible; }
+.completeness { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 14px; padding: 0; list-style: none; }
+.completeness li { font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--neutral-soft); color: var(--text-2); }
+.completeness li.ok { background: var(--good-soft); color: var(--good); }
+.labels-none .state-label { display: none; }

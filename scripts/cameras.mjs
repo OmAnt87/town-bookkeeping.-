@@ -1,41 +1,46 @@
 #!/usr/bin/env node
 // Maps license-plate cameras recorded in OpenStreetMap (the data DeFlock shows) into the
-// real town files for states outside New Jersey (scripts/nj/red-flags.mjs does NJ). Run it
-// after scripts/red-flags.mjs, which adds the Atlas of Surveillance records. Safe to
-// re-run: it replaces what an earlier run added.
+// real town files for every state except New Jersey (scripts/nj/red-flags.mjs does NJ).
+// Safe to re-run: it replaces what an earlier run added. Run scripts/red-flags.mjs after it
+// so the Atlas note knows cameras were checked, then scripts/build-summary.mjs.
 //
-//   node scripts/cameras.mjs --download --all      # Census boundaries and camera locations
-//   node scripts/cameras.mjs --all                 # or --state NY; then scripts/build-summary.mjs
+//   node scripts/cameras.mjs --all            # or --state GA,TX
+//   node scripts/cameras.mjs --all --refresh  # fetch DeFlock's camera tiles again
 //
-// A camera counts for the town or village whose Census boundary contains it (NY villages and
-// cities are Census places inside towns; the place wins). Any Flock camera is scored as a
-// "Flock camera network" red flag; other brands only when the town is the recorded operator.
-// Cameras tagged as run by stores, malls, schools or state and regional agencies are left out.
+// Camera locations come from DeFlock's published tiles of OpenStreetMap's license-plate
+// camera nodes (cached in data/raw/cameras/). Each state's Census 2024 place and county
+// subdivision boundaries are downloaded, used and deleted (--keep keeps them).
+// A camera counts for the city, town or village whose Census boundary contains it; a Census
+// place (a city or village) wins over the county subdivision (a town or township) around it.
+// County records are not placed: their areas overlap their towns. Any Flock camera is scored
+// as a "Flock camera network" red flag; other brands only when the town is the recorded
+// operator. Cameras tagged as run by stores, malls, schools or state and regional agencies
+// are left out.
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from './lib.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const RAW = join(ROOT, 'data', 'raw');
+const RAW = join(ROOT, 'data', 'raw', 'cameras');
 const OUT = join(ROOT, 'data', 'real');
 const MARK = 'scripts/cameras.mjs';
 const TIGER = 'https://www2.census.gov/geo/tiger/TIGER2024';
 const OSM_PAGE = 'https://deflock.org/';
 const DEFLOCK_INDEX = 'https://cdn.deflock.me/regions/index.json';
-const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter', 'https://overpass.private.coffee/api/interpreter'];
 const TODAY = new Date().toISOString().slice(0, 10);
-const STATES = { NY: '36', PA: '42', CT: '09', MA: '25' };
 
 const args = parseArgs();
-const picked = args.all ? Object.keys(STATES) : [String(args.state || '').toUpperCase()];
-if (!picked.every((s) => STATES[s])) {
-  console.error(`Usage: node scripts/cameras.mjs [--download] --state <${Object.keys(STATES).join('|')}> | --all`);
+const { files } = JSON.parse(readFileSync(join(OUT, 'index.json'), 'utf8'));
+const loaded = [...new Set(files.map((f) => f.slice(0, 2).toUpperCase()))].filter((s) => s !== 'NJ').sort();
+const picked = args.all ? loaded : String(args.state || '').toUpperCase().split(',').filter(Boolean);
+if (!picked.length || !picked.every((s) => loaded.includes(s))) {
+  console.error(`Usage: node scripts/cameras.mjs --all | --state <${loaded.join('|')}>[,..] [--refresh] [--keep]`);
   process.exit(1);
 }
-const rawDir = (st) => join(RAW, st.toLowerCase());
+const curl = (...a) => execFileSync('curl', ['-sSfL', '--retry', '4', '--retry-all-errors', '-m', '900', '-A', 'Mozilla/5.0', ...a], { maxBuffer: 1 << 30 });
 
 function readDbf(buf) {
   const n = buf.readUInt32LE(4);
@@ -90,48 +95,59 @@ function contains(shape, x, y) {
   return inside;
 }
 
-if (args.download) {
-  const curl = (...a) => execFileSync('curl', ['-sSfL', '-m', '600', '-A', 'Mozilla/5.0', ...a], { stdio: 'inherit' });
-  for (const st of picked) {
-    const dir = rawDir(st);
-    mkdirSync(dir, { recursive: true });
-    for (const layer of ['cousub', 'place']) {
-      const zip = join(dir, `tl_2024_${STATES[st]}_${layer}.zip`);
-      curl('-o', zip, `${TIGER}/${layer.toUpperCase()}/tl_2024_${STATES[st]}_${layer}.zip`);
-      execFileSync('unzip', ['-o', '-q', zip, '-d', dir], { stdio: 'inherit' });
-    }
-    // Overpass mirrors are often busy; take the first that answers.
-    const query = `[out:json][timeout:300];area["ISO3166-2"="US-${st}"]->.a;node(area.a)["surveillance:type"="ALPR"];out tags center;`;
-    const ok = OVERPASS.some((url) => {
-      try { curl('-G', url, '--data-urlencode', `data=${query}`, '-o', join(dir, 'osm-alpr.json')); return true; } catch { return false; }
-    });
-    if (!ok) {
-      // Fallback: DeFlock publishes the same OpenStreetMap camera nodes as 20-degree tiles.
-      // Take every tile that overlaps the state's Census bounding box; cameras outside the
-      // state's towns are dropped when they are placed.
-      try {
-        const shp = readFileSync(join(dir, `tl_2024_${STATES[st]}_cousub.shp`));
-        const [x0, y0, x1, y1] = [36, 44, 52, 60].map((o) => shp.readDoubleLE(o));
-        const tile = (v) => Math.floor(v / 20) * 20;
-        const index = JSON.parse(execFileSync('curl', ['-sSfL', '-m', '120', DEFLOCK_INDEX]).toString());
-        const elements = [];
-        for (let lat = tile(y0); lat <= tile(y1); lat += 20) {
-          for (let lon = tile(x0); lon <= tile(x1); lon += 20) {
-            if (!index.regions.includes(`${lat}/${lon}`)) continue;
-            const url = index.tile_url.replace('{lat}', lat).replace('{lon}', lon);
-            const nodes = JSON.parse(execFileSync('curl', ['-sSfL', '-m', '600', url], { maxBuffer: 1 << 30 }).toString());
-            elements.push(...nodes.filter((n) => n.lat >= y0 && n.lat <= y1 && n.lon >= x0 && n.lon <= x1));
-          }
-        }
-        writeFileSync(join(dir, 'osm-alpr.json'), JSON.stringify({ source: 'DeFlock region tiles', osm3s: { timestamp_osm_base: `${TODAY}T00:00:00Z` }, elements }));
-        console.log(`${st}: no Overpass mirror answered; took ${elements.length} cameras from DeFlock's copy of OpenStreetMap.`);
-      } catch (e) {
-        console.warn(`${st}: no Overpass mirror or DeFlock tile answered (${e.message.split('\n')[0]}); cameras will be skipped.`);
-      }
-    }
-    console.log(`${st}: downloaded`);
+// ---------- Camera locations: DeFlock's tiles, cached once for every state ----------
+mkdirSync(RAW, { recursive: true });
+const indexFile = join(RAW, 'deflock-index.json');
+if (args.refresh || !existsSync(indexFile)) writeFileSync(indexFile, curl(DEFLOCK_INDEX));
+const deflock = JSON.parse(readFileSync(indexFile, 'utf8'));
+const tileDate = (existsSync(join(RAW, 'fetched.txt')) && !args.refresh ? readFileSync(join(RAW, 'fetched.txt'), 'utf8').trim() : TODAY);
+function tile(lat, lon) {
+  const file = join(RAW, `deflock_${lat}_${lon}.json`);
+  if (args.refresh || !existsSync(file)) {
+    curl('-o', file, deflock.tile_url.replace('{lat}', lat).replace('{lon}', lon));
+    writeFileSync(join(RAW, 'fetched.txt'), TODAY);
   }
-  process.exit(0);
+  return JSON.parse(readFileSync(file, 'utf8'));
+}
+const tileCache = new Map();
+function camerasIn([x0, y0, x1, y1]) {
+  const t = (v) => Math.floor(v / 20) * 20;
+  const out = [];
+  for (let lat = t(y0); lat <= t(y1); lat += 20) {
+    for (let lon = t(x0); lon <= t(x1); lon += 20) {
+      if (!deflock.regions.includes(`${lat}/${lon}`)) continue;
+      const key = `${lat}/${lon}`;
+      if (!tileCache.has(key)) tileCache.set(key, tile(lat, lon));
+      out.push(...tileCache.get(key).filter((n) => n.lat >= y0 && n.lat <= y1 && n.lon >= x0 && n.lon <= x1));
+    }
+  }
+  return out;
+}
+
+// ---------- Census boundaries: per state, downloaded when needed ----------
+function boundaries(fips) {
+  const dir = join(RAW, `tiger_${fips}`);
+  mkdirSync(dir, { recursive: true });
+  return ['place', 'cousub'].map((layer) => {
+    const base = join(dir, `tl_2024_${fips}_${layer}`);
+    if (!existsSync(`${base}.shp`)) {
+      curl('-o', `${base}.zip`, `${TIGER}/${layer.toUpperCase()}/tl_2024_${fips}_${layer}.zip`);
+      execFileSync('unzip', ['-o', '-q', `${base}.zip`, '-d', dir]);
+      rmSync(`${base}.zip`);
+    }
+    return base;
+  });
+}
+
+// The national county layer, for city-counties and independent cities (and Hawaii's counties).
+function countyLayer() {
+  const base = join(RAW, 'tl_2024_us_county');
+  if (!existsSync(`${base}.shp`)) {
+    curl('-o', `${base}.zip`, `${TIGER}/COUNTY/tl_2024_us_county.zip`);
+    execFileSync('unzip', ['-o', '-q', `${base}.zip`, '-d', RAW]);
+    rmSync(`${base}.zip`);
+  }
+  return base;
 }
 
 // "Town of Colonie", "Colonie Town" and "Colonie" all become "colonie".
@@ -139,12 +155,7 @@ const normName = (s) => String(s).toLowerCase().replace(/[.'’]/g, '').replace(
   .replace(/\bmount\b/g, 'mt').replace(/\bsaint\b/g, 'st').replace(/\s+/g, ' ').trim();
 const NOT_TOWN = /home depot|lowe|simon|mall|port authority|panynj|turnpike|parkway|thruway|school|university|college|transit|mbta|state police|county/i;
 
-const { files } = JSON.parse(readFileSync(join(OUT, 'index.json'), 'utf8'));
 for (const st of picked) {
-  const dir = rawDir(st);
-  const osmFile = join(dir, 'osm-alpr.json');
-  const layers = ['place', 'cousub'].map((l) => join(dir, `tl_2024_${STATES[st]}_${l}`)).filter((p) => existsSync(`${p}.shp`));
-  if (!existsSync(osmFile) || !layers.length) { console.warn(`${st}: no camera file or Census boundaries in ${dir}; run with --download.`); continue; }
   const datasets = files.filter((f) => f.startsWith(`${st.toLowerCase()}-`)).map((file) => ({ file, data: JSON.parse(readFileSync(join(OUT, file), 'utf8')) }));
   const towns = datasets.flatMap((d) => d.data.towns);
   for (const t of towns) {
@@ -153,13 +164,22 @@ for (const st of picked) {
     t.notes = (t.notes || []).filter((n) => !n.startsWith('Cameras:'));
     delete t.surveillanceMap;
   }
-  const byGeoid = new Map(towns.filter((t) => t.censusGeoid).map((t) => [t.censusGeoid, t]));
+  // Cities, towns and villages; plus county-level governments that are cities (independent cities,
+  // city-counties, unified governments), and counties where a state has no municipalities (Hawaii).
+  // Ordinary counties overlap the towns inside them, so they are not placed.
+  const local = towns.filter((t) => t.censusGeoid?.length > 5);
+  const placeable = [...local, ...towns.filter((t) => t.censusGeoid?.length === 5 && (t.type !== 'County' || !local.length))];
+  if (!placeable.length) { console.warn(`${st}: no towns with Census ids`); continue; }
+  const fips = placeable[0].censusGeoid.slice(0, 2);
+  const layers = [...(local.length ? boundaries(fips) : []), ...(placeable.length > local.length ? [countyLayer()] : [])];
+  const byGeoid = new Map(placeable.map((t) => [t.censusGeoid, t]));
   const areas = layers.flatMap((p) => {
     const shapes = readShp(readFileSync(`${p}.shp`));
     return readDbf(readFileSync(`${p}.dbf`)).map((r, i) => ({ town: byGeoid.get(r.GEOID), shape: shapes[i] })).filter((a) => a.town && a.shape);
   });
-  const osm = JSON.parse(readFileSync(osmFile, 'utf8'));
-  const osmDate = osm.osm3s?.timestamp_osm_base?.slice(0, 10) || TODAY;
+  const bbox = areas.map((a) => a.shape.box).reduce((a, b) => [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[2], b[2]), Math.max(a[3], b[3])]);
+  const osm = { elements: camerasIn(bbox) };
+  const osmDate = tileDate;
   const counts = new Map();
   let total = 0;
   let placed = 0;
@@ -203,10 +223,11 @@ for (const st of picked) {
     }
     town.notes.push(`Cameras: ${c.cameras} license-plate camera${c.cameras === 1 ? ' is' : 's are'} mapped inside ${town.name}'s borders in OpenStreetMap (${c.flock} made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.`);
   }
-  for (const t of towns) {
+  for (const t of placeable) {
     t.redFlags.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
     if (!counts.has(t)) t.notes.push(`Cameras: no license-plate cameras are mapped inside ${t.name}'s borders in OpenStreetMap as of ${osmDate}.`);
   }
   for (const d of datasets) writeFileSync(join(OUT, d.file), `${JSON.stringify(d.data, null, 1)}\n`);
-  console.log(`${st}: ${total} cameras${osm.source ? ` (${osm.source})` : ''}, ${placed} placed inside towns; ${counts.size} towns with mapped cameras, ${towns.filter((t) => t.redFlags.some((f) => f.addedBy === MARK)).length} with a camera red flag`);
+  if (!args.keep) rmSync(join(RAW, `tiger_${fips}`), { recursive: true, force: true });
+  console.log(`${st}: ${total} cameras in the state's bounding box, ${placed} placed inside towns; ${counts.size} towns with mapped cameras, ${towns.filter((t) => t.redFlags.some((f) => f.addedBy === MARK)).length} with a camera red flag`);
 }
