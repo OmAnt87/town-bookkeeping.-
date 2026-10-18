@@ -25,6 +25,12 @@ For New York, figures are **actual results** from each government's Annual Finan
 
 For Pennsylvania, figures are **actual results** from each municipality's Annual Audit and Financial Report (DCED-CLGS-30). "Other financing sources and uses" (transfers between funds, borrowing, refinancing) are left out because the statewide report does not break them down. "Other expenditures" (mostly insurance, pensions and benefits) are spread across departments. Taxes the statewide report does not itemize are shown as other local taxes. Political money is not scored, because municipal campaign reports are filed with each county, not the state.
 
+## Ranking among peers
+
+Every town also gets a percentile among its peers: graded towns in the same state, of the same kind of government (county; city or consolidated city-county; town, village, borough or plantation; township) and in the same population band (under 2,500; 2,500 to 10,000; 10,000 to 50,000; 50,000 to 250,000; 250,000 and up). Peers in one state share data sources and reporting rules, so the comparison is not skewed by which records a state publishes. A group with fewer than 8 graded towns is widened to the state's towns of that kind, then to towns of that kind and size in every state, then to every town of that kind. The percentile is the share of the other towns in the group that the town scores higher than, with ties counting half; rank 1 is the highest score. Report cards show the peer median for each part of the score (`js/engine/peers.js`).
+
+A score built on less than 60 of the 100 points of data is **provisional**. It is shown, but whenever a list is ranked by score or among peers, provisional towns come after the rest. Ungraded towns (less than 50 points) have no percentile.
+
 ## Red flags: surveillance and corporate giveaways
 
 Some spending works against residents, so it counts against the score:

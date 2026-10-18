@@ -1267,3 +1267,159 @@ test('Montana candidates are placed by county of residence or mailing city', () 
   assert.deepEqual(classifyMt({ 'Contributor Name': 'Yellowstone Realty LLC', 'Line Item': 'Individual Contributions', 'Amount Subtype': 'Cash' }), { key: 'developerContributions' });
   assert.equal(classifyMt({ 'Contributor Name': 'Montana Republican Party', 'Line Item': 'Political Party Committee Contributions', 'Amount Subtype': 'Cash' }), null);
 });
+
+import { placeJurisdiction as waPlace, classifyWa } from '../scripts/wa/pdc-map.mjs';
+test('Washington PDC rows are placed by office jurisdiction and classified by contributor code', () => {
+  assert.deepEqual(waPlace('KING CO'), { level: 'county', name: 'king' });
+  assert.deepEqual(waPlace('CITY OF AUBURN *'), { level: 'city', name: 'auburn' });
+  assert.deepEqual(waPlace('TOWN OF WINTHROP'), { level: 'city', name: 'winthrop' });
+  assert.equal(waPlace('PORT OF SEATTLE'), null);
+  assert.equal(waPlace('SEATTLE SCHOOL DIST 001'), null);
+  const row = (o) => ({ cash_or_in_kind: 'Cash', contributor_category: 'Organization', code: 'Business', contributor_name: 'Acme Homes LLC', ...o });
+  assert.deepEqual(classifyWa(row()), { key: 'developerContributions' });
+  assert.deepEqual(classifyWa(row({ code: 'Union', contributor_name: 'SEIU 775' })), { key: 'unionContributions' });
+  assert.deepEqual(classifyWa(row({ code: 'Political Action Committee', contributor_name: 'Electrical Workers 46 PAC' })), { key: 'unionContributions' });
+  assert.deepEqual(classifyWa(row({ code: 'Political Action Committee', contributor_name: 'Washington Realtors PAC' })), { key: 'pacContributions' });
+  assert.equal(classifyWa(row({ code: 'Other', contributor_name: 'Tulalip Tribes' })), null);
+  assert.equal(classifyWa(row({ code: 'Party', contributor_name: 'King County Democrats' })), null);
+  assert.equal(classifyWa(row({ cash_or_in_kind: 'In kind' })), null);
+  assert.equal(classifyWa(row({ contributor_category: 'Individual' })), null);
+});
+
+import { isCountyRace, classifyCo, parseTracer } from '../scripts/co/tracer-map.mjs';
+test('Colorado TRACER committees count for a county only when their name shows a county office', () => {
+  assert.equal(isCountyRace('ANGELA THOMAS 4 COMMISSIONER', 'DOUGLAS'), true);
+  assert.equal(isCountyRace('CANDACE RIVERA 4 COUNTY CLERK', 'PUEBLO'), true);
+  assert.equal(isCountyRace('CLAIRE FOR BOULDER COUNTY', 'BOULDER'), true);
+  assert.equal(isCountyRace('WYATT FOR LARIMER', 'LARIMER'), true);
+  assert.equal(isCountyRace('VALERIE FOR DOUGLAS COUNTY SCHOOLS', 'DOUGLAS'), false);
+  assert.equal(isCountyRace('KIMBERLEE SIA FOR DPS BOARD', 'DENVER'), false);
+  assert.equal(isCountyRace('COMMITTEE TO ELECT SETH BRYANT', 'TELLER'), false);
+  assert.equal(isCountyRace('GOLDSTEIN4ADAMS12', 'ADAMS'), false);
+  const row = (o) => ({ amended: 'N', contributiontype: 'Monetary (Itemized)', contributortype: 'Business', lastname: 'ACME HOMES LLC', firstname: '', ...o });
+  assert.deepEqual(classifyCo(row()), { key: 'developerContributions' });
+  assert.deepEqual(classifyCo(row({ contributortype: 'Small Donor Committee', lastname: 'IBEW LOCAL 68 SDC' })), { key: 'unionContributions' });
+  assert.deepEqual(classifyCo(row({ contributortype: 'Political Committee', lastname: 'COLORADO REALTORS PAC' })), { key: 'pacContributions' });
+  assert.equal(classifyCo(row({ amended: 'Y' })), null);
+  assert.equal(classifyCo(row({ contributiontype: 'Non-Monetary (Itemized)' })), null);
+  assert.equal(classifyCo(row({ contributortype: 'Individual', lastname: 'DOE', firstname: 'JANE' })), null);
+  // Stray quotes inside a field and a field broken across lines.
+  const rows = parseTracer('"A","B","C"\n"1","12" PIPE","x"\n"2","line\none","y"\n');
+  assert.deepEqual(rows.map((r) => r.b), ['12" PIPE', 'line one']);
+});
+
+import { revenueKey as caRevenueKey, expenditureKey as caExpenditureKey, aggregateSco } from '../scripts/ca/sco-map.mjs';
+test('California State Controller lines map to Town Ledger categories', () => {
+  const rev = (category, subcategory_1, line_description, value = 100) => ({ category, subcategory_1, line_description, value });
+  assert.equal(caRevenueKey(rev('Taxes', 'Taxes', 'Secured and Unsecured Property Taxes_General Revenues')), 'propertyTax');
+  assert.equal(caRevenueKey(rev('Taxes', 'Taxes', 'Property Tax In-Lieu of Vehicle License Fees_General Revenues')), 'propertyTax');
+  assert.equal(caRevenueKey(rev('Taxes', 'Taxes', 'Sales and Use Taxes_General Revenues')), 'salesTax');
+  assert.equal(caRevenueKey(rev('Property Taxes', 'General', 'Countywide Secured and Unsecured_General')), 'propertyTax');
+  assert.equal(caRevenueKey(rev('Water Enterprise Fund', 'Operating Revenues', 'Water Sales Revenues')), 'utilityCharges');
+  assert.equal(caRevenueKey(rev('Airport Enterprise Fund', 'Nonoperating Revenues', 'Intergovernmental – Federal')), 'federalGrants');
+  assert.equal(caRevenueKey(rev('Internal Service Fund', 'Operating Revenues', 'Charges for Services_Internal Service Fund')), null);
+  assert.equal(caRevenueKey(rev('Fines, Forfeitures, Penalties, and Revenue from Use of Money and Property', 'Fines, Forfeitures, and Penalties', 'Vehicle Code Fines')), 'finesForfeitures');
+  const exp = (category, subcategory_1, subcategory_2, value = 100) => ({ category, subcategory_1, subcategory_2, line_description: subcategory_2, value });
+  assert.equal(caExpenditureKey(exp('General Government and Public Safety', 'Public Safety', 'Police_Current Expenditures'), 'city'), 'publicSafety');
+  assert.equal(caExpenditureKey(exp('General Government and Public Safety', 'Public Safety', 'District Attorney - Prosecution_Current Expenditures'), 'city'), 'administration');
+  assert.equal(caExpenditureKey(exp('Debt Service and Capital Outlay', 'Capital Outlay', 'Transportation'), 'city'), 'roads');
+  assert.equal(caExpenditureKey(exp('Debt Service and Capital Outlay', 'Capital Outlay', 'General'), 'county'), 'roads');
+  assert.equal(caExpenditureKey(exp('Public Assistance', 'Welfare', 'General'), 'county'), 'healthServices');
+  assert.equal(caExpenditureKey(exp('Public Protection', 'Judicial', 'General'), 'county'), 'administration');
+  assert.equal(caExpenditureKey(exp('Sewer Enterprise Fund', 'Operating Expenses', 'Depreciation and Amortization Expenses_Sewer Enterprise Fund'), 'city'), null);
+  assert.equal(caExpenditureKey(exp('Water Enterprise Fund', 'Nonoperating Expenses', 'Interest Expense_Water Enterprise Fund'), 'city'), null);
+  // Enterprise interest is replaced by enterprise debt payments from the debt forms.
+  const a = aggregateSco([rev('Taxes', 'Taxes', 'Sales and Use Taxes_General Revenues', 500)], [exp('Water Enterprise Fund', 'Operating Expenses', 'Water Supply Expenses', 300)], { kind: 'city', enterpriseDebtPayments: 50 });
+  assert.deepEqual(a.revenue, { salesTax: 500 });
+  assert.deepEqual(a.spending, { utilities: 300, debtService: 50 });
+  assert.equal(a.lineTotals.spending, 350);
+});
+
+import { assignPeers, percentileOf, popBand, govKind, MIN_PEERS } from '../js/engine/peers.js';
+test('Peer groups rank towns against the same state, kind and size, widening small groups', () => {
+  assert.equal(popBand(2499).key, 'xs');
+  assert.equal(popBand(2500).key, 's');
+  assert.equal(popBand(300000).key, 'xl');
+  assert.equal(govKind({ type: 'Charter Township' }), 'township');
+  assert.equal(govKind({ type: 'Consolidated government' }), 'city');
+  assert.equal(govKind({ type: 'Borough' }), 'town');
+  assert.equal(govKind({ type: 'County' }), 'county');
+  // Ties count half; one town alone has no percentile.
+  assert.equal(percentileOf([10, 20, 30, 40, 50], 50), 100);
+  assert.equal(percentileOf([10, 20, 30, 40, 50], 10), 0);
+  assert.equal(percentileOf([10, 20, 20, 40, 50], 20), 38);
+  assert.equal(percentileOf([10], 10), null);
+  const entry = (id, state, type, population, score, possible = 80) => ({
+    town: { id, state, type, population },
+    s: { score, grade: possible >= 50 ? 'B' : '?', coverage: { possible }, components: [{ key: 'services', available: true, ratio: score / 100 }] },
+  });
+  const small = Array.from({ length: MIN_PEERS }, (_, i) => entry(`t${i}`, 'NJ', 'Township', 5000, 50 + i));
+  const big = [entry('c1', 'NJ', 'City', 300000, 90), entry('c2', 'NJ', 'City', 20000, 40)];
+  const thin = entry('thin', 'NJ', 'Township', 5000, 99, 40);
+  const all = assignPeers([...small, ...big, thin]);
+  const top = all.find((e) => e.town.id === `t${MIN_PEERS - 1}`);
+  assert.equal(top.peer.level, 0);
+  assert.equal(top.peer.rank, 1);
+  assert.equal(top.peer.percentile, 100);
+  assert.match(top.peer.label, /NJ townships with 2,500 to 10,000 people/);
+  // Two NJ cities are too few for a group of their own, at any level.
+  assert.equal(all.find((e) => e.town.id === 'c1').peer.percentile, null);
+  // Ungraded towns are provisional and left out of their peers' ranks.
+  const t = all.find((e) => e.town.id === 'thin');
+  assert.equal(t.provisional, true);
+  assert.equal(t.peer.percentile, null);
+  assert.equal(t.peer.size, MIN_PEERS);
+});
+
+import { classifyContributor as civixClassify, isoDate, normPlace as civixPlace } from '../scripts/common/civix.mjs';
+import { placeCommittee as okPlace, classifyOk } from '../scripts/ok/guardian-map.mjs';
+test('Civix sites share contributor types; Oklahoma committees are placed by their registered jurisdiction', () => {
+  assert.deepEqual(civixClassify('Political Action Committee (Registered)', 'Oklahoma Bankers PAC'), { key: 'pacContributions' });
+  assert.deepEqual(civixClassify('PAC-Separate Segregated Political Fund', 'Omaha Firefighters PAC'), { key: 'unionContributions' });
+  assert.deepEqual(civixClassify('Business (For-Profit and Non-Profit entities)', 'Acme Homes'), { key: 'developerContributions' });
+  assert.equal(civixClassify('Indian Tribe', 'Chickasaw Nation'), null);
+  assert.equal(civixClassify('Candidate Committee (Registered)', 'Pugh For Senate'), null);
+  assert.equal(isoDate('01/02/2023'), '2023-01-02');
+  assert.equal(isoDate('2024-06-30 00:00:00'), '2024-06-30');
+  assert.equal(civixPlace('CITY OF OKLAHOMA CITY'), civixPlace('Oklahoma City'));
+  assert.deepEqual(okPlace({ jurisdiction: 'OKLAHOMA COUNTY', office: 'COUNTY COMMISSIONER' }), { level: 'county', name: 'oklahoma' });
+  assert.deepEqual(okPlace({ jurisdiction: 'CITY OF TULSA', office: 'COUNCILMEMBER' }), { level: 'city', name: 'tulsa' });
+  assert.equal(okPlace({ jurisdiction: 'STATE OF OKLAHOMA', office: 'STATE SENATOR' }), null);
+  assert.equal(okPlace({ jurisdiction: 'TULSA PUBLIC SCHOOLS', office: 'BOARD MEMBER' }), null);
+  const row = { amended: 'N', 'receipt type': 'Monetary', 'receipt source type': 'Political Action Committee (Not Registered)', 'last name': 'GENEN PAC', 'first name': '' };
+  assert.deepEqual(classifyOk(row), { key: 'pacContributions' });
+  assert.equal(classifyOk({ ...row, amended: 'Y' }), null);
+  assert.equal(classifyOk({ ...row, 'receipt type': 'In-Kind' }), null);
+});
+
+import { placeCommittee as nePlace, classifyNe } from '../scripts/ne/nadc-map.mjs';
+test('Nebraska committees are placed by jurisdiction type; only mayor and council count in cities', () => {
+  assert.deepEqual(nePlace({ jurisdictionType: 'County', jurisdiction: 'LANCASTER', office: 'COUNTY COMMISSIONER' }), { level: 'county', name: 'lancaster' });
+  assert.deepEqual(nePlace({ jurisdictionType: 'Municipal', jurisdiction: 'OMAHA', office: 'MAYOR' }), { level: 'city', name: 'omaha' });
+  assert.equal(nePlace({ jurisdictionType: 'Municipal', jurisdiction: 'OMAHA', office: 'AIRPORT AUTHORITY' }), null);
+  assert.equal(nePlace({ jurisdictionType: 'State', jurisdiction: 'NEBRASKA', office: 'STATE LEGISLATURE' }), null);
+  const row = { amended: 'N', 'receipt transaction/contribution type': 'Monetary', 'contributor or transaction source type': 'Business (For-Profit and Non-Profit entities)', 'contributor or source name (individual last name)': 'Gifford Realty, Inc.', 'first name': '' };
+  assert.deepEqual(classifyNe(row), { key: 'developerContributions' });
+  assert.deepEqual(classifyNe({ ...row, 'contributor or transaction source type': 'PAC-Separate Segregated Political Fund', 'contributor or source name (individual last name)': 'Lincoln Fire Fighters Assn. Local #644' }), { key: 'unionContributions' });
+  assert.equal(classifyNe({ ...row, 'receipt transaction/contribution type': 'In-Kind Contribution' }), null);
+});
+
+import { placeOffice as moPlace, classifyMo, norm as moNorm } from '../scripts/mo/mec-map.mjs';
+test('Missouri committees are placed by the jurisdiction ending the office they sought', () => {
+  const counties = ['saint louis', 'saint charles', 'jackson', 'greene', 'charles'].sort((a, b) => b.length - a.length);
+  assert.deepEqual(moPlace('Mayor City of Creve Coeur', counties), { level: 'city', name: 'creve coeur' });
+  assert.deepEqual(moPlace('County Council District 2 St. Louis County', counties), { level: 'county', name: 'saint louis' });
+  assert.deepEqual(moPlace('Prosecuting Attorney St. Charles County', counties), { level: 'county', name: 'saint charles' });
+  assert.equal(moPlace('State Representative District 62 Missouri House of Representatives', counties), null);
+  assert.equal(moPlace('Boardmember Ferguson-Florissant School District', counties), null);
+  assert.equal(moPlace('Associate Circuit Judge Greene County', counties), null);
+  assert.equal(moNorm('St. Louis'), 'saint louis');
+  const row = { contribution_type: 'Monetary', company: '', committee: '' };
+  assert.deepEqual(classifyMo({ ...row, company: 'Clayco Inc' }), { key: 'developerContributions' });
+  assert.deepEqual(classifyMo({ ...row, committee: 'Missouri Realtors PAC' }), { key: 'pacContributions' });
+  assert.deepEqual(classifyMo({ ...row, committee: 'IBEW Local 1 PAC' }), { key: 'unionContributions' });
+  assert.equal(classifyMo({ ...row, committee: 'Friends Of Joe Vaccaro' }), null);
+  assert.equal(classifyMo({ ...row, committee: 'Jackson County Democratic Committee' }), null);
+  assert.equal(classifyMo(row), null);
+  assert.equal(classifyMo({ ...row, company: 'Acme', contribution_type: 'In-Kind' }), null);
+});
