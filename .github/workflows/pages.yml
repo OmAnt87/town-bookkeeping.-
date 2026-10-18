@@ -36,6 +36,7 @@ jobs:
         run: |
           mkdir _site
           cp -r index.html css js data vendor docs _site/
+          rm _site/data/towns.json
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

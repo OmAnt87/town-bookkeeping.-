@@ -42,9 +42,9 @@ Routing uses `#/` hashes, so no rewrite rules are needed. Any other static host 
 
 ## Data
 
-The site shows only public-record towns (`data/real/`) by default. It also ships **fictional demo towns** (`data/towns.json`, made by `npm run generate:demo`) so every feature can be tried out. They load from **Load demo towns** on the Data page, or automatically if the public records can't load. The app shows a banner while demo data is loaded.
+The site shows only public-record towns (`data/real/`). The fictional demo dataset (`data/towns.json`, made by `npm run generate:demo`) stays in the repo for tests and local experiments, but the app no longer loads it and the Pages deploy leaves it out.
 
-To use real figures, build a dataset with the pipeline scripts, then load it on the **Data** page or replace `data/towns.json`:
+To use real figures, build a dataset with the pipeline scripts, then load it on the **Data** page:
 
 | Source | Script | What it fills |
 |---|---|---|
@@ -429,7 +429,7 @@ index.html, css/, js/app.js     app shell, styles, router
 js/views/                       map, town report, rankings, states, compare, method, data
 js/engine/                      pure scoring + ledger logic (shared by app, scripts, tests)
 js/charts.js                    small SVG chart helpers
-data/towns.json                 demo dataset
+data/towns.json                 fictional demo dataset (tests only, not deployed)
 scripts/                        demo generator, real-data importers, dev server
 tests/                          node --test suite
 vendor/                         Leaflet 1.9.4 and Leaflet.heat 0.2.0 (BSD-2-Clause)
