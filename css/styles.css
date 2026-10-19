@@ -269,8 +269,16 @@ button, input, select { font: inherit; color: inherit; }
 .btn-primary { background: var(--brand); border-color: var(--brand); color: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12); }
 .btn-primary:hover { background: var(--brand); border-color: var(--brand); color: #fff; filter: brightness(1.15); }
 .segmented { display: flex; box-sizing: border-box; height: 38px; padding: 3px; background: var(--surface-2); border-radius: var(--radius-sm); gap: 2px; }
-.segmented button { flex: 1; border: 0; background: transparent; padding: 0 12px; border-radius: calc(var(--radius-sm) - 2px); cursor: pointer; font: inherit; font-weight: 500; color: var(--text-2); }
+.segmented button { flex: 1; border: 0; background: transparent; padding: 0 10px; white-space: nowrap; border-radius: calc(var(--radius-sm) - 2px); cursor: pointer; font: inherit; font-weight: 500; color: var(--text-2); }
 .segmented button[aria-pressed="true"] { background: var(--surface); color: var(--accent-2-ink); font-weight: 600; box-shadow: var(--shadow); }
+/* Two-option toggles get a thumb that slides to the pressed button. */
+.segmented:has(> button:nth-child(2):last-child) { position: relative; isolation: isolate; }
+.segmented:has(> button:nth-child(2):last-child)::before {
+  content: ""; position: absolute; z-index: -1; top: 3px; bottom: 3px; left: 3px; width: calc(50% - 4px);
+  border-radius: calc(var(--radius-sm) - 2px); background: var(--surface); box-shadow: var(--shadow);
+}
+.segmented:has(> button:nth-child(2):last-child[aria-pressed="true"])::before { transform: translateX(calc(100% + 2px)); }
+.segmented:has(> button:nth-child(2):last-child) button[aria-pressed="true"] { background: transparent; box-shadow: none; }
 .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; margin-bottom: 14px; }
 .toolbar .field { min-width: 160px; flex: 1; }
 .check { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
@@ -526,6 +534,10 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
 }
 @media (prefers-reduced-motion: no-preference) {
   .track > span, .bar-row .bar > span { transition: width 0.4s ease; }
+  .track > span, .bar-row .bar > span { transform-origin: left; animation: grow-in 0.6s cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+  @keyframes grow-in { from { transform: scaleX(0); } }
+  .segmented::before { transition: transform 0.25s cubic-bezier(0.3, 0.7, 0.4, 1); }
+  .segmented button { transition: color 0.2s ease; }
   .card, .tile { transition: box-shadow 0.2s ease, transform 0.2s ease; }
   .tile:hover, a.card:hover { box-shadow: var(--shadow-lift); transform: translateY(-2px); }
   main > .page { animation: fade-in 0.25s ease both; }
