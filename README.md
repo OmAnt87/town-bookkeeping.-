@@ -20,6 +20,7 @@ Plain-language bookkeeping for U.S. towns and townships. TownView shows where a 
 - **Five-year trend** of revenue against spending.
 - **Rankings.** A sortable, filterable table of every town, exportable to CSV.
 - **Compare.** Up to three towns side by side.
+- **Town forums.** Each town has a discussion page (Forum button on its report), backed by GitHub Discussions through [giscus](https://giscus.app).
 - **Bring your own data.** Import a JSON file in the browser, or build one with the scripts below.
 - Light and dark themes, works on phones, no build step, no tracking.
 
@@ -33,6 +34,10 @@ npm test           # engine, ledger, importer tests
 It's a static site, so any static host works, including GitHub Pages (Settings > Pages > deploy from branch, root folder).
 
 The `CNAME` file points GitHub Pages at **townview.org**. At your DNS provider, add `A` records for the apex domain pointing to GitHub Pages (185.199.108.153, 185.199.109.153, 185.199.110.153, 185.199.111.153) and a `CNAME` record for `www` pointing to `<user>.github.io`, then turn on "Enforce HTTPS" in Settings > Pages. `robots.txt`, `sitemap.xml`, `site.webmanifest` and the social preview image (`img/og-image.png`) assume that domain.
+
+### Forum setup
+
+The forum pages need a one-time setup: enable Discussions on the repo (Settings > General > Features), create a discussion category named **Town forums**, install the [giscus app](https://github.com/apps/giscus) on the repo, then copy the category id from [giscus.app](https://giscus.app) into `GISCUS.categoryId` in `js/views/forum.js`. Until then the forum page says it is not set up yet.
 
 ## Data
 

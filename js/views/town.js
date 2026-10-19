@@ -79,6 +79,7 @@ export function renderTown(root, state, id) {
         </div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <a class="btn" href="#/forum/${encodeURIComponent(town.id)}">Forum</a>
         <a class="btn" href="#/compare/${encodeURIComponent(town.id)}">Compare</a>
         <button class="btn" id="dl-report" type="button">${ICONS.download} Download data</button>
       </div>

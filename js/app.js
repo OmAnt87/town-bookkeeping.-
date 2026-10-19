@@ -6,6 +6,7 @@ import { renderRankings } from './views/rankings.js';
 import { renderCompare } from './views/compare.js';
 import { renderMethod } from './views/method.js';
 import { renderData } from './views/data.js';
+import { renderForum } from './views/forum.js';
 
 const STORAGE_KEY = 'tl-dataset';
 const main = document.getElementById('main');
@@ -122,7 +123,7 @@ export function route() {
   cleanup = null;
   main.innerHTML = '';
   document.querySelectorAll('[data-nav]').forEach((a) => {
-    const active = a.dataset.nav === view || (view === 'town' && a.dataset.nav === 'rankings');
+    const active = a.dataset.nav === view || ((view === 'town' || view === 'forum') && a.dataset.nav === 'rankings');
     a.classList.toggle('active', active);
     if (active) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
   });
@@ -133,6 +134,7 @@ export function route() {
     compare: renderCompare,
     method: renderMethod,
     data: renderData,
+    forum: renderForum,
   };
   const render = views[view] || renderMap;
   // The map fills the viewport, so the footer is hidden there (see .view-map in styles.css).
@@ -140,8 +142,8 @@ export function route() {
   cleanup = render(main, state, arg);
   if (view !== 'map') window.scrollTo(0, 0);
   const titles = { map: 'Map', rankings: 'Rankings', compare: 'Compare', method: 'How scores work', data: 'Data' };
-  const town = view === 'town' && state.byId.get(arg);
-  document.title = town ? `${town.town.name}, ${town.town.state} - TownView` : `${titles[view] || 'Map'} - TownView`;
+  const town = (view === 'town' || view === 'forum') && state.byId.get(arg);
+  document.title = town ? `${town.town.name}, ${town.town.state}${view === 'forum' ? ' forum' : ''} - TownView` : `${titles[view] || 'Map'} - TownView`;
 }
 
 // Theme toggle: cycles light/dark and remembers the choice per viewer.
