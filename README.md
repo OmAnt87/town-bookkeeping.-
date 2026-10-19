@@ -55,7 +55,7 @@ The live site is published by `.github/workflows/pages.yml`: every push to `main
 
 ### Forum setup
 
-The forum pages need a one-time setup: enable Discussions on the repo (Settings > General > Features), create a discussion category named **Town forums**, install the [giscus app](https://github.com/apps/giscus) on the repo, then copy the category id from [giscus.app](https://giscus.app) into `GISCUS.categoryId` in `js/views/forum.js`. Until then the forum page says it is not set up yet.
+Forum posts live in this repo's GitHub Discussions, in the **Announcements** category (only maintainers and giscus can start threads there; anyone signed in to GitHub can reply). giscus creates a town's thread, titled with the town id, on its first comment. The repo and category ids are in `GISCUS` in `js/views/forum.js`; get new ones from [giscus.app](https://giscus.app) if the repo or category changes. Comments are moderated on GitHub.
 
 ## Data
 

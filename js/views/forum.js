@@ -2,12 +2,12 @@ import { escapeHTML } from '../engine/format.js';
 import { isDark } from '../app.js';
 
 // Posts live in GitHub Discussions on this repo, one thread per town, via giscus.
-// Get categoryId from https://giscus.app after enabling Discussions and installing the giscus app.
+// Ids come from https://giscus.app. Announcements lets only maintainers and giscus start threads.
 const GISCUS = {
   repo: 'OmAnt87/town-bookkeeping.-',
   repoId: 'R_kgDOU2FXPg',
-  category: 'Town forums',
-  categoryId: '',
+  category: 'Announcements',
+  categoryId: 'DIC_kwDOU2FXPs4DJESg',
 };
 
 const theme = () => (isDark() ? 'dark' : 'light');
