@@ -8,7 +8,7 @@ Plain-language bookkeeping for U.S. towns and townships. TownView shows where a 
 
 ## Features
 
-- **Interactive map.** Every town appears as a dot (or a heat layer), colored by how effectively it spends on residents. You can color it by the overall score, service dollars per resident, share of spending on services, political money per resident, or reliance on revenue other than property tax.
+- **Interactive map.** Every town appears as a dot (or an averaged grid in Heat mode), colored by how effectively it spends on residents. You can color it by the overall score, service dollars per resident, share of spending on services, political money per resident, or reliance on revenue other than property tax.
 - **Town report card.** Each town gets a letter grade and a Community Return Score out of 100, with a plain-English breakdown of each part of the score.
 - **Money in.** Every revenue stream: property tax, sales tax, state aid, federal grants, fees, utility charges, fines and borrowing. Property tax is shown separately.
 - **Money out.** Direct services (police, fire, roads, water, parks, health) shown against overhead (administration, consultants, debt).

@@ -31,7 +31,6 @@ const TILE_URL = (dark) => `${ESRI}/World_${dark ? 'Dark' : 'Light'}_Gray_Base/M
 const LABEL_URL = (dark) => `${ESRI}/World_${dark ? 'Dark' : 'Light'}_Gray_Reference/MapServer/tile/{z}/{y}/{x}`;
 const TILE_OPTS = { maxNativeZoom: 16, maxZoom: 18 };
 
-const HEAT_GRADIENT = { 0.2: '#bfe6e0', 0.45: '#5cbfb1', 0.7: '#2a6fbd', 1: '#132a52' };
 const US_BOUNDS = [[25.5, -123.5], [48.5, -68]];
 
 // State outlines sit underneath the tile layer, so the map stays readable
@@ -126,7 +125,7 @@ export function renderMap(root, state) {
   let tiles;
   let labels;
   let dotLayer;
-  let heatLayer;
+  let gridLayer;
   let statesLayer;
   let countyLines;
   let stateLines;
@@ -155,6 +154,7 @@ export function renderMap(root, state) {
     addBorders('county', countyLineStyle).then((l) => { countyLines = l; });
     addBorders('state', stateLineStyle).then((l) => { stateLines = l; });
     dotLayer = L.layerGroup().addTo(map);
+    gridLayer = L.layerGroup().addTo(map);
   }
 
   const $ = (sel) => root.querySelector(sel);
@@ -186,12 +186,9 @@ export function renderMap(root, state) {
     const m = metric();
     const label = m.higherIsBetter === null ? ['Lower', 'Higher'] : m.higherIsBetter ? ['Worse', 'Better'] : ['Better', 'Worse'];
     $('#m-legend').innerHTML = `
-      ${ui.layer === 'heat'
-        ? `<div class="legend-bar" style="background:linear-gradient(90deg, ${Object.entries(HEAT_GRADIENT).sort((a, b) => a[0] - b[0]).map(([k, c]) => `${c} ${k * 100}%`).join(", ")})" aria-hidden="true"></div>
-      <div class="legend-ends"><span>Weaker</span><span>Stronger performance</span></div>`
-        : `<div class="legend-bar" style="background:linear-gradient(90deg, ${scale.stops.join(',')})" aria-hidden="true"></div>
-      <div class="legend-ends"><span>${m.format(scale.lo)} &middot; ${label[0]}</span><span>${label[1]} &middot; ${m.format(scale.hi)}</span></div>`}
-      ${ui.layer === 'heat' ? '<p class="small muted" style="margin:4px 0 0">Heat glows brighter where towns perform better on this measure. Switch to dots to read single towns.</p>' : ''}`;
+      <div class="legend-bar" style="background:linear-gradient(90deg, ${scale.stops.join(',')})" aria-hidden="true"></div>
+      <div class="legend-ends"><span>${m.format(scale.lo)} &middot; ${label[0]}</span><span>${label[1]} &middot; ${m.format(scale.hi)}</span></div>
+      ${ui.layer === 'heat' ? '<p class="small muted" style="margin:4px 0 0">Each square averages the towns inside it. Zoom in for finer squares, or switch to dots to read single towns.</p>' : ''}`;
   }
 
   function draw(keepLimit) {
@@ -225,28 +222,50 @@ export function renderMap(root, state) {
     if (!map) return;
     dotLayer.clearLayers();
     markers.clear();
-    if (heatLayer) { map.removeLayer(heatLayer); heatLayer = null; }
+    drawGrid(list, scale);
+    if (ui.layer === 'heat') return;
     const ring = isDark() ? '#111c2f' : '#ffffff';
-    if (ui.layer === 'heat' && L.heatLayer) {
-      heatLayer = L.heatLayer(
-        list.map(({ town, s }) => [town.lat, town.lng, Math.max(0.05, scale.good(m.value(s)))]),
-        { radius: 34, blur: 26, maxZoom: 3, max: 1, minOpacity: 0.3, gradient: HEAT_GRADIENT },
-      ).addTo(map);
-    }
     for (const { town, s } of list) {
       const small = map.getSize().x < 600;
       const radius = Math.max(small ? 3 : 5, Math.min(small ? 7 : 14, Math.sqrt(town.population) / (small ? 36 : 18)));
       const mk = L.circleMarker([town.lat, town.lng], {
-        radius: ui.layer === 'heat' ? 4 : radius,
+        radius,
         color: ring,
         weight: 2,
-        fillColor: ui.layer === 'heat' ? (isDark() ? '#eef2f8' : '#172033') : m.key === 'score' && s.grade === '?' ? '#9a9890' : scale.color(m.value(s)),
-        fillOpacity: ui.layer === 'heat' ? 0.55 : 0.92,
+        fillColor: m.key === 'score' && s.grade === '?' ? '#9a9890' : scale.color(m.value(s)),
+        fillOpacity: 0.92,
       })
         .bindTooltip(`<strong>${escapeHTML(town.name)}</strong>, ${town.state}<br>Grade ${s.grade} &middot; ${m.label}: ${m.format(m.value(s))}`, { direction: 'top', offset: [0, -6] })
         .on('click', () => openCard(town.id));
       mk.addTo(dotLayer);
       markers.set(town.id, mk);
+    }
+  }
+
+  // Heat mode: a grid of squares, each colored by the average of the towns inside it.
+  // (Summing towns, as a classic heat map does, only shows where towns are dense.)
+  function drawGrid(list, scale) {
+    gridLayer.clearLayers();
+    if (ui.layer !== 'heat') return;
+    const m = metric();
+    // About 24 screen pixels per square at any zoom.
+    const size = Math.min(2, Math.max(0.01, 34 / 2 ** map.getZoom()));
+    const cells = new Map();
+    for (const { town, s } of list) {
+      if (m.key === 'score' && s.grade === '?') continue;
+      const key = `${Math.floor(town.lat / size)},${Math.floor(town.lng / size)}`;
+      const c = cells.get(key) || cells.set(key, { sum: 0, n: 0 }).get(key);
+      c.sum += m.value(s);
+      c.n += 1;
+    }
+    for (const [key, { sum, n }] of cells) {
+      const [i, j] = key.split(',').map(Number);
+      const avg = sum / n;
+      const bounds = [[i * size, j * size], [(i + 1) * size, (j + 1) * size]];
+      L.rectangle(bounds, { stroke: false, fillColor: scale.color(avg), fillOpacity: 0.78 })
+        .bindTooltip(`${n} town${n === 1 ? '' : 's'} &middot; average ${m.label}: ${m.format(avg)}`, { direction: 'top' })
+        .on('click', () => map.flyToBounds(bounds, { maxZoom: map.getZoom() + 2, duration: 0.5 }))
+        .addTo(gridLayer);
     }
   }
 
@@ -299,6 +318,9 @@ export function renderMap(root, state) {
     const b = e.target.closest('button[data-id]');
     if (b) openCard(b.dataset.id);
   });
+
+  const onZoom = () => { if (ui.layer === 'heat') drawGrid(visible(), colorScale()); };
+  if (map) map.on('zoomend', onZoom);
 
   const onTheme = () => {
     if (tiles) tiles.setUrl(TILE_URL(isDark()));
