@@ -8,7 +8,7 @@ Plain-language bookkeeping for U.S. towns and townships. TownView shows where a 
 
 ## Features
 
-- **Interactive map.** Every town appears as a dot (or a heat layer), colored by how effectively it spends on residents. You can color it by the overall score, service dollars per resident, share of spending on services, political money per resident, or reliance on revenue other than property tax.
+- **Interactive map.** Every town appears as a dot (or an averaged grid in Heat mode), colored by how effectively it spends on residents. You can color it by the overall score, service dollars per resident, share of spending on services, political money per resident, or reliance on revenue other than property tax.
 - **Town report card.** Each town gets a letter grade and a Community Return Score out of 100, with a plain-English breakdown of each part of the score.
 - **Money in.** Every revenue stream: property tax, sales tax, state aid, federal grants, fees, utility charges, fines and borrowing. Property tax is shown separately.
 - **Money out.** Direct services (police, fire, roads, water, parks, health) shown against overhead (administration, consultants, debt).
@@ -22,6 +22,7 @@ Plain-language bookkeeping for U.S. towns and townships. TownView shows where a 
 - **Peer comparison.** Each report card shows the town's percentile among its peers and the peer median on every part of the score.
 - **States.** One card per state: governments loaded, median score, grade spread, red flags, late annual reports, and which parts of the score have data. Each card links to the map and rankings for that state (`#/map?state=MA`).
 - **Compare.** Up to three towns side by side.
+- **Town forums.** Each town has a discussion page (Forum button on its report), backed by GitHub Discussions through [giscus](https://giscus.app).
 - **Bring your own data.** Import a JSON file in the browser, or build one with the scripts below.
 - Light and dark themes, works on phones, no build step, no tracking.
 
@@ -51,6 +52,10 @@ The live site is published by `.github/workflows/pages.yml`: every push to `main
 3. Optional: verify `townview.org` under your GitHub profile's Settings > Pages to protect it from takeover.
 
 `robots.txt`, `sitemap.xml`, `site.webmanifest` and the social preview image (`img/og-image.png`) assume the townview.org domain.
+
+### Forum setup
+
+The forum pages need a one-time setup: enable Discussions on the repo (Settings > General > Features), create a discussion category named **Town forums**, install the [giscus app](https://github.com/apps/giscus) on the repo, then copy the category id from [giscus.app](https://giscus.app) into `GISCUS.categoryId` in `js/views/forum.js`. Until then the forum page says it is not set up yet.
 
 ## Data
 
@@ -444,7 +449,7 @@ js/charts.js                    small SVG chart helpers
 data/towns.json                 fictional demo dataset (tests only, not deployed)
 scripts/                        demo generator, real-data importers, dev server
 tests/                          node --test suite
-vendor/                         Leaflet 1.9.4 and Leaflet.heat 0.2.0 (BSD-2-Clause)
+vendor/                         Leaflet 1.9.4 (BSD-2-Clause)
 ```
 
 Map tiles come from Esri's World Light Gray and Dark Gray Canvas basemaps. State outlines (`data/us-states.json`) are built from the [us-atlas](https://github.com/topojson/us-atlas) package (ISC, U.S. Census Bureau boundaries) and show underneath the tiles, so the map stays usable when tiles are unavailable.
