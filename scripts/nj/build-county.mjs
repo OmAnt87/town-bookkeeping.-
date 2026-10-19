@@ -13,6 +13,7 @@
 // Nothing is estimated: a town with no usable budget filing is left out and
 // reported, and sections without data (political money, transparency) are omitted.
 
+import { reportingFor } from '../../js/engine/reporting.js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
@@ -204,6 +205,7 @@ for (const county of counties) {
   const current = new Set(ufb[YEARS[0]].filter((r) => r['|County'] === county).map((r) => r['|Municipality']));
   const towns = names.filter((n) => current.has(n)).sort().map((n) => buildTown(n, county, report)).filter(Boolean);
   const file = `nj-${slugify(county)}.json`;
+  for (const town of towns) town.reporting = reportingFor(town);
   writeFileSync(join(OUT, file), `${JSON.stringify({ towns }, null, 1)}\n`);
   if (!index.files.includes(file)) index.files.push(file);
   index.files.sort();

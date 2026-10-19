@@ -858,6 +858,16 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for City of Oneonta offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -866,8 +876,38 @@
     "Left out of money in: transfers between the government's own funds ($2,600,162).",
     "Employee benefits ($7,047,516) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for City of Oneonta offices reported to the State Board of Elections since 2022-10-01. Individual donors ($330 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: City of Oneonta has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: 9 license-plate cameras are mapped inside City of Oneonta's borders in OpenStreetMap (6 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "6 Flock Safety license-plate cameras are mapped inside City of Oneonta's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 9,
+    "flock": 6,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "burlington-town-ny",
@@ -1181,6 +1221,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Burlington offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1188,8 +1233,14 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($75,005) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Burlington offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Burlington has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Burlington's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "butternuts-town-ny",
@@ -1598,6 +1649,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Butternuts offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1606,8 +1662,14 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($74,737) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Butternuts offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Butternuts's latest annual financial report on file with the Office of the State Comptroller is for FY 2019; most NY governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Butternuts's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "cherry-valley-town-ny",
@@ -2053,6 +2115,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Cherry Valley offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -2060,8 +2127,14 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($218,513) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Cherry Valley offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Cherry Valley has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Cherry Valley's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "decatur-town-ny",
@@ -2343,6 +2416,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Decatur offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -2351,8 +2429,14 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($74,645) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Decatur offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Decatur's latest annual financial report on file with the Office of the State Comptroller is for FY 2020; most NY governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Decatur's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "edmeston-town-ny",
@@ -2711,6 +2795,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Edmeston offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -2720,8 +2809,14 @@
     "Left out of money in: private-purpose trust fund ($8).",
     "Employee benefits ($115,109) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Edmeston offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Edmeston's latest annual financial report on file with the Office of the State Comptroller is for FY 2022; most NY governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Edmeston's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "exeter-town-ny",
@@ -3068,6 +3163,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Exeter offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -3075,8 +3175,14 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($110,579) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Exeter offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Exeter has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Exeter's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "hartwick-town-ny",
@@ -3581,6 +3687,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Hartwick offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -3588,8 +3699,14 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($121,370) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Hartwick offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Hartwick's latest annual financial report on file with the Office of the State Comptroller is for FY 2024; most NY governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Hartwick's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "laurens-town-ny",
@@ -3951,6 +4068,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Laurens offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -3959,8 +4081,14 @@
     "Left out of money in: transfers between the government's own funds ($645).",
     "Employee benefits ($203,661) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Laurens offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Laurens has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Laurens's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "maryland-town-ny",
@@ -4489,6 +4617,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Maryland offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -4496,8 +4629,14 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($161,767) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Maryland offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Maryland has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Maryland's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "middlefield-town-ny",
@@ -4946,6 +5085,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Middlefield offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -4954,8 +5098,14 @@
     "Left out of money in: permanent fund (trust principal) ($22).",
     "Employee benefits ($141,461) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Middlefield offices reported to the State Board of Elections since 2022-10-01. Individual donors ($1,307 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Middlefield has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Middlefield's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "milford-town-ny",
@@ -5410,6 +5560,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Milford offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -5418,8 +5573,14 @@
     "Left out of money in: transfers between the government's own funds ($1,782).",
     "Employee benefits ($135,181) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Milford offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Milford has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Milford's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "morris-town-ny",
@@ -5779,6 +5940,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Morris offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -5787,8 +5953,14 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($100,615) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Morris offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Morris's latest annual financial report on file with the Office of the State Comptroller is for FY 2022; most NY governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Morris's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "new-lisbon-town-ny",
@@ -6232,6 +6404,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of New Lisbon offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -6239,8 +6416,14 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($111,606) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of New Lisbon offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of New Lisbon has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of New Lisbon's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "oneonta-town-ny",
@@ -6821,6 +7004,16 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Oneonta offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -6829,8 +7022,38 @@
     "Left out of money in: transfers between the government's own funds ($240,140).",
     "Employee benefits ($452,839) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Oneonta offices reported to the State Board of Elections since 2022-10-01. Individual donors ($3,630 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Oneonta has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: 5 license-plate cameras are mapped inside Town of Oneonta's borders in OpenStreetMap (4 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "4 Flock Safety license-plate cameras are mapped inside Town of Oneonta's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 5,
+    "flock": 4,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   },
   {
    "id": "otego-town-ny",
@@ -7251,6 +7474,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Otego offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -7258,8 +7486,14 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($174,273) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Otego offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Otego has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Otego's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "otsego-town-ny",
@@ -7704,6 +7938,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Otsego offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -7712,8 +7951,14 @@
     "Left out of money in: transfers between the government's own funds ($151,284).",
     "Employee benefits ($235,232) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Otsego offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Otsego has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Otsego's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "pittsfield-town-ny",
@@ -8083,6 +8328,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Pittsfield offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -8091,8 +8341,14 @@
     "Left out of money in: notes repaid from the government's own budget (already counted as debt service) ($413,728).",
     "Employee benefits ($61,399) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Pittsfield offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Pittsfield's latest annual financial report on file with the Office of the State Comptroller is for FY 2024; most NY governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Pittsfield's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "plainfield-town-ny",
@@ -8474,6 +8730,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Plainfield offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -8481,8 +8742,14 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($31,364) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Plainfield offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Plainfield has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Plainfield's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "richfield-town-ny",
@@ -8936,6 +9203,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Richfield offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -8944,8 +9216,14 @@
     "Left out of money in: transfers between the government's own funds ($15,025).",
     "Employee benefits ($198,108) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Richfield offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Richfield has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Richfield's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "roseboom-town-ny",
@@ -9364,6 +9642,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Roseboom offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -9371,8 +9654,14 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($111,013) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Roseboom offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Roseboom has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Roseboom's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "springfield-town-ny",
@@ -9800,6 +10089,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Springfield offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -9807,8 +10101,14 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($170,086) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Springfield offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Springfield has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Springfield's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "unadilla-town-ny",
@@ -10264,6 +10564,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Unadilla offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -10271,8 +10576,14 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($174,521) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Unadilla offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Unadilla has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Unadilla's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "westford-town-ny",
@@ -10653,6 +10964,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Westford offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -10660,8 +10976,14 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($55,383) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Westford offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Westford has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Westford's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "worcester-town-ny",
@@ -11127,6 +11449,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Worcester offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -11135,8 +11462,14 @@
     "Left out of money in: notes repaid from the government's own budget (already counted as debt service) ($60,000).",
     "Employee benefits ($172,382) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Town of Worcester offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Town of Worcester has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Town of Worcester's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "cherry-valley-village-ny",
@@ -11573,6 +11906,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Cherry Valley offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -11580,8 +11918,14 @@
     "Covers the village government only. Village residents also pay the town that surrounds Cherry Valley, which is listed separately, plus county and school taxes.",
     "Employee benefits ($27,562) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Village of Cherry Valley offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Village of Cherry Valley has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Village of Cherry Valley's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "cooperstown-village-ny",
@@ -12163,6 +12507,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Cooperstown offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -12171,8 +12520,14 @@
     "Left out of money in: transfers between the government's own funds ($550,265).",
     "Employee benefits ($789,966) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Village of Cooperstown offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Village of Cooperstown has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Village of Cooperstown's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "gilbertsville-village-ny",
@@ -12541,6 +12896,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Gilbertsville offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -12548,8 +12908,14 @@
     "Covers the village government only. Village residents also pay the town that surrounds Gilbertsville, which is listed separately, plus county and school taxes.",
     "Employee benefits ($5,194) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Village of Gilbertsville offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Village of Gilbertsville has filed its annual financial report with the Office of the State Comptroller for FY 2026, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Village of Gilbertsville's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "laurens-village-ny",
@@ -12890,6 +13256,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Laurens offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -12897,8 +13268,14 @@
     "Covers the village government only. Village residents also pay the town that surrounds Laurens, which is listed separately, plus county and school taxes.",
     "Employee benefits ($3,290) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Village of Laurens offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Village of Laurens has filed its annual financial report with the Office of the State Comptroller for FY 2026, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Village of Laurens's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "milford-village-ny",
@@ -13314,6 +13691,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Milford offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -13321,8 +13703,14 @@
     "Covers the village government only. Village residents also pay the town that surrounds Milford, which is listed separately, plus county and school taxes.",
     "Employee benefits ($44,356) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Village of Milford offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Village of Milford has filed its annual financial report with the Office of the State Comptroller for FY 2026, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Village of Milford's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "morris-village-ny",
@@ -13684,6 +14072,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Morris offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -13691,8 +14084,14 @@
     "Covers the village government only. Village residents also pay the town that surrounds Morris, which is listed separately, plus county and school taxes.",
     "Employee benefits ($72,173) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Village of Morris offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Village of Morris has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Village of Morris's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "otego-village-ny",
@@ -14128,6 +14527,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Otego offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -14136,8 +14540,14 @@
     "Left out of money in: transfers between the government's own funds ($1,200).",
     "Employee benefits ($62,278) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Village of Otego offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Village of Otego has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Village of Otego's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "richfield-springs-village-ny",
@@ -14732,6 +15142,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Richfield Springs offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -14740,8 +15155,14 @@
     "Left out of money in: transfers between the government's own funds ($211,000).",
     "Employee benefits ($249,741) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Village of Richfield Springs offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Village of Richfield Springs's latest annual financial report on file with the Office of the State Comptroller is for FY 2024; most NY governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Village of Richfield Springs's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "unadilla-village-ny",
@@ -15232,6 +15653,11 @@
     {
      "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Unadilla offices since 2022-10-01",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -15240,8 +15666,14 @@
     "Left out of money in: transfers between the government's own funds ($17,500).",
     "Employee benefits ($115,248) are spread across departments in proportion to their size.",
     "Political money counts PAC, business and union contributions to candidates for Village of Unadilla offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: Village of Unadilla has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: no license-plate cameras are mapped inside Village of Unadilla's borders in OpenStreetMap as of 2026-10-18.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   }
  ]
 }

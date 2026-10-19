@@ -1,6 +1,6 @@
 // Name rules shared by the state campaign-finance importers.
 
-const UPPER = new Set(['nj', 'ny', 'nyc', 'nys', 'pac', 'llc', 'llp', 'pllc', 'pc', 'pa', 'inc', 'ibew', 'pba', 'fop', 'njea', 'nysut', 'cwa', 'uaw', 'seiu', 'csea', 'ii', 'iii', 'usa', 'us']);
+const UPPER = new Set(['nj', 'ny', 'nyc', 'nys', 'pac', 'llc', 'llp', 'pllc', 'pc', 'pa', 'inc', 'ibew', 'pba', 'fop', 'njea', 'nysut', 'cwa', 'uaw', 'seiu', 'csea', 'mta', 'afscme', 'iaff', 'iuoe', 'ufcw', 'iatse', 'usw', 'nage', 'btu', 'ma', 'ne', 'ii', 'iii', 'usa', 'us']);
 export const title = (s) => String(s || '').toLowerCase().replace(/[a-z0-9']+/g, (w) => (UPPER.has(w) ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1)));
 
 // Party organizations are sometimes filed under a business or PAC type; they are
@@ -8,6 +8,11 @@ export const title = (s) => String(s || '').toLowerCase().replace(/[a-z0-9']+/g,
 export const PARTY_NAME = /(\b(republicans?|democrats?|gop|part(y|ies)|county committee|municipal committee|state committee|town committee|political club)\b|democratic)/i;
 // Candidates' own committees filed under another type ("Smith for Council").
 export const CANDIDATE_NAME = /\bfor (senate|assembly|congress|governor|mayor|council|committee|freeholder|commissioner|sheriff|clerk|surrogate|office|supervisor|trustee|town board|judge|justice)\b|\b(friends of|elect|re-?elect)\b/i;
+
+// Committees and contributors that are unions; and committee names that are
+// party, district or candidate committees rather than PACs.
+export const UNION = /\b(unions?|local\s*#?\s*\d+|brotherhood|workers|federation|afl[- ]?cio|teamsters|ibew|seiu|afscme|uaw|iuoe|aft|carpenters|laborers?'?s?|plumbers|pipefitters|machinists|electricians|firefighters|employees assoc(iation)?|education association|teachers|1199|32bj|cope|opc)\b/i;
+export const NOT_A_PAC = /\b(senatorial|town|district|state central|county) committee\b|\bfor\b|\b4 (mayor|council|selectm[ae]n|board)\b|\b20\d\d\b/i;
 
 export const isPartyOrCandidate = (name) => PARTY_NAME.test(name || '') || CANDIDATE_NAME.test(name || '');
 
@@ -44,3 +49,6 @@ export function summarizeContributions(rows) {
   ledger.sort((a, b) => (a.date < b.date ? 1 : -1));
   return { influence, topDonors, ledger };
 }
+
+// Labor organizations by name, for states whose filings do not mark unions as a contributor type.
+export const UNION_NAME = /\b(unions?|local\s*#?\s*\d+|brotherhood|workers|federation|afl[- ]?cio|teamsters|ibew|ilwu|seiu|afscme|hgea|upw|unite here|iaff|iuoe|ufcw|uaw|aft|nea|carpenters|laborers?'?s?|plumbers|pipefitters|ironworkers|electricians|firefighters?|fire fighters|police|fop|pba|deputies|teachers|educators|education association|nurses|employees association|painters|sheet metal|operating engineers|cope|trades council)\b/i;

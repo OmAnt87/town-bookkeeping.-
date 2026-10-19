@@ -1,8 +1,13 @@
+import { reportingFor } from './engine/reporting.js';
+import { createDetailLoader } from './data/loading.js';
+import { escapeHTML } from './engine/format.js';
 import { scoreTown } from './engine/scoring.js';
+import { assignPeers } from './engine/peers.js';
 import { validateDataset } from './engine/ledger.js';
 import { renderMap } from './views/map.js';
 import { renderTown } from './views/town.js';
 import { renderRankings } from './views/rankings.js';
+import { renderStates } from './views/states.js';
 import { renderCompare } from './views/compare.js';
 import { renderMethod } from './views/method.js';
 import { renderData } from './views/data.js';
@@ -14,17 +19,21 @@ const main = document.getElementById('main');
 // Shared app state passed to every view.
 export const state = {
   dataset: null,
-  towns: [], // [{ town, s }] where s = scoreTown(town)
+  towns: [], // [{ town, s, peer, provisional, completeness }] where s = scoreTown(town)
   byId: new Map(),
-  source: 'demo',
+  source: 'real',
+  routeRevision: 0,
 };
 
 export function setDataset(dataset, source) {
   const errors = validateDataset(dataset);
   if (errors.length) return errors;
+  if (dataset.demo === true) dataset = { ...dataset, towns: dataset.towns.map((town) => ({ ...town, demo: true })) };
+  loadDetail = createDetailLoader();
   state.dataset = dataset;
   state.source = source;
-  state.towns = dataset.towns.map((town) => ({ town, s: scoreTown(town) }));
+  // Each entry also gets its peer group, percentile and completeness (engine/peers.js).
+  state.towns = assignPeers(dataset.towns.map((town) => ({ town, s: scoreTown(town) })));
   state.byId = new Map(state.towns.map((t) => [t.town.id, t]));
   const demoCount = dataset.towns.filter((t) => t.demo === true).length;
   const realCount = dataset.towns.length - demoCount;
@@ -32,7 +41,7 @@ export function setDataset(dataset, source) {
   banner.hidden = demoCount === 0;
   if (demoCount) {
     banner.innerHTML = realCount
-      ? `<strong>${realCount} town${realCount === 1 ? '' : 's'} use${realCount === 1 ? 's' : ''} real public records</strong> (marked Verified data). The other ${demoCount} are <strong>fictional demo towns</strong> with illustrative figures.`
+      ? `<strong>${realCount} town${realCount === 1 ? '' : 's'} use${realCount === 1 ? 's' : ''} real public records</strong> (marked Public-record data). The other ${demoCount} are <strong>fictional demo towns</strong> with illustrative figures.`
       : 'Showing <strong>fictional demo towns</strong>. Figures are illustrative, not real records. Load real data on the <a href="#/data">Data</a> page.';
   }
   document.body.classList.toggle('has-banner', demoCount > 0);
@@ -47,52 +56,56 @@ export function persistDataset(dataset) {
   }
 }
 
-export function resetToDemo() {
+export function resetToDefault() {
   try { sessionStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
-  return loadDemo();
+  return loadDefault();
 }
 
-// Real towns live in data/real/, listed in data/real/index.json. They are
-// shown alongside the demo towns and replace any demo town with the same id.
+// Real towns live in data/real/, listed in data/real/index.json. When any are
+// present the site shows only them.
 async function loadRealTowns() {
-  try {
-    // Prefer the light summary (built by scripts/build-summary.mjs); town reports
-    // fetch their county file on demand (see loadTownDetail).
-    const summary = await fetch('data/real/summary.json');
-    if (summary.ok) return (await summary.json()).towns.map((t) => ({ ...t, demo: false }));
-    const res = await fetch('data/real/index.json');
-    if (!res.ok) return [];
-    const { files = [] } = await res.json();
-    const sets = await Promise.all(files.map((f) => fetch(`data/real/${f}`).then((r) => (r.ok ? r.json() : { towns: [] }))));
-    return sets.flatMap((d) => d.towns || []).map((t) => ({ ...t, demo: false }));
-  } catch {
-    return [];
+  const summary = await fetch('data/real/summary.json');
+  if (summary.ok) {
+    const data = await summary.json();
+    if (!data.towns?.length) throw new Error('Public-record summary is empty');
+    const errors = validateDataset(data);
+    if (errors.length) throw new Error(errors.join(' '));
+    return data.towns.map((t) => ({ ...t, demo: false }));
   }
+  const res = await fetch('data/real/index.json');
+  if (!res.ok) throw new Error(`Public-record index unavailable (${res.status})`);
+  const { files } = await res.json();
+  if (!Array.isArray(files) || !files.length) throw new Error('Public-record index is empty');
+  const sets = await Promise.all(files.map(async (f) => {
+    const response = await fetch(`data/real/${f}`);
+    if (!response.ok) throw new Error(`Could not load ${f} (${response.status})`);
+    return response.json();
+  }));
+  for (const data of sets) {
+    const errors = validateDataset(data);
+    if (errors.length) throw new Error(errors.join(' '));
+  }
+  return sets.flatMap((d) => d.towns).map((t) => ({ ...t, reporting: reportingFor(t), demo: false }));
 }
 
-// Full records (ledger, history, donors, sources, notes) for a summary town.
-const detailCache = new Map();
+let loadDetail = createDetailLoader();
 export async function loadTownDetail(town) {
-  if (!town.detailFile || town.ledger) return town;
-  if (!detailCache.has(town.detailFile)) {
-    detailCache.set(town.detailFile, fetch(`data/real/${town.detailFile}`).then((r) => {
-      if (!r.ok) throw new Error(`Could not load ${town.detailFile} (${r.status})`);
-      return r.json();
-    }));
+  const dataset = state.dataset;
+  const full = await loadDetail(town);
+  if (state.dataset === dataset && state.byId.get(town.id)?.town === town) {
+    Object.assign(town, full);
+    state.byId.get(town.id).s = scoreTown(town);
   }
-  const file = await detailCache.get(town.detailFile);
-  const full = file.towns.find((t) => t.id === town.id);
-  if (!full) throw new Error(`${town.name} is missing from ${town.detailFile}`);
-  return Object.assign(town, full, { demo: false });
+  return full;
 }
 
-async function loadDemo() {
-  const [res, real] = await Promise.all([fetch('data/towns.json'), loadRealTowns()]);
-  if (!res.ok) throw new Error(`Could not load data/towns.json (${res.status})`);
-  const demo = await res.json();
-  const realIds = new Set(real.map((t) => t.id));
-  const errors = setDataset({ towns: [...real, ...demo.towns.filter((t) => !realIds.has(t.id))] }, real.length ? 'mixed' : 'demo');
+async function loadDefault() {
+  const previousDataset = state.dataset;
+  const real = await loadRealTowns();
+  if (state.dataset !== previousDataset) return false;
+  const errors = setDataset({ towns: real }, 'real');
   if (errors.length) throw new Error(errors.join(' '));
+  return true;
 }
 
 async function init() {
@@ -103,10 +116,10 @@ async function init() {
   } catch { /* ignore */ }
   if (!restored) {
     try {
-      await loadDemo();
+      await loadDefault();
     } catch (err) {
       main.innerHTML = `<div class="page"><div class="card"><h2>Could not load data</h2>
-        <p class="muted">${err.message}. Serve this folder with <code>npm start</code> instead of opening the file directly.</p></div></div>`;
+        <p class="muted">${escapeHTML(err.message)}. Serve this folder with <code>npm start</code> instead of opening the file directly.</p></div></div>`;
       return;
     }
   }
@@ -116,7 +129,9 @@ async function init() {
 
 let cleanup = null;
 export function route() {
-  const hash = location.hash.replace(/^#\/?/, '') || 'map';
+  state.routeRevision++;
+  const [hash, search = ''] = (location.hash.replace(/^#\/?/, '') || 'map').split('?');
+  const query = new URLSearchParams(search);
   const [view, ...rest] = hash.split('/');
   const arg = decodeURIComponent(rest.join('/'));
   if (typeof cleanup === 'function') cleanup();
@@ -131,17 +146,18 @@ export function route() {
     map: renderMap,
     town: renderTown,
     rankings: renderRankings,
+    states: renderStates,
     compare: renderCompare,
     method: renderMethod,
     data: renderData,
     forum: renderForum,
   };
   const render = views[view] || renderMap;
-  // The map fills the viewport, so the footer is hidden there (see .view-map in styles.css).
+  // The map fills the viewport, so the footer is hidden there (see [data-view="map"] in styles.css).
   document.body.dataset.view = views[view] ? view : 'map';
-  cleanup = render(main, state, arg);
+  cleanup = render(main, state, arg, query);
   if (view !== 'map') window.scrollTo(0, 0);
-  const titles = { map: 'Map', rankings: 'Rankings', compare: 'Compare', method: 'How scores work', data: 'Data' };
+  const titles = { map: 'Map', rankings: 'Rankings', states: 'States', compare: 'Compare', method: 'How scores work', data: 'Data' };
   const town = (view === 'town' || view === 'forum') && state.byId.get(arg);
   document.title = town ? `${town.town.name}, ${town.town.state}${view === 'forum' ? ' forum' : ''} - TownView` : `${titles[view] || 'Map'} - TownView`;
 }

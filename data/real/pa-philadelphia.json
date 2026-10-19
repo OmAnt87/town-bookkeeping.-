@@ -434,6 +434,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -442,8 +452,103 @@
     "Left out: other financing sources ($1,842,750,855) and uses ($1,595,583,000), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($1,600,763,000, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Transparency: City of Philadelphia has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2024, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score.",
+    "Cameras: 122 license-plate cameras are mapped inside City of Philadelphia's borders in OpenStreetMap (44 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-18. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+   ],
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-18",
+     "detail": "44 Flock Safety license-plate cameras are mapped inside City of Philadelphia's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "Genetec",
+     "agency": "Philadelphia Police Department",
+     "date": "2025-11-03",
+     "detail": "Philadelphia Police Department have installed more than 700 automatic license plate readers on police cars and poles.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS018338, citing NBC Philadelphia",
+      "url": "https://www.nbcphiladelphia.com/investigations/philly-uses-license-plate-readers-to-find-stolen-cars-but-results-are-unclear/4296271/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Third-party investigative platform",
+     "vendor": "Thomson Reuters",
+     "agency": "Philadelphia Police Department",
+     "date": "2022-04-25",
+     "detail": "The Philadelphia Police Department uses Thomson Reuter's CLEAR investigative platform.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS013599, citing Police Department Budget",
+      "url": "http://phlcouncil.com/wp-content/uploads/2022/04/Philadelphia-Police-Department-FY2023-Budget-Detail.pdf"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Cell-site simulator",
+     "vendor": "Tactical Support Equipment",
+     "agency": "Philadelphia Police Department",
+     "date": "2020-12-08",
+     "detail": "The Philadelphia Police Department purchased a cell-site simulator from Tactical Support Equipment in 2020 for $400,532.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS001952, citing Philadelphia Department of Commerce",
+      "url": "https://www.phila.gov/media/20201208211456/OEO-FY-20-Annual-Report-Appendix-12.8.2020.pdf"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Police drones",
+     "vendor": "Skydio",
+     "agency": "Philadelphia Police Department",
+     "date": "",
+     "detail": "The Philadelphia Police Department instituted a drone as first responder program in 2024. Prior to that, SWAT operated a drone program, according to data compiled by the Center for the Study of the Drone at Bard College.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS003706, citing Center for the Study of the Drone at Bard College",
+      "url": "https://dronecenter.bard.edu/projects/public-safety-drones-project/public-safety-drones-3rd-edition/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Real-time crime center",
+     "vendor": "",
+     "agency": "Philadelphia Police Department",
+     "date": "",
+     "detail": "The Philadelphia Police Department's Delaware Valley Intelligence Center includes a real-time crime center with access to more than 1,800 surveillance cameras, automated license plate readers and 14 police databases.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS006554, citing Philadelphia Police Department",
+      "url": "https://www.phillypolice.com/units/dvic/"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   },
+   "surveillanceMap": {
+    "cameras": 122,
+    "flock": 44,
+    "townOperated": 0,
+    "asOf": "2026-10-18",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   }
   }
  ]
 }
