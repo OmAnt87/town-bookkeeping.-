@@ -25,6 +25,16 @@ For New York, figures are **actual results** from each government's Annual Finan
 
 For Pennsylvania, figures are **actual results** from each municipality's Annual Audit and Financial Report (DCED-CLGS-30). "Other financing sources and uses" (transfers between funds, borrowing, refinancing) are left out because the statewide report does not break them down. "Other expenditures" (mostly insurance, pensions and benefits) are spread across departments. Taxes the statewide report does not itemize are shown as other local taxes. Political money is not scored, because municipal campaign reports are filed with each county, not the state.
 
+## Data checks
+
+Every real record goes through the checks in `js/engine/validate.js` when it is built, when `npm test` runs, and when the app scores it:
+
+- **Problems** (the town is shown as "Data under review" and gets no grade until the source is fixed): no revenue or no spending on file, no population, a map location outside the state, or money in and money out more than 4x apart, which means part of one side is missing.
+- **Warnings** (shown on the town report, but the grade stands): money in and out more than 2x apart (a bond-funded project can do this), property tax under $50 per resident in New Jersey or Connecticut, ledger rows that don't add up to the totals, and a latest report more than five years old.
+- **Trend years** more than 4x off the town's typical year are partial filings, not real changes. They are left out of the five-year trend, and the report says which years were dropped.
+
+The builds also choose the year they load with these checks. A New Jersey filing is used only if its anticipated revenue covers its appropriations (an adopted budget must balance by law), its line items add up to its own totals, and its size is in line with the town's other years. Otherwise the next older filing is used. For New York and Pennsylvania, a latest report far off the government's other years is passed over for the one before it.
+
 ## Red flags: surveillance and corporate giveaways
 
 Some spending works against residents, so it counts against the score:

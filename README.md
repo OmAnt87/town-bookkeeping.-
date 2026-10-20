@@ -105,6 +105,10 @@ node scripts/ct/build-county.mjs --all && node scripts/ct/status.mjs
 node scripts/build-summary.mjs
 ```
 
+Every build checks each record with `js/engine/validate.js` (also run over all real data by `npm test`). It catches revenue or spending missing from a filing, budgets whose two sides are far apart, partial years in the trend, and ledgers that don't add up. A town that fails is shown as **data under review** without a grade. The checks are described in [docs/METHODOLOGY.md](docs/METHODOLOGY.md#data-checks), and each state's status doc lists the towns they flag.
+
+If the Overpass server doesn't answer, `scripts/nj/red-flags.mjs` reuses the camera counts saved in `scripts/nj/osm-cameras.json` from the last successful download.
+
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build or `scripts/nj/red-flags.mjs` run.
 
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them next to the demo towns, marks them **Verified data**, and lets you filter to them on the map and rankings.

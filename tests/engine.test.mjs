@@ -1,8 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { scoreTown, gradeFor, totals, COMPONENTS, redFlagEntries, corporateTies } from '../js/engine/scoring.js';
 import { filterLedger, summarizeLedger, sortLedger, toCSV, validateDataset } from '../js/engine/ledger.js';
+import { validateTown, historyOutliers, cleanHistory } from '../js/engine/validate.js';
 import { mapCensusItem } from '../scripts/census-codes.mjs';
 import { classifyContributor } from '../scripts/contributor-types.mjs';
 import { parseCSV } from '../scripts/lib.mjs';
@@ -453,4 +454,90 @@ test('CT town committees match their town and SEEC receipts are classified', () 
   assert.equal(out.influence.pacContributions, 500);
   assert.equal(out.individuals, 40);
   assert.equal(out.counted, 1);
+});
+
+const codes = (town, severity) => validateTown(town, { year: 2026 }).filter((i) => !severity || i.severity === severity).map((i) => i.code);
+
+test('data checks pass a complete record', () => {
+  assert.deepEqual(codes(base()), []);
+});
+
+test('data checks catch missing money, population and location', () => {
+  assert.deepEqual(codes({ ...base(), revenue: {} }, 'error'), ['no-revenue']);
+  assert.deepEqual(codes({ ...base(), spending: {} }, 'error'), ['no-spending']);
+  assert.deepEqual(codes({ ...base(), population: 0 }, 'error'), ['population']);
+  assert.deepEqual(codes({ ...base(), lat: 34, lng: -118 }, 'error'), ['location']);
+  // States without a bounding box are not location-checked.
+  assert.deepEqual(codes({ ...base(), state: 'CA', lat: 34, lng: -118 }), []);
+});
+
+test('money in and out far apart is a warning, then an error', () => {
+  const t = base();
+  const scaled = (k) => ({ ...t, revenue: Object.fromEntries(Object.entries(t.revenue).map(([c, v]) => [c, v * k])) });
+  assert.deepEqual(codes(scaled(2.5)), ['imbalance']);
+  assert.deepEqual(codes(scaled(2.5), 'error'), []);
+  assert.deepEqual(codes(scaled(5), 'error'), ['imbalance']);
+  assert.deepEqual(codes(scaled(0.2), 'error'), ['imbalance']);
+});
+
+test('a tiny property tax levy is flagged where towns live on it', () => {
+  const nj = { ...base(), state: 'NJ', lat: 40.3, lng: -74.5, revenue: { ...base().revenue, propertyTax: 100_000 } };
+  assert.deepEqual(codes(nj), ['property-tax']);
+  assert.deepEqual(codes({ ...nj, state: 'PA', lat: 40, lng: -77 }), []);
+});
+
+test('partial history years are found and left out of the trend', () => {
+  const history = [2019, 2020, 2021, 2022, 2023].map((year) => ({ year, revenue: 40e6, spending: 38e6 }));
+  history[3] = { year: 2022, revenue: 1.7e6, spending: 1.5e6 };
+  assert.deepEqual([...historyOutliers(history)], [2022]);
+  assert.deepEqual(cleanHistory(history).map((h) => h.year), [2019, 2020, 2021, 2023]);
+  assert.deepEqual(codes({ ...base(), history }), ['history']);
+  // Ordinary growth is left alone, and two points are too few to judge.
+  const growth = [1, 1.5, 2.2, 3].map((k, i) => ({ year: 2020 + i, revenue: k * 1e6, spending: k * 1e6 }));
+  assert.equal(historyOutliers(growth).size, 0);
+  assert.equal(historyOutliers(history.slice(2, 4)).size, 0);
+});
+
+test('ledger rows must add up to the totals they itemize', () => {
+  const t = base();
+  const ledger = [
+    { flow: 'in', amount: 10_000_000 }, { flow: 'out', amount: 10_000_000 },
+    { flow: 'influence', amount: 3_000 },
+  ];
+  assert.deepEqual(codes({ ...t, ledger }), []);
+  assert.deepEqual(codes({ ...t, ledger: [...ledger, { flow: 'in', amount: 5_000_000 }] }), ['ledger']);
+});
+
+test('old reports are flagged as stale', () => {
+  assert.deepEqual(codes({ ...base(), fiscalYear: 2017 }), ['stale']);
+  assert.deepEqual(codes({ ...base(), fiscalYear: 2023 }), []);
+});
+
+test('a town that fails a data check gets no grade', () => {
+  const s = scoreTown({ ...base(), revenue: {} });
+  assert.equal(s.review, true);
+  assert.equal(s.grade, '?');
+  assert.equal(scoreTown(base()).review, false);
+});
+
+// Every real town: no record may fail a check unless it is listed here with the reason.
+// These are real filings that don't add up in the state's own data.
+const KNOWN_DATA_ERRORS = new Set([
+  'hunker-borough-pa', // latest DCED report: money in nearly five times money out
+  'marion-center-borough-pa', // latest DCED report (2020): money in four times money out
+  'castleton-on-hudson-village-ny', // latest report (2020): money in five times money out
+]);
+
+test('real data passes the data checks', () => {
+  const dir = new URL('../data/real/', import.meta.url);
+  const failures = [];
+  for (const file of readdirSync(dir).filter((f) => /^[a-z]{2}-.*\.json$/.test(f))) {
+    for (const town of JSON.parse(readFileSync(new URL(file, dir))).towns) {
+      const errors = validateTown(town).filter((i) => i.severity === 'error');
+      const ledger = validateTown(town).filter((i) => i.code === 'ledger' || i.code === 'history');
+      if (errors.length && !KNOWN_DATA_ERRORS.has(town.id)) failures.push(`${town.id}: ${errors.map((i) => i.code).join(', ')}`);
+      if (ledger.length) failures.push(`${town.id}: ${ledger.map((i) => i.message).join(' ')}`);
+    }
+  }
+  assert.deepEqual(failures, []);
 });

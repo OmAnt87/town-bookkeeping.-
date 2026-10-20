@@ -99,3 +99,28 @@ export function usage(text) {
   console.error(text.trim());
   process.exit(1);
 }
+
+// "Known gaps" bullets for a status doc: towns held back from grading by a
+// failed data check, and towns with warnings, grouped by check.
+export async function dataCheckBullets(towns) {
+  const { validateTown } = await import('../js/engine/validate.js');
+  const errors = [];
+  const warns = {};
+  for (const t of towns) {
+    for (const i of validateTown(t)) {
+      if (i.severity === 'error') errors.push(`${t.name} (${i.message.replace(/\.$/, '')})`);
+      else (warns[i.code] ||= []).push(t.name);
+    }
+  }
+  const LABELS = {
+    imbalance: 'money in and money out far apart (often a bond-funded project; check the source report)',
+    history: 'trend years left out because they are far off the town\'s other years (partial filings)',
+    'property-tax': 'property tax under $50 per resident',
+    ledger: 'ledger rows that do not add up to the totals',
+    stale: 'latest report more than five years old',
+  };
+  return [
+    `- **Data checks** (\`js/engine/validate.js\`, run on every build and by \`npm test\`): ${errors.length ? `${errors.length} not graded until fixed: ${errors.join('; ')}.` : 'every record passes.'}`,
+    ...Object.entries(warns).map(([code, names]) => `- **Data check warnings, ${LABELS[code] || code}:** ${names.length > 25 ? `${names.length} governments, including ${names.slice(0, 25).join(', ')}` : names.join(', ')}.`),
+  ].join('\n');
+}

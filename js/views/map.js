@@ -213,7 +213,7 @@ export function renderMap(root, state) {
           .map(
             ({ town, s }) => `<li><button type="button" data-id="${town.id}">
               ${gradeBadge(s.grade)}
-              <span><span class="t-name">${escapeHTML(town.name)}</span><br><span class="t-sub">${escapeHTML(town.county)}, ${town.state}</span></span>
+              <span><span class="t-name">${escapeHTML(town.name)}</span><br><span class="t-sub">${escapeHTML(town.county)}, ${town.state}${s.review ? ' &middot; data under review' : ''}</span></span>
               <span class="t-val num">${m.format(m.value(s))}</span></button></li>`,
           )
           .join('') +
@@ -243,7 +243,7 @@ export function renderMap(root, state) {
         fillColor: ui.layer === 'heat' ? (isDark() ? '#eef2f8' : '#172033') : m.key === 'score' && s.grade === '?' ? '#9a9890' : scale.color(m.value(s)),
         fillOpacity: ui.layer === 'heat' ? 0.55 : 0.92,
       })
-        .bindTooltip(`<strong>${escapeHTML(town.name)}</strong>, ${town.state}<br>Grade ${s.grade} &middot; ${m.label}: ${m.format(m.value(s))}`, { direction: 'top', offset: [0, -6] })
+        .bindTooltip(`<strong>${escapeHTML(town.name)}</strong>, ${town.state}<br>${s.review ? 'Data under review' : `Grade ${s.grade}`} &middot; ${m.label}: ${m.format(m.value(s))}`, { direction: 'top', offset: [0, -6] })
         .on('click', () => openCard(town.id));
       mk.addTo(dotLayer);
       markers.set(town.id, mk);
@@ -260,7 +260,7 @@ export function renderMap(root, state) {
       <button class="icon-btn close" type="button" aria-label="Close">${ICONS.close}</button>
       <div style="display:flex;gap:12px;align-items:center;padding-right:40px">
         ${gradeBadge(s.grade, 'md')}
-        <div><h2>${escapeHTML(town.name)}</h2>${verifiedPill(town)}<div class="small muted">${escapeHTML(town.county)}, ${town.stateName || town.state} &middot; pop. ${number(town.population)}</div></div>
+        <div><h2>${escapeHTML(town.name)}</h2>${verifiedPill(town)}<div class="small muted">${escapeHTML(town.county)}, ${town.stateName || town.state} &middot; pop. ${number(town.population)}</div>${s.review ? '<div class="small muted"><strong>Data under review:</strong> not graded until the records pass our data checks.</div>' : ''}</div>
       </div>
       <div class="map-stats">
         <div><span>Community Return Score</span><strong class="num">${s.score.toFixed(0)} / 100</strong></div>

@@ -55,7 +55,7 @@ export function renderRankings(root, state) {
     $('#r-body').innerHTML = list.length
       ? list.map((t, i) => `<tr>
           <td class="num muted">${i + 1}</td>
-          <td><div style="display:flex;gap:10px;align-items:center">${gradeBadge(t.s.grade)}<div><a href="#/town/${encodeURIComponent(t.town.id)}">${escapeHTML(t.town.name)}</a> ${verifiedPill(t.town)}<div class="small muted">${escapeHTML(t.town.county)}, ${t.town.state}</div></div></div></td>
+          <td><div style="display:flex;gap:10px;align-items:center">${gradeBadge(t.s.grade)}<div><a href="#/town/${encodeURIComponent(t.town.id)}">${escapeHTML(t.town.name)}</a> ${verifiedPill(t.town)}<div class="small muted">${escapeHTML(t.town.county)}, ${t.town.state}${t.s.review ? ' &middot; data under review' : ''}</div></div></div></td>
           ${COLS.map((c) => `<td class="r num">${c.fmt(c.get(t))}</td>`).join('')}</tr>`).join('')
       : `<tr><td colspan="${COLS.length + 2}" class="empty">No towns match.</td></tr>`;
     $('#r-count').textContent = `Showing ${list.length} of ${state.towns.length} towns.`;

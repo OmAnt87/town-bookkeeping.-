@@ -28,6 +28,7 @@ export function renderMethod(root) {
       ${[['A', '85 and up'], ['B', '70 to 84'], ['C', '55 to 69'], ['D', '40 to 54'], ['F', 'below 40']].map(([g, r]) => `<span style="display:flex;gap:8px;align-items:center">${gradeBadge(g)} <span class="small">${r}</span></span>`).join('')}
     </div>
 
+    <p class="small muted">A town whose records fail a data check (no revenue on file, say, or a budget whose two sides don't come close to matching) is shown as <strong>data under review</strong> and gets no grade until the source is fixed. Trend years far off a town's typical year are partial filings and are left out of its chart.</p>
     <h2>Direct services vs. overhead</h2>
     <ul>
       <li><strong>Direct services:</strong> ${SPENDING_CATEGORIES.filter((c) => c.direct).map((c) => c.label.toLowerCase()).join(', ')}.</li>
