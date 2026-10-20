@@ -8,7 +8,7 @@ import { money, number, escapeHTML, formatDate } from '../engine/format.js';
 import { loadTownDetail } from '../app.js';
 import { validateTown, cleanHistory } from '../engine/validate.js';
 import { percentileText, PROVISIONAL_BELOW } from '../engine/peers.js';
-import { gradeBadge, verifiedPill, isVerified, barList, splitBar, legendKey, lineChart, downloadFile, ICONS } from '../charts.js';
+import { gradeBadge, verifiedPill, isVerified, barList, splitBar, legendKey, lineChart, downloadFile, revealOnScroll, ICONS } from '../charts.js';
 
 const PAGE = 15;
 
@@ -255,14 +255,18 @@ export function renderTown(root, state, id) {
   const L = { q: '', flow: 'all', category: 'all', sort: 'date', dir: 'desc', page: 0 };
   const $ = (sel) => root.querySelector(sel);
   const current = () => sortLedger(filterLedger(town.ledger || [], { flow: L.flow, category: L.category, query: L.q }), L.sort, L.dir);
+  let lastPage = null;
   function drawLedger() {
     const rows = current();
     const pages = Math.max(1, Math.ceil(rows.length / PAGE));
     L.page = Math.min(L.page, pages - 1);
     const slice = rows.slice(L.page * PAGE, L.page * PAGE + PAGE);
+    // Rows slide in on every redraw: from the right on a later page, from the left otherwise.
+    $('#l-body').dataset.dir = lastPage !== null && L.page > lastPage ? 'next' : 'prev';
+    lastPage = L.page;
     $('#l-body').innerHTML = slice.length
       ? slice
-          .map((e) => `<tr>
+          .map((e, i) => `<tr class="in" style="--i:${Math.min(i, 12)}">
             <td class="num">${formatDate(e.date)}</td>
             <td><span class="pill pill-${e.flow}">${FLOWS[e.flow]}</span></td>
             <td class="wrap">${escapeHTML(categoryLabel(e.category))}</td>
@@ -294,6 +298,8 @@ export function renderTown(root, state, id) {
     downloadFile(`${town.id}.json`, JSON.stringify({ towns: [town] }, null, 2), 'application/json'),
   );
   drawLedger();
+  // Report sections slide in as they scroll into view.
+  return revealOnScroll(root.querySelectorAll('.scorecard > .card, .tiles > .tile, section.card'));
 }
 
 // A box listing documented red flags, newest first, each with its source.
