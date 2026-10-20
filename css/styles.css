@@ -198,13 +198,24 @@ button, input, select { font: inherit; color: inherit; }
   transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
 .icon-btn:hover { color: var(--accent-2-ink); border-color: var(--accent-2); background: var(--accent-2-soft); }
-/* Theme toggle shows the theme you would switch to. */
-#theme-toggle .i-sun { display: none; }
-:root[data-theme="dark"] #theme-toggle .i-sun { display: block; }
-:root[data-theme="dark"] #theme-toggle .i-moon { display: none; }
+/* Theme switch: sun on the left, moon on the right, a knob slides under the active one. */
+#theme-toggle {
+  --k: 28px; position: relative; isolation: isolate; width: calc(var(--k) * 2 + 6px); height: calc(var(--k) + 6px); padding: 2px;
+  grid-template-columns: 1fr 1fr; background: var(--surface-2);
+}
+#theme-toggle::before {
+  content: ""; position: absolute; z-index: -1; top: 2px; left: 2px; width: var(--k); height: var(--k);
+  border-radius: 50%; background: var(--accent-2-soft); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-2) 45%, transparent), var(--shadow);
+}
+#theme-toggle svg { width: 16px; height: 16px; opacity: 0.55; }
+#theme-toggle .i-sun { order: -1; color: var(--accent-2-ink); opacity: 1; }
+:root[data-theme="dark"] #theme-toggle::before { transform: translateX(var(--k)); }
+:root[data-theme="dark"] #theme-toggle .i-sun { color: inherit; opacity: 0.55; }
+:root[data-theme="dark"] #theme-toggle .i-moon { color: var(--accent-2-ink); opacity: 1; }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) #theme-toggle .i-sun { display: block; }
-  :root:not([data-theme="light"]) #theme-toggle .i-moon { display: none; }
+  :root:not([data-theme="light"]) #theme-toggle::before { transform: translateX(var(--k)); }
+  :root:not([data-theme="light"]) #theme-toggle .i-sun { color: inherit; opacity: 0.55; }
+  :root:not([data-theme="light"]) #theme-toggle .i-moon { color: var(--accent-2-ink); opacity: 1; }
 }
 .demo-banner {
   padding: 8px 24px; font-size: 13px; color: var(--text-2);
@@ -538,6 +549,8 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
   @keyframes grow-in { from { transform: scaleX(0); } }
   .segmented::before { transition: transform 0.25s cubic-bezier(0.3, 0.7, 0.4, 1); }
   .segmented button { transition: color 0.2s ease; }
+  #theme-toggle::before { transition: transform 0.25s cubic-bezier(0.3, 0.7, 0.4, 1); }
+  #theme-toggle svg { transition: color 0.2s ease, opacity 0.2s ease; }
   .card, .tile { transition: box-shadow 0.2s ease, transform 0.2s ease; }
   .tile:hover, a.card:hover { box-shadow: var(--shadow-lift); transform: translateY(-2px); }
   main > .page { animation: fade-in 0.25s ease both; }
@@ -568,7 +581,7 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
   .brand-text { display: flex; }
   .brand-name { font-size: 19px; }
   .brand-tag { display: none; }
-  .icon-btn#theme-toggle { margin-left: auto; width: 34px; height: 34px; }
+  .icon-btn#theme-toggle { margin-left: auto; --k: 24px; }
   .nav { order: 3; flex: 1 0 100%; justify-content: space-between; overflow: visible; min-width: 0; margin: 2px -4px 0; }
   .nav a { min-height: 40px; display: inline-flex; align-items: center; padding: 0 4px; font-size: 13.5px; }
   .compare-pickers { grid-template-columns: 1fr; }
