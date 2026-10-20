@@ -142,6 +142,7 @@ export function route() {
     a.classList.toggle('active', active);
     if (active) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
   });
+  placeNavIndicator();
   const views = {
     map: renderMap,
     town: renderTown,
@@ -161,6 +162,22 @@ export function route() {
   const town = (view === 'town' || view === 'forum') && state.byId.get(arg);
   document.title = town ? `${town.town.name}, ${town.town.state}${view === 'forum' ? ' forum' : ''} - TownView` : `${titles[view] || 'Map'} - TownView`;
 }
+
+// Slide the nav underline under the active tab, inset by the tab's padding like the hover hint.
+const navIndicator = document.querySelector('.nav-indicator');
+function placeNavIndicator() {
+  const a = document.querySelector('.nav a.active');
+  navIndicator.classList.toggle('on', Boolean(a));
+  if (!a) return;
+  const style = getComputedStyle(a);
+  const pad = parseFloat(style.paddingLeft) || 0;
+  navIndicator.style.transform = `translateX(${a.offsetLeft + pad}px)`;
+  navIndicator.style.width = `${a.offsetWidth - pad - (parseFloat(style.paddingRight) || 0)}px`;
+  // Animate only after the first placement, so the page doesn't open with a slide.
+  requestAnimationFrame(() => navIndicator.classList.add('ready'));
+}
+window.addEventListener('resize', placeNavIndicator);
+document.fonts?.ready.then(placeNavIndicator);
 
 // Theme toggle: cycles light/dark and remembers the choice per viewer.
 document.getElementById('theme-toggle').addEventListener('click', () => {

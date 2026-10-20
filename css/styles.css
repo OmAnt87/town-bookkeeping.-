@@ -178,7 +178,7 @@ button, input, select { font: inherit; color: inherit; }
 .brand-name { font-family: var(--font-display); font-weight: 700; font-size: 21px; letter-spacing: -0.01em; color: var(--text); }
 .brand-name span { color: var(--accent-2); }
 .brand-tag { font-size: 11.5px; font-weight: 500; color: var(--text-3); letter-spacing: 0.02em; margin-top: 2px; }
-.nav { display: flex; gap: 2px; flex: 1; overflow-x: auto; scrollbar-width: none; align-self: stretch; align-items: stretch; }
+.nav { position: relative; display: flex; gap: 2px; flex: 1; overflow-x: auto; scrollbar-width: none; align-self: stretch; align-items: stretch; }
 .nav::-webkit-scrollbar { display: none; }
 .nav a {
   position: relative; display: flex; align-items: center;
@@ -191,7 +191,13 @@ button, input, select { font: inherit; color: inherit; }
 .nav a:hover { color: var(--text); }
 .nav a:hover::after { transform: scaleX(0.4); }
 .nav a.active { color: var(--text); font-weight: 600; }
-.nav a.active::after { transform: scaleX(1); }
+.nav a.active::after { transform: scaleX(0); }
+/* One underline that js/app.js moves under the active tab, so it slides between tabs. */
+.nav-indicator {
+  position: absolute; left: 0; bottom: -1px; width: 0; height: 2.5px; border-radius: 2px 2px 0 0;
+  background: var(--accent-2); pointer-events: none; opacity: 0;
+}
+.nav-indicator.on { opacity: 1; }
 .icon-btn {
   display: inline-grid; place-items: center; width: 38px; height: 38px; flex: none;
   border: 1px solid var(--border); border-radius: 999px; background: var(--surface); cursor: pointer; color: var(--text-2);
@@ -550,6 +556,7 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
   .segmented::before { transition: transform 0.25s cubic-bezier(0.3, 0.7, 0.4, 1); }
   .segmented button { transition: color 0.2s ease; }
   #theme-toggle::before { transition: transform 0.25s cubic-bezier(0.3, 0.7, 0.4, 1); }
+  .nav-indicator.ready { transition: transform 0.3s cubic-bezier(0.3, 0.7, 0.4, 1), width 0.3s cubic-bezier(0.3, 0.7, 0.4, 1); }
   #theme-toggle svg { transition: color 0.2s ease, opacity 0.2s ease; }
   .card, .tile { transition: box-shadow 0.2s ease, transform 0.2s ease; }
   .tile:hover, a.card:hover { box-shadow: var(--shadow-lift); transform: translateY(-2px); }
