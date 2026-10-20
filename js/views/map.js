@@ -275,10 +275,13 @@ export function renderMap(root, state, _arg, query) {
     $('#m-count').textContent = `${sorted.length} towns · ${list.filter((e) => !displayMetric(e, m.key).available).length} unavailable (gray, excluded from heat)`;
     // Render the list in pages: thousands of rows in the DOM make the page slow to paint and scroll.
     const shownRows = sorted.slice(0, listLimit);
+    // New rows slide in (a short stagger for the first dozen); after "Show more" only the added rows do.
+    const firstNew = keepLimit === true ? listLimit - LIST_PAGE : 0;
+    const rowAttrs = (i) => (i >= firstNew ? ` class="in" style="--i:${Math.min(i - firstNew, 12)}"` : '');
     $('#m-list').innerHTML = sorted.length
       ? shownRows
           .map(
-            (e) => `<li><button type="button" data-id="${e.town.id}">
+            (e, i) => `<li${rowAttrs(i)}><button type="button" data-id="${e.town.id}">
               ${gradeBadge(e.s.grade)}
               <span><span class="t-name">${escapeHTML(e.town.name)}</span><br><span class="t-sub">${escapeHTML(e.town.county)}, ${e.town.state}</span></span>
               <span class="t-val num">${metricText(e, m.key)}</span></button></li>`,
