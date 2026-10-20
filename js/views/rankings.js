@@ -108,6 +108,7 @@ export function renderRankings(root, state, _arg, query) {
         || compareValues(value(a, ui.sort), value(b, ui.sort), ui.dir)
         || (ui.sort === 'peer' ? compareValues(a.s.score, b.s.score, 'desc') : 0));
   }
+  let lastPage = null;
   function draw() {
     const list = rows();
     const pages = Math.max(1, Math.ceil(list.length / PAGE));
@@ -116,8 +117,11 @@ export function renderRankings(root, state, _arg, query) {
     root.querySelectorAll('[data-sort]').forEach((b) => b.closest('th').setAttribute('aria-sort', b.dataset.sort === ui.sort ? (ui.dir === 'asc' ? 'ascending' : 'descending') : 'none'));
     root.querySelectorAll('[data-rank]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.rank === ui.sort)));
     const start = ui.page * PAGE;
+    // Rows slide in on every redraw: from the right on a later page, from the left otherwise.
+    $('#r-body').dataset.dir = lastPage !== null && ui.page > lastPage ? 'next' : 'prev';
+    lastPage = ui.page;
     $('#r-body').innerHTML = list.length
-      ? list.slice(start, start + PAGE).map((t, i) => `<tr${t.provisional ? ' class="row-provisional"' : ''}>
+      ? list.slice(start, start + PAGE).map((t, i) => `<tr class="in${t.provisional ? ' row-provisional' : ''}" style="--i:${Math.min(i, 12)}">
           <td class="num muted">${start + i + 1}</td>
           <td><div class="town-cell">${gradeBadge(t.s.grade)}<div><a href="#/town/${encodeURIComponent(t.town.id)}">${escapeHTML(t.town.name)}</a> ${verifiedPill(t.town)}${t.provisional ? ` <span class="pill pill-provisional" title="Scored on ${t.s.coverage.possible} of 100 points of data; ranked after towns with at least ${PROVISIONAL_BELOW}">Provisional</span>` : ''}<div class="small muted">${escapeHTML(t.town.county)}, ${t.town.state} · ${escapeHTML(t.town.type || '')} · ${number(t.town.population)} people</div><div class="small muted">${escapeHTML(coverageText(t))}</div></div></div></td>
           ${COLS.map((c) => `<td class="r num${c.key === 'peer' ? ' peer-cell' : ''}" title="${escapeHTML(cellTitle(t, c.key))}">${cellText(t, c.key)}</td>`).join('')}</tr>`).join('')
