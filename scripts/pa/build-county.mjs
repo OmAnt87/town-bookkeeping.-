@@ -15,6 +15,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs, parseCSV, slugify } from '../lib.mjs';
 import { aggregateAfr, PA_REVENUE, PA_EXPENDITURE } from './afr-map.mjs';
+import { cleanHistory, historyOutliers, validateTown } from '../../js/engine/validate.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const RAW = join(ROOT, 'data', 'raw', 'pa');
@@ -77,7 +78,14 @@ const displayName = (g) => {
 const typeLabel = (g) => (/township/i.test(g.type) ? 'Township' : g.type);
 
 const idCounts = {};
-for (const g of Object.values(afr)) { const k = slugify(displayName(g)); idCounts[k] = (idCounts[k] || 0) + 1; }
+// Ids stay as they were when a municipality first appeared: a row that shows up
+// only in the newest statewide file (McDonald Borough's Allegheny side in 2025)
+// does not turn an existing id into a county-qualified one.
+const NEWEST = Object.values(afr).flatMap((g) => Object.keys(g.years)).sort().at(-1);
+for (const g of Object.values(afr)) {
+  if (!Object.keys(g.years).some((y) => y < NEWEST)) continue;
+  const k = slugify(displayName(g)); idCounts[k] = (idCounts[k] || 0) + 1;
+}
 const govId = (g) => {
   const name = displayName(g);
   return slugify(idCounts[slugify(name)] > 1 ? `${name} ${titleCase(g.county)} county pa` : `${name} pa`);
@@ -88,7 +96,11 @@ const filed = (r) => r && (r.status === 'A' || r.status === 'P');
 
 function buildMuni(id, g, report) {
   const years = Object.keys(g.years).filter((y) => filed(g.years[y])).sort();
-  const year = years.at(-1);
+  const sizeOf = (y) => { const h = aggregateAfr(g.years[y]); return { year: Number(y), revenue: h.lineTotals.revenue - h.excluded.revenue, spending: h.lineTotals.spending - h.excluded.spending }; };
+  // Latest report whose totals are in line with the municipality's other years.
+  const off = historyOutliers(years.map(sizeOf));
+  const year = years.filter((y) => !off.has(Number(y))).at(-1);
+  if (year && year !== years.at(-1)) report.old.push(`${displayName(g)}: ${years.at(-1)} report far off other years, using ${year}`);
   if (!year) { report.skipped.push(`${g.name}: no annual financial report filed since ${Object.keys(g.years).sort()[0]}`); return null; }
   const census = censusFor(g);
   if (!census || !census.xy) { report.skipped.push(`${g.name}: not in the Census 2025 estimates (merged or renamed)`); return null; }
@@ -98,10 +110,10 @@ function buildMuni(id, g, report) {
   if (Math.abs(a.lineTotals.revenue - a.reported.revenue) > 2 || Math.abs(a.lineTotals.spending - a.reported.spending) > 2) {
     report.mismatch.push(`${g.name} ${year}: revenue ${Math.round(a.lineTotals.revenue)} vs ${a.reported.revenue}; spending ${Math.round(a.lineTotals.spending)} vs ${a.reported.spending}`);
   }
-  const history = years.map((y) => {
-    const h = aggregateAfr(g.years[y]);
-    return { year: Number(y), revenue: Math.round(h.lineTotals.revenue - h.excluded.revenue), spending: Math.round(h.lineTotals.spending - h.excluded.spending), basis: 'actual' };
-  });
+  const history = cleanHistory(years.map((y) => {
+    const h = sizeOf(y);
+    return { year: h.year, revenue: Math.round(h.revenue), spending: Math.round(h.spending), basis: 'actual' };
+  }));
   const debt = rec['Total Debt'] == null ? null : Math.round(Number(rec['Total Debt']));
   const date = `${year}-12-31`;
   const ledger = [
@@ -145,6 +157,7 @@ function buildMuni(id, g, report) {
     notes: [
       `Actual results from the ${year} Annual Audit and Financial Report filed with the PA Department of Community and Economic Development${rec.status === 'P' ? ' (marked pending review by DCED)' : ''}, not a budget.`,
       ...(Number(year) < 2023 ? [`This is the latest annual report ${name} has filed; newer years are not on file.`] : []),
+      ...(year !== years.at(-1) ? [`The ${years.at(-1)} report is on file but its totals are more than four times off ${name}'s other years, so the ${year} report is used until the newer figures can be checked.`] : []),
       id === '510101' || /^PHILADELPHIA CITY$/i.test(g.name.trim())
         ? 'Philadelphia is a combined city and county, so these figures include county services. School-district taxes and independent authorities are separate.'
         : 'Covers the municipality only. County and school-district taxes on the same bills, and independent municipal authorities (often water and sewer), are separate.',
@@ -164,9 +177,10 @@ if (!pick[0]) { console.error(`Usage: node scripts/pa/build-county.mjs --county 
 const index = existsSync(join(OUT, 'index.json')) ? JSON.parse(readFileSync(join(OUT, 'index.json'), 'utf8')) : { files: [] };
 mkdirSync(OUT, { recursive: true });
 for (const county of pick) {
-  const report = { skipped: [], mismatch: [], old: [] };
+  const report = { skipped: [], mismatch: [], old: [], issues: [] };
   const towns = Object.entries(afr).filter(([, g]) => g.county === county)
     .map(([id, g]) => buildMuni(id, g, report)).filter(Boolean).sort((x, y) => x.name.localeCompare(y.name));
+  for (const t of towns) for (const i of validateTown(t)) report.issues.push(`${t.name} [${i.severity} ${i.code}] ${i.message}`);
   const file = `pa-${slugify(county)}.json`;
   for (const town of towns) town.reporting = reportingFor(town);
   writeFileSync(join(OUT, file), `${JSON.stringify({ towns }, null, 1)}\n`);
@@ -174,5 +188,5 @@ for (const county of pick) {
   index.files.sort();
   writeFileSync(join(OUT, 'index.json'), `${JSON.stringify(index, null, 2)}\n`);
   const types = towns.reduce((m, t) => ({ ...m, [t.type]: (m[t.type] || 0) + 1 }), {});
-  console.log(JSON.stringify({ county, towns: towns.length, of: Object.values(afr).filter((g) => g.county === county).length, types, old: report.old, skipped: report.skipped, mismatch: report.mismatch }));
+  console.log(JSON.stringify({ county, towns: towns.length, of: Object.values(afr).filter((g) => g.county === county).length, types, old: report.old, skipped: report.skipped, mismatch: report.mismatch, issues: report.issues }));
 }

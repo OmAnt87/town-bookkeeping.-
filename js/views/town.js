@@ -6,6 +6,7 @@ import { TRANSPARENCY_CHECKS, REVENUE_CATEGORIES, SPENDING_CATEGORIES, INFLUENCE
 import { filterLedger, summarizeLedger, sortLedger, ledgerToCSV, categoryLabel, FLOWS } from '../engine/ledger.js';
 import { money, number, escapeHTML, formatDate } from '../engine/format.js';
 import { loadTownDetail } from '../app.js';
+import { validateTown, cleanHistory } from '../engine/validate.js';
 import { percentileText, PROVISIONAL_BELOW } from '../engine/peers.js';
 import { gradeBadge, verifiedPill, isVerified, barList, splitBar, legendKey, lineChart, downloadFile, ICONS } from '../charts.js';
 
@@ -37,6 +38,9 @@ export function renderTown(root, state, id) {
     return () => { active = false; };
   }
   const t = s.totals;
+  // Re-checked with the full record (history and ledger) now that it is loaded.
+  const issues = validateTown(town);
+  const history = cleanHistory(town.history || []);
   // Real towns are ranked only against other real towns, demo towns against demo towns.
   const peers = state.towns.filter((x) => isVerified(x.town) === isVerified(town) && x.s.grade !== '?');
   const rank = [...peers].sort((a, b) => b.s.score - a.s.score).findIndex((x) => x.town.id === id) + 1;
@@ -108,12 +112,14 @@ export function renderTown(root, state, id) {
           <div class="score-text">
             <div class="score-value num">${escapeHTML(metricText(entry, 'score')).replace(' / 100', '<small> / 100</small>')}</div>
             <div ${s.grade === '?' ? 'hidden' : ''} class="track g-${s.grade}" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${s.score}" aria-label="Score"><span style="width:${s.score}%"></span></div>
-            ${s.grade === '?' ? '<div class="small muted"><strong>Not graded yet:</strong> a letter grade needs data for at least half of the score.</div>' : `<div class="small muted">Ranked ${number(rank)} of ${number(peers.length)} ${peerLabel}</div>`}
+            ${s.review ? '<div class="small muted"><strong>Data under review:</strong> the records on file fail a data check (below), so no grade is given until they are fixed.</div>'
+              : s.grade === '?' ? '<div class="small muted"><strong>Not graded yet:</strong> a letter grade needs data for at least half of the score.</div>' : `<div class="small muted">Ranked ${number(rank)} of ${number(peers.length)} ${peerLabel}</div>`}
           </div>
         </div>
         ${peerBox(entry)}
         <p class="small muted">${escapeHTML(coverageText(entry))}</p><p class="small muted">${escapeHTML(reportingText(town))}</p><p class="basis">Based on how much spending reaches residents as services, overhead, outside political money and corporate lobbying, transparency practices, and debt, minus a penalty for surveillance and corporate giveaways.${s.coverage.scored < s.coverage.total ? ` <strong>Scored on ${s.coverage.scored} of ${s.coverage.total} parts</strong>; parts without data are left out rather than guessed.` : ''}</p>
         <div class="callout">${plainSummary(town, s)}</div>
+        ${issues.length ? `<div class="callout callout-warn" role="note"><strong>Data checks</strong><ul>${issues.map((i) => `<li>${i.severity === 'error' ? '<strong>Problem:</strong> ' : ''}${escapeHTML(i.message)}</li>`).join('')}</ul></div>` : ''}
       </div>
       <div class="card">
         <div class="card-head"><h2>What makes up the score</h2><a class="small" href="#/method">How it works</a></div>
@@ -236,10 +242,10 @@ export function renderTown(root, state, id) {
     </section>
   </div>`;
 
-  if (town.history?.length > 1) {
+  if (history.length > 1) {
     lineChart(root.querySelector('#trend'), [
-      { label: 'Money in', color: 'var(--series-in)', values: town.history.map((h) => ({ x: h.year, y: h.revenue })) },
-      { label: 'Money out', color: 'var(--series-out)', values: town.history.map((h) => ({ x: h.year, y: h.spending })) },
+      { label: 'Money in', color: 'var(--series-in)', values: history.map((h) => ({ x: h.year, y: h.revenue })) },
+      { label: 'Money out', color: 'var(--series-out)', values: history.map((h) => ({ x: h.year, y: h.spending })) },
     ]);
   } else {
     root.querySelector('#trend').innerHTML = '<p class="muted small">No multi-year history loaded.</p>';

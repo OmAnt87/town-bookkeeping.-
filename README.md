@@ -433,6 +433,10 @@ node scripts/build-summary.mjs
 
 License-plate cameras mapped in OpenStreetMap (from DeFlock's published tiles) are placed inside Census city, town and village boundaries in every state, and inside independent cities and city-counties (`scripts/cameras.mjs`; NJ uses `scripts/nj/red-flags.mjs`); ordinary counties overlap their towns, so they are not placed; any Flock camera is a red flag, other brands only when the town is the recorded operator. Atlas records for access every police department gets through a statewide contract (for example, Massachusetts's and Tennessee's CrimeTracer contracts) are shown but not scored. `scripts/transparency.mjs` checks one transparency practice from state records where the state publishes annual-report filings.
 
+Every town is checked with `js/engine/validate.js` when the app scores it. The NJ, NY and PA builds also run the checks, and `npm test` runs them over all NJ, NY, PA and CT data. It catches revenue or spending missing from a filing, budgets whose two sides are far apart, partial years in the trend, and ledgers that don't add up. A town that fails is shown as **data under review** without a grade. The checks are described in [docs/METHODOLOGY.md](docs/METHODOLOGY.md#data-checks), and each state's status doc lists the towns they flag.
+
+If the Overpass server doesn't answer, `scripts/nj/red-flags.mjs` reuses the camera counts saved in `scripts/nj/osm-cameras.json` from the last successful download.
+
 The app loads `data/real/summary.json` (every real town without ledgers and history) at startup and fetches a county's full file only when a town report is opened. Re-run `node scripts/build-summary.mjs` after any county build, red-flags, cameras or transparency run.
 
 Real towns go in `data/real/` and are listed in `data/real/index.json`. The app loads them by default, marks them **Public-record data**, and lets you filter to them on the map and rankings.

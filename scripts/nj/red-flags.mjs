@@ -174,14 +174,19 @@ if (existsSync(atlasFile)) {
 const NOT_TOWN = /home depot|lowe|simon|mall|port authority|panynj|turnpike|parkway|school|university|college|nj transit|state police|county/i;
 const osmFile = join(RAW, 'osm-alpr.json');
 const shpFile = join(RAW, 'tl_2024_34_cousub.shp');
+// Camera counts from the last successful Overpass download, so a busy or
+// unreachable Overpass server doesn't silently drop every town's cameras.
+const OSM_SNAPSHOT = join(dirname(fileURLToPath(import.meta.url)), 'osm-cameras.json');
+const osmCounts = new Map();
+let osmDate = TODAY;
 if (existsSync(osmFile) && existsSync(shpFile)) {
   const shapes = readShp(readFileSync(shpFile));
   const dbf = readDbf(readFileSync(join(RAW, 'tl_2024_34_cousub.dbf')));
   const byGeoid = new Map(towns.map((t) => [t.censusGeoid, t]));
   const areas = dbf.map((r, i) => ({ town: byGeoid.get(r.GEOID), shape: shapes[i] })).filter((a) => a.town && a.shape);
   const osm = JSON.parse(readFileSync(osmFile, 'utf8'));
-  const osmDate = osm.osm3s?.timestamp_osm_base?.slice(0, 10) || TODAY;
-  const counts = new Map();
+  osmDate = osm.osm3s?.timestamp_osm_base?.slice(0, 10) || TODAY;
+  const counts = osmCounts;
   for (const e of osm.elements || []) {
     report.cameras++;
     const lat = e.lat ?? e.center?.lat;
@@ -197,7 +202,20 @@ if (existsSync(osmFile) && existsSync(shpFile)) {
     if (op && normName(op.replace(/police department|police|pd\b|\btwp\b|^(township|borough|city|town) of /gi, ' ')).includes(normName(hit.town.name))) c.townOperated++;
     counts.set(hit.town, c);
   }
-  for (const [town, c] of counts) {
+  writeFileSync(OSM_SNAPSHOT, `${JSON.stringify({
+    asOf: osmDate,
+    note: 'Per-town OpenStreetMap license-plate camera counts from the last successful Overpass download, used by scripts/nj/red-flags.mjs when Overpass does not answer. Rewritten on every successful download.',
+    towns: Object.fromEntries([...counts].map(([t, c]) => [t.censusGeoid, { name: t.name, ...c }]).sort(([a], [b]) => a.localeCompare(b))),
+  }, null, 1)}\n`);
+} else if (existsSync(OSM_SNAPSHOT)) {
+  const snap = JSON.parse(readFileSync(OSM_SNAPSHOT, 'utf8'));
+  osmDate = snap.asOf;
+  const byGeoid = new Map(towns.map((t) => [t.censusGeoid, t]));
+  for (const [geoid, { name, ...c }] of Object.entries(snap.towns)) if (byGeoid.has(geoid)) osmCounts.set(byGeoid.get(geoid), c);
+  console.warn(`No OSM download; using the camera counts saved ${osmDate} in scripts/nj/osm-cameras.json.`);
+}
+{
+  for (const [town, c] of osmCounts) {
     town.surveillanceMap = { ...c, asOf: osmDate, source: { label: 'OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)', url: OSM_PAGE } };
     // Flock cameras are scored as their own flag even when no operator is recorded:
     // Flock pools plate scans into a network shared with agencies nationwide.

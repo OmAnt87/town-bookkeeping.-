@@ -29,6 +29,8 @@ export function renderMethod(root) {
       ${[['A', '85 and up'], ['B', '70 to 84'], ['C', '55 to 69'], ['D', '40 to 54'], ['F', 'below 40']].map(([g, r]) => `<span style="display:flex;gap:8px;align-items:center">${gradeBadge(g)} <span class="small">${r}</span></span>`).join('')}
     </div>
 
+    <p class="small muted">A town whose records fail a data check (no revenue on file, say, or a budget whose two sides don't come close to matching) is shown as <strong>data under review</strong> and gets no grade until the source is fixed. Trend years far off a town's typical year are partial filings and are left out of its chart.</p>
+
     <h2>Ranking among peers</h2>
     <p>A township of 3,000 people and a city of 300,000 do different jobs, and states publish different records: political money is loaded for some and not others. So every town is also ranked <strong>among its peers</strong>: graded towns in the same state, of the same kind of government (county, city, town or village, township), and in the same population band (under 2,500; 2,500 to 10,000; 10,000 to 50,000; 50,000 to 250,000; 250,000 and up). When that group has fewer than ${MIN_PEERS} graded towns it is widened to the state's towns of that kind, then to towns of that kind and size in every state. The percentile says what share of its peers a town scores higher than (ties count half). Each report card marks the peer median on every part of the score.</p>
     <p><strong>Provisional scores.</strong> A score built on less than ${PROVISIONAL_BELOW} of the 100 points of data is marked provisional. It is still shown, but ranked after towns with fuller records, so a town cannot top a list because most of its record is missing.</p>

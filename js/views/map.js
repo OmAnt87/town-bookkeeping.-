@@ -283,7 +283,7 @@ export function renderMap(root, state, _arg, query) {
           .map(
             (e, i) => `<li${rowAttrs(i)}><button type="button" data-id="${e.town.id}">
               ${gradeBadge(e.s.grade)}
-              <span><span class="t-name">${escapeHTML(e.town.name)}</span><br><span class="t-sub">${escapeHTML(e.town.county)}, ${e.town.state}</span></span>
+              <span><span class="t-name">${escapeHTML(e.town.name)}</span><br><span class="t-sub">${escapeHTML(e.town.county)}, ${e.town.state}${e.s.review ? ' &middot; data under review' : ''}</span></span>
               <span class="t-val num">${metricText(e, m.key)}</span></button></li>`,
           )
           .join('') +
@@ -309,7 +309,7 @@ export function renderMap(root, state, _arg, query) {
         fillColor: !displayMetric(e, m.key).available ? '#9a9890' : scale.color(displayMetric(e, m.key).value),
         fillOpacity: 0.7,
       })
-        .bindTooltip(`<strong>${escapeHTML(town.name)}</strong>, ${town.state}<br>Grade ${s.grade} &middot; ${m.label}: ${metricText(e, m.key)}`, { direction: 'top', offset: [0, -6] })
+        .bindTooltip(`<strong>${escapeHTML(town.name)}</strong>, ${town.state}<br>${s.review ? 'Data under review' : `Grade ${s.grade}`} &middot; ${m.label}: ${metricText(e, m.key)}`, { direction: 'top', offset: [0, -6] })
         .on('click', () => openCard(town.id));
       mk.addTo(dotLayer);
       markers.set(town.id, mk);
@@ -354,7 +354,7 @@ export function renderMap(root, state, _arg, query) {
       <button class="icon-btn close" type="button" aria-label="Close">${ICONS.close}</button>
       <div style="display:flex;gap:12px;align-items:center;padding-right:40px">
         ${gradeBadge(s.grade, 'md')}
-        <div><h2>${escapeHTML(town.name)}</h2>${verifiedPill(town)}<div class="small muted">${escapeHTML(town.county)}, ${town.stateName || town.state} &middot; pop. ${number(town.population)}</div></div>
+        <div><h2>${escapeHTML(town.name)}</h2>${verifiedPill(town)}<div class="small muted">${escapeHTML(town.county)}, ${town.stateName || town.state} &middot; pop. ${number(town.population)}</div>${s.review ? '<div class="small muted"><strong>Data under review:</strong> not graded until the records pass our data checks.</div>' : ''}</div>
       </div>
       <p class="small muted">${escapeHTML(coverageText({ town, s }))}</p><div class="map-stats">
         <div><span>Community Return Score</span><strong class="num">${metricText({ town, s }, 'score')}</strong></div>

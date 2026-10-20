@@ -9,6 +9,7 @@ import {
   TAX_BREAK_CATEGORIES,
   RED_FLAG_PATTERNS,
 } from './categories.js';
+import { validateTown } from './validate.js';
 
 export const sum = (obj = {}) => Object.values(obj).reduce((a, b) => a + (Number(b) || 0), 0);
 
@@ -271,10 +272,16 @@ export function scoreTown(town) {
   const deducted = components.filter((c) => c.available && c.penalty).reduce((a, c) => a - c.points, 0);
   const base = possible ? (earned / possible) * 100 : 0;
   const score = possible ? Math.round(Math.max(0, base - deducted) * 10) / 10 : 0;
+  const issues = validateTown(town);
+  // Records that fail a data check (no revenue, a budget that doesn't add up) are
+  // held back from grading until the source is fixed.
+  const review = issues.some((i) => i.severity === 'error');
   return {
     score,
     // A letter grade needs data behind at least half of the 100 points.
-    grade: possible >= 50 ? gradeFor(score) : '?',
+    grade: possible >= 50 && !review ? gradeFor(score) : '?',
+    review,
+    issues,
     components,
     totals: t,
     penalty: deducted,
