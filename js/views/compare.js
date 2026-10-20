@@ -56,6 +56,8 @@ export function renderCompare(root, state, arg) {
         <tr><th colspan="${entries.length + 1}">Score breakdown (original component points)</th></tr>
         ${entries[0].s.components.map((c, i) => `<tr><th scope="row">${c.penalty ? `${c.label} (penalty)` : c.label}</th>${entries.map((e) => { const x = e.s.components[i]; return `<td>${!x.available ? (c.penalty ? 'Not checked' : 'Not scored') : c.penalty ? (x.points ? `−${Math.abs(x.points)}` : 'No penalty') : `${x.points} / ${c.max}`}</td>`; }).join('')}</tr>`).join('')}
         </tbody></table></div>`;
+    // Rows slide in each time the comparison is redrawn, with a short stagger.
+    out.querySelectorAll('tbody tr').forEach((tr, n) => { tr.classList.add('in'); tr.style.setProperty('--i', String(Math.min(n, 12))); });
   }
   for (let i = 0; i < 3; i++) {
     root.querySelector(`#c-search-${i}`).addEventListener('input', choices);
