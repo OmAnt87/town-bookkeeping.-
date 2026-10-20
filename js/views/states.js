@@ -15,6 +15,19 @@ export function renderStates(root, state) {
       : 'No verified data is loaded, so this shows the fictional demo towns by state.'}</p></div></div>
     <div class="grid grid-2 states-grid">${list.map(card).join('')}</div>
   </div>`;
+
+  // Cards slide in as they scroll into view; cards arriving together are staggered.
+  const cards = root.querySelectorAll('.state-card.reveal');
+  if (!('IntersectionObserver' in window)) { cards.forEach((c) => c.classList.add('in')); return; }
+  const observer = new IntersectionObserver((entries) => {
+    entries.filter((e) => e.isIntersecting).forEach((e, i) => {
+      e.target.style.setProperty('--i', String(Math.min(i, 6)));
+      e.target.classList.add('in');
+      observer.unobserve(e.target);
+    });
+  }, { rootMargin: '0px 0px -40px 0px' });
+  cards.forEach((c) => observer.observe(c));
+  return () => observer.disconnect();
 }
 
 function card(s) {
@@ -22,7 +35,7 @@ function card(s) {
   const graded = GRADES.filter((g) => s.grades[g]);
   const q = `state=${encodeURIComponent(s.state)}`;
   return `
-  <section class="card state-card" aria-labelledby="st-${s.state}">
+  <section class="card state-card reveal" aria-labelledby="st-${s.state}">
     <div class="card-head"><div><h2 id="st-${s.state}">${escapeHTML(s.stateName)}</h2>
       <p>${plural(s.towns, 'government')} (${types}) &middot; pop. ${number(s.population)} &middot; FY ${s.fiscalYears.length > 2 ? `${s.fiscalYears[0]}–${s.fiscalYears.at(-1)}` : s.fiscalYears.join(', ')}</p></div></div>
     <div class="state-stats">
