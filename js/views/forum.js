@@ -1,5 +1,6 @@
 import { escapeHTML } from '../engine/format.js';
 import { isDark } from '../app.js';
+import { revealOnScroll } from '../charts.js';
 
 // Posts live in GitHub Discussions on this repo, one thread per town, via giscus.
 // Ids come from https://giscus.app. Announcements lets only maintainers and giscus start threads.
@@ -30,11 +31,13 @@ export function renderForum(root, state, id) {
       </div>
       <a class="btn" href="${report}">Back to report</a>
     </div>
-    <section class="card">
+    <section class="card forum-card">
       ${GISCUS.categoryId ? '<div class="giscus"></div>' : '<p class="muted">The forum is not set up yet.</p>'}
     </section>
   </div>`;
-  if (!GISCUS.categoryId) return;
+  const card = root.querySelector('.forum-card');
+  const unreveal = revealOnScroll([card]);
+  if (!GISCUS.categoryId) return unreveal;
 
   const script = document.createElement('script');
   script.src = 'https://giscus.app/client.js';
@@ -61,5 +64,14 @@ export function renderForum(root, state, id) {
     root.querySelector('iframe.giscus-frame')?.contentWindow.postMessage({ giscus: { setConfig: { theme: theme() } } }, 'https://giscus.app');
   };
   window.addEventListener('themechange', onTheme);
-  return () => window.removeEventListener('themechange', onTheme);
+  // Fade the widget in once giscus has rendered (it posts a resize message), or after 4s regardless.
+  const onLoaded = (e) => { if (e.origin === 'https://giscus.app') card.classList.add('loaded'); };
+  window.addEventListener('message', onLoaded);
+  const fallback = setTimeout(() => card.classList.add('loaded'), 4000);
+  return () => {
+    window.removeEventListener('themechange', onTheme);
+    window.removeEventListener('message', onLoaded);
+    clearTimeout(fallback);
+    unreveal();
+  };
 }
