@@ -349,6 +349,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -358,8 +368,42 @@
     "Left out: other financing sources ($84,227) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($41,977, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: 13 license-plate cameras are mapped inside Carroll Township's borders in OpenStreetMap (0 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Carroll Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "CRIMEWATCH",
+     "agency": "Carroll Township Police Department",
+     "date": "",
+     "detail": "The Carroll Township Police Department operates a camera registry via CRIMEWATCH.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS014882, citing CRIMEWATCH",
+      "url": "https://york.crimewatchpa.com/carrollpd/8720/webforms/camera-registry"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 13,
+    "flock": 0,
+    "townOperated": 0,
+    "asOf": "2026-10-20",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "chanceford-township-pa",
@@ -675,6 +719,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -684,8 +733,18 @@
     "Left out: other financing sources ($32,458) and uses ($77,422), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($258,536, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Chanceford Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Chanceford Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "city-of-york-pa",
@@ -1085,6 +1144,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1094,8 +1163,55 @@
     "Left out: other financing sources ($3,265,168) and uses ($2,285,154), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($14,079,508, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: 1 license-plate camera is mapped inside City of York's borders in OpenStreetMap (1 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: City of York's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2019; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-20",
+     "detail": "1 Flock Safety license-plate camera is mapped inside City of York's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "CRIMEWATCH",
+     "agency": "York City Police Department",
+     "date": "",
+     "detail": "The York City Police Departmentoperates a camera registry via CRIMEWATCH.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS015000, citing CRIMEWATCH",
+      "url": "https://york.crimewatchpa.com/yorkpd/8395/webforms/camera-registry-form"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 1,
+    "flock": 1,
+    "townOperated": 0,
+    "asOf": "2026-10-20",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "codorus-township-pa",
@@ -1429,6 +1545,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1438,8 +1559,18 @@
     "Left out: other financing sources ($57,039) and uses ($46,486), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($141,024, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Codorus Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Codorus Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "conewago-township-york-county-pa",
@@ -1766,6 +1897,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1775,8 +1911,18 @@
     "Left out: other financing sources ($22,050) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($476,513, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Conewago Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Conewago Township's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2024; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "cross-roads-borough-pa",
@@ -2025,6 +2171,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -2032,8 +2183,18 @@
     "Covers the municipality only. County and school-district taxes on the same bills, and independent municipal authorities (often water and sewer), are separate.",
     "\"Other expenditures\" ($5,298, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Cross Roads Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Cross Roads Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "dallastown-borough-pa",
@@ -2384,6 +2545,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -2392,8 +2558,18 @@
     "Left out: other financing sources ($817,998) and uses ($666,647), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($3,133, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Dallastown Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Dallastown Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "delta-borough-pa",
@@ -2658,6 +2834,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -2666,8 +2847,18 @@
     "Left out: other financing sources ($14,674) and uses ($32,355), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($16,298, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Delta Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Delta Borough's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2024; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "dillsburg-borough-pa",
@@ -2981,6 +3172,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -2989,8 +3190,28 @@
     "Left out: other financing sources ($121,393) and uses ($61,386), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($109,365, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: 1 license-plate camera is mapped inside Dillsburg Borough's borders in OpenStreetMap (0 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Dillsburg Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "surveillanceMap": {
+    "cameras": 1,
+    "flock": 0,
+    "townOperated": 0,
+    "asOf": "2026-10-20",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "dover-borough-pa",
@@ -3350,6 +3571,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -3358,8 +3584,18 @@
     "Left out: other financing sources ($63,821) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($113,654, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Dover Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Dover Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "dover-township-pa",
@@ -3740,6 +3976,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -3749,8 +3990,18 @@
     "Left out: other financing sources ($58,324) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($201,519, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Dover Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Dover Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "east-hopewell-township-pa",
@@ -4037,6 +4288,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -4046,8 +4302,18 @@
     "Left out: other financing sources ($12,613) and uses ($3,710), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($51,475, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside East Hopewell Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: East Hopewell Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "east-manchester-township-pa",
@@ -4382,6 +4648,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -4391,8 +4662,18 @@
     "Left out: other financing sources ($34,014) and uses ($8,558), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($375,753, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside East Manchester Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: East Manchester Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "east-prospect-borough-pa",
@@ -4680,6 +4961,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -4688,8 +4974,18 @@
     "Left out: other financing sources ($0) and uses ($12,050), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($27,084, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside East Prospect Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: East Prospect Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "fairview-township-york-county-pa",
@@ -5051,6 +5347,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -5060,8 +5366,55 @@
     "Left out: other financing sources ($1,044,530) and uses ($823,500), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($313,619, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: 4 license-plate cameras are mapped inside Fairview Township's borders in OpenStreetMap (4 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Fairview Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-20",
+     "detail": "4 Flock Safety license-plate cameras are mapped inside Fairview Township's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "CRIMEWATCH",
+     "agency": "Fairview Township Police Department",
+     "date": "",
+     "detail": "The Fairview Township Police Department operates a camera registry via CRIMEWATCH.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS014897, citing CRIMEWATCH",
+      "url": "https://york.crimewatchpa.com/fairviewtwppd/42144/webforms/camera-registry-form"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 4,
+    "flock": 4,
+    "townOperated": 0,
+    "asOf": "2026-10-20",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "fawn-grove-borough-pa",
@@ -5371,6 +5724,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -5379,8 +5737,18 @@
     "Left out: other financing sources ($2,775) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($19,257, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Fawn Grove Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Fawn Grove Borough's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2024; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "fawn-township-york-county-pa",
@@ -5658,6 +6026,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -5667,8 +6040,18 @@
     "Left out: other financing sources ($5,628) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($132,930, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Fawn Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Fawn Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "felton-borough-pa",
@@ -5993,6 +6376,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -6001,8 +6389,18 @@
     "Left out: other financing sources ($2,668) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($11,462, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Felton Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Felton Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "franklin-township-york-county-pa",
@@ -6336,6 +6734,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -6345,8 +6748,18 @@
     "Left out: other financing sources ($26,795) and uses ($15,225), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($149,220, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Franklin Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Franklin Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "franklintown-borough-pa",
@@ -6653,6 +7066,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -6661,8 +7079,18 @@
     "Left out: other financing sources ($86) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($12,171, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Franklintown Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Franklintown Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "glen-rock-borough-pa",
@@ -6986,6 +7414,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -6994,8 +7427,18 @@
     "Left out: other financing sources ($125) and uses ($6,267), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($50,547, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Glen Rock Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Glen Rock Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "goldsboro-borough-pa",
@@ -7358,6 +7801,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -7366,8 +7814,18 @@
     "Left out: other financing sources ($0) and uses ($125), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($190,692, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Goldsboro Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Goldsboro Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "hallam-borough-pa",
@@ -7702,6 +8160,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -7710,8 +8173,18 @@
     "Left out: other financing sources ($379,530) and uses ($47,100), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($43,815, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Hallam Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Hallam Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "hanover-borough-pa",
@@ -8156,6 +8629,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -8164,8 +8647,55 @@
     "Left out: other financing sources ($5,272,080) and uses ($133,465), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($2,041, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: 5 license-plate cameras are mapped inside Hanover Borough's borders in OpenStreetMap (5 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Hanover Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-20",
+     "detail": "5 Flock Safety license-plate cameras are mapped inside Hanover Borough's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "CRIMEWATCH",
+     "agency": "Hanover Borough Police Department",
+     "date": "",
+     "detail": "The Hanover Borough Police Department operates a camera registry via CRIMEWATCH.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS014903, citing CRIMEWATCH",
+      "url": "https://york.crimewatchpa.com/hanoverboropd/42186/webforms/camera-registry"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 5,
+    "flock": 5,
+    "townOperated": 0,
+    "asOf": "2026-10-20",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "heidelberg-township-york-county-pa",
@@ -8499,6 +9029,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -8508,8 +9043,18 @@
     "Left out: other financing sources ($10,098) and uses ($10,098), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($70,971, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Heidelberg Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Heidelberg Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "hellam-township-pa",
@@ -8829,6 +9374,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -8838,8 +9388,18 @@
     "Left out: other financing sources ($158,381) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($1,020,400, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Hellam Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Hellam Township's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2024; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "hopewell-township-york-county-pa",
@@ -9134,6 +9694,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -9143,8 +9708,18 @@
     "Left out: other financing sources ($0) and uses ($858), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($81,538, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Hopewell Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Hopewell Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "jackson-township-york-county-pa",
@@ -9498,6 +10073,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -9507,8 +10087,18 @@
     "Left out: other financing sources ($182,425) and uses ($181,000), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($683,380, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Jackson Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Jackson Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "jacobus-borough-pa",
@@ -9833,6 +10423,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -9841,8 +10436,18 @@
     "Left out: other financing sources ($16,944) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($34,906, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Jacobus Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Jacobus Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "jefferson-borough-york-county-pa",
@@ -10148,6 +10753,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -10156,8 +10766,18 @@
     "Left out: other financing sources ($100) and uses ($100), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($74,539, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Jefferson Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Jefferson Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "lewisberry-borough-pa",
@@ -10429,6 +11049,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -10437,8 +11062,18 @@
     "Left out: other financing sources ($63,325) and uses ($15,792), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($4,600, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Lewisberry Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Lewisberry Borough's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2024; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "loganville-borough-pa",
@@ -10754,6 +11389,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -10762,8 +11402,18 @@
     "Left out: other financing sources ($73) and uses ($73), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($23,462, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Loganville Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Loganville Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "lower-chanceford-township-pa",
@@ -11050,6 +11700,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -11059,8 +11714,18 @@
     "Left out: other financing sources ($4,535) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($86,535, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Lower Chanceford Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Lower Chanceford Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "lower-windsor-township-pa",
@@ -11376,6 +12041,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -11385,8 +12055,32 @@
     "Left out: other financing sources ($295,011) and uses ($257,884), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($285,542, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Lower Windsor Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Lower Windsor Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "CRIMEWATCH",
+     "agency": "Lower Windsor Township Police Department",
+     "date": "",
+     "detail": "The Lower Windsor Township Police Department operates a camera registry via CRIMEWATCH.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS014926, citing CRIMEWATCH",
+      "url": "https://york.crimewatchpa.com/lowerwindsortwppd/42207/webforms/camera-registry"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "manchester-borough-pa",
@@ -11663,6 +12357,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -11671,8 +12370,18 @@
     "Left out: other financing sources ($83,463) and uses ($64), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($77,569, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Manchester Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Manchester Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "manchester-township-york-county-pa",
@@ -12053,6 +12762,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -12062,8 +12781,42 @@
     "Left out: other financing sources ($1,645,099) and uses ($1,437,140), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($1,612,648, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: 2 license-plate cameras are mapped inside Manchester Township's borders in OpenStreetMap (2 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Manchester Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-20",
+     "detail": "2 Flock Safety license-plate cameras are mapped inside Manchester Township's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 2,
+    "flock": 2,
+    "townOperated": 0,
+    "asOf": "2026-10-20",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "manheim-township-york-county-pa",
@@ -12360,6 +13113,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -12369,8 +13127,18 @@
     "Left out: other financing sources ($542,662) and uses ($542,224), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($162,925, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Manheim Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Manheim Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "monaghan-township-pa",
@@ -12651,6 +13419,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -12661,8 +13434,18 @@
     "Left out: other financing sources ($3,685,295) and uses ($2,142,295), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($94,586, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Monaghan Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Monaghan Township's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2024; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "mt-wolf-borough-pa",
@@ -12958,6 +13741,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -12966,8 +13754,18 @@
     "Left out: other financing sources ($2,193) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($43,226, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Mt Wolf Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Mt Wolf Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "new-freedom-borough-pa",
@@ -13337,6 +14135,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -13345,8 +14148,18 @@
     "Left out: other financing sources ($183,527) and uses ($159,000), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($336,822, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside New Freedom Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: New Freedom Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "new-salem-borough-pa",
@@ -13625,6 +14438,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -13633,8 +14451,18 @@
     "Left out: other financing sources ($4,139) and uses ($16,939), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($27,462, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside New Salem Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: New Salem Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "newberry-township-pa",
@@ -13996,6 +14824,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -14005,8 +14838,32 @@
     "Left out: other financing sources ($2,057,729) and uses ($1,827,346), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($2,380,902, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Newberry Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Newberry Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "CRIMEWATCH",
+     "agency": "Newberry Township Police Department",
+     "date": "",
+     "detail": "The Newberry Township Police Departmentoperates a camera registry via CRIMEWATCH.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS014943, citing CRIMEWATCH",
+      "url": "https://york.crimewatchpa.com/newberrytwppd/42244/webforms/camera-registry-form"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "north-codorus-township-pa",
@@ -14360,6 +15217,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -14368,8 +15230,18 @@
     "Second Class Township.",
     "Left out: other financing sources ($69,116) and uses ($48,681), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside North Codorus Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: North Codorus Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "north-hopewell-township-pa",
@@ -14647,6 +15519,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -14656,8 +15533,18 @@
     "Left out: other financing sources ($133,667) and uses ($121,123), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($299,927, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside North Hopewell Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: North Hopewell Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "north-york-borough-pa",
@@ -15019,6 +15906,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -15027,8 +15919,18 @@
     "Left out: other financing sources ($11,051) and uses ($601), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($92,811, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside North York Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: North York Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "paradise-township-york-county-pa",
@@ -15325,6 +16227,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -15334,8 +16241,18 @@
     "Left out: other financing sources ($2,100) and uses ($60,834), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($272,936, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Paradise Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Paradise Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "peach-bottom-township-pa",
@@ -15688,6 +16605,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -15697,8 +16619,18 @@
     "Left out: other financing sources ($173,154) and uses ($755,806), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($180,550, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Peach Bottom Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Peach Bottom Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "penn-township-york-county-pa",
@@ -16055,6 +16987,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -16063,8 +17000,32 @@
     "First Class Township.",
     "Left out: other financing sources ($394,055) and uses ($198,679), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Penn Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Penn Township's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2024; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "CRIMEWATCH",
+     "agency": "Penn Township Police Department",
+     "date": "",
+     "detail": "The Penn Township Police Departmentoperates a camera registry via CRIMEWATCH.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS014952, citing CRIMEWATCH",
+      "url": "https://york.crimewatchpa.com/penntwppd/42370/slideshows/camera-registry-available"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
+   ],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "railroad-borough-pa",
@@ -16351,6 +17312,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -16359,8 +17325,18 @@
     "Left out: other financing sources ($8,482) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($1,364, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Railroad Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Railroad Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "red-lion-borough-pa",
@@ -16730,6 +17706,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -16738,8 +17724,28 @@
     "Left out: other financing sources ($140,692) and uses ($93,592), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($406,627, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: 1 license-plate camera is mapped inside Red Lion Borough's borders in OpenStreetMap (0 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Red Lion Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "surveillanceMap": {
+    "cameras": 1,
+    "flock": 0,
+    "townOperated": 0,
+    "asOf": "2026-10-20",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "seven-valleys-borough-pa",
@@ -16983,6 +17989,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -16991,8 +18002,18 @@
     "Left out: other financing sources ($208) and uses ($2,687), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($16,548, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Seven Valleys Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Seven Valleys Borough's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2024; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "shrewsbury-borough-pa",
@@ -17344,6 +18365,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -17352,8 +18383,42 @@
     "Left out: other financing sources ($72,621) and uses ($466,605), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($167,944, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: 2 license-plate cameras are mapped inside Shrewsbury Borough's borders in OpenStreetMap (2 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Shrewsbury Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-20",
+     "detail": "2 Flock Safety license-plate cameras are mapped inside Shrewsbury Borough's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 2,
+    "flock": 2,
+    "townOperated": 0,
+    "asOf": "2026-10-20",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "shrewsbury-township-york-county-pa",
@@ -17678,6 +18743,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -17687,8 +18762,42 @@
     "Left out: other financing sources ($36,300) and uses ($1,568), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($335,949, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: 4 license-plate cameras are mapped inside Shrewsbury Township's borders in OpenStreetMap (4 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Shrewsbury Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-20",
+     "detail": "4 Flock Safety license-plate cameras are mapped inside Shrewsbury Township's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 4,
+    "flock": 4,
+    "townOperated": 0,
+    "asOf": "2026-10-20",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "spring-garden-township-pa",
@@ -18069,6 +19178,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -18078,8 +19192,32 @@
     "Left out: other financing sources ($1,286,701) and uses ($937,751), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($242,986, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Spring Garden Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Spring Garden Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "CRIMEWATCH",
+     "agency": "Spring Garden Township Police Department",
+     "date": "",
+     "detail": "The Spring Garden Township Police Departmentoperates a camera registry via CRIMEWATCH.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS014974, citing CRIMEWATCH",
+      "url": "https://york.crimewatchpa.com/springgardenpd/5327/webforms/camera-registry-form"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
+   ],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "spring-grove-borough-pa",
@@ -18462,6 +19600,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -18469,8 +19612,18 @@
     "Covers the municipality only. County and school-district taxes on the same bills, and independent municipal authorities (often water and sewer), are separate.",
     "Left out: other financing sources ($191,583) and uses ($166,715), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Spring Grove Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Spring Grove Borough's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2024; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "springettsbury-township-pa",
@@ -18852,6 +20005,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -18861,8 +20024,55 @@
     "Left out: other financing sources ($4,487,368) and uses ($3,672,051), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($5,407,805, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: 3 license-plate cameras are mapped inside Springettsbury Township's borders in OpenStreetMap (2 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Springettsbury Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-20",
+     "detail": "2 Flock Safety license-plate cameras are mapped inside Springettsbury Township's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "CRIMEWATCH",
+     "agency": "Springettsbury Township Police Department",
+     "date": "",
+     "detail": "The Springettsbury Township Police Departmentoperates a camera registry via CRIMEWATCH.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS014975, citing CRIMEWATCH",
+      "url": "https://york.crimewatchpa.com/springettsburytwppd/42233/webforms/camera-registry"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 3,
+    "flock": 2,
+    "townOperated": 0,
+    "asOf": "2026-10-20",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "springfield-township-york-county-pa",
@@ -19187,6 +20397,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -19196,8 +20411,18 @@
     "Left out: other financing sources ($36,040) and uses ($35,358), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($210,377, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Springfield Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Springfield Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "stewartstown-borough-pa",
@@ -19513,6 +20738,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -19520,8 +20750,18 @@
     "Covers the municipality only. County and school-district taxes on the same bills, and independent municipal authorities (often water and sewer), are separate.",
     "\"Other expenditures\" ($250,261, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Stewartstown Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Stewartstown Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "warrington-township-york-county-pa",
@@ -19849,6 +21089,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -19858,8 +21103,18 @@
     "Left out: other financing sources ($81,714) and uses ($76,805), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($290,380, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Warrington Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Warrington Township's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2024; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "washington-township-york-county-pa",
@@ -20137,6 +21392,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -20146,8 +21406,18 @@
     "Left out: other financing sources ($3,920) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($177,209, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Washington Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Washington Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "wellsville-borough-pa",
@@ -20429,6 +21699,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -20436,8 +21711,18 @@
     "Covers the municipality only. County and school-district taxes on the same bills, and independent municipal authorities (often water and sewer), are separate.",
     "\"Other expenditures\" ($16,736, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Wellsville Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Wellsville Borough's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2024; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "west-manchester-township-pa",
@@ -20788,6 +22073,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -20797,8 +22092,55 @@
     "Left out: other financing sources ($3,106,918) and uses ($2,647,254), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($4,186,312, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: 2 license-plate cameras are mapped inside West Manchester Township's borders in OpenStreetMap (2 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: West Manchester Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-20",
+     "detail": "2 Flock Safety license-plate cameras are mapped inside West Manchester Township's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "kind": "surveillance",
+     "label": "Private camera registry",
+     "vendor": "CRIMEWATCH",
+     "agency": "West Manchester Township Police Department",
+     "date": "",
+     "detail": "The West Manchester Township Police Departmentoperates a camera registry via CRIMEWATCH.",
+     "source": {
+      "label": "EFF Atlas of Surveillance AOS014990, citing CRIMEWATCH",
+      "url": "https://york.crimewatchpa.com/westmanchesterpd/42384/webforms/camera-registry-form"
+     },
+     "addedBy": "scripts/red-flags.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 2,
+    "flock": 2,
+    "townOperated": 0,
+    "asOf": "2026-10-20",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "west-manheim-township-pa",
@@ -21179,6 +22521,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -21188,8 +22535,18 @@
     "Left out: other financing sources ($617,019) and uses ($354,500), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($730,434, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside West Manheim Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: West Manheim Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "west-york-borough-pa",
@@ -21561,6 +22918,16 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -21569,8 +22936,42 @@
     "Left out: other financing sources ($17,273) and uses ($73,721), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($208,991, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: 4 license-plate cameras are mapped inside West York Borough's borders in OpenStreetMap (4 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: West York Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-20",
+     "detail": "4 Flock Safety license-plate cameras are mapped inside West York Borough's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 4,
+    "flock": 4,
+    "townOperated": 0,
+    "asOf": "2026-10-20",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "windsor-borough-pa",
@@ -21885,6 +23286,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -21893,8 +23299,18 @@
     "Left out: other financing sources ($98,711) and uses ($98,711), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($29,241, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Windsor Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Windsor Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "windsor-township-york-county-pa",
@@ -22210,6 +23626,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -22219,8 +23640,18 @@
     "Left out: other financing sources ($1,198,902) and uses ($1,159,532), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($118,393, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Windsor Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Windsor Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "winterstown-borough-pa",
@@ -22470,6 +23901,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -22478,8 +23914,18 @@
     "Left out: other financing sources ($560) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($15,059, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Winterstown Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Winterstown Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "wrightsville-borough-pa",
@@ -22807,6 +24253,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -22815,8 +24266,18 @@
     "Left out: other financing sources ($6,652) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($33,926, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Wrightsville Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Wrightsville Borough's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2024; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "yoe-borough-pa",
@@ -23150,6 +24611,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -23158,8 +24624,18 @@
     "Left out: other financing sources ($8,374) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($25,581, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Yoe Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Yoe Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "york-haven-borough-pa",
@@ -23456,6 +24932,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -23463,8 +24944,18 @@
     "Covers the municipality only. County and school-district taxes on the same bills, and independent municipal authorities (often water and sewer), are separate.",
     "\"Other expenditures\" ($26,706, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside York Haven Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: York Haven Borough has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "york-township-pa",
@@ -23829,6 +25320,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -23838,8 +25334,18 @@
     "Left out: other financing sources ($5,860,791) and uses ($5,487,141), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($584,677, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside York Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: York Township's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2024; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   }
  ]
 }

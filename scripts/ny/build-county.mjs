@@ -10,6 +10,7 @@
 // Figures are actual results from each government's Annual Financial Report to the
 // NY Office of the State Comptroller. Nothing is estimated.
 
+import { reportingFor } from '../../js/engine/reporting.js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -205,6 +206,7 @@ for (const county of counties) {
   for (const t of towns) for (const i of validateTown(t)) report.issues.push(`${t.name} [${i.severity} ${i.code}] ${i.message}`);
   if (!towns.length) { console.log(JSON.stringify({ county, towns: 0, of: govs.length, skipped: report.skipped })); continue; }
   const file = `ny-${slugify(county)}.json`;
+  for (const town of towns) town.reporting = reportingFor(town);
   writeFileSync(join(OUT, file), `${JSON.stringify({ towns }, null, 1)}\n`);
   if (!index.files.includes(file)) index.files.push(file);
   index.files.sort();

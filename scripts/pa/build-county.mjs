@@ -9,6 +9,7 @@
 // Figures are actual results from each municipality's Annual Audit and Financial Report
 // (DCED-CLGS-30) as published by the PA Department of Community and Economic Development.
 
+import { reportingFor } from '../../js/engine/reporting.js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -181,6 +182,7 @@ for (const county of pick) {
     .map(([id, g]) => buildMuni(id, g, report)).filter(Boolean).sort((x, y) => x.name.localeCompare(y.name));
   for (const t of towns) for (const i of validateTown(t)) report.issues.push(`${t.name} [${i.severity} ${i.code}] ${i.message}`);
   const file = `pa-${slugify(county)}.json`;
+  for (const town of towns) town.reporting = reportingFor(town);
   writeFileSync(join(OUT, file), `${JSON.stringify({ towns }, null, 1)}\n`);
   if (!index.files.includes(file)) index.files.push(file);
   index.files.sort();

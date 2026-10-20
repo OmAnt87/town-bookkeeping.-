@@ -7,6 +7,7 @@ import { slugify, dataCheckBullets } from '../lib.mjs';
 
 const allTowns = [];
 
+import { redFlagLines, filingLines, stateTowns } from '../common/status.mjs';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const osc = JSON.parse(readFileSync(join(ROOT, 'data', 'raw', 'ny', 'osc.json'), 'utf8'));
 const counties = [...new Set(Object.values(osc).map((g) => g.county))].sort();
@@ -23,7 +24,7 @@ for (const county of counties) {
   const { towns } = JSON.parse(readFileSync(file, 'utf8'));
   allTowns.push(...towns);
   const n = (f) => towns.filter(f).length;
-  const types = ['Town', 'Village', 'City'].map((k) => `${n((t) => t.type === k)} ${k.toLowerCase()}${n((t) => t.type === k) === 1 ? '' : 's'}`).filter((s) => !s.startsWith('0 ')).join(', ');
+  const types = ['Town', 'Village', 'City'].map((k) => `${n((t) => t.type === k)} ${k === 'City' && n((t) => t.type === k) !== 1 ? 'cities' : `${k.toLowerCase()}${n((t) => t.type === k) === 1 ? '' : 's'}`}`).filter((s) => !s.startsWith('0 ')).join(', ');
   const years = [...new Set(towns.map((t) => t.fiscalYear))].sort();
   old.push(...towns.filter((t) => t.fiscalYear < 2023).map((t) => `${t.name} (${t.fiscalYear})`));
   total += inOsc;
@@ -51,7 +52,7 @@ ${checks}
 - **New York City** does not file with the State Comptroller in this format and its campaign money is with the NYC Campaign Finance Board, so it is not included.
 - **Villages that dissolved** since 2016 are left out (they are no longer in the Census estimates).
 - **Older reports:** ${old.length ? old.join(', ') : 'none'}. These governments have not filed a newer annual report.
-- **Transparency practices** have not been checked yet, so they are not scored.
+${[...redFlagLines('NY', stateTowns('NY')), ...filingLines(stateTowns('NY'), 'annual financial report with the State Comptroller')].join('\n')}
 - Campaigns that raise little may not itemize contributions, and some local candidates have no filings at all, so a government showing $0 in political money may still have small unreported gifts.
 - Filer labels that match no current government (for example "Port Washington,Village", which is not a village, and "Seneca Falls,Village", dissolved in 2012) are left out.
 - Dissolved villages still in the Comptroller's files (Cherry Creek, Van Etten, Port Henry, Harrisville, Fort Johnson, Barneveld, South Nyack, Hermon, Morristown, Mastic Beach, Salem) are left out.
