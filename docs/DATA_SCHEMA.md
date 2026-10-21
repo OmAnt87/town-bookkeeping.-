@@ -23,6 +23,7 @@ Required fields: `id`, `name`, `state`, `lat`, `lng`, `population`, `revenue`, `
 | `topDonors` | array | `{ name, type, recipient, amount }` |
 | `transparency` | object of booleans | `budgetOnline`, `openCheckbook`, `auditOnTime`, `competitiveBidding`, `meetingsRecorded`, `conflictDisclosures` |
 | `debt` | number | Total outstanding debt, USD |
+| `borrowed` | number | New borrowing during the year that paid for spending (bond proceeds, not refinancing), USD. Not counted as revenue; the data checks count it when comparing money in with money out |
 | `history` | array | `{ year, revenue, spending }`. Two or more entries draw the trend chart |
 | `ledger` | array | `{ date, flow, category, counterparty, description, amount, source }` |
 | `sources` | array | `{ label, url }` |

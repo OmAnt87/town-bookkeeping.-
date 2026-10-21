@@ -10,7 +10,9 @@
 // spending itself (and in North Carolina's 2024 file some counties report their own school
 // system's funding there too, which would count it twice).
 // Liquor stores, utilities and transit count as enterprise spending and revenue. Borrowing
-// (29U), debt balances and insurance trust items are left out.
+// (29U), debt balances and insurance trust items are left out. A unit-year is revenueShort
+// when its revenue plus borrowing is under a quarter of its spending: the response is
+// missing its revenue lines, and builds prefer another year.
 
 import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync, renameSync, rmSync, readFileSync } from 'node:fs';
@@ -159,6 +161,9 @@ export function aggregateUnit(items, { refinancing = false } = {}) {
       lines.set(lk, lines.get(lk) - refinanced);
     }
   }
+  // Revenue lines missing: what came in, counting borrowing, is under a quarter of what
+  // went out. Census sample years sometimes carry only the spending side of a response.
+  const revenueShort = (revSum + proceeds) * 4 < expSum;
   const round = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, Math.round(v)]).filter(([, v]) => v));
   return {
     revenue: round(revenue),
@@ -172,6 +177,7 @@ export function aggregateUnit(items, { refinancing = false } = {}) {
     // The Census fills in units that did not report; those are estimates, not filings.
     imputed: flags.I > flags.R,
     incomplete,
+    revenueShort,
     refinanced: Math.round(refinanced),
   };
 }

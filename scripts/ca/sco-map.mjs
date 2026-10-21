@@ -123,7 +123,10 @@ export function aggregateSco(revRows, expRows, { kind, enterpriseDebtPayments = 
   if (enterpriseDebtPayments > 0) add('spending', 'debtService', 'Enterprise fund debt payments (principal and interest)', enterpriseDebtPayments, '');
   const round = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, Math.round(v)]).filter(([, v]) => v > 0));
   const out = { revenue: round(revenue), spending: round(spending) };
-  const kept = [...lines.values()].filter((l) => Math.round(l.amount) > 0).map((l) => ({ ...l, amount: Math.round(l.amount) }));
+  // Negative lines (refunds, reversals) stay in the ledger whenever their category is kept,
+  // so the ledger adds up to the category totals it itemizes.
+  const keptKey = (l) => (l.group === 'revenue' ? out.revenue : out.spending)[l.key] > 0;
+  const kept = [...lines.values()].filter((l) => Math.round(l.amount) !== 0 && keptKey(l)).map((l) => ({ ...l, amount: Math.round(l.amount) }));
   out.lines = kept;
   out.lineTotals = {
     revenue: kept.filter((l) => l.group === 'revenue').reduce((s, l) => s + l.amount, 0),
