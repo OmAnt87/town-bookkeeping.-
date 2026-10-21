@@ -43,6 +43,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs, parseCSV, slugify } from '../lib.mjs';
 import { CENSUS_PAGE, YEARS, readUnits, aggregateUnit } from './census-units.mjs';
+import { cleanHistory, validateTown } from '../../js/engine/validate.js';
 import { aggregateLevy, ASSESSMENT_SHARE } from './levy.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -136,7 +137,13 @@ export function buildState(cfg) {
     const isCounty = any.kind === 'county';
     const filed = (y) => { const x = aggregateUnit(byYear[y].items); return !x.imputed && !x.incomplete; };
     const reported = Object.keys(byYear).filter(filed).sort();
-    const year = reported.at(-1);
+    // A year whose revenue lines are mostly missing (a sample response with only the
+    // spending side) is used only when no fuller year is on file; validation then holds
+    // back the grade, so the government stays on the map without a misleading one.
+    const short = (y) => aggregateUnit(byYear[y].items, OPTS).revenueShort;
+    const full = reported.filter((y) => !short(y));
+    const year = full.at(-1) || reported.at(-1);
+    const revenueShort = Boolean(year) && short(year);
     if (!year) {
       const latest = aggregateUnit(Object.entries(byYear).sort().at(-1)[1].items);
       report[latest.imputed ? 'imputed' : 'incomplete'].push(g?.display || label);
@@ -154,12 +161,16 @@ export function buildState(cfg) {
     if (a.assessments) report.assessments.push(`${g.display} (${money(a.assessments)})`);
     if (a.refinanced) report.refinanced.push(`${g.display} (${money(a.refinanced)})`);
     const lastYear = Object.keys(byYear).sort().at(-1);
-    if (lastYear > year) report.older.push(`${g.display} (FY ${year}; FY ${lastYear} ${aggregateUnit(byYear[lastYear].items).imputed ? 'estimated' : 'incomplete'})`);
+    const lastWhy = (y) => { const x = aggregateUnit(byYear[y].items, OPTS); return x.imputed ? 'estimated' : x.incomplete ? 'incomplete' : 'missing most of its revenue'; };
+    if (lastYear > year) report.older.push(`${g.display} (FY ${year}; FY ${lastYear} ${lastWhy(lastYear)})`);
+    if (revenueShort) report.revenueShort.push(`${g.display} (FY ${year})`);
 
-    const history = reported.map((y) => {
+    const history = cleanHistory((full.length ? full : reported).map((y) => {
       const h = aggregate(byYear[y].items, ownLevyOnly, taxesOf(byYear[y]));
       return { year: Number(y), revenue: sum(h.revenue), spending: sum(h.spending), basis: 'actual' };
-    });
+    }));
+    // New borrowing that paid for spending (not refinancing), kept out of revenue.
+    const borrowed = Math.max(0, a.proceeds - a.refinanced);
     const src = CENSUS_PAGE(year);
     const ledger = a.lines.filter((l) => l.amount && l.group !== 'debt').map((l) => ({
       date: u.fyEnd, flow: l.group === 'revenue' ? 'in' : 'out', category: l.key, counterparty: 'Annual Survey of Local Government Finances',
@@ -190,6 +201,7 @@ export function buildState(cfg) {
         revenue: a.revenue,
         spending: a.spending,
         debt: a.debt,
+        ...(borrowed ? { borrowed } : {}),
         ...(pol ? { influence: pol.influence, topDonors: pol.topDonors } : {}),
         reporting: {
           basis: 'Actual results (as reported to the Census Bureau\'s Annual Survey of Local Government Finances)',
@@ -209,6 +221,8 @@ export function buildState(cfg) {
         ],
         notes: [
           `Actual results for the fiscal year ended ${fyEndText}, as the ${kindText} reported them to the Census Bureau's Annual Survey of State and Local Government Finances. Not a budget.`,
+          ...(revenueShort ? [`Most of the ${kindText}'s revenue is missing from its FY ${year} Census filing (money in is under a quarter of money out, even counting borrowing), and no fuller year is on file, so it is not graded.`] : []),
+          ...(year !== reported.at(-1) && full.length ? [`The FY ${reported.at(-1)} Census filing is missing most of the ${kindText}'s revenue, so FY ${year} is used.`] : []),
           ...(Number(year) < YEARS.at(-1) ? [`The Census surveys every government only in Census of Governments years (2022) and a sample in other years, so FY ${year} is the latest available.`] : []),
           isCounty
             ? cfg.countyNote(g)
@@ -224,6 +238,7 @@ export function buildState(cfg) {
           ...(a.passThrough && a.passThroughSource === 'state' ? [`The ${kindText} reported ${money(a.passThrough + (a.revenue.propertyTax || 0))} of property tax, which includes ${money(a.passThrough)} of education tax it collects for the state (the state lists ${money(tax.edu)} of education tax and ${money(tax.muni)} of municipal tax for tax year ${tax.taxYear}). Only the ${kindText}'s own share, ${money(a.revenue.propertyTax || 0)}, is counted.`] : []),
           ...(a.passThrough && a.passThroughSource !== 'state' ? [`The ${kindText} reported ${money(a.passThrough + (a.revenue.propertyTax || 0))} of property tax, which includes the shares it collects for ${cfg.sharesText}. Only the ${kindText}'s own share, ${money(a.revenue.propertyTax || 0)} (what its spending needed beyond its other revenue, which is how the ${kindText} tax rate is set), is counted, so the ${kindText} shows no surplus or deficit for the year.`] : []),
           'Covers every fund, including water, sewer, electric and other utilities. Debt service counts interest and principal repaid; borrowing and transfers between funds are left out.',
+          ...(borrowed ? [`The ${kindText} borrowed ${money(borrowed)} during the year, which is not counted as revenue but helps explain spending above revenue.`] : []),
           ...(a.refinanced ? [`Debt service leaves out ${money(a.refinanced)} of principal repaid with new borrowing the ${kindText} did not spend on capital that year, most likely refinancing or a rolled-over note.`] : []),
           ...(a.intergovernmental ? [`Payments to other governments (${money(a.intergovernmental)}) are left out, because the government receiving them reports that spending.`] : []),
           'Courts, legal services, public buildings, housing and community development count as overhead.',
@@ -245,11 +260,12 @@ export function buildState(cfg) {
   // Only the geography the units use, so a city listed both as a place and a subdivision is one match.
   politics = cfg.politics ? cfg.politics(new Map([...geo].filter(([k]) => keys.has(k)))) : null;
   const built = [];
-  const report = { skipped: [], imputed: [], incomplete: [], mismatch: [], unmapped: [], older: [], passThrough: [], assessments: [], refinanced: [] };
+  const report = { skipped: [], imputed: [], incomplete: [], revenueShort: [], mismatch: [], unmapped: [], older: [], passThrough: [], assessments: [], refinanced: [], issues: [] };
   for (const [k, byYear] of keys) {
     const b = buildUnit(k, byYear, report);
     if (b) built.push(b);
   }
+  for (const b of built) for (const i of validateTown(b.town)) if (i.severity === 'error' || i.code !== 'imbalance') report.issues.push(`${b.town.name} [${i.severity} ${i.code}] ${i.message}`);
   // Names repeated within the state (townships in different counties) get the county in their id.
   const nameCount = built.reduce((m, b) => m.set(b.town.name, (m.get(b.town.name) || 0) + 1), new Map());
   for (const b of built) if (nameCount.get(b.town.name) > 1) b.town.id = slugify(`${b.town.name} ${b.town.county} ${st}`);
@@ -269,5 +285,5 @@ export function buildState(cfg) {
   if (excluded.size) report.excluded = { count: excluded.size, reason: cfg.excludeReason };
   if (args.all) writeFileSync(join(RAW, 'build-report.json'), `${JSON.stringify(report, null, 1)}\n`);
   const types = built.reduce((m, b) => ({ ...m, [b.town.type]: (m[b.town.type] || 0) + 1 }), {});
-  console.log(JSON.stringify({ files: pick.length, governments: built.length, types, ...report, imputed: report.imputed.length, incomplete: report.incomplete.length, older: report.older.length, passThrough: report.passThrough.length, refinanced: report.refinanced.length }, null, 1));
+  console.log(JSON.stringify({ files: pick.length, governments: built.length, types, ...report, imputed: report.imputed.length, incomplete: report.incomplete.length, older: report.older.length, passThrough: report.passThrough.length, refinanced: report.refinanced.length, issues: report.issues.length }, null, 1));
 }

@@ -77,11 +77,15 @@ export function validateTown(town, { year = new Date().getFullYear() } = {}) {
   }
 
   if (revenue > 0 && spending > 0) {
-    const r = revenue / spending;
+    // Money borrowed in the year (bond proceeds kept out of revenue, as the Census
+    // files do) pays for spending too, so it counts on the money-in side here.
+    const borrowed = town.borrowed > 0 && revenue < spending ? Math.min(town.borrowed, spending - revenue) : 0;
+    const r = (revenue + borrowed) / spending;
+    const moneyIn = `Money in (${money(revenue)}${borrowed ? `, plus ${money(borrowed)} borrowed` : ''})`;
     if (outside(r, RATIO_ERROR)) {
-      add('error', 'imbalance', `Money in (${money(revenue)}) and money out (${money(spending)}) are too far apart for a complete report; part of one side is probably missing.`);
+      add('error', 'imbalance', `${moneyIn} and money out (${money(spending)}) are too far apart for a complete report; part of one side is probably missing.`);
     } else if (outside(r, RATIO_WARN)) {
-      add('warn', 'imbalance', `Money in (${money(revenue)}) and money out (${money(spending)}) are far apart. This can be real (a bond-funded project, money saved for one), but check the source report.`);
+      add('warn', 'imbalance', `${moneyIn} and money out (${money(spending)}) are far apart. This can be real (a bond-funded project, money saved for one), but check the source report.`);
     }
   }
 

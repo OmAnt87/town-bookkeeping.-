@@ -1349,6 +1349,10 @@ test('California State Controller lines map to TownView categories', () => {
   assert.deepEqual(a.revenue, { salesTax: 500 });
   assert.deepEqual(a.spending, { utilities: 300, debtService: 50 });
   assert.equal(a.lineTotals.spending, 350);
+  // A refund line nets against its category, and the ledger keeps it so the rows add up.
+  const net = aggregateSco([rev('Taxes', 'Taxes', 'Sales and Use Taxes_General Revenues', 500), rev('Taxes', 'Taxes', 'Sales and Use Taxes_General Revenues 1', -100)], [], { kind: 'city' });
+  assert.deepEqual(net.revenue, { salesTax: 400 });
+  assert.equal(net.lines.reduce((t, l) => t + l.amount, 0), 400);
 });
 
 import { assignPeers, percentileOf, popBand, govKind, MIN_PEERS } from '../js/engine/peers.js';
@@ -1508,22 +1512,42 @@ test('a town that fails a data check gets no grade', () => {
 // one unless it is listed here with the reason. Other states' towns are still
 // checked in the app (a failing town shows as data under review); their builds
 // don't run the checks yet. These are real filings that don't add up in the state's own data.
-const KNOWN_DATA_ERRORS = new Set([
-  'hunker-borough-pa', // latest DCED report: money in nearly five times money out
-  'marion-center-borough-pa', // latest DCED report (2020): money in four times money out
-  'castleton-on-hudson-village-ny', // latest report (2020): money in five times money out
-]);
+test('money borrowed during the year counts toward money in', () => {
+  const t = { ...base(), revenue: { propertyTax: 1_500_000 }, spending: { roads: 9_000_000 } };
+  assert.deepEqual(codes(t, 'error'), ['imbalance']);
+  assert.deepEqual(codes({ ...t, borrowed: 6_000_000 }, 'error'), []);
+  // Borrowing never hides revenue far above spending.
+  assert.deepEqual(codes({ ...t, revenue: { propertyTax: 50_000_000 }, borrowed: 6_000_000 }, 'error'), ['imbalance']);
+});
 
-test('NJ, NY, PA and CT data pass the data checks', () => {
+test('a Census year missing its revenue lines is marked revenue-short', () => {
+  const items = [{ code: 'E44', amount: 1000 }, { code: 'T01', amount: 100 }, { code: 'U99', amount: 20 }];
+  assert.equal(aggregateNc(items).revenueShort, true);
+  assert.equal(aggregateNc([...items, { code: '29U', amount: 300 }]).revenueShort, false);
+  assert.equal(aggregateNc([{ code: 'E44', amount: 1000 }, { code: 'T01', amount: 900 }]).revenueShort, false);
+});
+
+// Every real town: no record may fail a check unless tests/known-data-errors.json lists it
+// with the reason (the state's own filing doesn't add up, and no better year is on file).
+// Partial trend years must be cleaned by the builds that clean them; the app drops the
+// rest when it draws the chart.
+const KNOWN_DATA_ERRORS = JSON.parse(readFileSync(new URL('./known-data-errors.json', import.meta.url)));
+const HISTORY_CLEANED = new Set(['NJ', 'NY', 'PA', 'AK', 'AL', 'AR', 'AZ', 'CO', 'DC', 'HI', 'IA', 'ID', 'KS', 'KY', 'LA', 'ME', 'MI', 'MN', 'MO', 'MS', 'MT', 'ND', 'NE', 'NH', 'NM', 'NV', 'OH', 'OK', 'OR', 'SD', 'TN', 'TX', 'UT', 'VT', 'WA', 'WV', 'WY']);
+
+test('real data passes the data checks', () => {
   const dir = new URL('../data/real/', import.meta.url);
   const failures = [];
-  for (const file of readdirSync(dir).filter((f) => /^(nj|ny|pa|ct)-.*\.json$/.test(f))) {
+  const seen = new Set();
+  for (const file of readdirSync(dir).filter((f) => /^[a-z]{2}-.*\.json$/.test(f))) {
     for (const town of JSON.parse(readFileSync(new URL(file, dir))).towns) {
-      const errors = validateTown(town).filter((i) => i.severity === 'error');
-      const ledger = validateTown(town).filter((i) => i.code === 'ledger' || i.code === 'history');
-      if (errors.length && !KNOWN_DATA_ERRORS.has(town.id)) failures.push(`${town.id}: ${errors.map((i) => i.code).join(', ')}`);
-      if (ledger.length) failures.push(`${town.id}: ${ledger.map((i) => i.message).join(' ')}`);
+      const issues = validateTown(town);
+      const errors = issues.filter((i) => i.severity === 'error');
+      if (errors.length) seen.add(town.id);
+      if (errors.length && !KNOWN_DATA_ERRORS[town.id]) failures.push(`${town.id}: ${errors.map((i) => i.code).join(', ')}`);
+      for (const i of issues.filter((x) => x.code === 'ledger' || (x.code === 'history' && HISTORY_CLEANED.has(town.state)))) failures.push(`${town.id}: ${i.message}`);
     }
   }
+  // Entries for towns that now pass are removed, so the list stays honest.
+  for (const id of Object.keys(KNOWN_DATA_ERRORS)) if (!seen.has(id)) failures.push(`${id}: listed in known-data-errors.json but passes`);
   assert.deepEqual(failures, []);
 });

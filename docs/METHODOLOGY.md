@@ -27,13 +27,13 @@ For Pennsylvania, figures are **actual results** from each municipality's Annual
 
 ## Data checks
 
-Every real record goes through the checks in `js/engine/validate.js` when the app scores it (the New Jersey, New York and Pennsylvania builds and `npm test` run them too):
+Every real record goes through the checks in `js/engine/validate.js` when the app scores it. The New Jersey, New York and Pennsylvania builds and the shared Census build run them too, and `npm test` runs them over every state's data:
 
-- **Problems** (the town is shown as "Data under review" and gets no grade until the source is fixed): no revenue or no spending on file, no population, a map location outside the state, or money in and money out more than 4x apart, which means part of one side is missing.
+- **Problems** (the town is shown as "Data under review" and gets no grade until the source is fixed): no revenue or no spending on file, no population, a map location outside the state, or money in and money out more than 4x apart, which means part of one side is missing. Money a government borrowed during the year (kept out of revenue, as the Census files do) counts on the money-in side for this check, so a bond-funded project is not flagged.
 - **Warnings** (shown on the town report, but the grade stands): money in and out more than 2x apart (a bond-funded project can do this), property tax under $50 per resident in New Jersey or Connecticut, ledger rows that don't add up to the totals, and a latest report more than five years old.
 - **Trend years** more than 4x off the town's typical year are partial filings, not real changes. They are left out of the five-year trend, and the report says which years were dropped.
 
-The builds also choose the year they load with these checks. A New Jersey filing is used only if its anticipated revenue is within a quarter of its appropriations (an adopted budget must balance by law, so a bigger gap means the filing is incomplete), its line items add up to its own totals, and its size is in line with the town's other years. Otherwise the next older filing is used. For New York and Pennsylvania, a latest report far off the government's other years is passed over for the one before it.
+The builds also choose the year they load with these checks. A New Jersey filing is used only if its anticipated revenue is within a quarter of its appropriations (an adopted budget must balance by law, so a bigger gap means the filing is incomplete), its line items add up to its own totals, and its size is in line with the town's other years. Otherwise the next older filing is used. For New York and Pennsylvania, a latest report far off the government's other years is passed over for the one before it. For governments built from the Census unit files, a year whose revenue, counting borrowing, is under a quarter of its spending is passed over for a fuller year (Census sample years sometimes carry only the spending side of a response). When no fuller year is on file, the government stays on the map as data under review, with a note saying its revenue is incomplete.
 
 ## Ranking among peers
 

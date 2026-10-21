@@ -7,6 +7,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { totals, scoreTown } from '../../js/engine/scoring.js';
 import { YEARS } from './census-units.mjs';
+import { dataCheckBullets } from '../lib.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const OUT = join(ROOT, 'data', 'real');
@@ -52,10 +53,11 @@ ${rows.filter((r) => r.n).map((r) => `| ${PLURAL[r.kind] || `${r.kind}s`} | ${r.
 ${t.differs.map((d) => `- ${d}`).join('\n')}
 
 ## Known gaps
+${dataCheckBullets(towns)}
 ${t.gaps.map((d) => `- ${d}`).join('\n')}
 ${report.assessments?.length ? `- **School and county assessments filed as town spending (left out, ${report.assessments.length}):** ${list(report.assessments)}. Each of these towns, with no school spending of its own, reported most of its budget as "other general government", which is almost certainly its assessments; that spending is treated as a payment to other governments, and the town's property tax is cut to its own share. Smaller assessments filed the same way cannot be told apart from real overhead and remain in it.\n` : ''}${report.refinanced?.length ? `- **Refinancing left out of debt service (${report.refinanced.length} governments):** principal repaid with new borrowing that was not spent on capital that year is treated as refinancing or a rolled-over note and left out; each affected report says how much.\n` : ''}${report.excluded ? `- **Left out (${report.excluded.count}):** ${report.excluded.reason}\n` : ''}- **Estimated by the Census, not reported (left out, ${imputed.length}):** ${list(imputed)}.${t.imputedNote ? ` ${t.imputedNote}` : ''}
 - **Incomplete in the Census files (only debt or a few figures, or spending under a quarter of revenue; left out, ${incomplete.length}):** ${list(incomplete)}.
-${report.skipped.length ? `- **Not in current Census geography (left out):** ${list(report.skipped.map((s) => tidy(s.replace(/: no Census match$/, ''))))}${t.skippedNote ? ` (${t.skippedNote})` : ''}.\n` : ''}- **Older year used** because the latest sampled year was estimated or incomplete: ${list(report.older)}.
+${report.revenueShort?.length ? `- **Revenue missing from every Census year on file (kept, not graded, ${report.revenueShort.length}):** ${list(report.revenueShort)}. Money in, counting borrowing, is under a quarter of money out.\n` : ''}${report.skipped.length ? `- **Not in current Census geography (left out):** ${list(report.skipped.map((s) => tidy(s.replace(/: no Census match$/, ''))))}${t.skippedNote ? ` (${t.skippedNote})` : ''}.\n` : ''}- **Older year used** because the latest sampled year was estimated, incomplete or missing most of its revenue: ${list(report.older)}.
 - **Transparency practices** have not been checked yet, so they are not scored.
 `);
   console.log(`docs/${cfg.code}_DATA_STATUS.md: ${towns.length} governments`);
