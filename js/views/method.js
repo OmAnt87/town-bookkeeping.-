@@ -1,7 +1,7 @@
 import { MIN_PEERS, PROVISIONAL_BELOW } from '../engine/peers.js';
 import { COMPONENTS } from '../engine/scoring.js';
 import { TRANSPARENCY_CHECKS, SPENDING_CATEGORIES } from '../engine/categories.js';
-import { gradeBadge } from '../charts.js';
+import { gradeBadge, revealOnScroll } from '../charts.js';
 
 const HOW = {
   services: 'Share of all spending that pays for services residents use directly: police, fire and EMS, roads, water and sewer, parks and libraries, and health and human services. Full points at 88% or more, zero at 50% or less.',
@@ -79,4 +79,6 @@ export function renderMethod(root) {
     <h2>Limits</h2>
     <p>Towns report finances in different formats, and many small townships publish only totals. A score is a starting point for questions, not a verdict. Check the sources on each report, and attend a budget hearing if something looks off.</p>
   </div>`;
+  // Each heading, paragraph, list and table slides in as it scrolls into view.
+  return revealOnScroll(root.querySelectorAll('.page > *'));
 }
