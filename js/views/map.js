@@ -224,9 +224,16 @@ export function renderMap(root, state, _arg, query) {
     };
     map.on('zoomend', syncLabels);
     syncLabels();
+    // Dots and heat squares get their own pane (and canvas) so a redraw can slide them in as one layer;
+    // the ring marking the open town sits just above them.
+    map.createPane('dots').style.zIndex = 400;
+    map.createPane('pulse').style.zIndex = 450;
+    map.getPane('pulse').style.pointerEvents = 'none';
     dotLayer = L.layerGroup().addTo(map);
     gridLayer = L.layerGroup().addTo(map);
   }
+  let pulse = null;
+  const clearPulse = () => { if (pulse) { pulse.remove(); pulse = null; } };
 
   const $ = (sel) => root.querySelector(sel);
   const metric = () => MAP_METRICS.find((m) => m.key === ui.metric);
@@ -293,6 +300,11 @@ export function renderMap(root, state, _arg, query) {
       : '<li class="empty small">No towns match.</li>';
 
     if (!map) return;
+    const pane = map.getPane('dots');
+    pane.classList.remove('dots-in');
+    void pane.offsetWidth;
+    pane.classList.add('dots-in');
+    if (pulse && !list.some((e) => e.town.id === pulse.townId)) clearPulse();
     dotLayer.clearLayers();
     markers.clear();
     drawGrid(list, scale);
@@ -303,6 +315,7 @@ export function renderMap(root, state, _arg, query) {
       const small = map.getSize().x < 600;
       const radius = Math.max(small ? 2 : 3, Math.min(small ? 5 : 9, Math.sqrt(town.population) / (small ? 50 : 32)));
       const mk = L.circleMarker([town.lat, town.lng], {
+        pane: 'dots',
         radius,
         color: ring,
         weight: 1,
@@ -337,7 +350,7 @@ export function renderMap(root, state, _arg, query) {
       const [i, j] = key.split(',').map(Number);
       const avg = sum / n;
       const bounds = [[i * size, j * size], [(i + 1) * size, (j + 1) * size]];
-      L.rectangle(bounds, { stroke: false, fillColor: scale.color(avg), fillOpacity: 0.78 })
+      L.rectangle(bounds, { pane: 'dots', stroke: false, fillColor: scale.color(avg), fillOpacity: 0.78 })
         .bindTooltip(`${n} town${n === 1 ? '' : 's'} &middot; average ${m.label}: ${m.format(avg)}`, { direction: 'top' })
         .on('click', () => map.flyToBounds(bounds, { maxZoom: map.getZoom() + 2, duration: 0.5 }))
         .addTo(gridLayer);
@@ -373,12 +386,18 @@ export function renderMap(root, state, _arg, query) {
     card.querySelectorAll('.map-stats > div').forEach((d, i) => d.style.setProperty('--i', String(i)));
     card.querySelector('.close').addEventListener('click', () => {
       card.classList.add('closing');
+      clearPulse();
       // Hide once the slide-out ends, or right away when there is no animation (reduced motion).
       if (getComputedStyle(card).animationName === 'none') { card.hidden = true; return; }
       card.addEventListener('animationend', () => { if (card.classList.contains('closing')) card.hidden = true; }, { once: true });
     });
     root.querySelectorAll('#m-list button').forEach((b) => b.classList.toggle('active', b.dataset.id === id));
-    if (map) map.flyTo([town.lat, town.lng], Math.max(map.getZoom(), 6), { duration: 0.6 });
+    if (map) {
+      clearPulse();
+      pulse = L.marker([town.lat, town.lng], { pane: 'pulse', interactive: false, keyboard: false, icon: L.divIcon({ className: 'dot-pulse', html: '<span></span>', iconSize: [22, 22] }) }).addTo(map);
+      pulse.townId = town.id;
+      map.flyTo([town.lat, town.lng], Math.max(map.getZoom(), 6), { duration: 0.6 });
+    }
   }
 
   let searchTimer;
