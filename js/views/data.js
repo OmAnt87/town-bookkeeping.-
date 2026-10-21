@@ -1,7 +1,7 @@
 import { completeDataset, summaryDataset } from '../data/loading.js';
 import { loadTownDetail } from '../app.js';
 import { setDataset, persistDataset, resetToDefault } from '../app.js';
-import { downloadFile, ICONS } from '../charts.js';
+import { downloadFile, revealOnScroll, ICONS } from '../charts.js';
 import { escapeHTML } from '../engine/format.js';
 
 const SAMPLE = {
@@ -110,4 +110,6 @@ export function renderData(root, state) {
     } catch (error) { if (root.contains(button)) say(escapeHTML(error.message), false); }
     finally { button.disabled = false; }
   });
+  // Cards slide in as they scroll into view, like the other pages.
+  return revealOnScroll(root.querySelectorAll('section.card'));
 }
