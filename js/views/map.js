@@ -350,6 +350,10 @@ export function renderMap(root, state, _arg, query) {
     const { town, s } = t;
     const card = $('#m-card');
     card.hidden = false;
+    // Replay the slide-in each time a town opens (see .map-card.in in styles.css).
+    card.classList.remove('in', 'closing');
+    void card.offsetWidth;
+    card.classList.add('in');
     card.innerHTML = `
       <button class="icon-btn close" type="button" aria-label="Close">${ICONS.close}</button>
       <div style="display:flex;gap:12px;align-items:center;padding-right:40px">
@@ -366,7 +370,13 @@ export function renderMap(root, state, _arg, query) {
         ${s.totals.corporateMoney > 0 ? `<div><span>Corporate lobbying & donations</span><strong class="num" style="color:var(--bad)">${money(s.totals.corporateMoney, { compact: true })}</strong></div>` : ''}
       </div>
       <a class="btn btn-primary" style="width:100%" href="#/town/${encodeURIComponent(town.id)}">Open full report ${ICONS.arrow}</a>`;
-    card.querySelector('.close').addEventListener('click', () => { card.hidden = true; });
+    card.querySelectorAll('.map-stats > div').forEach((d, i) => d.style.setProperty('--i', String(i)));
+    card.querySelector('.close').addEventListener('click', () => {
+      card.classList.add('closing');
+      // Hide once the slide-out ends, or right away when there is no animation (reduced motion).
+      if (getComputedStyle(card).animationName === 'none') { card.hidden = true; return; }
+      card.addEventListener('animationend', () => { if (card.classList.contains('closing')) card.hidden = true; }, { once: true });
+    });
     root.querySelectorAll('#m-list button').forEach((b) => b.classList.toggle('active', b.dataset.id === id));
     if (map) map.flyTo([town.lat, town.lng], Math.max(map.getZoom(), 6), { duration: 0.6 });
   }
