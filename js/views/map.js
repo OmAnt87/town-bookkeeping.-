@@ -264,7 +264,12 @@ export function renderMap(root, state, _arg, query) {
   function drawLegend(scale) {
     const m = metric();
     const label = m.higherIsBetter === null ? ['Lower', 'Higher'] : m.higherIsBetter ? ['Worse', 'Better'] : ['Better', 'Worse'];
-    $('#m-legend').innerHTML = `
+    // Slide the legend in when what it means changes (measure, layer, theme), not on every search keystroke.
+    const legend = $('#m-legend');
+    const key = `${m.key}|${ui.layer}|${isDark()}`;
+    legend.classList.toggle('still', legend.dataset.key === key);
+    legend.dataset.key = key;
+    legend.innerHTML = `
       <div class="legend-bar" style="background:linear-gradient(90deg, ${scale.stops.join(',')})" aria-hidden="true"></div>
       <div class="legend-ends"><span>${m.format(scale.lo)} &middot; ${label[0]}</span><span>${label[1]} &middot; ${m.format(scale.hi)}</span></div>
       ${ui.layer === 'heat' ? '<p class="small muted" style="margin:4px 0 0">Each square averages the towns inside it. Zoom in for finer squares, or switch to dots to read single towns.</p>' : ''}`;
