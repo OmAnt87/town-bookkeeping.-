@@ -579,6 +579,13 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
   @keyframes dots-in { from { opacity: 0; transform: translateY(6px); } }
   .dot-pulse span { animation: dot-pulse 1.6s ease-out infinite; }
   @keyframes dot-pulse { from { transform: scale(0.6); opacity: 1; } to { transform: scale(1.8); opacity: 0; } }
+  .legend .legend-bar { animation: wipe-in 0.6s ease-out both; }
+  .legend .legend-ends span:first-child { animation: legend-l 0.4s 0.15s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; }
+  .legend .legend-ends span:last-child { animation: legend-r 0.4s 0.15s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; }
+  @keyframes legend-l { from { opacity: 0; transform: translateX(-8px); } }
+  @keyframes legend-r { from { opacity: 0; transform: translateX(8px); } }
+  .legend > p { animation: card-in 0.35s 0.2s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; }
+  .legend.still .legend-bar, .legend.still .legend-ends span:first-child, .legend.still .legend-ends span:last-child, .legend.still > p { animation: none; }
   .map-card { --pop-from: translateX(18px); }
   @media (max-width: 640px) { .map-card { --pop-from: translateY(18px); } }
   .map-card.in { animation: pop-in 0.3s cubic-bezier(0.2, 0.7, 0.3, 1); }
