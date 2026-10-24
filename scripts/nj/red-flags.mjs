@@ -23,12 +23,11 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from '../lib.mjs';
 import { normName } from './ufb-map.mjs';
+import { parseCSVRows, ATLAS_LABELS, ATLAS_URL, ATLAS_PAGE, atlasLink, agencyTown, usDate } from '../common/atlas.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const RAW = join(ROOT, 'data', 'raw', 'nj');
 const OUT = join(ROOT, 'data', 'real');
-const ATLAS_URL = 'https://atlasofsurveillance.org/download.csv';
-const ATLAS_PAGE = 'https://atlasofsurveillance.org/';
 const TIGER_URL = 'https://www2.census.gov/geo/tiger/TIGER2024/COUSUB/tl_2024_34_cousub.zip';
 const OSM_PAGE = 'https://deflock.org/';
 const OVERPASS = ['https://overpass-api.de/api/interpreter', 'https://maps.mail.ru/osm/tools/overpass/api/interpreter', 'https://overpass.private.coffee/api/interpreter'];
@@ -106,27 +105,6 @@ function contains(shape, x, y) {
   return inside;
 }
 
-// ---------- CSV (quoted fields, embedded newlines) ----------
-function parseCSVRows(text) {
-  const rows = [];
-  let row = [];
-  let cell = '';
-  let q = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (q) {
-      if (c === '"' && text[i + 1] === '"') { cell += '"'; i++; } else if (c === '"') q = false; else cell += c;
-    } else if (c === '"') q = true;
-    else if (c === ',') { row.push(cell); cell = ''; } else if (c === '\n' || c === '\r') {
-      if (c === '\r' && text[i + 1] === '\n') i++;
-      row.push(cell); rows.push(row); row = []; cell = '';
-    } else cell += c;
-  }
-  if (cell || row.length) { row.push(cell); rows.push(row); }
-  const [head, ...body] = rows;
-  return body.filter((r) => r.length === head.length).map((r) => Object.fromEntries(head.map((h, i) => [h, r[i]])));
-}
-
 // ---------- Load towns ----------
 const index = JSON.parse(readFileSync(join(OUT, 'index.json'), 'utf8'));
 const files = index.files.filter((f) => f.startsWith('nj-'));
@@ -145,26 +123,6 @@ for (const t of towns) {
 }
 
 // ---------- Atlas of Surveillance ----------
-// Body-worn cameras are left out: they record police, not the public at large.
-const ATLAS_LABELS = {
-  'Automated License Plate Readers': 'License-plate readers',
-  'Face Recognition': 'Face recognition',
-  'Gunshot Detection': 'Gunshot detection (ShotSpotter)',
-  Drones: 'Police drones',
-  'Camera Registry': 'Private camera registry',
-  'Real-Time Crime Center': 'Real-time crime center',
-  'Predictive Policing': 'Predictive policing',
-  'Video Analytics': 'Video analytics',
-  'Third-party Investigative Platforms': 'Third-party investigative platform',
-  'Cell-site Simulator': 'Cell-site simulator',
-  'Fusion Center': 'Fusion center',
-};
-const agencyTown = (agency) => agency
-  .replace(/[’']/g, '')
-  .replace(/\b(police department|police dept\.?|department of police|police division|division of police|department of public safety|public safety department|police)\b/gi, '')
-  .replace(/\bboro\b/gi, 'Borough')
-  .replace(/\btwp\b/gi, 'Township')
-  .replace(/\s+/g, ' ').trim();
 const TYPE_RX = /\b(township|borough|city|town|village)\b/i;
 
 // Agency spellings that differ from the state's municipal names.
@@ -205,29 +163,30 @@ if (existsSync(atlasFile)) {
       agency: r.Agency,
       date: usDate(r['Link 1 Date']),
       detail: r.Summary,
-      source: { label: `EFF Atlas of Surveillance ${r.AOSNUMBER}${r['Link 1 Source'] ? `, citing ${r['Link 1 Source']}` : ''}`, url: r['Link 1'] || ATLAS_PAGE },
+      source: { label: `EFF Atlas of Surveillance ${r.AOSNUMBER}${r['Link 1 Source'] ? `, citing ${r['Link 1 Source']}` : ''}`, url: atlasLink(r) },
     });
   }
 }
 
-function usDate(s) {
-  const m = String(s || '').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  return m ? `${m[3]}-${m[1].padStart(2, '0')}-${m[2].padStart(2, '0')}` : '';
-}
 
 // ---------- OpenStreetMap license-plate cameras ----------
 // Cameras run by stores, malls, the Port Authority, toll roads or schools are not the town's.
 const NOT_TOWN = /home depot|lowe|simon|mall|port authority|panynj|turnpike|parkway|school|university|college|nj transit|state police|county/i;
 const osmFile = join(RAW, 'osm-alpr.json');
 const shpFile = join(RAW, 'tl_2024_34_cousub.shp');
+// Camera counts from the last successful Overpass download, so a busy or
+// unreachable Overpass server doesn't silently drop every town's cameras.
+const OSM_SNAPSHOT = join(dirname(fileURLToPath(import.meta.url)), 'osm-cameras.json');
+const osmCounts = new Map();
+let osmDate = TODAY;
 if (existsSync(osmFile) && existsSync(shpFile)) {
   const shapes = readShp(readFileSync(shpFile));
   const dbf = readDbf(readFileSync(join(RAW, 'tl_2024_34_cousub.dbf')));
   const byGeoid = new Map(towns.map((t) => [t.censusGeoid, t]));
   const areas = dbf.map((r, i) => ({ town: byGeoid.get(r.GEOID), shape: shapes[i] })).filter((a) => a.town && a.shape);
   const osm = JSON.parse(readFileSync(osmFile, 'utf8'));
-  const osmDate = osm.osm3s?.timestamp_osm_base?.slice(0, 10) || TODAY;
-  const counts = new Map();
+  osmDate = osm.osm3s?.timestamp_osm_base?.slice(0, 10) || TODAY;
+  const counts = osmCounts;
   for (const e of osm.elements || []) {
     report.cameras++;
     const lat = e.lat ?? e.center?.lat;
@@ -243,7 +202,20 @@ if (existsSync(osmFile) && existsSync(shpFile)) {
     if (op && normName(op.replace(/police department|police|pd\b|\btwp\b|^(township|borough|city|town) of /gi, ' ')).includes(normName(hit.town.name))) c.townOperated++;
     counts.set(hit.town, c);
   }
-  for (const [town, c] of counts) {
+  writeFileSync(OSM_SNAPSHOT, `${JSON.stringify({
+    asOf: osmDate,
+    note: 'Per-town OpenStreetMap license-plate camera counts from the last successful Overpass download, used by scripts/nj/red-flags.mjs when Overpass does not answer. Rewritten on every successful download.',
+    towns: Object.fromEntries([...counts].map(([t, c]) => [t.censusGeoid, { name: t.name, ...c }]).sort(([a], [b]) => a.localeCompare(b))),
+  }, null, 1)}\n`);
+} else if (existsSync(OSM_SNAPSHOT)) {
+  const snap = JSON.parse(readFileSync(OSM_SNAPSHOT, 'utf8'));
+  osmDate = snap.asOf;
+  const byGeoid = new Map(towns.map((t) => [t.censusGeoid, t]));
+  for (const [geoid, { name, ...c }] of Object.entries(snap.towns)) if (byGeoid.has(geoid)) osmCounts.set(byGeoid.get(geoid), c);
+  console.warn(`No OSM download; using the camera counts saved ${osmDate} in scripts/nj/osm-cameras.json.`);
+}
+{
+  for (const [town, c] of osmCounts) {
     town.surveillanceMap = { ...c, asOf: osmDate, source: { label: 'OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)', url: OSM_PAGE } };
     // Flock cameras are scored as their own flag even when no operator is recorded:
     // Flock pools plate scans into a network shared with agencies nationwide.

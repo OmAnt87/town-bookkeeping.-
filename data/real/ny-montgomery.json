@@ -11,7 +11,7 @@
    "lng": -74.19057,
    "population": 18093,
    "fiscalYear": 2025,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270202000000",
    "censusGeoid": "3602066",
    "revenue": {
@@ -620,7 +620,7 @@
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "General Government: Administration",
-     "amount": 1508542,
+     "amount": 1380217,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -720,6 +720,15 @@
      "counterparty": "Annual financial report: spending",
      "description": "General Government: Judgements",
      "amount": 137626,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2025-06-30",
+     "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 128325,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -853,8 +862,18 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for City of Amsterdam offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for City of Amsterdam offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -863,9 +882,45 @@
     "Left out of money in: transfers between the government's own funds ($5,418,034).",
     "Left out of money in: notes repaid from the government's own budget (already counted as debt service) ($1,300,494).",
     "Employee benefits ($9,830,733) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for City of Amsterdam offices reported to the State Board of Elections since 2022-10-01. Individual donors ($11,012 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for City of Amsterdam offices reported to the State Board of Elections since 2022-10-20. Individual donors ($11,012 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: 2 license-plate cameras are mapped inside City of Amsterdam's borders in OpenStreetMap (2 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: City of Amsterdam has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-20",
+     "detail": "2 Flock Safety license-plate cameras are mapped inside City of Amsterdam's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 2,
+    "flock": 2,
+    "townOperated": 0,
+    "asOf": "2026-10-20",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "amsterdam-town-ny",
@@ -878,7 +933,7 @@
    "lng": -74.16608,
    "population": 5954,
    "fiscalYear": 2025,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270302100000",
    "censusGeoid": "3605702077",
    "revenue": {
@@ -1236,19 +1291,19 @@
     {
      "date": "2025-12-31",
      "flow": "out",
-     "category": "administration",
+     "category": "utilities",
      "counterparty": "Annual financial report: spending",
-     "description": "General Government: Administration",
-     "amount": 551936,
+     "description": "Sanitation: Refuse And Garbage",
+     "amount": 512450,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
      "date": "2025-12-31",
      "flow": "out",
-     "category": "utilities",
+     "category": "administration",
      "counterparty": "Annual financial report: spending",
-     "description": "Sanitation: Refuse And Garbage",
-     "amount": 512450,
+     "description": "General Government: Administration",
+     "amount": 393103,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -1303,6 +1358,15 @@
      "counterparty": "Annual financial report: spending",
      "description": "General Government: Miscellaneous General Government",
      "amount": 159334,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 158833,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -1517,17 +1581,63 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Amsterdam offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Amsterdam offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
     "Actual results reported to the State Comptroller for the fiscal year ending 2025-12-31, not an adopted budget.",
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($546,305) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Town of Amsterdam offices reported to the State Board of Elections since 2022-10-01. Individual donors ($2,750 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for Town of Amsterdam offices reported to the State Board of Elections since 2022-10-20. Individual donors ($2,750 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: 4 license-plate cameras are mapped inside Town of Amsterdam's borders in OpenStreetMap (1 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Amsterdam has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-20",
+     "detail": "1 Flock Safety license-plate camera is mapped inside Town of Amsterdam's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 4,
+    "flock": 1,
+    "townOperated": 0,
+    "asOf": "2026-10-20",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "canajoharie-town-ny",
@@ -1540,7 +1650,7 @@
    "lng": -74.61489,
    "population": 3649,
    "fiscalYear": 2025,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270312000000",
    "censusGeoid": "3605712122",
    "revenue": {
@@ -1671,15 +1781,6 @@
     {
      "date": "2025-12-31",
      "flow": "in",
-     "category": "otherRevenue",
-     "counterparty": "Annual financial report: revenue",
-     "description": "Other Local Revenues: Miscellaneous Revenues",
-     "amount": 139061,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2025-12-31",
-     "flow": "in",
      "category": "stateAid",
      "counterparty": "Annual financial report: revenue",
      "description": "State Aid: Unrestricted State Aid",
@@ -1711,6 +1812,15 @@
      "counterparty": "Annual financial report: revenue",
      "description": "Use and Sale of Property: Rental Of Property",
      "amount": 16640,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "otherRevenue",
+     "counterparty": "Annual financial report: revenue",
+     "description": "Other Local Revenues: Miscellaneous Revenues",
+     "amount": 14187,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -1827,7 +1937,7 @@
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "General Government: Administration",
-     "amount": 148682,
+     "amount": 132336,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -1846,15 +1956,6 @@
      "counterparty": "Annual financial report: spending",
      "description": "Public Safety: Fire Protection",
      "amount": 99788,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2025-12-31",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Annual financial report: spending",
-     "description": "General Government: Miscellaneous General Government",
-     "amount": 98410,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -1900,6 +2001,15 @@
      "counterparty": "Annual financial report: spending",
      "description": "Sanitation: Refuse And Garbage",
      "amount": 20511,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 16346,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -1979,8 +2089,13 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Canajoharie offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Canajoharie offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1988,9 +2103,21 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Left out of money in: custodial fund (taxes collected for school districts, the county and others) ($124,873).",
     "Employee benefits ($359,108) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Town of Canajoharie offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for Town of Canajoharie offices reported to the State Board of Elections since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: no license-plate cameras are mapped inside Town of Canajoharie's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Canajoharie has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "charleston-town-ny",
@@ -2003,7 +2130,7 @@
    "lng": -74.35576,
    "population": 1356,
    "fiscalYear": 2025,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270314500000",
    "censusGeoid": "3605713816",
    "revenue": {
@@ -2245,8 +2372,8 @@
      "flow": "out",
      "category": "administration",
      "counterparty": "Annual financial report: spending",
-     "description": "General Government: Administration",
-     "amount": 144233,
+     "description": "Employee Benefits: Medical Insurance (spread across departments in totals)",
+     "amount": 130697,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -2254,8 +2381,8 @@
      "flow": "out",
      "category": "administration",
      "counterparty": "Annual financial report: spending",
-     "description": "Employee Benefits: Medical Insurance (spread across departments in totals)",
-     "amount": 130697,
+     "description": "General Government: Administration",
+     "amount": 128933,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -2328,6 +2455,15 @@
      "counterparty": "Annual financial report: spending",
      "description": "Public Safety: Miscellaneous Public Safety",
      "amount": 26438,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 15300,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -2416,8 +2552,13 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Charleston offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Charleston offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -2426,9 +2567,21 @@
     "Left out of money in: transfers between the government's own funds ($107,208).",
     "Left out of money in: notes repaid from the government's own budget (already counted as debt service) ($100,000).",
     "Employee benefits ($256,321) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Town of Charleston offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for Town of Charleston offices reported to the State Board of Elections since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: no license-plate cameras are mapped inside Town of Charleston's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Charleston has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "florida-town-ny",
@@ -2441,7 +2594,7 @@
    "lng": -74.20103,
    "population": 2756,
    "fiscalYear": 2025,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270329100000",
    "censusGeoid": "3605726308",
    "revenue": {
@@ -2724,19 +2877,19 @@
     {
      "date": "2025-12-31",
      "flow": "out",
-     "category": "administration",
+     "category": "utilities",
      "counterparty": "Annual financial report: spending",
-     "description": "General Government: Administration",
-     "amount": 453781,
+     "description": "Sanitation: Sewer",
+     "amount": 435381,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
      "date": "2025-12-31",
      "flow": "out",
-     "category": "utilities",
+     "category": "administration",
      "counterparty": "Annual financial report: spending",
-     "description": "Sanitation: Sewer",
-     "amount": 435381,
+     "description": "General Government: Administration",
+     "amount": 413818,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -2832,6 +2985,15 @@
     {
      "date": "2025-12-31",
      "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 39963,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
      "category": "publicSafety",
      "counterparty": "Annual financial report: spending",
      "description": "Public Safety: Miscellaneous Public Safety",
@@ -2911,17 +3073,34 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Florida offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Florida offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
     "Actual results reported to the State Comptroller for the fiscal year ending 2025-12-31, not an adopted budget.",
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($260,998) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Town of Florida offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for Town of Florida offices reported to the State Board of Elections since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: no license-plate cameras are mapped inside Town of Florida's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Florida has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "glen-town-ny",
@@ -2934,7 +3113,7 @@
    "lng": -74.35121,
    "population": 2649,
    "fiscalYear": 2025,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270333000000",
    "censusGeoid": "3605729047",
    "revenue": {
@@ -3231,7 +3410,7 @@
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "General Government: Administration",
-     "amount": 286044,
+     "amount": 269976,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -3336,6 +3515,15 @@
     {
      "date": "2025-12-31",
      "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 16068,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
      "category": "roads",
      "counterparty": "Annual financial report: spending",
      "description": "Transportation: Transportation Ancillary",
@@ -3410,8 +3598,13 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Glen offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Glen offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -3419,9 +3612,21 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Left out of money in: transfers between the government's own funds ($31,152).",
     "Employee benefits ($423,786) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Town of Glen offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for Town of Glen offices reported to the State Board of Elections since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: no license-plate cameras are mapped inside Town of Glen's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Glen has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "minden-town-ny",
@@ -3434,7 +3639,7 @@
    "lng": -74.6965,
    "population": 4226,
    "fiscalYear": 2025,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270353600000",
    "censusGeoid": "3605747614",
    "revenue": {
@@ -3721,7 +3926,7 @@
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "General Government: Administration",
-     "amount": 253128,
+     "amount": 232430,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -3785,6 +3990,15 @@
      "counterparty": "Annual financial report: spending",
      "description": "Sanitation: Refuse And Garbage",
      "amount": 23401,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 20698,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -3878,17 +4092,34 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Minden offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Minden offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
     "Actual results reported to the State Comptroller for the fiscal year ending 2025-12-31, not an adopted budget.",
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($507,152) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Town of Minden offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for Town of Minden offices reported to the State Board of Elections since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: no license-plate cameras are mapped inside Town of Minden's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Minden has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "mohawk-town-ny",
@@ -3901,7 +4132,7 @@
    "lng": -74.40183,
    "population": 3545,
    "fiscalYear": 2025,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270354000000",
    "censusGeoid": "3605747834",
    "revenue": {
@@ -4050,7 +4281,7 @@
      "category": "localRevenue",
      "counterparty": "Annual financial report: revenue",
      "description": "Use and Sale of Property: Interest And Earnings",
-     "amount": 49695,
+     "amount": 49540,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -4158,7 +4389,7 @@
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "General Government: Administration",
-     "amount": 203727,
+     "amount": 195924,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -4272,6 +4503,15 @@
     {
      "date": "2025-12-31",
      "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 7803,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
      "category": "parks",
      "counterparty": "Annual financial report: spending",
      "description": "Culture and Recreation: Library",
@@ -4324,8 +4564,13 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Mohawk offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Mohawk offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -4334,9 +4579,21 @@
     "Left out of money in: transfers between the government's own funds ($185,078).",
     "Left out of money in: custodial fund (taxes collected for school districts, the county and others) ($155).",
     "Employee benefits ($354,256) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Town of Mohawk offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for Town of Mohawk offices reported to the State Board of Elections since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: no license-plate cameras are mapped inside Town of Mohawk's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Mohawk has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "palatine-town-ny",
@@ -4349,7 +4606,7 @@
    "lng": -74.53677,
    "population": 3227,
    "fiscalYear": 2025,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270363500000",
    "censusGeoid": "3605756099",
    "revenue": {
@@ -4607,7 +4864,7 @@
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "General Government: Administration",
-     "amount": 168548,
+     "amount": 157348,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -4662,6 +4919,15 @@
      "counterparty": "Annual financial report: spending",
      "description": "General Government: Zoning And Planning",
      "amount": 26123,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 11200,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -4728,8 +4994,13 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Palatine offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Palatine offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -4737,9 +5008,21 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Left out of money in: transfers between the government's own funds ($125,000).",
     "Employee benefits ($345,892) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Town of Palatine offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for Town of Palatine offices reported to the State Board of Elections since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: no license-plate cameras are mapped inside Town of Palatine's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Palatine has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "root-town-ny",
@@ -4752,7 +5035,7 @@
    "lng": -74.48624,
    "population": 2002,
    "fiscalYear": 2025,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270372100000",
    "censusGeoid": "3605763561",
    "revenue": {
@@ -4902,7 +5185,7 @@
      "category": "localRevenue",
      "counterparty": "Annual financial report: revenue",
      "description": "Use and Sale of Property: Interest And Earnings",
-     "amount": 36195,
+     "amount": 36194,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -5019,7 +5302,7 @@
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "General Government: Administration",
-     "amount": 117701,
+     "amount": 106971,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -5070,6 +5353,15 @@
     {
      "date": "2025-12-31",
      "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 10730,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
      "category": "healthServices",
      "counterparty": "Annual financial report: spending",
      "description": "Health: Public Health Administration",
@@ -5113,8 +5405,13 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Root offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of Root offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -5122,9 +5419,21 @@
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Left out of money in: permanent fund (trust principal) ($1).",
     "Employee benefits ($379,664) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Town of Root offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for Town of Root offices reported to the State Board of Elections since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: no license-plate cameras are mapped inside Town of Root's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of Root has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "st-johnsville-town-ny",
@@ -5137,7 +5446,7 @@
    "lng": -74.68275,
    "population": 2589,
    "fiscalYear": 2025,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270373600000",
    "censusGeoid": "3605764650",
    "revenue": {
@@ -5386,7 +5695,7 @@
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "General Government: Administration",
-     "amount": 132876,
+     "amount": 117299,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -5473,6 +5782,15 @@
     {
      "date": "2025-12-31",
      "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 15577,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
      "category": "publicSafety",
      "counterparty": "Annual financial report: spending",
      "description": "Public Safety: Miscellaneous Public Safety",
@@ -5543,17 +5861,63 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of St. Johnsville offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Town of St. Johnsville offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
     "Actual results reported to the State Comptroller for the fiscal year ending 2025-12-31, not an adopted budget.",
     "Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.",
     "Employee benefits ($91,937) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Town of St. Johnsville offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for Town of St. Johnsville offices reported to the State Board of Elections since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: 1 license-plate camera is mapped inside Town of St. Johnsville's borders in OpenStreetMap (0 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Town of St. Johnsville has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "License-plate readers",
+     "vendor": "",
+     "agency": "Town of St. Johnsville",
+     "date": "2026-10-20",
+     "detail": "1 license-plate camera is mapped in OpenStreetMap with Town of St. Johnsville recorded as the operator.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 1,
+    "flock": 0,
+    "townOperated": 1,
+    "asOf": "2026-10-20",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "ames-village-ny",
@@ -5566,7 +5930,7 @@
    "lng": -74.60168,
    "population": 138,
    "fiscalYear": 2026,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270412000140",
    "censusGeoid": "3601737",
    "revenue": {
@@ -5585,7 +5949,7 @@
     "utilities": 22634,
     "debtService": 15418
    },
-   "debt": 100237,
+   "debt": 86570,
    "influence": {
     "pacContributions": 0,
     "developerContributions": 0,
@@ -5633,12 +5997,6 @@
      "year": 2022,
      "revenue": 249110,
      "spending": 80235,
-     "basis": "actual"
-    },
-    {
-     "year": 2023,
-     "revenue": 429626,
-     "spending": 458759,
      "basis": "actual"
     },
     {
@@ -5793,7 +6151,7 @@
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "General Government: Administration",
-     "amount": 12942,
+     "amount": 11197,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -5812,6 +6170,15 @@
      "counterparty": "Annual financial report: spending",
      "description": "Transportation: Transportation Ancillary",
      "amount": 5471,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2026-05-31",
+     "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 1745,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -5852,7 +6219,7 @@
      "url": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "label": "NY State Comptroller debt data, outstanding at end of 2025",
+     "label": "NY State Comptroller debt data, outstanding at end of 2026",
      "url": "https://wwe1.osc.state.ny.us/localgov/findata/financial-data-for-local-governments.cfm"
     },
     {
@@ -5864,17 +6231,34 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Ames offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Ames offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
     "Actual results reported to the State Comptroller for the fiscal year ending 2026-05-31, not an adopted budget.",
     "Covers the village government only. Village residents also pay the town that surrounds Ames, which is listed separately, plus county and school taxes.",
     "Employee benefits ($1,714) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Village of Ames offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for Village of Ames offices reported to the State Board of Elections since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: no license-plate cameras are mapped inside Village of Ames's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Village of Ames has filed its annual financial report with the Office of the State Comptroller for FY 2026, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "canajoharie-village-ny",
@@ -5887,7 +6271,7 @@
    "lng": -74.56787,
    "population": 2059,
    "fiscalYear": 2025,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270412000690",
    "censusGeoid": "3612111",
    "revenue": {
@@ -6330,15 +6714,6 @@
      "flow": "out",
      "category": "administration",
      "counterparty": "Annual financial report: spending",
-     "description": "General Government: Administration",
-     "amount": 101989,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2025-05-31",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Annual financial report: spending",
      "description": "General Government: Miscellaneous General Government",
      "amount": 97832,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
@@ -6359,6 +6734,15 @@
      "counterparty": "Annual financial report: spending",
      "description": "Employee Benefits: Social Security (spread across departments in totals)",
      "amount": 83224,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2025-05-31",
+     "flow": "out",
+     "category": "administration",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 81145,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -6404,6 +6788,15 @@
      "counterparty": "Annual financial report: spending",
      "description": "Culture and Recreation: Recreation Services",
      "amount": 34106,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2025-05-31",
+     "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 20844,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -6492,8 +6885,13 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Canajoharie offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Canajoharie offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -6501,9 +6899,21 @@
     "Covers the village government only. Village residents also pay the town that surrounds Canajoharie, which is listed separately, plus county and school taxes.",
     "Left out of money in: notes repaid from the government's own budget (already counted as debt service) ($62,120).",
     "Employee benefits ($835,078) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Village of Canajoharie offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for Village of Canajoharie offices reported to the State Board of Elections since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: no license-plate cameras are mapped inside Village of Canajoharie's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Village of Canajoharie has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "fonda-village-ny",
@@ -6516,7 +6926,7 @@
    "lng": -74.37287,
    "population": 688,
    "fiscalYear": 2025,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270454001740",
    "censusGeoid": "3626462",
    "revenue": {
@@ -6849,15 +7259,6 @@
      "flow": "out",
      "category": "administration",
      "counterparty": "Annual financial report: spending",
-     "description": "General Government: Administration",
-     "amount": 70674,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2025-05-31",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Annual financial report: spending",
      "description": "Employee Benefits: Medical Insurance (spread across departments in totals)",
      "amount": 69684,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
@@ -6869,6 +7270,15 @@
      "counterparty": "Annual financial report: spending",
      "description": "Debt Service: Debt Principal",
      "amount": 63463,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2025-05-31",
+     "flow": "out",
+     "category": "administration",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 54469,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -6932,6 +7342,15 @@
      "counterparty": "Annual financial report: spending",
      "description": "Public Safety: Miscellaneous Public Safety",
      "amount": 19601,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2025-05-31",
+     "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 16205,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -7011,8 +7430,13 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Fonda offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Fonda offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -7020,9 +7444,21 @@
     "Covers the village government only. Village residents also pay the town that surrounds Fonda, which is listed separately, plus county and school taxes.",
     "Left out of money in: notes repaid from the government's own budget (already counted as debt service) ($28,500).",
     "Employee benefits ($134,495) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Village of Fonda offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for Village of Fonda offices reported to the State Board of Elections since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: no license-plate cameras are mapped inside Village of Fonda's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Village of Fonda has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "fort-plain-village-ny",
@@ -7035,7 +7471,7 @@
    "lng": -74.6268,
    "population": 2005,
    "fiscalYear": 2023,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270453601800",
    "censusGeoid": "3626924",
    "revenue": {
@@ -7374,19 +7810,19 @@
     {
      "date": "2023-05-31",
      "flow": "in",
-     "category": "localRevenue",
+     "category": "stateAid",
      "counterparty": "Annual financial report: revenue",
-     "description": "Use and Sale of Property: Interest And Earnings",
-     "amount": 499,
+     "description": "State Aid: State Aid - Public Safety",
+     "amount": 474,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
      "date": "2023-05-31",
      "flow": "in",
-     "category": "stateAid",
+     "category": "localRevenue",
      "counterparty": "Annual financial report: revenue",
-     "description": "State Aid: State Aid - Public Safety",
-     "amount": 474,
+     "description": "Use and Sale of Property: Interest And Earnings",
+     "amount": 243,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -7466,15 +7902,6 @@
      "flow": "out",
      "category": "administration",
      "counterparty": "Annual financial report: spending",
-     "description": "General Government: Administration",
-     "amount": 153988,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2023-05-31",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Annual financial report: spending",
      "description": "Employee Benefits: Medical Insurance (spread across departments in totals)",
      "amount": 113462,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
@@ -7486,6 +7913,15 @@
      "counterparty": "Annual financial report: spending",
      "description": "Public Safety: Fire Protection",
      "amount": 88793,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2023-05-31",
+     "flow": "out",
+     "category": "administration",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 88689,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -7513,6 +7949,15 @@
      "counterparty": "Annual financial report: spending",
      "description": "Transportation: Transportation Ancillary",
      "amount": 77377,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2023-05-31",
+     "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 65299,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -7664,15 +8109,6 @@
      "flow": "out",
      "category": "administration",
      "counterparty": "Annual financial report: spending",
-     "description": "General Government: Miscellaneous General Government",
-     "amount": 256,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2023-05-31",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Annual financial report: spending",
      "description": "Employee Benefits: Disability Insurance (spread across departments in totals)",
      "amount": 227,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
@@ -7700,8 +8136,18 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Fort Plain offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Fort Plain offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -7711,9 +8157,45 @@
     "Left out of money in: notes repaid from the government's own budget (already counted as debt service) ($8,416).",
     "Left out of money in: private-purpose trust fund ($256).",
     "Employee benefits ($283,672) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Village of Fort Plain offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for Village of Fort Plain offices reported to the State Board of Elections since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: 1 license-plate camera is mapped inside Village of Fort Plain's borders in OpenStreetMap (1 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Village of Fort Plain's latest annual financial report on file with the Office of the State Comptroller is for FY 2023; most NY governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-20",
+     "detail": "1 Flock Safety license-plate camera is mapped inside Village of Fort Plain's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 1,
+    "flock": 1,
+    "townOperated": 0,
+    "asOf": "2026-10-20",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "fultonville-village-ny",
@@ -7726,7 +8208,7 @@
    "lng": -74.36978,
    "population": 790,
    "fiscalYear": 2026,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270433001880",
    "censusGeoid": "3627859",
    "revenue": {
@@ -7735,20 +8217,20 @@
     "salesTax": 218970,
     "feesPermits": 10797,
     "utilityCharges": 295566,
-    "otherRevenue": 779548,
+    "otherRevenue": 588916,
     "stateAid": 59227
    },
    "spending": {
-    "administration": 191471,
-    "consultants": 4300,
-    "publicSafety": 34396,
-    "roads": 221055,
-    "healthServices": 1399,
-    "parks": 5917,
-    "utilities": 794852,
-    "debtService": 293739
+    "administration": 196031,
+    "consultants": 4403,
+    "publicSafety": 35215,
+    "roads": 226319,
+    "healthServices": 1432,
+    "parks": 6058,
+    "utilities": 813783,
+    "debtService": 73256
    },
-   "debt": 587416,
+   "debt": 546602,
    "influence": {
     "pacContributions": 0,
     "developerContributions": 100,
@@ -7825,8 +8307,8 @@
     },
     {
      "year": 2026,
-     "revenue": 1686921,
-     "spending": 1547128,
+     "revenue": 1496289,
+     "spending": 1356496,
      "basis": "actual"
     }
    ],
@@ -7834,19 +8316,19 @@
     {
      "date": "2026-05-31",
      "flow": "in",
-     "category": "otherRevenue",
+     "category": "propertyTax",
      "counterparty": "Annual financial report: revenue",
-     "description": "Other Local Revenues: Miscellaneous Revenues",
-     "amount": 433378,
+     "description": "Real Property Taxes and Assessments: Real Property Taxes",
+     "amount": 306141,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
      "date": "2026-05-31",
      "flow": "in",
-     "category": "propertyTax",
+     "category": "otherRevenue",
      "counterparty": "Annual financial report: revenue",
-     "description": "Real Property Taxes and Assessments: Real Property Taxes",
-     "amount": 306141,
+     "description": "Other Local Revenues: Miscellaneous Revenues",
+     "amount": 242746,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -8014,15 +8496,6 @@
     {
      "date": "2026-05-31",
      "flow": "out",
-     "category": "debtService",
-     "counterparty": "Annual financial report: spending",
-     "description": "Debt Service: Debt Principal",
-     "amount": 231446,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2026-05-31",
-     "flow": "out",
      "category": "utilities",
      "counterparty": "Annual financial report: spending",
      "description": "Utilities: Water",
@@ -8071,7 +8544,16 @@
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "General Government: Administration",
-     "amount": 60491,
+     "amount": 56801,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2026-05-31",
+     "flow": "out",
+     "category": "debtService",
+     "counterparty": "Annual financial report: spending",
+     "description": "Debt Service: Debt Principal",
+     "amount": 40814,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -8167,6 +8649,15 @@
     {
      "date": "2026-05-31",
      "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 3690,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2026-05-31",
+     "flow": "out",
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "Employee Benefits: Unclassified Employee Benefits (spread across departments in totals)",
@@ -8247,7 +8738,7 @@
      "url": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "label": "NY State Comptroller debt data, outstanding at end of 2025",
+     "label": "NY State Comptroller debt data, outstanding at end of 2026",
      "url": "https://wwe1.osc.state.ny.us/localgov/findata/financial-data-for-local-governments.cfm"
     },
     {
@@ -8259,8 +8750,13 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Fultonville offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Fultonville offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -8268,9 +8764,21 @@
     "Covers the village government only. Village residents also pay the town that surrounds Fultonville, which is listed separately, plus county and school taxes.",
     "Left out of money in: notes repaid from the government's own budget (already counted as debt service) ($28,814).",
     "Employee benefits ($219,725) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Village of Fultonville offices reported to the State Board of Elections since 2022-10-01. Individual donors ($600 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for Village of Fultonville offices reported to the State Board of Elections since 2022-10-20. Individual donors ($500 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: no license-plate cameras are mapped inside Village of Fultonville's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Village of Fultonville has filed its annual financial report with the Office of the State Comptroller for FY 2026, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "hagaman-village-ny",
@@ -8283,7 +8791,7 @@
    "lng": -74.15979,
    "population": 1119,
    "fiscalYear": 2023,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270402102090",
    "censusGeoid": "3631291",
    "revenue": {
@@ -8531,7 +9039,7 @@
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "General Government: Administration",
-     "amount": 77522,
+     "amount": 66041,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -8568,6 +9076,15 @@
      "counterparty": "Annual financial report: spending",
      "description": "Debt Service: Debt Principal",
      "amount": 13500,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2023-05-31",
+     "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 11481,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -8674,8 +9191,13 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Hagaman offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Hagaman offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -8683,9 +9205,21 @@
     "Covers the village government only. Village residents also pay the town that surrounds Hagaman, which is listed separately, plus county and school taxes.",
     "Left out of money in: transfers between the government's own funds ($65,231).",
     "Employee benefits ($38,820) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Village of Hagaman offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for Village of Hagaman offices reported to the State Board of Elections since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: no license-plate cameras are mapped inside Village of Hagaman's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Village of Hagaman's latest annual financial report on file with the Office of the State Comptroller is for FY 2023; most NY governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "nelliston-village-ny",
@@ -8698,7 +9232,7 @@
    "lng": -74.60764,
    "population": 564,
    "fiscalYear": 2026,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270463503340",
    "censusGeoid": "3649748",
    "revenue": {
@@ -8722,7 +9256,7 @@
     "utilities": 259811,
     "debtService": 526361
    },
-   "debt": 500000,
+   "debt": 0,
    "influence": {
     "pacContributions": 0,
     "developerContributions": 0,
@@ -9047,7 +9581,7 @@
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "General Government: Administration",
-     "amount": 35952,
+     "amount": 34446,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -9152,6 +9686,15 @@
     {
      "date": "2026-05-31",
      "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 1506,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2026-05-31",
+     "flow": "out",
      "category": "healthServices",
      "counterparty": "Annual financial report: spending",
      "description": "Community Services: Elder Services",
@@ -9196,7 +9739,7 @@
      "url": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "label": "NY State Comptroller debt data, outstanding at end of 2025",
+     "label": "NY State Comptroller debt data, outstanding at end of 2026",
      "url": "https://wwe1.osc.state.ny.us/localgov/findata/financial-data-for-local-governments.cfm"
     },
     {
@@ -9208,17 +9751,34 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Nelliston offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Nelliston offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
     "Actual results reported to the State Comptroller for the fiscal year ending 2026-05-31, not an adopted budget.",
     "Covers the village government only. Village residents also pay the town that surrounds Nelliston, which is listed separately, plus county and school taxes.",
     "Employee benefits ($13,318) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Village of Nelliston offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for Village of Nelliston offices reported to the State Board of Elections since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: no license-plate cameras are mapped inside Village of Nelliston's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Village of Nelliston has filed its annual financial report with the Office of the State Comptroller for FY 2026, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "palatine-bridge-village-ny",
@@ -9230,29 +9790,29 @@
    "lat": 42.91575,
    "lng": -74.57754,
    "population": 792,
-   "fiscalYear": 2025,
-   "asOf": "2026-10-01",
+   "fiscalYear": 2026,
+   "asOf": "2026-10-20",
    "nyOscCode": "270463503760",
    "censusGeoid": "3656110",
    "revenue": {
-    "propertyTax": 259749,
-    "localRevenue": 21337,
-    "salesTax": 279667,
-    "feesPermits": 8563,
-    "stateAid": 36516,
-    "utilityCharges": 85342
+    "propertyTax": 253269,
+    "localRevenue": 39163,
+    "salesTax": 315121,
+    "feesPermits": 11691,
+    "stateAid": 31345,
+    "utilityCharges": 125282
    },
    "spending": {
-    "administration": 148340,
-    "consultants": 38164,
-    "publicSafety": 43353,
-    "roads": 87703,
-    "healthServices": 4230,
-    "parks": 8143,
-    "utilities": 237498,
-    "debtService": 92320
+    "administration": 148376,
+    "consultants": 46262,
+    "publicSafety": 43224,
+    "roads": 105869,
+    "healthServices": 4213,
+    "parks": 8054,
+    "utilities": 217504,
+    "debtService": 91164
    },
-   "debt": 730000,
+   "debt": 671000,
    "influence": {
     "pacContributions": 0,
     "developerContributions": 0,
@@ -9319,119 +9879,125 @@
      "revenue": 691174,
      "spending": 659749,
      "basis": "actual"
+    },
+    {
+     "year": 2026,
+     "revenue": 775871,
+     "spending": 664666,
+     "basis": "actual"
     }
    ],
    "ledger": [
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "in",
      "category": "salesTax",
      "counterparty": "Annual financial report: revenue",
      "description": "Sales and Use Tax: Sales Tax Distribution",
-     "amount": 279667,
+     "amount": 261376,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "in",
      "category": "propertyTax",
      "counterparty": "Annual financial report: revenue",
      "description": "Real Property Taxes and Assessments: Real Property Taxes",
-     "amount": 171836,
+     "amount": 173118,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
-     "flow": "in",
-     "category": "propertyTax",
-     "counterparty": "Annual financial report: revenue",
-     "description": "Real Property Taxes and Assessments: Special Assessments",
-     "amount": 87913,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "in",
      "category": "utilityCharges",
      "counterparty": "Annual financial report: revenue",
      "description": "Charges for Services: Utility Fees",
-     "amount": 85342,
+     "amount": 125282,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "in",
-     "category": "stateAid",
+     "category": "propertyTax",
      "counterparty": "Annual financial report: revenue",
-     "description": "State Aid: Mortgage Tax",
-     "amount": 16882,
+     "description": "Real Property Taxes and Assessments: Special Assessments",
+     "amount": 80151,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "in",
-     "category": "stateAid",
+     "category": "salesTax",
      "counterparty": "Annual financial report: revenue",
-     "description": "State Aid: Miscellaneous State Aid",
-     "amount": 15000,
+     "description": "Other Non-Property Taxes: Miscellaneous Non-Property Taxes",
+     "amount": 53745,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
-     "flow": "in",
-     "category": "localRevenue",
-     "counterparty": "Annual financial report: revenue",
-     "description": "Other Real Property Tax Items: Miscellaneous Tax Items",
-     "amount": 14186,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2025-05-31",
-     "flow": "in",
-     "category": "feesPermits",
-     "counterparty": "Annual financial report: revenue",
-     "description": "Other Non-Property Taxes: Franchises",
-     "amount": 6044,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "in",
      "category": "localRevenue",
      "counterparty": "Annual financial report: revenue",
      "description": "Use and Sale of Property: Interest And Earnings",
-     "amount": 4982,
+     "amount": 24520,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "in",
      "category": "stateAid",
      "counterparty": "Annual financial report: revenue",
-     "description": "State Aid: Unrestricted State Aid",
-     "amount": 4634,
+     "description": "State Aid: State Aid - Transportation",
+     "amount": 21888,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
+     "flow": "in",
+     "category": "localRevenue",
+     "counterparty": "Annual financial report: revenue",
+     "description": "Other Real Property Tax Items: Miscellaneous Tax Items",
+     "amount": 12263,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2026-05-31",
      "flow": "in",
      "category": "feesPermits",
      "counterparty": "Annual financial report: revenue",
-     "description": "Charges for Services: Community Services Fees",
-     "amount": 2136,
+     "description": "Other Non-Property Taxes: Franchises",
+     "amount": 10556,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
+     "flow": "in",
+     "category": "stateAid",
+     "counterparty": "Annual financial report: revenue",
+     "description": "State Aid: Mortgage Tax",
+     "amount": 9133,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2026-05-31",
      "flow": "in",
      "category": "localRevenue",
      "counterparty": "Annual financial report: revenue",
      "description": "Other Real Property Tax Items: Interest And Penalties",
-     "amount": 1169,
+     "amount": 1380,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
+     "flow": "in",
+     "category": "feesPermits",
+     "counterparty": "Annual financial report: revenue",
+     "description": "Charges for Services: Community Services Fees",
+     "amount": 1110,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2026-05-31",
      "flow": "in",
      "category": "localRevenue",
      "counterparty": "Annual financial report: revenue",
@@ -9440,160 +10006,178 @@
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
+     "flow": "in",
+     "category": "stateAid",
+     "counterparty": "Annual financial report: revenue",
+     "description": "State Aid: Unrestricted State Aid",
+     "amount": 324,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2026-05-31",
      "flow": "in",
      "category": "feesPermits",
      "counterparty": "Annual financial report: revenue",
      "description": "Charges for Services: General Government Fees",
-     "amount": 383,
+     "amount": 25,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "out",
      "category": "utilities",
      "counterparty": "Annual financial report: spending",
      "description": "Utilities: Water",
-     "amount": 92438,
+     "amount": 108008,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Annual financial report: spending",
-     "description": "General Government: Administration",
-     "amount": 89126,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2025-05-31",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Annual financial report: spending",
-     "description": "General Government: Operations",
-     "amount": 85482,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2025-05-31",
-     "flow": "out",
-     "category": "utilities",
-     "counterparty": "Annual financial report: spending",
-     "description": "Sanitation: Refuse And Garbage",
-     "amount": 73788,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2025-05-31",
-     "flow": "out",
-     "category": "debtService",
-     "counterparty": "Annual financial report: spending",
-     "description": "Debt Service: Debt Principal",
-     "amount": 59000,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2025-05-31",
-     "flow": "out",
-     "category": "utilities",
-     "counterparty": "Annual financial report: spending",
-     "description": "Sanitation: Sewer",
-     "amount": 48661,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2025-05-31",
-     "flow": "out",
-     "category": "roads",
-     "counterparty": "Annual financial report: spending",
-     "description": "Transportation: Transportation Ancillary",
-     "amount": 46969,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2025-05-31",
-     "flow": "out",
-     "category": "publicSafety",
-     "counterparty": "Annual financial report: spending",
-     "description": "Public Safety: Fire Protection",
-     "amount": 31000,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2025-05-31",
-     "flow": "out",
-     "category": "debtService",
-     "counterparty": "Annual financial report: spending",
-     "description": "Debt Service: Interest On Debt",
-     "amount": 28310,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "out",
      "category": "roads",
      "counterparty": "Annual financial report: spending",
      "description": "Transportation: Highways",
-     "amount": 25343,
+     "amount": 85353,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
+     "flow": "out",
+     "category": "administration",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Operations",
+     "amount": 74312,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2026-05-31",
+     "flow": "out",
+     "category": "utilities",
+     "counterparty": "Annual financial report: spending",
+     "description": "Sanitation: Refuse And Garbage",
+     "amount": 70084,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2026-05-31",
+     "flow": "out",
+     "category": "debtService",
+     "counterparty": "Annual financial report: spending",
+     "description": "Debt Service: Debt Principal",
+     "amount": 60000,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2026-05-31",
+     "flow": "out",
+     "category": "administration",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 59438,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2026-05-31",
+     "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 43923,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2026-05-31",
+     "flow": "out",
+     "category": "publicSafety",
+     "counterparty": "Annual financial report: spending",
+     "description": "Public Safety: Fire Protection",
+     "amount": 32000,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2026-05-31",
+     "flow": "out",
+     "category": "debtService",
+     "counterparty": "Annual financial report: spending",
+     "description": "Debt Service: Interest On Debt",
+     "amount": 26555,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2026-05-31",
+     "flow": "out",
+     "category": "utilities",
+     "counterparty": "Annual financial report: spending",
+     "description": "Sanitation: Sewer",
+     "amount": 25603,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2026-05-31",
      "flow": "out",
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "Employee Benefits: Retirement - State/Local (spread across departments in totals)",
-     "amount": 15110,
+     "amount": 13193,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
-     "flow": "out",
-     "category": "roads",
-     "counterparty": "Annual financial report: spending",
-     "description": "Transportation: Transportation Facilities",
-     "amount": 10632,
-     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
-    },
-    {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "out",
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "Employee Benefits: Worker's Compensation (spread across departments in totals)",
-     "amount": 10373,
+     "amount": 10587,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "out",
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "Employee Benefits: Social Security (spread across departments in totals)",
-     "amount": 10318,
+     "amount": 9822,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "out",
      "category": "publicSafety",
      "counterparty": "Annual financial report: spending",
      "description": "Public Safety: Miscellaneous Public Safety",
-     "amount": 10000,
+     "amount": 9039,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "out",
-     "category": "utilities",
+     "category": "roads",
      "counterparty": "Annual financial report: spending",
-     "description": "Sanitation: Storm Sewer",
-     "amount": 9723,
+     "description": "Transportation: Transportation Ancillary",
+     "amount": 8353,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
+     "flow": "out",
+     "category": "administration",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Zoning And Planning",
+     "amount": 7125,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2026-05-31",
+     "flow": "out",
+     "category": "roads",
+     "counterparty": "Annual financial report: spending",
+     "description": "Transportation: Transportation Facilities",
+     "amount": 6811,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2026-05-31",
      "flow": "out",
      "category": "parks",
      "counterparty": "Annual financial report: spending",
@@ -9602,7 +10186,7 @@
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "out",
      "category": "healthServices",
      "counterparty": "Annual financial report: spending",
@@ -9611,25 +10195,25 @@
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "out",
-     "category": "administration",
+     "category": "utilities",
      "counterparty": "Annual financial report: spending",
-     "description": "General Government: Zoning And Planning",
-     "amount": 1775,
+     "description": "Sanitation: Storm Sewer",
+     "amount": 2813,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "out",
      "category": "parks",
      "counterparty": "Annual financial report: spending",
-     "description": "Culture and Recreation: Cultural Services",
-     "amount": 1001,
+     "description": "Culture and Recreation: Miscellaneous Cultural And Recreation",
+     "amount": 910,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "out",
      "category": "parks",
      "counterparty": "Annual financial report: spending",
@@ -9638,7 +10222,7 @@
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "out",
      "category": "parks",
      "counterparty": "Annual financial report: spending",
@@ -9647,18 +10231,18 @@
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "date": "2025-05-31",
+     "date": "2026-05-31",
      "flow": "out",
      "category": "parks",
      "counterparty": "Annual financial report: spending",
-     "description": "Culture and Recreation: Miscellaneous Cultural And Recreation",
-     "amount": 400,
+     "description": "Culture and Recreation: Cultural Services",
+     "amount": 437,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     }
    ],
    "sources": [
     {
-     "label": "NY State Comptroller, Annual Financial Report data, fiscal year ending 2025-05-31 (revenue and spending)",
+     "label": "NY State Comptroller, Annual Financial Report data, fiscal year ending 2026-05-31 (revenue and spending)",
      "url": "https://wwe1.osc.state.ny.us/localgov/findata/financial-data-for-local-governments.cfm"
     },
     {
@@ -9666,7 +10250,7 @@
      "url": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
-     "label": "NY State Comptroller debt data, outstanding at end of 2025",
+     "label": "NY State Comptroller debt data, outstanding at end of 2026",
      "url": "https://wwe1.osc.state.ny.us/localgov/findata/financial-data-for-local-governments.cfm"
     },
     {
@@ -9678,18 +10262,63 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Palatine Bridge offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of Palatine Bridge offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
-    "Actual results reported to the State Comptroller for the fiscal year ending 2025-05-31, not an adopted budget.",
+    "Actual results reported to the State Comptroller for the fiscal year ending 2026-05-31, not an adopted budget.",
     "Covers the village government only. Village residents also pay the town that surrounds Palatine Bridge, which is listed separately, plus county and school taxes.",
-    "Left out of money in: transfers between the government's own funds ($9,848).",
-    "Employee benefits ($35,801) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Village of Palatine Bridge offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Employee benefits ($33,602) are spread across departments in proportion to their size.",
+    "Political money counts PAC, business and union contributions to candidates for Village of Palatine Bridge offices reported to the State Board of Elections since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: 1 license-plate camera is mapped inside Village of Palatine Bridge's borders in OpenStreetMap (1 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Village of Palatine Bridge has filed its annual financial report with the Office of the State Comptroller for FY 2026, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-20",
+     "detail": "1 Flock Safety license-plate camera is mapped inside Village of Palatine Bridge's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 1,
+    "flock": 1,
+    "townOperated": 0,
+    "asOf": "2026-10-20",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "st-johnsville-village-ny",
@@ -9702,7 +10331,7 @@
    "lng": -74.67596,
    "population": 1706,
    "fiscalYear": 2025,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "nyOscCode": "270473604360",
    "censusGeoid": "3664639",
    "revenue": {
@@ -10134,7 +10763,7 @@
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "General Government: Administration",
-     "amount": 124425,
+     "amount": 117800,
      "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
     },
     {
@@ -10248,6 +10877,15 @@
     {
      "date": "2025-05-31",
      "flow": "out",
+     "category": "consultants",
+     "counterparty": "Annual financial report: spending",
+     "description": "General Government: Administration",
+     "amount": 6625,
+     "source": "https://wwe2.osc.state.ny.us/transparency/localgov/LocalGovOverview.cfm"
+    },
+    {
+     "date": "2025-05-31",
+     "flow": "out",
      "category": "parks",
      "counterparty": "Annual financial report: spending",
      "description": "Culture and Recreation: Youth Recreation",
@@ -10277,17 +10915,63 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of St. Johnsville offices since 2022-10-01",
+     "label": "NY State Board of Elections contributions via data.ny.gov, candidates for Village of St. Johnsville offices since 2022-10-20",
      "url": "https://data.ny.gov/Transparency/Campaign-Finance-Disclosure-Reports-Contributions-/4j2b-6a2j"
+    },
+    {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/",
+     "addedBy": "scripts/cameras.mjs"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
     "Actual results reported to the State Comptroller for the fiscal year ending 2025-05-31, not an adopted budget.",
     "Covers the village government only. Village residents also pay the town that surrounds St. Johnsville, which is listed separately, plus county and school taxes.",
     "Employee benefits ($292,347) are spread across departments in proportion to their size.",
-    "Political money counts PAC, business and union contributions to candidates for Village of St. Johnsville offices reported to the State Board of Elections since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Political money counts PAC, business and union contributions to candidates for Village of St. Johnsville offices reported to the State Board of Elections since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Campaigns that raise little may not itemize, so some contributions may not appear.",
+    "Cameras: 5 license-plate cameras are mapped inside Village of St. Johnsville's borders in OpenStreetMap (3 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the government is the recorded operator, since many have no operator recorded.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for New York yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Village of St. Johnsville has filed its annual financial report with the Office of the State Comptroller for FY 2025, the latest year most NY governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal reporting funds; excludes pass-through funds",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
+   "redFlags": [
+    {
+     "kind": "surveillance",
+     "label": "Flock camera network",
+     "vendor": "Flock Safety",
+     "agency": "",
+     "date": "2026-10-20",
+     "detail": "3 Flock Safety license-plate cameras are mapped inside Village of St. Johnsville's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is recorded for some; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
+     "source": {
+      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
+      "url": "https://deflock.org/"
+     },
+     "addedBy": "scripts/cameras.mjs"
+    }
+   ],
+   "surveillanceMap": {
+    "cameras": 5,
+    "flock": 3,
+    "townOperated": 4,
+    "asOf": "2026-10-20",
+    "source": {
+     "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
+     "url": "https://deflock.org/"
+    }
+   },
+   "transparency": {
+    "auditOnTime": true
+   }
   }
  ]
 }

@@ -20,7 +20,7 @@ export const gradeBadge = (grade, size = '') => {
 // Small pill marking a town whose figures come from real public records.
 export const isVerified = (town) => town.demo !== true && (Boolean(town.detailFile) || (town.sources || []).some((src) => src.url));
 export const verifiedPill = (town) =>
-  !isVerified(town) ? '' : '<span class="pill pill-verified" title="Figures come from public records listed under Sources">Verified data</span>';
+  !isVerified(town) ? '' : '<span class="pill pill-verified" title="Figures come from public records listed under Sources">Public-record data</span>';
 
 // Horizontal bar list. rows: [{ label, amount, share, color }]; bars scale to the largest row.
 export function barList(rows, { total } = {}) {
@@ -124,3 +124,19 @@ export function downloadFile(name, content, type = 'text/csv') {
 
 // Reads a CSS custom property's resolved value (for Leaflet, which needs real colors).
 export const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+// Slide elements in as they scroll into view. Marks each one .reveal, then adds .in when it
+// enters; elements arriving together get a short stagger (--i). Returns a cleanup function.
+export function revealOnScroll(elements) {
+  elements.forEach((el) => el.classList.add('reveal'));
+  if (!('IntersectionObserver' in window)) { elements.forEach((el) => el.classList.add('in')); return () => {}; }
+  const observer = new IntersectionObserver((entries) => {
+    entries.filter((e) => e.isIntersecting).forEach((e, i) => {
+      e.target.style.setProperty('--i', String(Math.min(i, 6)));
+      e.target.classList.add('in');
+      observer.unobserve(e.target);
+    });
+  }, { rootMargin: '0px 0px -40px 0px' });
+  elements.forEach((el) => observer.observe(el));
+  return () => observer.disconnect();
+}

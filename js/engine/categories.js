@@ -30,9 +30,10 @@ export const SPENDING_CATEGORIES = [
   { key: 'utilities', label: 'Water, sewer & sanitation', direct: true },
   { key: 'parks', label: 'Parks, library & recreation', direct: true },
   { key: 'healthServices', label: 'Health & human services', direct: true },
-  // Connecticut towns run their schools; elsewhere school districts are separate
-  // governments. Shown on reports but left out of the services and overhead
-  // shares, so towns are compared on the same municipal services everywhere.
+  // Connecticut, Massachusetts and Rhode Island towns, Virginia counties and
+  // cities, and North Carolina counties fund their schools; elsewhere school districts are separate governments. Shown on reports but left out of the
+  // services and overhead shares, so towns are compared on the same municipal
+  // services everywhere.
   { key: 'education', label: 'Schools (board of education)', direct: false, outsideShares: true },
   // The pass-through taxes above, paid over to school districts, the county and fire districts.
   { key: 'paidToOtherGovernments', label: 'School, county & fire-district taxes paid over', direct: false, outsideShares: true, passThrough: true },

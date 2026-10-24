@@ -7,6 +7,8 @@
 // they neither inflate overhead nor any one service. 'exclude' = reserves that
 // are not spending.
 
+import { cleanHistory as cleanTrend } from '../../js/engine/validate.js';
+
 export const UFB_REVENUE = {
   'Surplus': 'surplusUsed',
   'Local Revenue': 'localRevenue',
@@ -161,7 +163,7 @@ export function passThroughOf(record) {
 // History years from the budget filings that are not real results: a year
 // whose revenue and spending repeat the previous year exactly (a filing copied
 // forward), or a partial total far from the town's other years.
-export function cleanHistory(history) {
+export function cleanBudgetHistory(history) {
   const median = (xs) => { const s = [...xs].sort((a, b) => a - b); return s.length ? s[Math.floor(s.length / 2)] : 0; };
   const actual = history.filter((h) => h.basis === 'actual');
   const mr = median(actual.map((h) => h.revenue));
@@ -232,13 +234,25 @@ export function applyPassThrough(town, filings, source) {
   }
   raw.push({ year: town.fiscalYear, revenue: budgetRevenue, spending: budgetSpending, basis: 'budget', pass: head?.amount ?? null });
   const dedup = Object.values(Object.fromEntries(raw.map((h) => [h.year, h]))).sort((a, b) => a.year - b.year);
-  const { history: clean, dropped } = cleanHistory(dedup);
+  // Prior-year actuals are sometimes filed only in part (realized revenue under half
+  // of the appropriations it paid for). Realized revenue routinely runs well above
+  // appropriations in small towns (surplus regenerated, delinquent taxes), so only
+  // gaps past 2.5x count.
+  const filed = dedup.filter((h) => h.basis === 'budget' || (h.revenue / h.spending >= 0.5 && h.revenue / h.spending <= 2.5));
+  const { history: clean, dropped } = cleanBudgetHistory(filed);
+  dropped.push(...dedup.filter((h) => !filed.includes(h)).map((h) => h.year));
   const missingPass = [];
   town.history = clean.filter((h) => {
     if (!head || h.pass != null) return true;
     missingPass.push(h.year);
     return false;
   }).map(({ pass, ...h }) => (head ? { ...h, revenue: h.revenue + pass, spending: h.spending + pass } : h));
+  const trend = cleanTrend(town.history);
+  dropped.push(...town.history.filter((h) => !trend.includes(h)).map((h) => h.year));
+  town.history = trend;
+  if (town.reporting?.basis) {
+    town.reporting.scope = head ? 'Municipal operations, plus school, county and fire-district taxes collected and paid over' : 'Municipal operations; excludes schools and county';
+  }
 
   town.notes = (town.notes || []).filter((n) => !PASS_THROUGH_NOTE.test(n));
   if (head) {

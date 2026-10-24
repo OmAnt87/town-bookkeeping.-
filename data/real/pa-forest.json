@@ -11,7 +11,7 @@
    "lng": -79.1417,
    "population": 288,
    "fiscalYear": 2024,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "paMuniId": "270035",
    "censusGeoid": "4205304224",
    "revenue": {
@@ -37,12 +37,6 @@
      "year": 2016,
      "revenue": 432961,
      "spending": 464407,
-     "basis": "actual"
-    },
-    {
-     "year": 2017,
-     "revenue": 231441,
-     "spending": 164252,
      "basis": "actual"
     },
     {
@@ -286,6 +280,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -295,8 +294,18 @@
     "Left out: other financing sources ($63,256) and uses ($61,485), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($32,417, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Barnett Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Barnett Township's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2024; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "green-township-forest-county-pa",
@@ -308,23 +317,23 @@
    "lat": 41.4839,
    "lng": -79.35043,
    "population": 356,
-   "fiscalYear": 2024,
-   "asOf": "2026-10-01",
+   "fiscalYear": 2025,
+   "asOf": "2026-10-20",
    "paMuniId": "270065",
    "censusGeoid": "4205330808",
    "revenue": {
-    "propertyTax": 43817,
-    "salesTax": 37926,
-    "federalGrants": 9526,
-    "stateAid": 66449,
-    "feesPermits": 1700,
-    "finesForfeitures": 1722,
-    "localRevenue": 136
+    "propertyTax": 45351,
+    "salesTax": 40703,
+    "federalGrants": 3667,
+    "stateAid": 58655,
+    "feesPermits": 5430,
+    "finesForfeitures": 876,
+    "localRevenue": 159
    },
    "spending": {
-    "administration": 48172,
-    "publicSafety": 13467,
-    "roads": 119275
+    "administration": 33497,
+    "publicSafety": 36396,
+    "roads": 84594
    },
    "debt": 0,
    "history": [
@@ -332,12 +341,6 @@
      "year": 2016,
      "revenue": 140467,
      "spending": 121143,
-     "basis": "actual"
-    },
-    {
-     "year": 2017,
-     "revenue": 142670,
-     "spending": 118104,
      "basis": "actual"
     },
     {
@@ -381,139 +384,145 @@
      "revenue": 161276,
      "spending": 180913,
      "basis": "actual"
+    },
+    {
+     "year": 2025,
+     "revenue": 154841,
+     "spending": 154487,
+     "basis": "actual"
     }
    ],
    "ledger": [
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "stateAid",
      "counterparty": "Annual financial report: revenue",
      "description": "Intergovernmental Revenues-State Government",
-     "amount": 66449,
+     "amount": 58655,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "propertyTax",
      "counterparty": "Annual financial report: revenue",
      "description": "Real Estate Tax",
-     "amount": 43817,
+     "amount": 45351,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "salesTax",
      "counterparty": "Annual financial report: revenue",
      "description": "Earned Income Tax",
-     "amount": 27124,
+     "amount": 30182,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "salesTax",
      "counterparty": "Annual financial report: revenue",
      "description": "Realty Transfer Tax",
-     "amount": 10802,
+     "amount": 10521,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
-     "flow": "in",
-     "category": "federalGrants",
-     "counterparty": "Annual financial report: revenue",
-     "description": "Intergovernmental Revenues-Federal Government",
-     "amount": 9526,
-     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
-    },
-    {
-     "date": "2024-12-31",
-     "flow": "in",
-     "category": "finesForfeitures",
-     "counterparty": "Annual financial report: revenue",
-     "description": "Fines and Forfeits",
-     "amount": 1722,
-     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
-    },
-    {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "feesPermits",
      "counterparty": "Annual financial report: revenue",
      "description": "Other Charges for Services",
-     "amount": 1700,
+     "amount": 5430,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "federalGrants",
+     "counterparty": "Annual financial report: revenue",
+     "description": "Intergovernmental Revenues-Federal Government",
+     "amount": 3667,
+     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "finesForfeitures",
+     "counterparty": "Annual financial report: revenue",
+     "description": "Fines and Forfeits",
+     "amount": 876,
+     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
+    },
+    {
+     "date": "2025-12-31",
      "flow": "in",
      "category": "localRevenue",
      "counterparty": "Annual financial report: revenue",
      "description": "Interest Rents and Royalties",
-     "amount": 136,
+     "amount": 159,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "roads",
      "counterparty": "Annual financial report: spending",
      "description": "Public Works-Highways and Streets",
-     "amount": 106746,
+     "amount": 74015,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "General Government",
-     "amount": 43112,
+     "amount": 29308,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Annual financial report: spending",
-     "description": "Other (insurance, pensions and benefits; spread across departments in totals)",
-     "amount": 19003,
-     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
-    },
-    {
-     "date": "2024-12-31",
-     "flow": "out",
-     "category": "publicSafety",
-     "counterparty": "Annual financial report: spending",
-     "description": "Fire",
-     "amount": 7756,
-     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
-    },
-    {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "publicSafety",
      "counterparty": "Annual financial report: spending",
      "description": "Other Public Safety",
-     "amount": 3920,
+     "amount": 21516,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "administration",
+     "counterparty": "Annual financial report: spending",
+     "description": "Other (insurance, pensions and benefits; spread across departments in totals)",
+     "amount": 19320,
+     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "publicSafety",
+     "counterparty": "Annual financial report: spending",
+     "description": "Fire",
+     "amount": 8092,
+     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
+    },
+    {
+     "date": "2025-12-31",
      "flow": "out",
      "category": "publicSafety",
      "counterparty": "Annual financial report: spending",
      "description": "UCC and Code Enforcement",
-     "amount": 376,
+     "amount": 2236,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     }
    ],
    "sources": [
     {
-     "label": "PA DCED Statewide Municipal Annual Financial Reports, 2024 (revenue, spending, debt)",
+     "label": "PA DCED Statewide Municipal Annual Financial Reports, 2025 (revenue, spending, debt)",
      "url": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=StatewideMuniAfr"
     },
     {
@@ -527,17 +536,32 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
-    "Actual results from the 2024 Annual Audit and Financial Report filed with the PA Department of Community and Economic Development, not a budget.",
+    "Actual results from the 2025 Annual Audit and Financial Report filed with the PA Department of Community and Economic Development, not a budget.",
     "Covers the municipality only. County and school-district taxes on the same bills, and independent municipal authorities (often water and sewer), are separate.",
     "Second Class Township.",
-    "Left out: other financing sources ($61,033) and uses ($31,579), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
-    "\"Other expenditures\" ($19,003, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
+    "Left out: other financing sources ($57,052) and uses ($56,261), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
+    "\"Other expenditures\" ($19,320, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Green Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Green Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "harmony-township-forest-county-pa",
@@ -549,24 +573,24 @@
    "lat": 41.57481,
    "lng": -79.46002,
    "population": 438,
-   "fiscalYear": 2024,
-   "asOf": "2026-10-01",
+   "fiscalYear": 2025,
+   "asOf": "2026-10-20",
    "paMuniId": "270095",
    "censusGeoid": "4205332704",
    "revenue": {
-    "propertyTax": 75325,
-    "salesTax": 53189,
-    "stateAid": 98454,
-    "utilityCharges": 16200,
-    "feesPermits": 695,
-    "finesForfeitures": 2612,
-    "localRevenue": 533
+    "propertyTax": 77515,
+    "salesTax": 59271,
+    "stateAid": 96469,
+    "utilityCharges": 11400,
+    "feesPermits": 405,
+    "finesForfeitures": 2307,
+    "localRevenue": 437
    },
    "spending": {
-    "administration": 76921,
-    "publicSafety": 45349,
-    "roads": 152879,
-    "utilities": 3474
+    "administration": 93425,
+    "publicSafety": 41124,
+    "roads": 161468,
+    "utilities": 4965
    },
    "debt": 0,
    "history": [
@@ -574,12 +598,6 @@
      "year": 2016,
      "revenue": 296466,
      "spending": 194372,
-     "basis": "actual"
-    },
-    {
-     "year": 2017,
-     "revenue": 245446,
-     "spending": 211986,
      "basis": "actual"
     },
     {
@@ -623,83 +641,89 @@
      "revenue": 247008,
      "spending": 278624,
      "basis": "actual"
+    },
+    {
+     "year": 2025,
+     "revenue": 247804,
+     "spending": 300982,
+     "basis": "actual"
     }
    ],
    "ledger": [
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "stateAid",
      "counterparty": "Annual financial report: revenue",
      "description": "Intergovernmental Revenues-State Government",
-     "amount": 98454,
+     "amount": 96469,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "propertyTax",
      "counterparty": "Annual financial report: revenue",
      "description": "Real Estate Tax",
-     "amount": 75325,
+     "amount": 77515,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "salesTax",
      "counterparty": "Annual financial report: revenue",
      "description": "Earned Income Tax",
-     "amount": 44542,
+     "amount": 46480,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
-     "flow": "in",
-     "category": "utilityCharges",
-     "counterparty": "Annual financial report: revenue",
-     "description": "Sewer",
-     "amount": 15800,
-     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
-    },
-    {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "salesTax",
      "counterparty": "Annual financial report: revenue",
      "description": "Realty Transfer Tax",
-     "amount": 8372,
+     "amount": 12501,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "utilityCharges",
+     "counterparty": "Annual financial report: revenue",
+     "description": "Sewer",
+     "amount": 11000,
+     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
+    },
+    {
+     "date": "2025-12-31",
      "flow": "in",
      "category": "finesForfeitures",
      "counterparty": "Annual financial report: revenue",
      "description": "Fines and Forfeits",
-     "amount": 2612,
+     "amount": 2307,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
-     "flow": "in",
-     "category": "feesPermits",
-     "counterparty": "Annual financial report: revenue",
-     "description": "Other Charges for Services",
-     "amount": 695,
-     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
-    },
-    {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "localRevenue",
      "counterparty": "Annual financial report: revenue",
      "description": "Interest Rents and Royalties",
-     "amount": 533,
+     "amount": 437,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "feesPermits",
+     "counterparty": "Annual financial report: revenue",
+     "description": "Other Charges for Services",
+     "amount": 405,
+     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
+    },
+    {
+     "date": "2025-12-31",
      "flow": "in",
      "category": "utilityCharges",
      "counterparty": "Annual financial report: revenue",
@@ -708,72 +732,72 @@
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "salesTax",
      "counterparty": "Annual financial report: revenue",
      "description": "Local Services Tax",
-     "amount": 275,
+     "amount": 290,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "roads",
      "counterparty": "Annual financial report: spending",
      "description": "Public Works-Highways and Streets",
-     "amount": 136248,
+     "amount": 145990,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "General Government",
-     "amount": 68553,
+     "amount": 84469,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "Other (insurance, pensions and benefits; spread across departments in totals)",
-     "amount": 30311,
+     "amount": 28852,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
-     "flow": "out",
-     "category": "publicSafety",
-     "counterparty": "Annual financial report: spending",
-     "description": "UCC and Code Enforcement",
-     "amount": 26021,
-     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
-    },
-    {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "publicSafety",
      "counterparty": "Annual financial report: spending",
      "description": "Fire",
-     "amount": 14395,
+     "amount": 19788,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "publicSafety",
+     "counterparty": "Annual financial report: spending",
+     "description": "UCC and Code Enforcement",
+     "amount": 17394,
+     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
+    },
+    {
+     "date": "2025-12-31",
      "flow": "out",
      "category": "utilities",
      "counterparty": "Annual financial report: spending",
      "description": "Solid Waste",
-     "amount": 3096,
+     "amount": 4489,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     }
    ],
    "sources": [
     {
-     "label": "PA DCED Statewide Municipal Annual Financial Reports, 2024 (revenue, spending, debt)",
+     "label": "PA DCED Statewide Municipal Annual Financial Reports, 2025 (revenue, spending, debt)",
      "url": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=StatewideMuniAfr"
     },
     {
@@ -787,17 +811,32 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
-    "Actual results from the 2024 Annual Audit and Financial Report filed with the PA Department of Community and Economic Development, not a budget.",
+    "Actual results from the 2025 Annual Audit and Financial Report filed with the PA Department of Community and Economic Development, not a budget.",
     "Covers the municipality only. County and school-district taxes on the same bills, and independent municipal authorities (often water and sewer), are separate.",
     "Second Class Township.",
-    "Left out: other financing sources ($670) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
-    "\"Other expenditures\" ($30,311, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
+    "Left out: other financing sources ($2,752) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
+    "\"Other expenditures\" ($28,852, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Harmony Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Harmony Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "hickory-township-forest-county-pa",
@@ -810,7 +849,7 @@
    "lng": -79.36461,
    "population": 391,
    "fiscalYear": 2024,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "paMuniId": "270125",
    "censusGeoid": "4205334240",
    "revenue": {
@@ -837,12 +876,6 @@
      "year": 2016,
      "revenue": 282104,
      "spending": 376712,
-     "basis": "actual"
-    },
-    {
-     "year": 2017,
-     "revenue": 838757,
-     "spending": 1116275,
      "basis": "actual"
     },
     {
@@ -1113,6 +1146,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1122,8 +1160,18 @@
     "Left out: other financing sources ($32,356) and uses ($28,514), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($22,494, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Hickory Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Hickory Township's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2024; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "howe-township-forest-county-pa",
@@ -1136,7 +1184,7 @@
    "lng": -79.0795,
    "population": 193,
    "fiscalYear": 2024,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "paMuniId": "270155",
    "censusGeoid": "4205335992",
    "revenue": {
@@ -1161,12 +1209,6 @@
      "year": 2016,
      "revenue": 363719,
      "spending": 271831,
-     "basis": "actual"
-    },
-    {
-     "year": 2017,
-     "revenue": 244219,
-     "spending": 327018,
      "basis": "actual"
     },
     {
@@ -1392,6 +1434,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1401,8 +1448,18 @@
     "Left out: other financing sources ($5,027) and uses ($0), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($37,520, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Howe Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Howe Township's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2024; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "jenks-township-pa",
@@ -1415,7 +1472,7 @@
    "lng": -79.09798,
    "population": 3662,
    "fiscalYear": 2024,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "paMuniId": "270185",
    "censusGeoid": "4205338016",
    "revenue": {
@@ -1442,12 +1499,6 @@
      "year": 2016,
      "revenue": 1724654,
      "spending": 1534125,
-     "basis": "actual"
-    },
-    {
-     "year": 2017,
-     "revenue": 1917720,
-     "spending": 1782468,
      "basis": "actual"
     },
     {
@@ -1718,6 +1769,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -1727,8 +1783,18 @@
     "Left out: other financing sources ($102,272) and uses ($49,837), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($133,874, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Jenks Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Jenks Township's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2024; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "kingsley-township-pa",
@@ -1740,26 +1806,27 @@
    "lat": 41.54235,
    "lng": -79.27131,
    "population": 251,
-   "fiscalYear": 2024,
-   "asOf": "2026-10-01",
+   "fiscalYear": 2025,
+   "asOf": "2026-10-20",
    "paMuniId": "270215",
    "censusGeoid": "4205339760",
    "revenue": {
-    "propertyTax": 9060,
-    "salesTax": 34528,
-    "federalGrants": 118061,
-    "stateAid": 160730,
-    "otherRevenue": 24132,
-    "utilityCharges": 470,
-    "feesPermits": 6080,
-    "finesForfeitures": 2787,
-    "localRevenue": 19162
+    "propertyTax": 8990,
+    "salesTax": 28279,
+    "federalGrants": 4544,
+    "stateAid": 66503,
+    "otherRevenue": 48684,
+    "utilityCharges": 1000,
+    "feesPermits": 4552,
+    "finesForfeitures": 2587,
+    "localRevenue": 12760
    },
    "spending": {
-    "administration": 42667,
-    "publicSafety": 17569,
-    "roads": 292647,
-    "utilities": 4229
+    "administration": 52384,
+    "publicSafety": 21404,
+    "roads": 139686,
+    "utilities": 5989,
+    "parks": 584
    },
    "debt": 0,
    "history": [
@@ -1767,12 +1834,6 @@
      "year": 2016,
      "revenue": 288902,
      "spending": 223600,
-     "basis": "actual"
-    },
-    {
-     "year": 2017,
-     "revenue": 186143,
-     "spending": 250381,
      "basis": "actual"
     },
     {
@@ -1816,184 +1877,199 @@
      "revenue": 375010,
      "spending": 357112,
      "basis": "actual"
+    },
+    {
+     "year": 2025,
+     "revenue": 177899,
+     "spending": 220047,
+     "basis": "actual"
     }
    ],
    "ledger": [
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "stateAid",
      "counterparty": "Annual financial report: revenue",
      "description": "Intergovernmental Revenues-State Government",
-     "amount": 160730,
+     "amount": 66503,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
-     "flow": "in",
-     "category": "federalGrants",
-     "counterparty": "Annual financial report: revenue",
-     "description": "Intergovernmental Revenues-Federal Government",
-     "amount": 118061,
-     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
-    },
-    {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "otherRevenue",
      "counterparty": "Annual financial report: revenue",
      "description": "Intergovernmental Revenues-Local Government",
-     "amount": 24101,
+     "amount": 48637,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "salesTax",
      "counterparty": "Annual financial report: revenue",
      "description": "Earned Income Tax",
-     "amount": 20475,
+     "amount": 20957,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "localRevenue",
      "counterparty": "Annual financial report: revenue",
      "description": "Interest Rents and Royalties",
-     "amount": 19162,
+     "amount": 12760,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
-     "flow": "in",
-     "category": "salesTax",
-     "counterparty": "Annual financial report: revenue",
-     "description": "Realty Transfer Tax",
-     "amount": 14053,
-     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
-    },
-    {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "propertyTax",
      "counterparty": "Annual financial report: revenue",
      "description": "Real Estate Tax",
-     "amount": 9060,
+     "amount": 8990,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "salesTax",
+     "counterparty": "Annual financial report: revenue",
+     "description": "Realty Transfer Tax",
+     "amount": 7322,
+     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
+    },
+    {
+     "date": "2025-12-31",
      "flow": "in",
      "category": "feesPermits",
      "counterparty": "Annual financial report: revenue",
      "description": "Other Charges for Services",
-     "amount": 6080,
+     "amount": 4552,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "federalGrants",
+     "counterparty": "Annual financial report: revenue",
+     "description": "Intergovernmental Revenues-Federal Government",
+     "amount": 4544,
+     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
+    },
+    {
+     "date": "2025-12-31",
      "flow": "in",
      "category": "finesForfeitures",
      "counterparty": "Annual financial report: revenue",
      "description": "Fines and Forfeits",
-     "amount": 2787,
+     "amount": 2587,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "utilityCharges",
      "counterparty": "Annual financial report: revenue",
      "description": "Solid Waste",
-     "amount": 470,
+     "amount": 1000,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "otherRevenue",
      "counterparty": "Annual financial report: revenue",
      "description": "Unclassified Operating",
-     "amount": 31,
+     "amount": 47,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "roads",
      "counterparty": "Annual financial report: spending",
      "description": "Public Works-Highways and Streets",
-     "amount": 236649,
+     "amount": 95744,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "Other (insurance, pensions and benefits; spread across departments in totals)",
-     "amount": 68333,
+     "amount": 69222,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "General Government",
-     "amount": 34385,
+     "amount": 35892,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
-     "flow": "out",
-     "category": "publicSafety",
-     "counterparty": "Annual financial report: spending",
-     "description": "UCC and Code Enforcement",
-     "amount": 8020,
-     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
-    },
-    {
-     "date": "2024-12-31",
-     "flow": "out",
-     "category": "publicSafety",
-     "counterparty": "Annual financial report: spending",
-     "description": "Fire",
-     "amount": 3687,
-     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
-    },
-    {
-     "date": "2024-12-31",
-     "flow": "out",
-     "category": "utilities",
-     "counterparty": "Annual financial report: spending",
-     "description": "Solid Waste",
-     "amount": 3420,
-     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
-    },
-    {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "publicSafety",
      "counterparty": "Annual financial report: spending",
      "description": "Other Public Safety",
-     "amount": 2500,
+     "amount": 7000,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "utilities",
+     "counterparty": "Annual financial report: spending",
+     "description": "Solid Waste",
+     "amount": 4105,
+     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "publicSafety",
+     "counterparty": "Annual financial report: spending",
+     "description": "Fire",
+     "amount": 3951,
+     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "publicSafety",
+     "counterparty": "Annual financial report: spending",
+     "description": "UCC and Code Enforcement",
+     "amount": 3720,
+     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "parks",
+     "counterparty": "Annual financial report: spending",
+     "description": "Culture and Recreation",
+     "amount": 400,
+     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
+    },
+    {
+     "date": "2025-12-31",
      "flow": "out",
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "Unclassified Operating",
-     "amount": 118,
+     "amount": 13,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     }
    ],
    "sources": [
     {
-     "label": "PA DCED Statewide Municipal Annual Financial Reports, 2024 (revenue, spending, debt)",
+     "label": "PA DCED Statewide Municipal Annual Financial Reports, 2025 (revenue, spending, debt)",
      "url": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=StatewideMuniAfr"
     },
     {
@@ -2007,17 +2083,31 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
-    "Actual results from the 2024 Annual Audit and Financial Report filed with the PA Department of Community and Economic Development, not a budget.",
+    "Actual results from the 2025 Annual Audit and Financial Report filed with the PA Department of Community and Economic Development, not a budget.",
     "Covers the municipality only. County and school-district taxes on the same bills, and independent municipal authorities (often water and sewer), are separate.",
     "Second Class Township.",
-    "Left out: other financing sources ($16,043) and uses ($8,560), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
-    "\"Other expenditures\" ($68,333, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
+    "\"Other expenditures\" ($69,222, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Kingsley Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Kingsley Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   },
   {
    "id": "tionesta-borough-pa",
@@ -2030,7 +2120,7 @@
    "lng": -79.44935,
    "population": 399,
    "fiscalYear": 2024,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "paMuniId": "270243",
    "censusGeoid": "4205376848",
    "revenue": {
@@ -2058,12 +2148,6 @@
      "year": 2016,
      "revenue": 600843,
      "spending": 570948,
-     "basis": "actual"
-    },
-    {
-     "year": 2017,
-     "revenue": 337832,
-     "spending": 390004,
      "basis": "actual"
     },
     {
@@ -2406,6 +2490,11 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
@@ -2414,8 +2503,18 @@
     "Left out: other financing sources ($2,953) and uses ($1,732), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
     "\"Other expenditures\" ($69,094, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Tionesta Borough's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Tionesta Borough's latest annual audit and financial report on file with the Department of Community and Economic Development is for FY 2024; most PA governments have filed FY 2025. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": false
+   }
   },
   {
    "id": "tionesta-township-pa",
@@ -2427,27 +2526,27 @@
    "lat": 41.4675,
    "lng": -79.46092,
    "population": 636,
-   "fiscalYear": 2024,
-   "asOf": "2026-10-01",
+   "fiscalYear": 2025,
+   "asOf": "2026-10-20",
    "paMuniId": "270275",
    "censusGeoid": "4205376864",
    "revenue": {
-    "propertyTax": 13817,
-    "salesTax": 78635,
-    "federalGrants": 7629,
-    "stateAid": 93630,
-    "otherRevenue": 54161,
-    "feesPermits": 1405,
-    "finesForfeitures": 1982,
-    "localRevenue": 20966,
-    "grants": 282
+    "propertyTax": 14076,
+    "salesTax": 72234,
+    "federalGrants": 2937,
+    "stateAid": 93441,
+    "otherRevenue": 47780,
+    "feesPermits": 2600,
+    "finesForfeitures": 2079,
+    "localRevenue": 17226,
+    "grants": 894
    },
    "spending": {
-    "administration": 46548,
-    "publicSafety": 14575,
-    "roads": 126206,
-    "utilities": 851,
-    "parks": 103
+    "administration": 45233,
+    "publicSafety": 21275,
+    "roads": 225203,
+    "utilities": 919,
+    "parks": 31
    },
    "debt": 0,
    "history": [
@@ -2455,12 +2554,6 @@
      "year": 2016,
      "revenue": 232442,
      "spending": 176067,
-     "basis": "actual"
-    },
-    {
-     "year": 2017,
-     "revenue": 192745,
-     "spending": 148095,
      "basis": "actual"
     },
     {
@@ -2504,175 +2597,181 @@
      "revenue": 272507,
      "spending": 188283,
      "basis": "actual"
+    },
+    {
+     "year": 2025,
+     "revenue": 253267,
+     "spending": 292661,
+     "basis": "actual"
     }
    ],
    "ledger": [
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "stateAid",
      "counterparty": "Annual financial report: revenue",
      "description": "Intergovernmental Revenues-State Government",
-     "amount": 93630,
+     "amount": 93441,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "salesTax",
      "counterparty": "Annual financial report: revenue",
      "description": "Earned Income Tax",
-     "amount": 58336,
+     "amount": 59219,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "otherRevenue",
      "counterparty": "Annual financial report: revenue",
      "description": "Intergovernmental Revenues-Local Government",
-     "amount": 54161,
+     "amount": 47780,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "localRevenue",
      "counterparty": "Annual financial report: revenue",
      "description": "Interest Rents and Royalties",
-     "amount": 20966,
+     "amount": 17226,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
-     "flow": "in",
-     "category": "salesTax",
-     "counterparty": "Annual financial report: revenue",
-     "description": "Realty Transfer Tax",
-     "amount": 20299,
-     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
-    },
-    {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "propertyTax",
      "counterparty": "Annual financial report: revenue",
      "description": "Real Estate Tax",
-     "amount": 13817,
+     "amount": 14076,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "salesTax",
+     "counterparty": "Annual financial report: revenue",
+     "description": "Realty Transfer Tax",
+     "amount": 13015,
+     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
+    },
+    {
+     "date": "2025-12-31",
      "flow": "in",
      "category": "federalGrants",
      "counterparty": "Annual financial report: revenue",
      "description": "Intergovernmental Revenues-Federal Government",
-     "amount": 7629,
+     "amount": 2937,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
-     "flow": "in",
-     "category": "finesForfeitures",
-     "counterparty": "Annual financial report: revenue",
-     "description": "Fines and Forfeits",
-     "amount": 1982,
-     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
-    },
-    {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "in",
      "category": "feesPermits",
      "counterparty": "Annual financial report: revenue",
      "description": "Other Charges for Services",
-     "amount": 1405,
+     "amount": 2600,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "finesForfeitures",
+     "counterparty": "Annual financial report: revenue",
+     "description": "Fines and Forfeits",
+     "amount": 2079,
+     "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
+    },
+    {
+     "date": "2025-12-31",
      "flow": "in",
      "category": "grants",
      "counterparty": "Annual financial report: revenue",
      "description": "Contributions and Donations from Private Sectors",
-     "amount": 282,
+     "amount": 894,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "roads",
      "counterparty": "Annual financial report: spending",
      "description": "Public Works-Highways and Streets",
-     "amount": 118624,
+     "amount": 215270,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "General Government",
-     "amount": 43752,
+     "amount": 43238,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "administration",
      "counterparty": "Annual financial report: spending",
      "description": "Other (insurance, pensions and benefits; spread across departments in totals)",
-     "amount": 11311,
+     "amount": 12908,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "publicSafety",
      "counterparty": "Annual financial report: spending",
      "description": "Other Public Safety",
-     "amount": 7269,
+     "amount": 12134,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "publicSafety",
      "counterparty": "Annual financial report: spending",
      "description": "Fire",
-     "amount": 5010,
+     "amount": 5333,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "publicSafety",
      "counterparty": "Annual financial report: spending",
      "description": "UCC and Code Enforcement",
-     "amount": 1420,
+     "amount": 2870,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "utilities",
      "counterparty": "Annual financial report: spending",
      "description": "Solid Waste",
-     "amount": 800,
+     "amount": 878,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     },
     {
-     "date": "2024-12-31",
+     "date": "2025-12-31",
      "flow": "out",
      "category": "parks",
      "counterparty": "Annual financial report: spending",
      "description": "Culture and Recreation",
-     "amount": 97,
+     "amount": 30,
      "source": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=mAfrForm"
     }
    ],
    "sources": [
     {
-     "label": "PA DCED Statewide Municipal Annual Financial Reports, 2024 (revenue, spending, debt)",
+     "label": "PA DCED Statewide Municipal Annual Financial Reports, 2025 (revenue, spending, debt)",
      "url": "https://apps.dced.pa.gov/munstats-public/ReportInformation2.aspx?report=StatewideMuniAfr"
     },
     {
@@ -2686,17 +2785,32 @@
     {
      "label": "U.S. Census Bureau 2024 Gazetteer (map location)",
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
+    },
+    {
+     "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
+     "url": "https://atlasofsurveillance.org/",
+     "addedBy": "scripts/red-flags.mjs"
     }
    ],
    "notes": [
-    "Actual results from the 2024 Annual Audit and Financial Report filed with the PA Department of Community and Economic Development, not a budget.",
+    "Actual results from the 2025 Annual Audit and Financial Report filed with the PA Department of Community and Economic Development, not a budget.",
     "Covers the municipality only. County and school-district taxes on the same bills, and independent municipal authorities (often water and sewer), are separate.",
     "Second Class Township.",
-    "Left out: other financing sources ($7,810) and uses ($7,632), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
-    "\"Other expenditures\" ($11,311, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
+    "Left out: other financing sources ($19,246) and uses ($19,200), such as transfers between the municipality's own funds and borrowing, which the statewide report does not break down.",
+    "\"Other expenditures\" ($12,908, mostly insurance, pensions and employee benefits) are spread across departments in proportion to their size.",
     "Political money is not scored: Pennsylvania municipal candidates file campaign reports with their county board of elections, and there is no statewide database of those filings.",
-    "Transparency practices have not been checked yet, so they are not scored."
-   ]
+    "Cameras: no license-plate cameras are mapped inside Tionesta Township's borders in OpenStreetMap as of 2026-10-20.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. A town or county with none listed may still have programs nobody has reported. Data center deals and corporate tax breaks have not been checked for Pennsylvania yet. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Transparency: Tionesta Township has filed its annual audit and financial report with the Department of Community and Economic Development for FY 2025, the latest year most PA governments have filed. This is a check that the report was filed, not an opinion on its contents. The other five practices have not been checked yet, so they are left out of the score."
+   ],
+   "reporting": {
+    "basis": "Actual results",
+    "scope": "Municipal operations; excludes independent authorities"
+   },
+   "redFlags": [],
+   "transparency": {
+    "auditOnTime": true
+   }
   }
  ]
 }
