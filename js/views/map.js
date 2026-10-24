@@ -135,7 +135,10 @@ export function renderMap(root, state, _arg, query) {
       </div>
       <div class="field">
         <label for="m-search">Find a town</label>
-        <input id="m-search" class="input" type="search" placeholder="Town, county or state" value="${escapeHTML(ui.query)}">
+        <div class="search-wrap${ui.query ? ' has-text' : ''}">
+          <input id="m-search" class="input" type="search" placeholder="Town, county or state" value="${escapeHTML(ui.query)}">
+          <button type="button" class="search-clear" id="m-clear" aria-label="Clear search">${ICONS.close}</button>
+        </div>
       </div>
       <div class="grid grid-2" style="gap:10px">
         <div class="field">
@@ -284,7 +287,14 @@ export function renderMap(root, state, _arg, query) {
     root.querySelectorAll('[data-layer]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.layer === ui.layer)));
 
     const sorted = [...list].sort((a, b) => compareValues(displayMetric(a, m.key).value, displayMetric(b, m.key).value, m.higherIsBetter === false ? 'asc' : 'desc'));
-    $('#m-count').textContent = `${sorted.length} towns · ${list.filter((e) => !displayMetric(e, m.key).available).length} unavailable (gray, excluded from heat)`;
+    const count = `${sorted.length} towns · ${list.filter((e) => !displayMetric(e, m.key).available).length} unavailable (gray, excluded from heat)`;
+    // The count slides in when it changes, e.g. as a search narrows the list.
+    if ($('#m-count').textContent !== count) {
+      $('#m-count').textContent = count;
+      $('#m-count').classList.remove('count-in');
+      void $('#m-count').offsetWidth;
+      $('#m-count').classList.add('count-in');
+    }
     // Render the list in pages: thousands of rows in the DOM make the page slow to paint and scroll.
     const shownRows = sorted.slice(0, listLimit);
     // New rows slide in (a short stagger for the first dozen); after "Show more" only the added rows do.
@@ -408,8 +418,15 @@ export function renderMap(root, state, _arg, query) {
   let searchTimer;
   $('#m-search').addEventListener('input', (e) => {
     ui.query = e.target.value;
+    e.target.parentElement.classList.toggle('has-text', ui.query !== '');
     clearTimeout(searchTimer);
     searchTimer = setTimeout(draw, 150);
+  });
+  $('#m-clear').addEventListener('click', () => {
+    const input = $('#m-search');
+    input.value = '';
+    input.dispatchEvent(new Event('input'));
+    input.focus();
   });
   $('#m-state').addEventListener('change', (e) => {
     ui.state = e.target.value;
