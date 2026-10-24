@@ -22,7 +22,7 @@ export function renderCompare(root, state, arg) {
   const label = (t) => `${t.name}, ${t.county || 'County not recorded'}, ${t.state}`;
   root.innerHTML = `<div class="page">
     <div class="page-head"><div><h1>Compare towns</h1><p>Choose up to three towns. Highlights appear only for available values with matching reporting context.</p></div></div>
-    <div class="compare-pickers">${[0, 1, 2].map((i) => `<div class="field">
+    <div class="compare-pickers">${[0, 1, 2].map((i) => `<div class="field" style="--i:${i}">
       <label for="c-search-${i}">Find town ${i + 1}</label><input id="c-search-${i}" class="input" type="search" placeholder="Town, county or state">
       <label for="c-${i}">Town ${i + 1}</label><select class="select" id="c-${i}" data-slot="${i}"></select></div>`).join('')}</div>
     <div id="c-out"></div></div>`;
@@ -62,7 +62,16 @@ export function renderCompare(root, state, arg) {
   }
   for (let i = 0; i < 3; i++) {
     root.querySelector(`#c-search-${i}`).addEventListener('input', choices);
-    root.querySelector(`#c-${i}`).addEventListener('change', (event) => { picks[i] = event.target.value; choices(); draw(); });
+    root.querySelector(`#c-${i}`).addEventListener('change', (event) => {
+      picks[i] = event.target.value;
+      choices();
+      draw();
+      // The picked town slides into its box (same as the map's filters).
+      const sel = event.target;
+      sel.classList.remove('changed');
+      void sel.offsetWidth;
+      sel.classList.add('changed');
+    });
   }
   choices(); draw();
 }

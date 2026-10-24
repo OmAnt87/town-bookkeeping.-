@@ -71,7 +71,7 @@ export function lineChart(host, series, { height = 220, format = (v) => money(v,
   }
   const xl = xs.map((v, i) => `<text class="axis-text" x="${x(i)}" y="${H - 6}" text-anchor="middle">FY${String(v).slice(-2)}</text>`).join('');
   const lines = series
-    .map((s) => `<path class="line" style="stroke:${s.color}" d="${s.values.map((v, i) => `${i ? 'L' : 'M'}${x(i)},${y(v.y)}`).join('')}"/>`)
+    .map((s) => `<path class="line" pathLength="1" style="stroke:${s.color}" d="${s.values.map((v, i) => `${i ? 'L' : 'M'}${x(i)},${y(v.y)}`).join('')}"/>`)
     .join('');
   const lastDots = series
     .map((s) => { const i = s.values.length - 1; return `<circle class="dot" r="4.5" style="fill:${s.color}" cx="${x(i)}" cy="${y(s.values[i].y)}"/>`; })
