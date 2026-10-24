@@ -2,6 +2,8 @@
 // Downloads the raw Connecticut inputs into data/raw/ct/ (gitignored):
 //   - CT Office of Policy and Management "Municipal Fiscal Indicators" datasets on data.ct.gov:
 //     financial statement information, Uniform Chart of Accounts spending, and individual town data
+//   - Census Bureau Annual Survey of State and Local Government Finances individual unit files,
+//     FY 2017 on, for town-owned utilities (see utilities.mjs)
 //   - Census 2025 population estimates for CT towns
 //   - Census 2024 gazetteers (county subdivisions and places)
 //
@@ -11,6 +13,8 @@ import { execFileSync } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { downloadUnits } from '../common/census-units.mjs';
+import { UTILITY_YEARS } from './utilities.mjs';
 
 const RAW = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'data', 'raw', 'ct');
 const SOCRATA = 'https://data.ct.gov/resource';
@@ -24,6 +28,7 @@ for (const [file, id] of Object.entries(DATASETS)) {
   curl('-o', join(RAW, file), `${SOCRATA}/${id}.json?$limit=100000`);
   console.log(`data.ct.gov ${id} -> ${file}`);
 }
+downloadUnits(RAW, curl, process.argv.includes('--force'), UTILITY_YEARS);
 curl('-o', join(RAW, 'popest.csv'), POP);
 for (const g of ['cousubs', 'place']) {
   curl('-o', join(RAW, `gaz-${g}.zip`), `${GAZ}/2024_Gaz_${g}_national.zip`);

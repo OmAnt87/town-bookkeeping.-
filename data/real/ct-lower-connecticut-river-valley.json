@@ -17,7 +17,8 @@
    "revenue": {
     "propertyTax": 128341000,
     "stateAid": 48817000,
-    "otherRevenue": 11029000
+    "otherRevenue": 11029000,
+    "utilityCharges": 5874000
    },
    "spending": {
     "education": 118482967,
@@ -25,7 +26,8 @@
     "healthServices": 1954575,
     "roads": 7287670,
     "publicSafety": 22729545,
-    "administration": 9572515
+    "administration": 9572515,
+    "utilities": 5282000
    },
    "debt": 166685000,
    "influence": {
@@ -98,67 +100,67 @@
    ],
    "history": [
     {
-     "year": 2014,
-     "revenue": 143238000,
-     "spending": 132429000,
-     "basis": "actual"
-    },
-    {
-     "year": 2015,
-     "revenue": 150822000,
-     "spending": 135279000,
-     "basis": "actual"
-    },
-    {
-     "year": 2016,
-     "revenue": 155794000,
-     "spending": 141467000,
-     "basis": "actual"
-    },
-    {
      "year": 2017,
-     "revenue": 166355000,
-     "spending": 151716000,
+     "revenue": 172726000,
+     "spending": 156908000,
      "basis": "actual"
     },
     {
      "year": 2018,
-     "revenue": 170215000,
-     "spending": 153142000,
+     "revenue": 176586000,
+     "spending": 158334000,
      "basis": "actual"
     },
     {
      "year": 2019,
-     "revenue": 166411000,
-     "spending": 151149000,
+     "revenue": 172186000,
+     "spending": 156099000,
      "basis": "actual"
     },
     {
      "year": 2020,
-     "revenue": 179096000,
-     "spending": 161018000,
+     "revenue": 184871000,
+     "spending": 165968000,
      "basis": "actual"
     },
     {
      "year": 2021,
-     "revenue": 183837000,
-     "spending": 162110000,
+     "revenue": 189612000,
+     "spending": 167060000,
      "basis": "actual"
     },
     {
      "year": 2022,
-     "revenue": 188187000,
-     "spending": 167719000,
+     "revenue": 194061000,
+     "spending": 173001000,
      "basis": "actual"
     },
     {
      "year": 2023,
-     "revenue": 199202000,
-     "spending": 176177000,
+     "revenue": 205314000,
+     "spending": 181764000,
      "basis": "actual"
     }
    ],
    "ledger": [
+    {
+     "date": "2022-06-30",
+     "flow": "in",
+     "category": "utilityCharges",
+     "counterparty": "Town-owned utilities (Census)",
+     "description": "Town-owned water utility: charges and other revenue",
+     "amount": 5874000,
+     "source": "https://www.census.gov/data/datasets/2022/econ/local/public-use-datasets.html"
+    },
+    {
+     "date": "2022-06-30",
+     "flow": "out",
+     "category": "utilities",
+     "counterparty": "Town-owned utilities (Census)",
+     "description": "Town-owned water utility: operations, capital outlay and interest",
+     "amount": 5282000,
+     "source": "https://www.census.gov/data/datasets/2022/econ/local/public-use-datasets.html"
+    },
     {
      "date": "2022-06-30",
      "flow": "in",
@@ -522,13 +524,18 @@
      "label": "EFF Atlas of Surveillance (police surveillance technology, searched by department)",
      "url": "https://atlasofsurveillance.org/",
      "addedBy": "scripts/red-flags.mjs"
+    },
+    {
+     "label": "U.S. Census Bureau, 2022 Annual Survey of State and Local Government Finances, individual unit file (town-owned utilities)",
+     "url": "https://www.census.gov/data/datasets/2022/econ/local/public-use-datasets.html"
     }
    ],
    "notes": [
     "Actual general-fund results for the fiscal year ended June 30, 2022, as reported to the CT Office of Policy and Management, not a budget.",
     "FY 2022 is the latest year where the state's department breakdown matches the town's financial statements. FY 2023 totals are in the history.",
     "Includes public schools. Connecticut towns pay for schools through the town budget (the board of education and any regional school district), where most other states have separate school districts, so spending and property tax per resident run higher than in those states.",
-    "Covers the town's general fund. Water, sewer and other enterprise funds and independent authorities are separate.",
+    "Covers the town's general fund and its town-owned utilities. Sewer and other enterprise funds and independent authorities are separate.",
+    "Includes town-owned water utility ($5,874,000 of revenue and $5,282,000 of spending), which run outside the general fund, as the town reported them to the Census Bureau's Annual Survey of State and Local Government Finances for FY 2022. Repayment of utility debt principal is not broken out there, so it is not included.",
     "Left out: transfers in ($510,000) and out ($22,871,000) between the town's own funds and other financing sources such as borrowing, which are not new revenue or spending.",
     "Employee benefits the town records under general government ($2,820,630, such as health insurance and pensions for town staff) are spread across the town's own departments in proportion to their size, as in other states. Schools and debt service are left out of that spread.",
     "Capital outlay and \"other\" spending ($21,174,000) are spread across departments in proportion to their size.",

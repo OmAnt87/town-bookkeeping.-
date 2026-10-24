@@ -5,14 +5,15 @@
 //   node scripts/ma/fetch-ocpf.mjs                      # campaign finance (optional)
 //   node scripts/ma/build-county.mjs --county Hampshire  (or --all)
 //
-// Figures are actual general-fund results each city and town reports to the Department of
-// Revenue's Division of Local Services (DLS) on its annual Schedule A.
+// Figures are actual results each city and town reports to the Department of Revenue's Division
+// of Local Services (DLS) on its annual Schedule A: the general fund, plus special revenue,
+// capital projects and enterprise funds (applyOtherFunds in dls-map.mjs).
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs, parseCSV, slugify } from '../lib.mjs';
-import { aggregateMa, MA_REVENUE, MA_FUNCTION, MA_EXCISE } from './dls-map.mjs';
+import { aggregateMa, applyOtherFunds, MA_REVENUE, MA_FUNCTION, MA_EXCISE } from './dls-map.mjs';
 import { townMatcher, localFilers, summarizeMaReceipts, OCPF_URL } from './ocpf-map.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -22,6 +23,7 @@ const GF_PAGE = 'https://dls-gw.dor.state.ma.us/reports/rdPage.aspx?rdReport=Sch
 const RECEIPTS_PAGE = 'https://dls-gw.dor.state.ma.us/reports/rdPage.aspx?rdReport=TaxRateRecap.PAGE3.LocalReceiptsAct_vs_Est';
 const DEBT_PAGE = 'https://dls-gw.dor.state.ma.us/reports/rdPage.aspx?rdReport=Dashboard.Cat_6_Reports.LongTermDebt351';
 const SCHEDULE_A = 'https://www.mass.gov/lists/schedule-a-reports-revenues-expenditures-and-more';
+const OTHER_PAGE = 'https://dls-gw.dor.state.ma.us/reports/rdPage.aspx?rdReport=ScheduleA.Special_Rev_Funds.SpecialRevFunds';
 const POP_PAGE = 'https://www.census.gov/data/tables/time-series/demo/popest/2020s-total-cities-and-towns.html';
 const GAZ_PAGE = 'https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html';
 
@@ -90,10 +92,6 @@ function buildTown(code, t, report) {
   if (year !== latest) report.older.push(`${t.name} (${year}; FY ${latest} has no excise receipts yet)`);
   if (Number(year) < thisYear - 1) report.late.push(`${t.name} (FY ${year})`);
 
-  const excluded = (g) => (g.revenue['Other Financing Sources'] || 0) + (g.revenue.Transfers || 0);
-  const history = years.map((y) => ({
-    year: Number(y), revenue: Math.round(t.gf[y].revenue['Total Revenues'] - excluded(t.gf[y])), spending: Math.round(t.gf[y].spending['Total Expenditures']), basis: 'actual',
-  })).filter((h) => h.revenue > 0 && h.spending > 0);
   const debtYear = Object.keys(t.debt).filter((y) => y <= year).sort().at(-1);
   const debt = debtYear ? Math.round(t.debt[debtYear]) : null;
 
@@ -118,7 +116,7 @@ function buildTown(code, t, report) {
   const pol = haveOcpf && hasFilers ? summarizeMaReceipts(itemsByTown.get(t.name) || [], filers, pacIds, OCPF_SINCE) : null;
   const display = `${c.kind === 'City' ? 'City' : 'Town'} of ${t.name === 'Manchester By The Sea' ? 'Manchester-by-the-Sea' : t.name}`;
   const ex = a.excluded;
-  return {
+  const town = {
     id: slugify(`${display} ma`),
     name: display,
     state: 'MA',
@@ -144,10 +142,11 @@ function buildTown(code, t, report) {
         politicalScope: c.cityForm ? 'Party committees and mayoral and city council candidates; excludes other town candidates' : 'Party committees; excludes candidate committees',
       } : {}),
     },
-    history,
+    history: [],
     ledger: [...ledger, ...(pol ? pol.ledger.slice(0, LEDGER_POLITICAL_MAX) : [])],
     sources: [
       { label: `MA Division of Local Services, Schedule A general fund revenue and expenditures, FY ${year}`, url: GF_PAGE },
+      { label: `MA Division of Local Services, Schedule A special revenue, capital projects and enterprise fund revenue and expenditures, FY ${year}`, url: OTHER_PAGE },
       ...(a.excise ? [{ label: `MA Division of Local Services, local receipts (actual excise collections), FY ${year}`, url: RECEIPTS_PAGE }] : []),
       ...(debt != null ? [{ label: `MA Division of Local Services, total outstanding long-term debt (Schedule A Part 10), FY ${debtYear}`, url: DEBT_PAGE }] : []),
       { label: 'MA Division of Local Services, Schedule A reports (history back to 2014)', url: SCHEDULE_A },
@@ -156,10 +155,9 @@ function buildTown(code, t, report) {
       ...(pol ? [{ label: `MA Office of Campaign and Political Finance, receipts of ${t.name}'s party committees${c.cityForm ? ' and city candidates' : ''} since ${OCPF_SINCE.slice(0, 4)}`, url: OCPF_URL }] : []),
     ],
     notes: [
-      `Actual general-fund results for the fiscal year ended June 30, ${year}, as reported to the MA Division of Local Services on Schedule A, not a budget.`,
+      `Actual results for the fiscal year ended June 30, ${year}, as reported to the MA Division of Local Services on Schedule A, not a budget.`,
       ...(year !== latest ? [`FY ${year} is the latest year with actual excise collections on file, which are needed to separate property tax from other local taxes. FY ${latest} totals are in the history.`] : []),
       'Includes public schools. Massachusetts cities and towns pay for their schools and their share of any regional school district through the town budget, where most other states have separate school districts, so spending and property tax per resident run higher than in those states.',
-      'Covers the general fund. Water, sewer and other enterprise funds, and fire, water and other districts inside the town, are separate and not included.',
       ...(debt != null ? [`Debt is all long-term debt the town reported outstanding at the end of FY ${debtYear} (Schedule A Part 10), including school construction and any water, sewer or other enterprise fund borrowing.`] : []),
       a.excise
         ? `"Taxes" on Schedule A include motor vehicle and other local excises (${money(a.excise)}), which are shown as other local taxes. The rest, with penalties and interest, is shown as property tax.`
@@ -173,6 +171,10 @@ function buildTown(code, t, report) {
       'Transparency practices have not been checked yet, so they are not scored.',
     ],
   };
+  const o = applyOtherFunds(town, t, OTHER_PAGE);
+  report.unmapped.push(...o.other.unmapped);
+  if (!o.other.totals.revenue && !o.other.totals.spending) report.noOther.push(`${t.name} (FY ${year})`);
+  return town;
 }
 
 const countyKey = (n) => n.replace(/ County$/, '');
@@ -184,7 +186,7 @@ if (unmatched.length) console.error(`No Census match: ${unmatched.join(', ')}`);
 const index = existsSync(join(OUT, 'index.json')) ? JSON.parse(readFileSync(join(OUT, 'index.json'), 'utf8')) : { files: [] };
 mkdirSync(OUT, { recursive: true });
 for (const county of pick) {
-  const report = { skipped: [], mismatch: [], noTaxSplit: [], older: [], late: [] };
+  const report = { skipped: [], mismatch: [], noTaxSplit: [], older: [], late: [], noOther: [], unmapped: [] };
   const towns = Object.entries(dls).filter(([, t]) => countyKey(counties[census.get(t.name)?.county] || '') === county)
     .map(([code, t]) => buildTown(code, t, report)).filter(Boolean).sort((x, y) => x.name.localeCompare(y.name));
   const file = `ma-${slugify(county)}.json`;
@@ -193,5 +195,5 @@ for (const county of pick) {
   index.files.sort();
   writeFileSync(join(OUT, 'index.json'), `${JSON.stringify(index, null, 2)}\n`);
   const types = towns.reduce((m, t) => ({ ...m, [t.type]: (m[t.type] || 0) + 1 }), {});
-  console.log(JSON.stringify({ county, towns: towns.length, types, ...report }));
+  console.log(JSON.stringify({ county, towns: towns.length, types, ...report, unmapped: [...new Set(report.unmapped)] }));
 }

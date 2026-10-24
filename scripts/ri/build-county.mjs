@@ -5,14 +5,16 @@
 //   node scripts/ri/fetch-erts.mjs                       # campaign finance (optional)
 //   node scripts/ri/build-county.mjs --county Newport    (or --all)
 //
-// Figures are audited actual results each city and town reports to the Division of Municipal
-// Finance under the state's uniform chart of accounts (Municipal Transparency Portal).
+// Figures are audited actual results each city and town, and each town school department,
+// reports to the Division of Municipal Finance under the state's uniform chart of accounts
+// (Municipal Transparency Portal). See schools.mjs for how the two are combined.
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs, parseCSV, slugify } from '../lib.mjs';
 import { aggregateRi, revenueKey, spendingKey } from './mtp-map.mjs';
+import { applySchools, groupMtp } from './schools.mjs';
 import { townMatcher, localFilers, recipientTown, summarizeRiReceipts, ERTS_URL } from './erts-map.mjs';
 import { MTP_PAGE } from './download.mjs';
 
@@ -40,18 +42,12 @@ for (const r of pop.filter((p) => p.sumlev === '061')) {
 }
 const match = townMatcher([...census.keys()]);
 
-// Municipal Transparency Portal rows by town and fiscal year. School districts are separate entities.
+// Municipal Transparency Portal rows by town and fiscal year, and each town school department's.
+const mtp = groupMtp(parseCSV(readFileSync(join(RAW, 'mtp.csv'), 'utf8')));
 const byTown = new Map();
-for (const r of parseCSV(readFileSync(join(RAW, 'mtp.csv'), 'utf8'))) {
-  const e = Number(r.entity);
-  if (!(e >= 1010 && e <= 1390) || /school district/i.test(r.entity_description) || r.report_description !== 'Municipal Data Report') continue;
-  const town = match(r.entity_description);
-  if (!town) continue;
-  const t = byTown.get(town) || byTown.set(town, { code: r.entity, years: {} }).get(town);
-  (t.years[r.fiscal_year] ||= []).push({
-    control: r.control_description, department: r.department_description, group: r.group_description,
-    cls: r.class_description, account: r.account_description, amount: r.amount,
-  });
+for (const [code, t] of mtp.towns) {
+  const town = match(t.name);
+  if (town) byTown.set(town, { code: String(code), years: t.years, schools: mtp.schools.get(code) || {} });
 }
 
 // Political money: PAC contributions to local candidates and party city and town committees.
@@ -93,7 +89,6 @@ function buildTown(name, t, report) {
   }
   if (Number(year) < Number(Object.keys(byTown.get('Providence')?.years || { [year]: 1 }).sort().at(-1))) report.older.push(`${name} (FY ${year})`);
 
-  const history = years.map((y) => ({ year: Number(y), revenue: Math.round(sum(t.years[y], 'Revenue')), spending: Math.round(sum(t.years[y], 'Expenditures')), basis: 'actual' }));
 
   // Ledger: revenue by account, spending by department (with its groups).
   const date = `${year}-06-30`;
@@ -133,7 +128,7 @@ function buildTown(name, t, report) {
   const display = `${c.kind} of ${name}`;
   const asOf = new Date().toISOString().slice(0, 10);
   const ex = a.excluded;
-  return {
+  const town = {
     id: slugify(`${display} ri`),
     name: display,
     state: 'RI',
@@ -155,18 +150,17 @@ function buildTown(name, t, report) {
       scope: 'Municipal funds under the uniform chart of accounts; schools shown as the town appropriation',
       ...(pol ? { politicalPeriod: `Since ${ERTS_SINCE.slice(0, 4)}; retrieved ${asOf}`, politicalScope: 'Local candidates and party city and town committees; excludes filers who also ran for state office' } : {}),
     },
-    history,
+    history: [],
     ledger: [...ledger, ...(pol ? pol.ledger.slice(0, LEDGER_POLITICAL_MAX) : [])],
     sources: [
       { label: `RI Division of Municipal Finance, Municipal Transparency Portal: audited actual revenue and spending, FY ${year}`, url: MTP_PAGE },
-      { label: 'RI Municipal Transparency Portal (history back to FY 2016)', url: MTP_PORTAL },
+      { label: 'RI Municipal Transparency Portal (history back to FY 2016), including town school departments', url: MTP_PORTAL },
       { label: `U.S. Census Bureau ${POP_YEAR.slice(-4)} population estimates`, url: POP_PAGE },
       { label: 'U.S. Census Bureau 2024 Gazetteer (map location)', url: GAZ_PAGE },
       ...(pol ? [{ label: `RI Board of Elections, PAC contributions to ${name}'s local candidates and party committees since ${ERTS_SINCE.slice(0, 4)}`, url: ERTS_URL }] : []),
     ],
     notes: [
       `Audited actual results for the fiscal year ended June 30, ${year}, as reported to the RI Division of Municipal Finance under the state's uniform chart of accounts, not a budget.`,
-      `Includes the town's appropriation to its schools (${money(a.spending.education || 0)}). Rhode Island school departments and regional school districts report separately, and state school aid goes to them directly, so total school spending is higher than shown.`,
       'Fire districts, water and sewer authorities and other independent districts are separate and not included.',
       ...(ex.financingSources || ex.financingUses ? [`Left out: other financing sources such as bond proceeds and transfers in (${money(ex.financingSources)}) and transfers out (${money(ex.financingUses)}), which are not new revenue or spending.`] : []),
       ...(a.benefitsSpread ? [`Retiree health benefits (OPEB) and the benefits, pension contributions, insurance and claims the town records under general government (${money(a.benefitsSpread)} together) are spread across the town's own departments in proportion to their size, as in other states. Schools and debt service are left out of that spread.`] : []),
@@ -179,6 +173,8 @@ function buildTown(name, t, report) {
       'Transparency practices have not been checked yet, so they are not scored.',
     ],
   };
+  if (!applySchools(town, t.years, t.schools, MTP_PAGE)) report.noSchools.push(`${name} (FY ${year})`);
+  return town;
 }
 
 const countyKey = (n) => n.replace(/ County$/, '');
@@ -190,7 +186,7 @@ if (missing.length) console.error(`No transparency portal data: ${missing.join('
 const index = existsSync(join(OUT, 'index.json')) ? JSON.parse(readFileSync(join(OUT, 'index.json'), 'utf8')) : { files: [] };
 mkdirSync(OUT, { recursive: true });
 for (const county of pick) {
-  const report = { skipped: [], mismatch: [], unmapped: [], older: [] };
+  const report = { skipped: [], mismatch: [], unmapped: [], older: [], noSchools: [] };
   const towns = [...byTown].filter(([n]) => countyKey(counties[census.get(n)?.county] || '') === county)
     .map(([n, t]) => buildTown(n, t, report)).filter(Boolean).sort((x, y) => x.name.localeCompare(y.name));
   const file = `ri-${slugify(county)}.json`;

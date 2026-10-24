@@ -1612,3 +1612,74 @@ test('real data passes the data checks', () => {
   for (const id of Object.keys(KNOWN_DATA_ERRORS)) if (!seen.has(id)) failures.push(`${id}: listed in known-data-errors.json but passes`);
   assert.deepEqual(failures, []);
 });
+
+import { aggregateMaOther, applyOtherFunds } from '../scripts/ma/dls-map.mjs';
+import { applySchools, groupMtp } from '../scripts/ri/schools.mjs';
+import { applyUtilities, utilityKey } from '../scripts/ct/utilities.mjs';
+
+test('MA other funds map by column, spread shared spending and can be re-applied', () => {
+  const year = {
+    FedGrants: { revenue: { 'Total Revenues': 50 }, spending: { 'Federal Education Grants': 40, 'Other Federal Grants': 10, 'Total Expenditures': 50 } },
+    EntFunds: { revenue: { Water: 80, 'Total Revenues': 80 }, spending: { Water: 70, 'Total Expenditures': 70 } },
+    CapProjects: { revenue: { 'Total Revenues': 5 }, spending: { Schools: 25, 'Total Expenditures': 25 } },
+  };
+  const o = aggregateMaOther(year);
+  assert.deepEqual(o.revenue, { federalGrants: 50, utilityCharges: 80, grants: 5 });
+  assert.deepEqual(o.spending, { education: 65, shared: 10, utilities: 70 });
+  assert.deepEqual(o.totals, { revenue: 135, spending: 145 });
+  const town = { fiscalYear: 2025, revenue: { propertyTax: 300 }, spending: { education: 200, publicSafety: 100 }, ledger: [], notes: ['Actual results.', 'Includes public schools.'], reporting: { scope: 'General fund; includes schools' } };
+  const t = { gf: { 2025: { revenue: { 'Total Revenues': 300 }, spending: { 'Total Expenditures': 300 } } }, other: { 2025: year } };
+  applyOtherFunds(town, t, 'src');
+  applyOtherFunds(town, t, 'src');
+  assert.equal(Object.values(town.revenue).reduce((a, b) => a + b, 0), 435);
+  assert.equal(Object.values(town.spending).reduce((a, b) => a + b, 0), 445);
+  assert.equal(town.revenue.utilityCharges, 80);
+  assert.equal(town.borrowed, 20);
+  assert.equal(town.ledger.filter((e) => e.flow === 'out').reduce((a, e) => a + e.amount, 0), 145);
+  assert.deepEqual(town.history, [{ year: 2025, revenue: 435, spending: 445, basis: 'actual' }]);
+  assert.match(town.notes[2], /^Covers the general fund, special revenue funds/);
+  assert.match(town.reporting.scope, /special revenue, capital and enterprise/);
+});
+
+test('RI school departments add their revenue and spending once, without the appropriation', () => {
+  const row = (entity, name, fy, control, extra) => ({ report_description: 'Municipal Data Report', entity: String(entity), entity_description: name, fiscal_year: String(fy), control_description: control, department_description: '', group_description: '', class_description: '', account_description: '', amount: '0', ...extra });
+  const rows = [2023, 2024].flatMap((fy) => [
+    row(1350, 'Warwick', fy, 'Revenue', { amount: '300' }),
+    row(1350, 'Warwick', fy, 'Expenditures', { account_description: 'Local Appropriation for Education', amount: '140' }),
+    row(1350, 'Warwick', fy, 'Expenditures', { amount: '160' }),
+    row(350, 'Warwick school district', fy, 'Revenue', { class_description: 'Municipal Education Appropriation', amount: '140' }),
+    row(350, 'Warwick school district', fy, 'Revenue', { group_description: 'State Aid', amount: '50' }),
+    row(350, 'Warwick school district', fy, 'Revenue', { group_description: 'Federal Aid', amount: '10' }),
+    row(350, 'Warwick school district', fy, 'Expenditures', { amount: '200' }),
+  ]);
+  const mtp = groupMtp(rows);
+  const town = { fiscalYear: 2024, revenue: { propertyTax: 300 }, spending: { education: 140, publicSafety: 160 }, ledger: [], notes: ['Audited.', 'Includes the town\'s appropriation to its schools ($140).'], reporting: { scope: 'Municipal funds under the uniform chart of accounts; schools shown as the town appropriation' } };
+  applySchools(town, mtp.towns.get(1350).years, mtp.schools.get(1350), 'src');
+  applySchools(town, mtp.towns.get(1350).years, mtp.schools.get(1350), 'src');
+  assert.deepEqual(town.revenue, { propertyTax: 300, stateAid: 50, federalGrants: 10 });
+  assert.deepEqual(town.spending, { education: 200, publicSafety: 160 });
+  assert.deepEqual(town.history.map((h) => [h.year, h.revenue, h.spending]), [[2023, 360, 360], [2024, 360, 360]]);
+  assert.equal(town.notes.length, 2);
+  assert.match(town.notes[1], /^Includes the school department/);
+  assert.match(town.reporting.scope, /town school department/);
+});
+
+test('CT town-owned utilities are added when material, for the same year, and can be re-applied', () => {
+  assert.equal(utilityKey('City of Groton'), 'groton city');
+  assert.equal(utilityKey('WALLINGFORD TOWN'), 'wallingford town');
+  const t = { town: {}, fs: { 2022: { d_15_total_revenues: '100', d_26_total_expenditures: '90' }, 2023: { d_15_total_revenues: '110', d_26_total_expenditures: '100' } } };
+  const make = () => ({ fiscalYear: 2023, revenue: { propertyTax: 110 }, spending: { administration: 100 }, ledger: [], notes: ['Actual.', 'Covers the town\'s general fund. Water, sewer and other enterprise funds and independent authorities are separate.'] });
+  const town = make();
+  const util = { 2022: { revenue: 40, spending: 30, kinds: ['electric'] }, 2023: { revenue: 50, spending: 45, kinds: ['water', 'electric'] } };
+  applyUtilities(town, t, util);
+  applyUtilities(town, t, util);
+  assert.deepEqual(town.revenue, { propertyTax: 110, utilityCharges: 50 });
+  assert.deepEqual(town.spending, { administration: 100, utilities: 45 });
+  assert.deepEqual(town.history.map((h) => [h.year, h.revenue, h.spending]), [[2022, 140, 120], [2023, 160, 145]]);
+  assert.match(town.notes[2], /^Includes town-owned water and electric utilities/);
+  // A few dollars of Census utility money leave the town as it was.
+  const small = make();
+  applyUtilities(small, t, { 2023: { revenue: 1, spending: 1, kinds: ['water'] } });
+  assert.deepEqual(small.revenue, { propertyTax: 110 });
+  assert.equal(small.history.length, 2);
+});
