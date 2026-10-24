@@ -9,6 +9,7 @@ const ROWS = [
   { label: 'Total money in', get: (e) => e.s.totals.revenue, fmt: (v) => money(v, { compact: true }) },
   { label: 'Share not from property tax', get: (e) => e.s.totals.nonPropertyShare, fmt: (v) => `${Math.round(v * 100)}%` },
   { label: 'Total money out', get: (e) => e.s.totals.spending, fmt: (v) => money(v, { compact: true }) },
+  { label: 'Of which taxes passed to schools & county', get: (e) => e.s.totals.passThroughIn, fmt: (v) => (v ? money(v, { compact: true }) : '—') },
   { label: 'Service dollars per resident', get: (e) => e.s.totals.directPerResident, fmt: (v) => money(v), better: 'high' },
   { label: 'Share of spending on services', get: (e) => e.s.totals.directShare, fmt: (v) => `${Math.round(v * 100)}%`, better: 'high' },
   { label: 'Administration & consultants', get: (e) => e.s.totals.adminShare, fmt: (v) => `${Math.round(v * 100)}%`, better: 'low' },

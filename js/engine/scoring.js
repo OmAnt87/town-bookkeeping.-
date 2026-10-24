@@ -22,6 +22,12 @@ export function totals(town) {
   const influence = sum(town.influence);
   const propertyTax = town.revenue?.propertyTax || 0;
   const reserves = REVENUE_CATEGORIES.filter((c) => c.reserve).reduce((a, c) => a + (town.revenue?.[c.key] || 0), 0);
+  // Taxes collected for and paid over to other governments: part of money in
+  // and out, but every share and per-resident measure uses the town's own money.
+  const passThroughIn = REVENUE_CATEGORIES.filter((c) => c.passThrough).reduce((a, c) => a + (town.revenue?.[c.key] || 0), 0);
+  const passThroughOut = SPENDING_CATEGORIES.filter((c) => c.passThrough).reduce((a, c) => a + (town.spending?.[c.key] || 0), 0);
+  const ownRevenue = revenue - passThroughIn;
+  const ownSpending = spending - passThroughOut;
   // Red-flag payments filed under a service line (a Flock contract under
   // police, say) are moved out of direct services and into red flags.
   const flaggedInDirect = redFlagEntries(town)
@@ -45,13 +51,17 @@ export function totals(town) {
     influence,
     propertyTax,
     reserves,
-    nonPropertyRevenue: revenue - propertyTax - reserves,
-    nonPropertyShare: revenue ? (revenue - propertyTax - reserves) / revenue : 0,
+    passThroughIn,
+    passThroughOut,
+    ownRevenue,
+    ownSpending,
+    nonPropertyRevenue: ownRevenue - propertyTax - reserves,
+    nonPropertyShare: ownRevenue ? (ownRevenue - propertyTax - reserves) / ownRevenue : 0,
     directSpending: directNet,
     redFlagSpending,
     taxBreaks,
     // Red-flag spending plus revenue given away, against what the town spends.
-    redFlagShare: spending ? (redFlagSpending + taxBreaks) / spending : 0,
+    redFlagShare: ownSpending ? (redFlagSpending + taxBreaks) / ownSpending : 0,
     redFlagPerResident: (redFlagSpending + taxBreaks) / pop,
     redFlagKnown: hasRedFlagData(town),
     documentedRedFlags: documented.length,
@@ -67,13 +77,19 @@ export function totals(town) {
     adminShare: municipal > 0
       ? ((town.spending?.administration || 0) + (town.spending?.consultants || 0)) / municipal
       : 0,
-    spendingPerResident: spending / pop,
+    spendingPerResident: ownSpending / pop,
     directPerResident: directNet / pop,
     influencePerResident: influence / pop,
     debtPerResident: (town.debt || 0) / pop,
-    balance: revenue - spending,
+    balance: ownRevenue - ownSpending,
   };
 }
+
+// What the services and overhead shares leave out, for the score breakdown.
+const leftOut = (t) => {
+  if (t.municipalSpending >= t.spending) return '';
+  return t.passThroughOut >= t.spending - t.municipalSpending ? ' (not counting school and county taxes paid over)' : ' (not counting schools)';
+};
 
 const notItemized = (_t, town) => (town.spending?.otherSpending > 0
   ? 'Not scored: part of this town\'s spending is reported only as a total, not by department'
@@ -88,7 +104,7 @@ export const COMPONENTS = [
     max: 25,
     available: (t, town) => t.municipalSpending > 0 && !(town.spending?.otherSpending > 0),
     measure: (t) => scale(t.directShare, 0.5, 0.88),
-    detail: (t) => `${pct(t.directShare)} of spending goes to direct services${t.municipalSpending < t.spending ? ' (not counting schools)' : ''}`,
+    detail: (t) => `${pct(t.directShare)} of spending goes to direct services${leftOut(t)}`,
     unavailable: notItemized,
   },
   {
@@ -97,7 +113,7 @@ export const COMPONENTS = [
     max: 10,
     available: (t, town) => t.municipalSpending > 0 && !(town.spending?.otherSpending > 0),
     measure: (t) => scale(t.adminShare, 0.3, 0.06),
-    detail: (t) => `${pct(t.adminShare)} spent on administration and consultants${t.municipalSpending < t.spending ? ' (not counting schools)' : ''}`,
+    detail: (t) => `${pct(t.adminShare)} spent on administration and consultants${leftOut(t)}`,
     unavailable: notItemized,
   },
   {
@@ -137,13 +153,13 @@ export const COMPONENTS = [
     key: 'fiscal',
     label: 'Fiscal health',
     max: 15,
-    available: (t, town) => typeof town.debt === 'number' && t.revenue > 0,
+    available: (t, town) => typeof town.debt === 'number' && t.ownRevenue > 0,
     measure: (t) =>
       0.65 * scale(t.debtPerResident, 6000, 300) +
-      0.35 * scale(t.revenue ? t.balance / t.revenue : 0, -0.1, 0.02),
+      0.35 * scale(t.ownRevenue ? t.balance / t.ownRevenue : 0, -0.1, 0.02),
     detail: (t) =>
       `$${Math.round(t.debtPerResident).toLocaleString('en-US')} debt per resident, ` +
-      `${t.balance >= 0 ? 'surplus' : 'deficit'} of ${pct(Math.abs(t.revenue ? t.balance / t.revenue : 0))}`,
+      `${t.balance >= 0 ? 'surplus' : 'deficit'} of ${pct(Math.abs(t.ownRevenue ? t.balance / t.ownRevenue : 0))}`,
   },
 ];
 

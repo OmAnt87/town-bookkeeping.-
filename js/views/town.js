@@ -27,10 +27,10 @@ export function renderTown(root, state, id) {
   const rank = [...peers].sort((a, b) => b.s.score - a.s.score).findIndex((x) => x.town.id === id) + 1;
   const peerLabel = isVerified(town) ? 'towns with verified data' : 'demo towns';
 
-  const rev = revenueRows(town).map((r) => ({ ...r, color: r.propertyTax ? 'var(--series-property)' : r.reserve ? 'var(--baseline)' : 'var(--series-in)' }));
-  const revOrder = (r) => (r.propertyTax ? 0 : r.reserve ? 2 : 1);
+  const rev = revenueRows(town).map((r) => ({ ...r, color: r.propertyTax ? 'var(--series-property)' : r.reserve || r.passThrough ? 'var(--baseline)' : 'var(--series-in)' }));
+  const revOrder = (r) => (r.propertyTax ? 0 : r.passThrough ? 3 : r.reserve ? 2 : 1);
   rev.sort((a, b) => revOrder(a) - revOrder(b) || b.amount - a.amount);
-  const spendOrder = (r) => (r.direct ? 0 : r.redFlag ? 2 : 1);
+  const spendOrder = (r) => (r.direct ? 0 : r.passThrough ? 3 : r.redFlag ? 2 : 1);
   const spend = spendingRows(town)
     .map((r) => ({ ...r, label: r.redFlag ? `⚠ ${r.label}` : r.label, color: r.direct ? 'var(--series-in)' : r.redFlag ? 'var(--bad)' : r.outsideShares ? 'var(--baseline)' : r.unitemized ? 'var(--series-property)' : 'var(--series-overhead)' }))
     .sort((a, b) => spendOrder(a) - spendOrder(b) || b.amount - a.amount);
@@ -47,14 +47,25 @@ export function renderTown(root, state, id) {
   const cams = town.surveillanceMap;
   const schools = town.spending?.education || 0;
   const unitemized = town.spending?.otherSpending || 0;
-  const overhead = Math.max(0, t.spending - t.directSpending - t.redFlagSpending - schools - unitemized);
+  const overhead = Math.max(0, t.spending - t.directSpending - t.redFlagSpending - schools - unitemized - t.passThroughOut);
   const outSegments = [
     { label: 'Direct services', amount: t.directSpending, color: 'var(--series-in)' },
     { label: 'Overhead & debt', amount: overhead, color: 'var(--series-overhead)' },
     ...(schools ? [{ label: 'Schools', amount: schools, color: 'var(--baseline)' }] : []),
     ...(unitemized ? [{ label: 'Not broken down', amount: unitemized, color: 'var(--series-property)' }] : []),
     ...(t.redFlagSpending ? [{ label: 'Surveillance & corporate deals', amount: t.redFlagSpending, color: 'var(--bad)' }] : []),
+    ...(t.passThroughOut ? [{ label: 'Paid to schools & county', amount: t.passThroughOut, color: 'var(--baseline)' }] : []),
   ];
+  const inSegments = [
+    { label: 'Property tax', amount: t.propertyTax, color: 'var(--series-property)' },
+    { label: 'Other sources', amount: t.nonPropertyRevenue, color: 'var(--series-in)' },
+    ...(t.reserves ? [{ label: 'Surplus from prior years', amount: t.reserves, color: 'var(--baseline)' }] : []),
+    ...(t.passThroughIn ? [{ label: 'Collected for schools & county', amount: t.passThroughIn, color: 'var(--baseline)' }] : []),
+  ];
+  // Money a town collects for other governments and pays over (New Jersey).
+  const passNote = t.passThroughIn
+    ? `<p class="small muted" style="margin:0 0 12px">Includes ${money(t.passThroughIn, { compact: true })} of school-district, county and fire-district taxes the town collects on the property-tax bill and pays over to those governments. They are not the town's own money, so the score and per-resident figures leave them out.</p>`
+    : '';
   const corpLobbying = town.influence?.corporateLobbying || 0;
   const bizDonations = town.influence?.developerContributions || 0;
   const hasInfluence = town.influence && Object.keys(town.influence).length > 0;
@@ -62,7 +73,7 @@ export function renderTown(root, state, id) {
   const NA = '<div class="v muted" style="font-size:18px">Not available</div>';
   const infl = influenceRows(town).filter((r) => r.key in (town.influence || {})).map((r) => ({ ...r, color: r.key === 'corporateLobbying' ? 'var(--bad)' : 'var(--grade-f)' }));
   const pctOf = (v) => `${Math.round(v * 100)}%`;
-  const biggestNonProp = rev.filter((r) => !r.propertyTax && !r.reserve).sort((a, b) => b.amount - a.amount)[0];
+  const biggestNonProp = rev.filter((r) => !r.propertyTax && !r.reserve && !r.passThrough).sort((a, b) => b.amount - a.amount)[0];
 
   root.innerHTML = `
   <div class="page">
@@ -112,9 +123,9 @@ export function renderTown(root, state, id) {
     </section>
 
     <section class="tiles" aria-label="Key numbers">
-      <div class="tile"><div class="k">Total money in</div><div class="v num">${money(t.revenue, { compact: true })}</div><div class="s">${money(t.revenue / town.population)} per resident</div></div>
-      <div class="tile"><div class="k">Not from property tax</div><div class="v num">${money(t.nonPropertyRevenue, { compact: true })}</div><div class="s">${pctOf(t.nonPropertyShare)} of all revenue</div></div>
-      <div class="tile"><div class="k">Services per resident</div><div class="v num">${money(t.directPerResident)}</div><div class="s">${unitemized ? 'Spending not fully broken down' : `${pctOf(t.directShare)} of ${schools ? 'non-school ' : ''}spending`}</div></div>
+      <div class="tile"><div class="k">Total money in</div><div class="v num">${money(t.revenue, { compact: true })}</div><div class="s">${t.passThroughIn ? `${money(t.ownRevenue, { compact: true })} for the town itself` : `${money(t.revenue / town.population)} per resident`}</div></div>
+      <div class="tile"><div class="k">Not from property tax</div><div class="v num">${money(t.nonPropertyRevenue, { compact: true })}</div><div class="s">${pctOf(t.nonPropertyShare)} of ${t.passThroughIn ? "the town's own" : 'all'} revenue</div></div>
+      <div class="tile"><div class="k">Services per resident</div><div class="v num">${money(t.directPerResident)}</div><div class="s">${unitemized ? 'Spending not fully broken down' : `${pctOf(t.directShare)} of ${schools ? 'non-school ' : t.passThroughOut ? "the town's own " : ''}spending`}</div></div>
       <div class="tile"><div class="k">Political money</div>${hasInfluence ? `<div class="v num">${money(t.influence, { compact: true })}</div><div class="s">${money(t.influencePerResident)} per resident</div>` : `${NA}<div class="s">No filings loaded yet</div>`}</div>
       <div class="tile${t.redFlagCount ? ' tile-flag' : ''}"><div class="k">Surveillance & corporate giveaways</div>${!t.redFlagKnown ? `${NA}<div class="s">Not checked yet</div>`
         : t.redFlagSpending + t.taxBreaks > 0 ? `<div class="v num">${money(t.redFlagSpending + t.taxBreaks, { compact: true })}</div><div class="s">${money(t.redFlagPerResident)} per resident</div>`
@@ -125,8 +136,9 @@ export function renderTown(root, state, id) {
     <div class="grid grid-2" style="margin-bottom:16px">
       <section class="card" aria-labelledby="h-in">
         <div class="card-head"><div><h2 id="h-in">Money in</h2><p>Every revenue stream, with property tax set apart.</p></div><span class="num muted small">${money(t.revenue)}</span></div>
-        ${splitBar([{ label: 'Property tax', amount: t.propertyTax, color: 'var(--series-property)' }, { label: 'Other sources', amount: t.nonPropertyRevenue, color: 'var(--series-in)' }, ...(t.reserves ? [{ label: 'Surplus from prior years', amount: t.reserves, color: 'var(--baseline)' }] : [])])}
-        ${legendKey([{ label: `Property tax ${pctOf(t.propertyTax / (t.revenue || 1))}`, color: 'var(--series-property)' }, { label: `Other sources ${pctOf(t.nonPropertyShare)}`, color: 'var(--series-in)' }, ...(t.reserves ? [{ label: `Surplus from prior years ${pctOf(t.reserves / t.revenue)}`, color: 'var(--baseline)' }] : [])])}
+        ${passNote}
+        ${splitBar(inSegments)}
+        ${legendKey(inSegments.map((g) => ({ label: `${g.label} ${pctOf(g.amount / (t.revenue || 1))}`, color: g.color })))}
         ${barList(rev, { total: t.revenue })}
         ${biggestNonProp ? `<p class="small muted" style="margin:14px 0 0">Largest source besides property tax: <strong>${biggestNonProp.label.toLowerCase()}</strong> (${money(biggestNonProp.amount, { compact: true })}).${town.revenue.borrowing ? ` Borrowing brought in ${money(town.revenue.borrowing, { compact: true })} that must be repaid with interest.` : ''}</p>` : ''}
         ${breaks.length ? `<div class="flag-box">
@@ -140,6 +152,7 @@ export function renderTown(root, state, id) {
       </section>
       <section class="card" aria-labelledby="h-out">
         <div class="card-head"><div><h2 id="h-out">Money out</h2><p>Direct services versus overhead and debt.</p></div><span class="num muted small">${money(t.spending)}</span></div>
+        ${t.passThroughOut ? `<p class="small muted" style="margin:0 0 12px">Includes ${money(t.passThroughOut, { compact: true })} of property taxes paid over to the school districts, county and fire districts. Service and overhead shares are measured on the town's own spending.</p>` : ''}
         ${splitBar(outSegments)}
         ${legendKey(outSegments.map((g) => ({ label: `${g.label} ${pctOf(g.amount / (t.spending || 1))}`, color: g.color })))}
         ${barList(spend, { total: t.spending })}
@@ -292,7 +305,7 @@ function plainSummary(town, s) {
   const school = town.spending?.education > 0;
   return `<strong>In plain terms:</strong> ${town.spending?.otherSpending > 0
     ? `${escapeHTML(town.name)} reports part of its spending only as a total, so how much reaches residents directly is not known.`
-    : `for every $100 ${escapeHTML(town.name)} spends${school ? ' outside its schools' : ''}, about $${per100} pays for services residents use directly.`}
+    : `for every $100 ${escapeHTML(town.name)} spends${school ? ' outside its schools' : t.passThroughOut ? ' of its own money' : ''}, about $${per100} pays for services residents use directly.`}
     Its strongest area is <strong>${strongest.label.toLowerCase()}</strong>; its weakest is <strong>${weakest.label.toLowerCase()}</strong>.${
     t.redFlagSpending + t.taxBreaks > 0
       ? ` It also put <strong>$${(t.redFlagShare * 100).toFixed(2)} of every $100</strong> toward surveillance, corporate deals or corporate tax breaks.`
