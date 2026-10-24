@@ -15,6 +15,10 @@ export const REVENUE_CATEGORIES = [
   // Money saved in earlier years and spent this year. Not new revenue, so it is
   // left out of the "not from property tax" figure.
   { key: 'surplusUsed', label: 'Surplus from prior years', reserve: true },
+  // New Jersey towns collect the whole property-tax bill and pay the school,
+  // county and fire-district shares over to those governments. Counted in money
+  // in and out, but not the town's own money, so the score leaves it out.
+  { key: 'taxesForOtherGovernments', label: 'School, county & fire-district taxes collected', passThrough: true },
 ];
 
 // `direct: true` marks spending that delivers a service residents use directly.
@@ -31,6 +35,8 @@ export const SPENDING_CATEGORIES = [
   // services and overhead shares, so towns are compared on the same municipal
   // services everywhere.
   { key: 'education', label: 'Schools (board of education)', direct: false, outsideShares: true },
+  // The pass-through taxes above, paid over to school districts, the county and fire districts.
+  { key: 'paidToOtherGovernments', label: 'School, county & fire-district taxes paid over', direct: false, outsideShares: true, passThrough: true },
   { key: 'administration', label: 'General administration', direct: false },
   { key: 'consultants', label: 'Outside consultants & legal', direct: false },
   { key: 'debtService', label: 'Debt service (interest & principal)', direct: false },

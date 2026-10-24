@@ -26,6 +26,7 @@ export function metric(entry, requested) {
   }
   if (['revenue', 'nonPropertyRevenue', 'nonPropertyShare'].includes(key)) available = hasNumbers(town.revenue) && (key !== 'nonPropertyShare' || s.totals.revenue > 0);
   if (key === 'spending') available = hasNumbers(town.spending);
+  if (key === 'passThroughIn') { available = value > 0; reason = 'The town does not collect taxes for other governments'; }
   available = Boolean(available && Number.isFinite(value));
   return { key, value: available ? value : null, available, reason: available ? '' : reason };
 }
@@ -37,7 +38,7 @@ export function metricText(entry, key) {
   if (['population', 'redFlagCount'].includes(m.key)) return number(m.value);
   if (['directShare', 'adminShare', 'nonPropertyShare'].includes(m.key)) return `${Math.round(m.value * 100)}%`;
   if (['influencePerResident', 'redFlagPerResident'].includes(m.key)) return `$${m.value.toFixed(2)}`;
-  return money(m.value, { compact: ['revenue', 'spending', 'influence', 'corporateMoney', 'taxBreaks', 'nonPropertyRevenue'].includes(m.key) });
+  return money(m.value, { compact: ['revenue', 'spending', 'passThroughIn', 'influence', 'corporateMoney', 'taxBreaks', 'nonPropertyRevenue'].includes(m.key) });
 }
 export function compareValues(a, b, direction = 'desc') {
   if (a == null || b == null) return a == null ? (b == null ? 0 : 1) : -1;

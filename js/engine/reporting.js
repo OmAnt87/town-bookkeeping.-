@@ -4,7 +4,7 @@ export function reportingFor(town) {
   if (town.reporting) return town.reporting;
   const text = [...(town.sources || []).map((s) => s.label), ...(town.notes || [])].join(' ');
   let basis, scope;
-  if (town.njMuniCode && /User Friendly Budget/.test(text)) { basis = 'Adopted budget'; scope = 'Municipal operations; excludes schools and county'; }
+  if (town.njMuniCode && /User Friendly Budget/.test(text)) { basis = 'Adopted budget'; scope = town.revenue?.taxesForOtherGovernments > 0 ? 'Municipal operations, plus school, county and fire-district taxes collected and paid over' : 'Municipal operations; excludes schools and county'; }
   if (town.nyOscCode && /State Comptroller/.test(text)) { basis = 'Actual results'; scope = 'Municipal reporting funds; excludes pass-through funds'; }
   if (/PA DCED Statewide Municipal Annual Financial Reports/.test(text)) { basis = 'Actual results'; scope = /combined city and county/.test(text) ? 'Combined city and county' : 'Municipal operations; excludes independent authorities'; }
   if (/CT OPM Municipal Fiscal Indicators/.test(text)) { basis = 'Actual results'; scope = town.name === 'City of Groton' ? 'General fund; City of Groton' : 'General fund; includes schools'; }

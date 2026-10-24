@@ -7,7 +7,8 @@ let picks = ['', '', ''];
 const ROWS = [
   ['score', 'Community Return Score', 'high'], ['population', 'Population'],
   ['revenue', 'Total money in'], ['nonPropertyShare', 'Share not from property tax'],
-  ['spending', 'Total money out'], ['directPerResident', 'Service dollars per resident', 'high'],
+  ['spending', 'Total money out'], ['passThroughIn', 'Of which taxes passed to schools & county'],
+  ['directPerResident', 'Service dollars per resident', 'high'],
   ['directShare', 'Share of spending on services', 'high'], ['adminShare', 'Administration & consultants', 'low'],
   ['redFlagPerResident', 'Surveillance & corporate giveaways per resident', 'low'],
   ['redFlagCount', 'Documented red flags', 'low'], ['taxBreaks', 'Corporate tax breaks', 'low'],

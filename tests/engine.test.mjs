@@ -263,7 +263,7 @@ test('missing sections are not scored instead of counting as zero', () => {
   assert.ok(s.score >= 0 && s.score <= 100);
 });
 
-import { aggregateUFB, groupFor, linesOf, totalOf, UFB_REVENUE, UFB_APPROPRIATION, normName } from '../scripts/nj/ufb-map.mjs';
+import { aggregateUFB, groupFor, linesOf, totalOf, UFB_REVENUE, UFB_APPROPRIATION, normName, passThroughOf, cleanBudgetHistory, applyPassThrough } from '../scripts/nj/ufb-map.mjs';
 
 test('NJ UFB service types aggregate and reconcile', () => {
   const rec = {
@@ -294,6 +294,67 @@ test('NJ UFB maps every known label and normalizes names', () => {
   for (const v of [...Object.values(UFB_REVENUE), ...Object.values(UFB_APPROPRIATION)]) assert.ok(v);
   assert.equal(normName("Atlantic City city"), normName('Atlantic City'));
   assert.equal(normName('Holmdel township'), 'holmdel');
+});
+
+test('taxes collected for other governments count in money in and out but not the score', () => {
+  const own = base();
+  const nj = base();
+  nj.revenue.taxesForOtherGovernments = 15_000_000;
+  nj.spending.paidToOtherGovernments = 15_000_000;
+  const a = totals(own);
+  const b = totals(nj);
+  assert.equal(b.revenue, a.revenue + 15_000_000);
+  assert.equal(b.spending, a.spending + 15_000_000);
+  assert.equal(b.ownRevenue, a.revenue);
+  for (const k of ['nonPropertyShare', 'directShare', 'adminShare', 'spendingPerResident', 'redFlagShare', 'balance']) assert.equal(b[k], a[k], k);
+  assert.equal(scoreTown(nj).score, scoreTown(own).score);
+});
+
+const ufbRec = (fields) => ({
+  '2025 Total Realized Revenues (Actual)|Local Tax for Municipal Purposes': 20_000_000,
+  '2025 Total Realized Revenues (Actual)|Minimum Library Tax': 1_000_000,
+  '2025 Total Realized Revenues (Actual)|Receipts from Delinquent Taxes': 500_000,
+  ...fields,
+});
+
+test('NJ pass-through taxes come from tax collections, guarding against bad units', () => {
+  const C = 'Tax Collections and Delinquent Taxes|Total Tax Revenue, Collections CY 2025';
+  const L = 'Tax Collections and Delinquent Taxes|Total Tax Levy, CY 2025';
+  assert.deepEqual(passThroughOf(ufbRec({ [C]: 80_000_000, [L]: 81_000_000 })), { amount: 60_000_000, total: 81_000_000, basis: 'levy' });
+  // Levy keyed in thousands: collections are used.
+  assert.equal(passThroughOf(ufbRec({ [C]: 80_000_000, [L]: 81_000 })).amount, 59_000_000);
+  assert.equal(passThroughOf(ufbRec({ [C]: 'No data', [L]: 'No data' })), null);
+  // Collections no bigger than the municipal tax are not a full tax bill.
+  assert.equal(passThroughOf(ufbRec({ [C]: 21_500_000 })), null);
+});
+
+test('NJ history drops stale copies and partial totals', () => {
+  const h = [2016, 2017, 2018, 2019, 2020].map((year) => ({ year, revenue: 100 + year - 2016, spending: 95, basis: 'actual' }));
+  h[2] = { ...h[1], year: 2018 }; // copied forward
+  h[3] = { ...h[3], revenue: 20 }; // partial
+  const { history, dropped } = cleanBudgetHistory(h);
+  assert.deepEqual(dropped, [2018, 2019]);
+  assert.deepEqual(history.map((x) => x.year), [2016, 2017, 2020]);
+});
+
+test('NJ pass-through is added to totals, history and notes, and can be re-applied', () => {
+  const C = (y) => `Tax Collections and Delinquent Taxes|Total Tax Revenue, Collections CY ${y}`;
+  const filing = (y, coll) => ({
+    [`${y - 1} Total Realized Revenues (Actual)|Local Tax for Municipal Purposes`]: 20,
+    [`${y - 1} Total Realized Revenues (Actual)|Total`]: 50 + (y - 2024),
+    [`${y - 1} Total Modified Appropriations by Service Type (Prior Year)|Public Safety`]: 48 + (y - 2024),
+    [C(y - 1)]: coll,
+  });
+  const filings = new Map([[2024, filing(2024, 80)], [2025, filing(2025, 84)], [2026, filing(2026, 90)]]);
+  const town = { fiscalYear: 2026, revenue: { propertyTax: 30, stateAid: 25 }, spending: { publicSafety: 55 }, notes: ['Covers the municipal budget only.'], ledger: [] };
+  applyPassThrough(town, filings, 'src');
+  applyPassThrough(town, filings, 'src');
+  assert.equal(town.revenue.taxesForOtherGovernments, 70);
+  assert.equal(town.spending.paidToOtherGovernments, 70);
+  assert.deepEqual(town.history.map((h) => [h.year, h.revenue, h.spending]), [[2023, 110, 108], [2024, 115, 113], [2025, 122, 120], [2026, 125, 125]]);
+  assert.equal(town.ledger.length, 2);
+  assert.equal(town.notes.length, 1);
+  assert.match(town.notes[0], /^Includes \$70 of school-district/);
 });
 
 test('surplus from prior years is not counted as non-property-tax revenue', () => {
