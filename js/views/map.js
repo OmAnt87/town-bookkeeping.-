@@ -155,7 +155,7 @@ export function renderMap(root, state, _arg, query) {
           </div>
         </div>
       </div>
-      ${state.towns.some((t) => isVerified(t.town)) ? `<label class="check"><input type="checkbox" id="m-real" ${ui.realOnly ? 'checked' : ''}> Only towns with public-record data</label>` : ''}
+      ${state.towns.some((t) => isVerified(t.town)) ? `<label class="check switch"><input type="checkbox" role="switch" id="m-real" ${ui.realOnly ? 'checked' : ''}> Only towns with public-record data</label>` : ''}
       <div class="field">
         <label for="m-metric">Color towns by</label>
         <select id="m-metric" class="select">${MAP_METRICS.map(
@@ -428,6 +428,12 @@ export function renderMap(root, state, _arg, query) {
     input.dispatchEvent(new Event('input'));
     input.focus();
   });
+  // A changed filter's new value slides into its box.
+  root.querySelectorAll('.map-side select').forEach((sel) => sel.addEventListener('change', () => {
+    sel.classList.remove('changed');
+    void sel.offsetWidth;
+    sel.classList.add('changed');
+  }));
   $('#m-state').addEventListener('change', (e) => {
     ui.state = e.target.value;
     draw();
