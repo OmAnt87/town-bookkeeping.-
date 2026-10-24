@@ -76,7 +76,7 @@ export function renderRankings(root, state, _arg, query) {
         <button type="button" data-rank="score" aria-pressed="${ui.sort === 'score'}">Rank by score</button>
         <button type="button" data-rank="peer" aria-pressed="${ui.sort === 'peer'}">Rank among peers</button>
       </div>
-      ${anyReal ? `<label class="check"><input type="checkbox" id="r-real" ${ui.realOnly ? 'checked' : ''}> Public-record data only</label>` : ''}
+      ${anyReal ? `<label class="check switch"><input type="checkbox" role="switch" id="r-real" ${ui.realOnly ? 'checked' : ''}> Public-record data only</label>` : ''}
       <button class="btn btn-quiet" id="r-reset" type="button">Clear filters</button>
     </div>
     <p class="small muted" id="r-note"></p>
