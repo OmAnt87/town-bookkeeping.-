@@ -588,7 +588,19 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
   /* Fill backwards only, so hover lifts on tiles still work after the slide. */
   .reveal { opacity: 0; }
   .reveal.in { opacity: 1; animation: card-in 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; animation-delay: calc(var(--i, 0) * 60ms); }
-  .reveal:not(.in) .track > span, .reveal:not(.in) .bar-row .bar > span { animation-play-state: paused; }
+  /* Report charts: split bars wipe in, trend lines draw, end dots pop, grid fades. */
+  .split { animation: wipe-in 0.7s ease-out both; }
+  .chart .line { stroke-dasharray: 1; animation: draw-line 1s cubic-bezier(0.3, 0.7, 0.4, 1) both; }
+  .chart .line + .line { animation-delay: 0.15s; }
+  @keyframes draw-line { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  .chart svg > .dot { transform-box: fill-box; transform-origin: center; animation: dot-pop 0.3s 0.9s cubic-bezier(0.3, 1.4, 0.5, 1) backwards; }
+  @keyframes dot-pop { from { transform: scale(0); } }
+  .chart .grid-line, .chart .axis-text { animation: chart-fade 0.4s ease-out backwards; }
+  @keyframes chart-fade { from { opacity: 0; } }
+  /* Wait until the section scrolls into view, so lower charts play when you reach them. */
+  .reveal:not(.in) .track > span, .reveal:not(.in) .bar-row .bar > span,
+  .reveal:not(.in) .split, .reveal:not(.in) .chart .line, .reveal:not(.in) .chart svg > .dot,
+  .reveal:not(.in) .chart .grid-line, .reveal:not(.in) .chart .axis-text { animation-play-state: paused; }
   @keyframes card-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
   .state-card.in .grade-dist { animation: wipe-in 0.7s ease-out both; animation-delay: calc(var(--i, 0) * 60ms + 0.15s); }
   @keyframes wipe-in { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
