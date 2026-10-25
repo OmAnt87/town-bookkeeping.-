@@ -2,6 +2,8 @@
 // Downloads the raw Massachusetts inputs into data/raw/ma/ (gitignored):
 //   - Division of Local Services (DLS) Schedule A general fund revenue and spending by function,
 //     one Excel export per fiscal year, for all 351 cities and towns
+//   - DLS Schedule A special revenue (federal and state grants, receipts reserved, revolving and
+//     other special revenue), capital projects and enterprise fund revenue and spending, by type
 //   - DLS local receipts (motor vehicle and other excise), to separate property tax from other local taxes
 //   - DLS long-term debt
 //   - Census 2025 population estimates for MA towns and the 2024 gazetteer (county subdivisions)
@@ -45,6 +47,34 @@ for (let y = from; y <= thisYear; y++) {
     try {
       dlsExport('ScheduleA.GeneralFund', 'xtGenFund', { islAmountType: type, islYear: y }, join(RAW, `gf-${type.toLowerCase()}-${y}.xlsx`));
     } catch (e) { console.error(`FY ${y} ${type}: ${e.message}`); }
+  }
+}
+// Other funds: special revenue (one table per tab of the report), capital projects and
+// enterprise funds. These reports list towns by name rather than code, so the export is posted
+// without a town filter, which returns every town.
+const OTHER_FUNDS = [
+  ...[['FedGrants', 'xtFedGrants'], ['StateGrants', 'xtStateGrants'], ['RRA', 'xtRecResApp'], ['RevFunds', 'xtRevFunds'], ['OtherSpecRev', 'xtOtherSpRev']]
+    .map(([tab, table], i) => ['ScheduleA.Special_Rev_Funds.SpecialRevFunds', table, (y) => ({ tabFederalGrants: tab, rdActiveTabIndex_tabFederalGrants: i, islYear: y })]),
+  ['ScheduleA.CapitalProjects.CapitalProjects', 'xtCapProjects', (y) => ({ iclYear: y })],
+  ['ScheduleA.EnterpriseFunds.EnterpriseFunds', 'xtEntFunds', (y) => ({ iclYear: y })],
+];
+function dlsExportAll(report, table, form, out) {
+  if (existsSync(out) && !args.force) return console.log(`cached ${out}`);
+  curl(`${DLS}?rdReport=${report}`);
+  const body = Object.entries(form).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&');
+  const url = `${DLS}?rdReport=${report}&rdReportFormat=NativeExcel&rdExportTableID=${table}&rdExportFilename=export&rdShowGridlines=True&rdExcelOutputFormat=Excel2007`;
+  const loc = curl('-o', '/dev/null', '-w', '%{redirect_url}', '--data', body, url).trim();
+  if (!loc) throw new Error(`${report} ${table}: no export redirect`);
+  curl('-o', out, loc);
+  console.log(`DLS ${table} ${JSON.stringify(form)} -> ${out}`);
+}
+for (let y = from; y <= thisYear; y++) {
+  for (const type of ['Revenues', 'Expenditures']) {
+    for (const [report, table, form] of OTHER_FUNDS) {
+      try {
+        dlsExportAll(report, table, { ...form(y), islAmountType: type }, join(RAW, `other-${table.slice(2)}-${type.toLowerCase()}-${y}.xlsx`));
+      } catch (e) { console.error(`FY ${y} ${table} ${type}: ${e.message}`); }
+    }
   }
 }
 // Actual local receipts (all receipt types) for the years the report offers.

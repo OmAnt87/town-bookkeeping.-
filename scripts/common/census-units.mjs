@@ -19,12 +19,13 @@ import { existsSync, readdirSync, renameSync, rmSync, readFileSync } from 'node:
 import { join } from 'node:path';
 
 export const CENSUS_PAGE = (y) => `https://www.census.gov/data/datasets/${y}/econ/local/public-use-datasets.html`;
-export const UNIT_FILE = (y) => `https://www2.census.gov/programs-surveys/gov-finances/tables/${y}/${y}_Individual_Unit_File${y === 2022 ? '' : 's'}.zip`;
+export const UNIT_FILE = (y) => `https://www2.census.gov/programs-surveys/gov-finances/tables/${y}/${y}_Individual_Unit_File${y >= 2023 ? 's' : ''}.zip`;
 export const YEARS = [2022, 2023, 2024];
 
-// Downloads each year's unit files into <raw>/units-<year>/ as items.txt and pid.txt.
-export function downloadUnits(raw, curl, force = false) {
-  for (const y of YEARS) {
+// Downloads each year's unit files (2017 on share one layout) into <raw>/units-<year>/ as
+// items.txt and pid.txt.
+export function downloadUnits(raw, curl, force = false, years = YEARS) {
+  for (const y of years) {
     const dir = join(raw, `units-${y}`);
     if (existsSync(dir) && !force) { console.log(`cached ${dir}`); continue; }
     const zip = join(raw, `units-${y}.zip`);
@@ -45,10 +46,10 @@ export function downloadUnits(raw, curl, force = false) {
 // { [year]: Map(id -> { id, kind: 'county'|'muni'|'township', name, place, fyEnd, items[] }) }.
 // place is the FIPS place code (county subdivision code for a township), or '99' + county
 // FIPS for a county.
-export function readUnits(raw, stateFips, types = '12') {
+export function readUnits(raw, stateFips, types = '12', years = YEARS) {
   const units = {};
   const re = new RegExp(`^${stateFips}[${types}]`);
-  for (const y of YEARS) {
+  for (const y of years) {
     const dir = join(raw, `units-${y}`);
     const u = new Map();
     for (const l of readFileSync(join(dir, 'pid.txt'), 'latin1').split(/\r?\n/)) {

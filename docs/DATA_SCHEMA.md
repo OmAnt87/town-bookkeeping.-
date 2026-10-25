@@ -25,7 +25,7 @@ Required fields: `id`, `name`, `state`, `lat`, `lng`, `population`, `revenue`, `
 | `debt` | number | Total outstanding debt, USD |
 | `borrowed` | number | New borrowing during the year that paid for spending (bond proceeds, not refinancing), USD. Not counted as revenue; the data checks count it when comparing money in with money out |
 | `history` | array | `{ year, revenue, spending }`. Two or more entries draw the trend chart |
-| `ledger` | array | `{ date, flow, category, counterparty, description, amount, source }` |
+| `ledger` | array | `{ date, flow, category, counterparty, description, amount, source }`, plus an optional `split` (`{ <category>: amount }`) when one row's amount is spread over several categories in the totals |
 | `sources` | array | `{ label, url }` |
 | `notes` | array of strings | Plain-language notes on how the figures were prepared, shown under Sources |
 

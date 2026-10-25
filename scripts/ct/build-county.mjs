@@ -8,7 +8,8 @@
 //   node scripts/ct/build-county.mjs --county Capitol   (or --all)
 //
 // Figures are actual general-fund results reported to the CT Office of Policy and
-// Management (Municipal Fiscal Indicators), published on data.ct.gov.
+// Management (Municipal Fiscal Indicators), published on data.ct.gov, plus town-owned
+// utilities from the Census Bureau's finance survey (see utilities.mjs).
 
 import { reportingFor } from '../../js/engine/reporting.js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
@@ -16,6 +17,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs, parseCSV, slugify } from '../lib.mjs';
 import { aggregateCt, CT_REVENUE, CT_DEPARTMENT } from './mfi-map.mjs';
+import { applyUtilities, censusUtilities, utilityKey } from './utilities.mjs';
 import { committeeMatcher, summarizeCtReceipts, SEEC_URL } from './seec-map.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -38,6 +40,7 @@ const regions = Object.fromEntries(pop.filter((r) => r.sumlev === '050').map((r)
 const gaz = (file, xcol) => new Map(readFileSync(join(RAW, file), 'utf8').split('\n').slice(1)
   .map((l) => l.split('\t').map((c) => c.trim())).filter((c) => c[0] === 'CT').map((c) => [c[1], [Number(c[xcol]), Number(c[xcol + 1])]]));
 const cousubXY = gaz('2024_Gaz_cousubs_national.txt', 9);
+const utilities = censusUtilities(RAW);
 const placeXY = gaz('2024_Gaz_place_national.txt', 10);
 
 // Group the state's rows by town.
@@ -104,12 +107,6 @@ function buildTown(name, t, report) {
   if (!matched) report.notItemized.push(`${name} (${t.ucoa[latest] ? 'department total differs' : 'no department breakdown'})`);
   else if (year !== latest) report.older.push(`${name} (${year})`);
 
-  // History: the state's town data series (2014 on), replaced by the financial statements where both exist.
-  const hist = {};
-  for (const [y, r] of Object.entries(t.town)) hist[y] = { revenue: Number(r.total_revenues), spending: Number(r.total_expenditures) };
-  for (const [y, r] of Object.entries(t.fs)) hist[y] = { revenue: Number(r.d_15_total_revenues), spending: Number(r.d_26_total_expenditures) };
-  const history = Object.entries(hist).filter(([, h]) => h.revenue > 0 && h.spending > 0).sort(([x], [y]) => x - y)
-    .map(([y, h]) => ({ year: Number(y), revenue: Math.round(h.revenue), spending: Math.round(h.spending), basis: 'actual' }));
 
   const debt = fs.i_4_total_long_term_bonded == null ? null : Math.round(Number(fs.i_4_total_long_term_bonded));
   const date = `${year}-06-30`;
@@ -138,7 +135,7 @@ function buildTown(name, t, report) {
   const pol = seecFiles.length && !isCityInTown ? summarizeCtReceipts(seecByTown.get(name) || [], SEEC_SINCE) : null;
   const display = census.kind === 'Town' ? `Town of ${titleCase(census.base)}` : `${census.kind} of ${titleCase(census.base)}`;
   const ex = a.excluded;
-  return {
+  const town = {
     id: slugify(`${display} ct`),
     name: display,
     state: 'CT',
@@ -156,7 +153,7 @@ function buildTown(name, t, report) {
     spending: a.spending,
     ...(debt != null ? { debt } : {}),
     ...(pol ? { influence: pol.influence, topDonors: pol.topDonors } : {}),
-    history,
+    history: [],
     ledger: [...ledger, ...(pol ? pol.ledger.slice(0, LEDGER_POLITICAL_MAX) : [])],
     sources: [
       { label: `CT OPM Municipal Fiscal Indicators: financial statement information, FY ${year} (revenue, spending, debt)`, url: FS_PAGE },
@@ -187,6 +184,8 @@ function buildTown(name, t, report) {
       'Transparency practices have not been checked yet, so they are not scored.',
     ],
   };
+  if (applyUtilities(town, t, utilities.get(utilityKey(display)))) report.utilities.push(display);
+  return town;
 }
 
 const regionKey = (r) => r.replace(/ Planning Region$/, '');
@@ -206,7 +205,7 @@ if (built.has('unknown')) console.error(`No Census match: ${built.get('unknown')
 const index = existsSync(join(OUT, 'index.json')) ? JSON.parse(readFileSync(join(OUT, 'index.json'), 'utf8')) : { files: [] };
 mkdirSync(OUT, { recursive: true });
 for (const region of pick) {
-  const report = reports[region] = { skipped: [], mismatch: [], unmapped: [], notItemized: [], older: [] };
+  const report = reports[region] = { skipped: [], mismatch: [], unmapped: [], notItemized: [], older: [], utilities: [] };
   const towns = (built.get(region) || []).map((n) => buildTown(n, byTown.get(n), report)).filter(Boolean).sort((x, y) => x.name.localeCompare(y.name));
   const file = `ct-${slugify(region)}.json`;
   for (const town of towns) town.reporting = reportingFor(town);

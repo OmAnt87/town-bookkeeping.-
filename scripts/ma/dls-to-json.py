@@ -4,8 +4,10 @@
     pip install openpyxl && python3 scripts/ma/dls-to-json.py
 
 Output: { "towns": { "<DOR code>": { "name": ..., "gf": { "<year>": { "revenue": {...}, "spending": {...} } },
+          "other": { "<year>": { "<fund table>": { "revenue": {...}, "spending": {...} } } },
           "receipts": { "<year>": { "<receipt type>": actual } }, "debt": { "<year>": outstanding } } } }
-Years where a town reported nothing (all zero) are left out.
+Fund tables are the special revenue tabs (FedGrants, StateGrants, RecResApp, RevFunds, OtherSpRev),
+CapProjects and EntFunds. Years where a town reported nothing (all zero) are left out.
 """
 import glob
 import json
@@ -27,7 +29,7 @@ towns = {}
 
 
 def town(r):
-    return towns.setdefault(str(r['DOR Code']).zfill(3), {'name': r['Municipality'], 'gf': {}, 'receipts': {}, 'debt': {}})
+    return towns.setdefault(str(r['DOR Code']).zfill(3), {'name': r['Municipality'], 'gf': {}, 'other': {}, 'receipts': {}, 'debt': {}})
 
 
 for path in sorted(glob.glob(os.path.join(RAW, 'gf-*-*.xlsx'))):
@@ -36,6 +38,13 @@ for path in sorted(glob.glob(os.path.join(RAW, 'gf-*-*.xlsx'))):
         vals = {k: v or 0 for k, v in r.items() if k not in ('DOR Code', 'Municipality', 'Fiscal Year')}
         if any(vals.values()):
             town(r)['gf'].setdefault(year, {})['revenue' if kind == 'revenues' else 'spending'] = vals
+
+for path in sorted(glob.glob(os.path.join(RAW, 'other-*-*-*.xlsx'))):
+    table, kind, year = re.search(r'other-(\w+)-(revenues|expenditures)-(\d{4})', path).groups()
+    for r in rows(path):
+        vals = {k.strip(): v or 0 for k, v in r.items() if k not in ('DOR Code', 'Municipality', 'Fiscal Year')}
+        if any(vals.values()):
+            town(r)['other'].setdefault(year, {}).setdefault(table, {})['revenue' if kind == 'revenues' else 'spending'] = vals
 
 for path in sorted(glob.glob(os.path.join(RAW, 'local-receipts-*.xlsx'))):
     year = re.search(r'(\d{4})', os.path.basename(path)).group(1)

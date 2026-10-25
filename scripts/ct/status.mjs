@@ -5,6 +5,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseCSV, slugify, dataCheckBullets } from '../lib.mjs';
 import { totals } from '../../js/engine/scoring.js';
+import { UTILITY_COUNTERPARTY } from './utilities.mjs';
 import { redFlagLines, filingLines, stateTowns } from '../common/status.mjs';
 
 const allTowns = [];
@@ -15,6 +16,7 @@ const rows = [];
 const older = [];
 const notItemized = [];
 const admin = [];
+const withUtilities = [];
 let covered = 0;
 let withMoney = 0;
 let polTotal = 0;
@@ -32,6 +34,7 @@ for (const region of regions) {
   notItemized.push(...towns.filter((t) => t.spending.otherSpending).map((t) => t.name));
   for (const t of towns) if (!t.spending.otherSpending) admin.push(totals(t).adminShare);
   for (const t of towns) {
+    if (t.ledger?.some((e) => e.counterparty === UTILITY_COUNTERPARTY)) withUtilities.push(t.name);
     const v = Object.values(t.influence || {}).reduce((a, b) => a + b, 0);
     if (v > 0) withMoney++;
     polTotal += v;
@@ -53,6 +56,7 @@ ${rows.join('\n')}
 
 ## Sources
 - **Revenue, spending totals, debt:** CT Office of Policy and Management, Municipal Fiscal Indicators: [financial statement information, FY 2020-2023](https://data.ct.gov/d/d6pe-dw46) on data.ct.gov. General-fund actual results for fiscal years ending June 30, not budgets.
+- **Town-owned utilities:** U.S. Census Bureau, [Annual Survey of State and Local Government Finances](https://www.census.gov/programs-surveys/gov-finances.html) individual unit files, FY 2017 on, for the same fiscal year. Electric, water and gas utilities that towns own run as enterprise funds outside the general fund; ${withUtilities.length} towns have utilities of at least 2% of their own revenue, added to money in and out (${withUtilities.join(', ')}). Sewer funds are left out: some towns run them through the general fund, so adding them could count them twice. For these towns the trend starts in FY 2017, the first year with Census figures loaded.
 - **Spending by department:** Municipal Fiscal Indicators: [Uniform Chart of Accounts, FY 2020-2023](https://data.ct.gov/d/e2qt-k238). Used for a year only when its total matches the financial statements to the dollar.
 - **History:** Municipal Fiscal Indicators: [individual town data, 2014-2023](https://data.ct.gov/d/ej6f-y2wf).
 - **Population:** U.S. Census Bureau 2025 population estimates. **Map location:** Census 2024 Gazetteer.

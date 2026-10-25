@@ -7,7 +7,7 @@ export function reportingFor(town) {
   if (town.njMuniCode && /User Friendly Budget/.test(text)) { basis = 'Adopted budget'; scope = town.revenue?.taxesForOtherGovernments > 0 ? 'Municipal operations, plus school, county and fire-district taxes collected and paid over' : 'Municipal operations; excludes schools and county'; }
   if (town.nyOscCode && /State Comptroller/.test(text)) { basis = 'Actual results'; scope = 'Municipal reporting funds; excludes pass-through funds'; }
   if (/PA DCED Statewide Municipal Annual Financial Reports/.test(text)) { basis = 'Actual results'; scope = /combined city and county/.test(text) ? 'Combined city and county' : 'Municipal operations; excludes independent authorities'; }
-  if (/CT OPM Municipal Fiscal Indicators/.test(text)) { basis = 'Actual results'; scope = town.name === 'City of Groton' ? 'General fund; City of Groton' : 'General fund; includes schools'; }
+  if (/CT OPM Municipal Fiscal Indicators/.test(text)) { basis = 'Actual results'; scope = `General fund${town.revenue?.utilityCharges > 0 ? ' and town-owned utilities' : ''}; ${town.name === 'City of Groton' ? 'City of Groton' : 'includes schools'}`; }
   if (!basis) return {};
   const politicalSource = (town.sources || []).find((s) => /since \d{4}/.test(s.label) && /ELEC|Elections|party town committees/.test(s.label));
   return {
