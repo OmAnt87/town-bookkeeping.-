@@ -95,7 +95,7 @@ export function renderTown(root, state, id) {
   const biggestNonProp = rev.filter((r) => !r.propertyTax && !r.reserve && !r.passThrough).sort((a, b) => b.amount - a.amount)[0];
 
   root.innerHTML = `
-  <div class="page">
+  <div class="page town-report">
     <div class="report-head">
       <div>
         <div class="crumbs"><a href="#/map">Map</a> / <a href="#/rankings">Rankings</a> / ${escapeHTML(town.name)}</div>
@@ -108,7 +108,7 @@ export function renderTown(root, state, id) {
           <span>Data as of ${town.asOf ? formatDate(town.asOf) : 'n/a'}</span>
         </div>
       </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div class="report-actions" style="display:flex;gap:8px;flex-wrap:wrap">
         <a class="btn" href="#/forum/${encodeURIComponent(town.id)}">Forum</a>
         <a class="btn" href="#/compare/${encodeURIComponent(town.id)}">Compare</a>
         <button class="btn" id="dl-report" type="button">${ICONS.download} Download data</button>
@@ -313,6 +313,10 @@ export function renderTown(root, state, id) {
     downloadFile(`${town.id}.json`, JSON.stringify({ towns: [town] }, null, 2), 'application/json'),
   );
   drawLedger();
+  // Header details, score parts and their bars follow each other in order.
+  root.querySelectorAll('.meta-row, .report-actions, .completeness, .components').forEach((list) => {
+    [...list.children].forEach((el, n) => el.style.setProperty('--n', String(n)));
+  });
   // Report sections slide in as they scroll into view.
   return revealOnScroll(root.querySelectorAll('.scorecard > .card, .tiles > .tile, section.card'));
 }
