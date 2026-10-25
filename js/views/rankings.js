@@ -33,13 +33,17 @@ export function renderRankings(root, state) {
       <div class="field"><label for="r-grade">Grade</label><select id="r-grade" class="select"><option value="all">All grades</option>${['A', 'B', 'C', 'D', 'F'].map((g) => `<option ${g === ui.grade ? 'selected' : ''}>${g}</option>`).join('')}</select></div>
       ${state.towns.some((t) => isVerified(t.town)) ? `<label class="check" style="align-self:center"><input type="checkbox" id="r-real" ${ui.realOnly ? 'checked' : ''}> Verified data only</label>` : ''}
     </div>
-    <div class="table-wrap"><table>
+    <div class="table-wrap"><table class="rank-table">
       <thead><tr><th>#</th><th>Town</th>${COLS.map((c) => `<th class="r"><button type="button" data-sort="${c.key}" aria-label="Sort by ${c.label}">${c.label} ${ICONS.sort}</button></th>`).join('')}</tr></thead>
       <tbody id="r-body"></tbody>
     </table></div>
+    <button class="btn" id="r-more" type="button" style="width:100%;margin-top:12px" hidden></button>
     <p class="small muted" id="r-count" style="margin-top:10px"></p>
   </div>`;
   const $ = (sel) => root.querySelector(sel);
+  // Render rows in pages: thousands of rows in the DOM make phones slow to paint and scroll.
+  const PAGE = 100;
+  let limit = PAGE;
 
   function rows() {
     const q = ui.q.trim().toLowerCase();
@@ -52,22 +56,27 @@ export function renderRankings(root, state) {
   function draw() {
     const list = rows();
     root.querySelectorAll('[data-sort]').forEach((b) => b.closest('th').setAttribute('aria-sort', b.dataset.sort === ui.sort ? (ui.dir === 'asc' ? 'ascending' : 'descending') : 'none'));
+    const shown = list.slice(0, limit);
     $('#r-body').innerHTML = list.length
-      ? list.map((t, i) => `<tr>
+      ? shown.map((t, i) => `<tr>
           <td class="num muted">${i + 1}</td>
           <td><div style="display:flex;gap:10px;align-items:center">${gradeBadge(t.s.grade)}<div><a href="#/town/${encodeURIComponent(t.town.id)}">${escapeHTML(t.town.name)}</a> ${verifiedPill(t.town)}<div class="small muted">${escapeHTML(t.town.county)}, ${t.town.state}</div></div></div></td>
           ${COLS.map((c) => `<td class="r num">${c.fmt(c.get(t))}</td>`).join('')}</tr>`).join('')
       : `<tr><td colspan="${COLS.length + 2}" class="empty">No towns match.</td></tr>`;
-    $('#r-count').textContent = `Showing ${list.length} of ${state.towns.length} towns.`;
+    $('#r-more').hidden = list.length <= shown.length;
+    $('#r-more').textContent = `Show more (${list.length - shown.length} left)`;
+    $('#r-count').textContent = `${list.length} of ${state.towns.length} towns match${shown.length < list.length ? `, showing the first ${shown.length}` : ''}.`;
   }
-  $('#r-q').addEventListener('input', (e) => { ui.q = e.target.value; draw(); });
-  $('#r-state').addEventListener('change', (e) => { ui.state = e.target.value; draw(); });
-  $('#r-real')?.addEventListener('change', (e) => { ui.realOnly = e.target.checked; draw(); });
-  $('#r-grade').addEventListener('change', (e) => { ui.grade = e.target.value; draw(); });
+  const redraw = () => { limit = PAGE; draw(); };
+  $('#r-q').addEventListener('input', (e) => { ui.q = e.target.value; redraw(); });
+  $('#r-state').addEventListener('change', (e) => { ui.state = e.target.value; redraw(); });
+  $('#r-real')?.addEventListener('change', (e) => { ui.realOnly = e.target.checked; redraw(); });
+  $('#r-grade').addEventListener('change', (e) => { ui.grade = e.target.value; redraw(); });
+  $('#r-more').addEventListener('click', () => { limit += PAGE; draw(); });
   root.querySelectorAll('[data-sort]').forEach((b) => b.addEventListener('click', () => {
     ui.dir = ui.sort === b.dataset.sort && ui.dir === 'desc' ? 'asc' : 'desc';
     ui.sort = b.dataset.sort;
-    draw();
+    redraw();
   }));
   $('#r-dl').addEventListener('click', () => downloadFile('town-rankings.csv', toCSV(rows(), [
     { label: 'Town', get: (t) => t.town.name },

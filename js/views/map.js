@@ -33,6 +33,8 @@ const TILE_OPTS = { maxNativeZoom: 16, maxZoom: 18 };
 
 const HEAT_GRADIENT = { 0.2: '#bfe6e0', 0.45: '#5cbfb1', 0.7: '#2a6fbd', 1: '#132a52' };
 const US_BOUNDS = [[25.5, -123.5], [48.5, -68]];
+const TOUCH = matchMedia('(pointer: coarse)').matches;
+const isStacked = () => matchMedia('(max-width: 860px)').matches;
 
 // State outlines sit underneath the tile layer, so the map stays readable
 // when tiles can't load (offline, blocked hosts).
@@ -114,6 +116,7 @@ export function renderMap(root, state) {
     </aside>
     <div class="map-wrap">
       <div id="map" role="region" aria-label="Map of towns"></div>
+      ${TOUCH ? '<div class="map-hint" aria-hidden="true">Use two fingers to move the map</div>' : ''}
       <div class="card map-card" id="m-card" hidden></div>
     </div>
   </div>`;
@@ -134,7 +137,8 @@ export function renderMap(root, state) {
   const LIST_PAGE = 100;
   let listLimit = LIST_PAGE;
   if (L) {
-    map = L.map('map', { zoomControl: true, minZoom: 2, zoomSnap: 0.25, worldCopyJump: true, preferCanvas: true });
+    // On touch screens one finger scrolls the page and two fingers move the map, so the map can't trap the page.
+    map = L.map('map', { zoomControl: true, minZoom: 2, zoomSnap: 0.25, worldCopyJump: true, preferCanvas: true, dragging: !TOUCH });
     map.fitBounds(US_BOUNDS);
     tiles = L.tileLayer(TILE_URL(isDark()), {
       ...TILE_OPTS,
@@ -297,7 +301,10 @@ export function renderMap(root, state) {
   $('#m-list').addEventListener('click', (e) => {
     if (e.target.closest('[data-more]')) { listLimit += LIST_PAGE; draw(true); return; }
     const b = e.target.closest('button[data-id]');
-    if (b) openCard(b.dataset.id);
+    if (!b) return;
+    openCard(b.dataset.id);
+    // On phones the map sits above the list; bring it back into view to show the selection.
+    if (isStacked()) window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
 
   const onTheme = () => {
