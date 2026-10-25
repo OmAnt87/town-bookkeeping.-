@@ -125,7 +125,7 @@ export function renderMap(root, state, _arg, query) {
   root.innerHTML = `
   <div class="map-layout">
     <aside class="map-side">
-      <div>
+      <div class="map-intro">
         <div class="eyebrow">Open data · Public records</div>
         <h1>See where your town’s money really goes</h1>
         <p class="intro">Each dot is a town. Color shows how well it turns tax and other revenue into services residents actually use. Pick a town for its full ledger and report card.</p>
@@ -176,6 +176,11 @@ export function renderMap(root, state, _arg, query) {
       <div class="card map-card" id="m-card" hidden></div>
     </div>
   </div>`;
+
+  // The sidebar opens in order: intro first, then the stat tiles, then each control below it.
+  root.querySelectorAll('.map-side, .map-intro, .hero-stats').forEach((list) => {
+    [...list.children].forEach((el, n) => el.style.setProperty('--n', String(n)));
+  });
 
   if (!window.L) {
     root.querySelector('#map').innerHTML = '<div class="empty">The map library could not load. Check your connection; the list and reports still work.</div>';
