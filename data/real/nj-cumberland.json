@@ -11,7 +11,7 @@
    "lng": -75.22859,
    "population": 27722,
    "fiscalYear": 2025,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "njMuniCode": "0601",
    "censusGeoid": "3401107600",
    "revenue": {
@@ -21,7 +21,8 @@
     "feesPermits": 300000,
     "otherRevenue": 3479969,
     "grants": 1296739,
-    "propertyTax": 17906420
+    "propertyTax": 17906420,
+    "taxesForOtherGovernments": 10619414
    },
    "spending": {
     "administration": 4681818,
@@ -30,74 +31,69 @@
     "healthServices": 452795,
     "parks": 2631044,
     "utilities": 13413760,
-    "debtService": 2555689
+    "debtService": 2555689,
+    "paidToOtherGovernments": 10619414
    },
    "debt": 10048171,
    "history": [
     {
-     "year": 2015,
-     "revenue": 36361342,
-     "spending": 34457179,
-     "basis": "actual"
-    },
-    {
      "year": 2016,
-     "revenue": 37371973,
-     "spending": 35755576,
+     "revenue": 46284374,
+     "spending": 44667977,
      "basis": "actual"
     },
     {
      "year": 2017,
-     "revenue": 37710861,
-     "spending": 35749928,
+     "revenue": 46991680,
+     "spending": 45030747,
      "basis": "actual"
     },
     {
      "year": 2018,
-     "revenue": 38331914,
-     "spending": 36461635,
+     "revenue": 47745842,
+     "spending": 45875563,
      "basis": "actual"
     },
     {
      "year": 2019,
-     "revenue": 40481883,
-     "spending": 38862914,
+     "revenue": 50176130,
+     "spending": 48557161,
      "basis": "actual"
     },
     {
      "year": 2020,
-     "revenue": 38882625,
-     "spending": 36167580,
+     "revenue": 48727148,
+     "spending": 46012103,
      "basis": "actual"
     },
     {
      "year": 2021,
-     "revenue": 39548522,
-     "spending": 36987917,
+     "revenue": 50290982,
+     "spending": 47730377,
      "basis": "actual"
     },
     {
      "year": 2022,
-     "revenue": 44332897,
-     "spending": 39651144,
+     "revenue": 54877002,
+     "spending": 50195249,
      "basis": "actual"
     },
     {
      "year": 2023,
-     "revenue": 50163768,
-     "spending": 46330940,
+     "revenue": 60308760,
+     "spending": 56475932,
      "basis": "actual"
     },
     {
      "year": 2024,
-     "revenue": 55467729,
-     "spending": 51329302,
+     "revenue": 66087143,
+     "spending": 61948716,
      "basis": "actual"
     },
     {
      "year": 2025,
-     "revenue": 46529864,
-     "spending": 46008476,
+     "revenue": 57149278,
+     "spending": 56627890,
      "basis": "budget"
     }
    ],
@@ -108,6 +104,24 @@
    },
    "topDonors": [],
    "ledger": [
+    {
+     "date": "2024-12-31",
+     "flow": "in",
+     "category": "taxesForOtherGovernments",
+     "counterparty": "Property-tax bill: other governments' share",
+     "description": "School, county and fire-district taxes (2024 tax levy of $26,140,880, less the municipal share) collected",
+     "amount": 10619414,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
+    {
+     "date": "2024-12-31",
+     "flow": "out",
+     "category": "paidToOtherGovernments",
+     "counterparty": "School districts, county and fire districts",
+     "description": "School, county and fire-district taxes (2024 tax levy of $26,140,880, less the municipal share) paid over",
+     "amount": 10619414,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
     {
      "date": "2025-01-01",
      "flow": "in",
@@ -359,15 +373,6 @@
      "description": "Debt",
      "amount": 1994686,
      "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
-    },
-    {
-     "date": "2025-01-01",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Adopted budget: appropriation",
-     "description": "Reserve for Uncollected Taxes (reserve, not counted as spending)",
-     "amount": 572580,
-     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
     }
    ],
    "sources": [
@@ -384,7 +389,7 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NJ ELEC campaign-finance filings: contributions to Bridgeton City municipal candidates since 2022-10-01 (ELEC location 0601)",
+     "label": "NJ ELEC campaign-finance filings: contributions to Bridgeton City municipal candidates since 2022-10-20 (ELEC location 0601)",
      "url": "https://www.njelecefilesearch.com/SearchContributionToEntity"
     },
     {
@@ -399,14 +404,20 @@
     }
    ],
    "notes": [
-    "Covers the municipal budget only. School-district and county taxes on the same property-tax bill belong to separate governments and are not included.",
+    "Includes $10,619,414 of school-district, county and fire-district taxes the town collects on the property-tax bill and pays over to those governments (2024, the latest year the state reports). They are counted in money in and out but left out of the score, which uses the town's own budget.",
     "Insurance, pension and social-security contributions and shared-service payments ($10,099,379) are spread across departments in proportion to their size.",
     "The reserve for uncollected taxes ($572,580) is set aside, not spent, so it is not counted as spending.",
-    "Political money counts PAC, business and union contributions to candidates for Bridgeton City municipal office and mayor reported to NJ ELEC since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
+    "Political money counts PAC, business and union contributions to candidates for Bridgeton City municipal office and mayor reported to NJ ELEC since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
     "Contractor pay-to-play disclosures and transparency practices have not been loaded yet; transparency is not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-01. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
-    "Red flags: 2 license-plate cameras are mapped inside Bridgeton City's borders in OpenStreetMap (0 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the town is the recorded operator, since many have no operator recorded."
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: 3 license-plate cameras are mapped inside Bridgeton City's borders in OpenStreetMap (0 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the town is the recorded operator, since many have no operator recorded."
    ],
+   "reporting": {
+    "basis": "Adopted budget",
+    "scope": "Municipal operations, plus school, county and fire-district taxes collected and paid over",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
    "redFlags": [
     {
      "kind": "surveillance",
@@ -422,10 +433,10 @@
     }
    ],
    "surveillanceMap": {
-    "cameras": 2,
+    "cameras": 3,
     "flock": 0,
     "townOperated": 0,
-    "asOf": "2026-10-01",
+    "asOf": "2026-10-20",
     "source": {
      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
      "url": "https://deflock.org/"
@@ -443,7 +454,7 @@
    "lng": -75.04534,
    "population": 4767,
    "fiscalYear": 2026,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "njMuniCode": "0602",
    "censusGeoid": "3401114710",
    "revenue": {
@@ -453,7 +464,8 @@
     "feesPermits": 85712,
     "otherRevenue": 82827,
     "grants": 366934,
-    "propertyTax": 2421162
+    "propertyTax": 2421162,
+    "taxesForOtherGovernments": 6829754
    },
    "spending": {
     "administration": 1054749,
@@ -462,80 +474,81 @@
     "healthServices": 144534,
     "parks": 31554,
     "utilities": 531912,
-    "debtService": 220682
+    "debtService": 220682,
+    "paidToOtherGovernments": 6829754
    },
    "debt": 3248900,
    "history": [
     {
      "year": 2015,
-     "revenue": 3472603,
-     "spending": 2930361,
+     "revenue": 8882176,
+     "spending": 8339934,
      "basis": "actual"
     },
     {
      "year": 2016,
-     "revenue": 3703444,
-     "spending": 2981359,
+     "revenue": 8853381,
+     "spending": 8131296,
      "basis": "actual"
     },
     {
      "year": 2017,
-     "revenue": 3475127,
-     "spending": 3077556,
+     "revenue": 9023645,
+     "spending": 8626074,
      "basis": "actual"
     },
     {
      "year": 2018,
-     "revenue": 3786588,
-     "spending": 3463094,
+     "revenue": 9725894,
+     "spending": 9402400,
      "basis": "actual"
     },
     {
      "year": 2019,
-     "revenue": 5508672,
-     "spending": 4718251,
+     "revenue": 11131301,
+     "spending": 10340880,
      "basis": "actual"
     },
     {
      "year": 2020,
-     "revenue": 4447584,
-     "spending": 2838649,
+     "revenue": 10598279,
+     "spending": 8989344,
      "basis": "actual"
     },
     {
      "year": 2021,
-     "revenue": 5551826,
-     "spending": 2845526,
+     "revenue": 11600565,
+     "spending": 8894265,
      "basis": "actual"
     },
     {
      "year": 2022,
-     "revenue": 5845260,
-     "spending": 2937983,
+     "revenue": 12013546,
+     "spending": 9106269,
      "basis": "actual"
     },
     {
      "year": 2023,
-     "revenue": 4603468,
-     "spending": 3109820,
+     "revenue": 10836379,
+     "spending": 9342731,
      "basis": "actual"
     },
     {
      "year": 2024,
-     "revenue": 6404703,
-     "spending": 3219322,
+     "revenue": 12682051,
+     "spending": 9496670,
      "basis": "actual"
     },
     {
      "year": 2025,
-     "revenue": 4426567,
-     "spending": 3259315,
+     "revenue": 11256321,
+     "spending": 10089069,
      "basis": "actual"
     },
     {
      "year": 2026,
-     "revenue": 4673910,
-     "spending": 3929968,
+     "revenue": 11503664,
+     "spending": 10759722,
      "basis": "budget"
     }
    ],
@@ -553,6 +566,24 @@
     }
    ],
    "ledger": [
+    {
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "taxesForOtherGovernments",
+     "counterparty": "Property-tax bill: other governments' share",
+     "description": "School, county and fire-district taxes (2025 tax levy of $8,665,086, less the municipal share) collected",
+     "amount": 6829754,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "paidToOtherGovernments",
+     "counterparty": "School districts, county and fire districts",
+     "description": "School, county and fire-district taxes (2025 tax levy of $8,665,086, less the municipal share) paid over",
+     "amount": 6829754,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
     {
      "date": "2026-01-01",
      "flow": "in",
@@ -779,15 +810,6 @@
      "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
     },
     {
-     "date": "2026-01-01",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Adopted budget: appropriation",
-     "description": "Reserve for Uncollected Taxes (reserve, not counted as spending)",
-     "amount": 743941,
-     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
-    },
-    {
      "date": "2026-05-01",
      "flow": "influence",
      "category": "developerContributions",
@@ -811,7 +833,7 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NJ ELEC campaign-finance filings: contributions to Commercial Township municipal candidates since 2022-10-01 (ELEC location 0602)",
+     "label": "NJ ELEC campaign-finance filings: contributions to Commercial Township municipal candidates since 2022-10-20 (ELEC location 0602)",
      "url": "https://www.njelecefilesearch.com/SearchContributionToEntity"
     },
     {
@@ -821,13 +843,19 @@
     }
    ],
    "notes": [
-    "Covers the municipal budget only. School-district and county taxes on the same property-tax bill belong to separate governments and are not included.",
+    "Includes $6,829,754 of school-district, county and fire-district taxes the town collects on the property-tax bill and pays over to those governments (2025, the latest year the state reports). They are counted in money in and out but left out of the score, which uses the town's own budget.",
     "Insurance, pension and social-security contributions and shared-service payments ($800,989) are spread across departments in proportion to their size.",
     "The reserve for uncollected taxes ($743,941) is set aside, not spent, so it is not counted as spending.",
-    "Political money counts PAC, business and union contributions to candidates for Commercial Township municipal office and mayor reported to NJ ELEC since 2022-10-01. Individual donors ($1,700 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
+    "Political money counts PAC, business and union contributions to candidates for Commercial Township municipal office and mayor reported to NJ ELEC since 2022-10-20. Individual donors ($1,700 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
     "Contractor pay-to-play disclosures and transparency practices have not been loaded yet; transparency is not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-01. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
+   "reporting": {
+    "basis": "Adopted budget",
+    "scope": "Municipal operations, plus school, county and fire-district taxes collected and paid over",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
    "redFlags": []
   },
   {
@@ -841,7 +869,7 @@
    "lng": -75.13199,
    "population": 3251,
    "fiscalYear": 2026,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "njMuniCode": "0603",
    "censusGeoid": "3401116900",
    "revenue": {
@@ -850,7 +878,8 @@
     "stateAid": 303989,
     "otherRevenue": 729218,
     "grants": 189555,
-    "propertyTax": 543215
+    "propertyTax": 543215,
+    "taxesForOtherGovernments": 7412027
    },
    "spending": {
     "administration": 946881,
@@ -859,80 +888,39 @@
     "healthServices": 61731,
     "parks": 35776,
     "utilities": 932,
-    "debtService": 148716
+    "debtService": 148716,
+    "paidToOtherGovernments": 7412027
    },
    "debt": 52745,
    "history": [
     {
-     "year": 2015,
-     "revenue": 1853066,
-     "spending": 1441189,
-     "basis": "actual"
-    },
-    {
      "year": 2016,
-     "revenue": 1941763,
-     "spending": 1440408,
-     "basis": "actual"
-    },
-    {
-     "year": 2017,
-     "revenue": 1831940,
-     "spending": 1511477,
-     "basis": "actual"
-    },
-    {
-     "year": 2018,
-     "revenue": 2024985,
-     "spending": 1703175,
-     "basis": "actual"
-    },
-    {
-     "year": 2019,
-     "revenue": 2568543,
-     "spending": 2211177,
-     "basis": "actual"
-    },
-    {
-     "year": 2020,
-     "revenue": 2249554,
-     "spending": 1681693,
+     "revenue": 8029517,
+     "spending": 7528162,
      "basis": "actual"
     },
     {
      "year": 2021,
-     "revenue": 2211132,
-     "spending": 1589975,
+     "revenue": 9219864,
+     "spending": 8598707,
      "basis": "actual"
     },
     {
      "year": 2022,
-     "revenue": 2704964,
-     "spending": 2220025,
-     "basis": "actual"
-    },
-    {
-     "year": 2023,
-     "revenue": 2881646,
-     "spending": 241500,
-     "basis": "actual"
-    },
-    {
-     "year": 2024,
-     "revenue": 2881646,
-     "spending": 241500,
+     "revenue": 9927254,
+     "spending": 9442315,
      "basis": "actual"
     },
     {
      "year": 2025,
-     "revenue": 3391659,
-     "spending": 2971140,
+     "revenue": 10803686,
+     "spending": 10383167,
      "basis": "actual"
     },
     {
      "year": 2026,
-     "revenue": 2384327,
-     "spending": 2145269,
+     "revenue": 9796354,
+     "spending": 9557296,
      "basis": "budget"
     }
    ],
@@ -943,6 +931,24 @@
    },
    "topDonors": [],
    "ledger": [
+    {
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "taxesForOtherGovernments",
+     "counterparty": "Property-tax bill: other governments' share",
+     "description": "School, county and fire-district taxes (2025 tax levy of $7,742,078, less the municipal share) collected",
+     "amount": 7412027,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "paidToOtherGovernments",
+     "counterparty": "School districts, county and fire districts",
+     "description": "School, county and fire-district taxes (2025 tax levy of $7,742,078, less the municipal share) paid over",
+     "amount": 7412027,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
     {
      "date": "2026-01-01",
      "flow": "in",
@@ -1149,15 +1155,6 @@
      "description": "Debt",
      "amount": 106000,
      "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
-    },
-    {
-     "date": "2026-01-01",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Adopted budget: appropriation",
-     "description": "Reserve for Uncollected Taxes (reserve, not counted as spending)",
-     "amount": 239059,
-     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
     }
    ],
    "sources": [
@@ -1174,7 +1171,7 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NJ ELEC campaign-finance filings: contributions to Deerfield Township municipal candidates since 2022-10-01 (ELEC location 0603)",
+     "label": "NJ ELEC campaign-finance filings: contributions to Deerfield Township municipal candidates since 2022-10-20 (ELEC location 0603)",
      "url": "https://www.njelecefilesearch.com/SearchContributionToEntity"
     },
     {
@@ -1184,13 +1181,19 @@
     }
    ],
    "notes": [
-    "Covers the municipal budget only. School-district and county taxes on the same property-tax bill belong to separate governments and are not included.",
+    "Includes $7,412,027 of school-district, county and fire-district taxes the town collects on the property-tax bill and pays over to those governments (2025, the latest year the state reports). They are counted in money in and out but left out of the score, which uses the town's own budget.",
     "Insurance, pension and social-security contributions and shared-service payments ($616,186) are spread across departments in proportion to their size.",
     "The reserve for uncollected taxes ($239,059) is set aside, not spent, so it is not counted as spending.",
-    "Political money counts PAC, business and union contributions to candidates for Deerfield Township municipal office and mayor reported to NJ ELEC since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
+    "Political money counts PAC, business and union contributions to candidates for Deerfield Township municipal office and mayor reported to NJ ELEC since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
     "Contractor pay-to-play disclosures and transparency practices have not been loaded yet; transparency is not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-01. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
+   "reporting": {
+    "basis": "Adopted budget",
+    "scope": "Municipal operations, plus school, county and fire-district taxes collected and paid over",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
    "redFlags": []
   },
   {
@@ -1204,7 +1207,7 @@
    "lng": -75.13332,
    "population": 1416,
    "fiscalYear": 2026,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "njMuniCode": "0604",
    "censusGeoid": "3401118220",
    "revenue": {
@@ -1213,7 +1216,8 @@
     "stateAid": 519337,
     "grants": 104655,
     "otherRevenue": 63947,
-    "propertyTax": 1078208
+    "propertyTax": 1078208,
+    "taxesForOtherGovernments": 4382745
    },
    "spending": {
     "administration": 793091,
@@ -1222,74 +1226,45 @@
     "healthServices": 28089,
     "parks": 1156,
     "utilities": 368871,
-    "debtService": 67598
+    "debtService": 67598,
+    "paidToOtherGovernments": 4382745
    },
    "debt": 1269710,
    "history": [
     {
      "year": 2015,
-     "revenue": 3833242,
-     "spending": 2648568,
+     "revenue": 7202065,
+     "spending": 6017391,
      "basis": "actual"
     },
     {
      "year": 2016,
-     "revenue": 1642130,
-     "spending": 973713,
+     "revenue": 5196689,
+     "spending": 4528272,
      "basis": "actual"
     },
     {
      "year": 2017,
-     "revenue": 1668022,
-     "spending": 1068683,
+     "revenue": 5162455,
+     "spending": 4563116,
      "basis": "actual"
     },
     {
      "year": 2018,
-     "revenue": 1413935,
-     "spending": 933802,
-     "basis": "actual"
-    },
-    {
-     "year": 2019,
-     "revenue": 3272039,
-     "spending": 1284665,
+     "revenue": 5012474,
+     "spending": 4532341,
      "basis": "actual"
     },
     {
      "year": 2021,
-     "revenue": 2022554,
-     "spending": 1160794,
-     "basis": "actual"
-    },
-    {
-     "year": 2022,
-     "revenue": 2022554,
-     "spending": 1160794,
-     "basis": "actual"
-    },
-    {
-     "year": 2023,
-     "revenue": 3540025,
-     "spending": 3236349,
-     "basis": "actual"
-    },
-    {
-     "year": 2024,
-     "revenue": 2942746,
-     "spending": 2998353,
-     "basis": "actual"
-    },
-    {
-     "year": 2025,
-     "revenue": 3374938,
-     "spending": 3040782,
+     "revenue": 5459868,
+     "spending": 4598108,
      "basis": "actual"
     },
     {
      "year": 2026,
-     "revenue": 2260647,
-     "spending": 1893972,
+     "revenue": 6643392,
+     "spending": 6276717,
      "basis": "budget"
     }
    ],
@@ -1300,6 +1275,24 @@
    },
    "topDonors": [],
    "ledger": [
+    {
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "taxesForOtherGovernments",
+     "counterparty": "Property-tax bill: other governments' share",
+     "description": "School, county and fire-district taxes (2025 tax levy of $5,023,795, less the municipal share) collected",
+     "amount": 4382745,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "paidToOtherGovernments",
+     "counterparty": "School districts, county and fire districts",
+     "description": "School, county and fire-district taxes (2025 tax levy of $5,023,795, less the municipal share) paid over",
+     "amount": 4382745,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
     {
      "date": "2026-01-01",
      "flow": "in",
@@ -1506,15 +1499,6 @@
      "description": "Deferred Charges",
      "amount": 13479,
      "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
-    },
-    {
-     "date": "2026-01-01",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Adopted budget: appropriation",
-     "description": "Reserve for Uncollected Taxes (reserve, not counted as spending)",
-     "amount": 366675,
-     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
     }
    ],
    "sources": [
@@ -1531,7 +1515,7 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NJ ELEC campaign-finance filings: contributions to Downe Township municipal candidates since 2022-10-01 (ELEC location 0604)",
+     "label": "NJ ELEC campaign-finance filings: contributions to Downe Township municipal candidates since 2022-10-20 (ELEC location 0604)",
      "url": "https://www.njelecefilesearch.com/SearchContributionToEntity"
     },
     {
@@ -1546,21 +1530,27 @@
     }
    ],
    "notes": [
-    "Covers the municipal budget only. School-district and county taxes on the same property-tax bill belong to separate governments and are not included.",
+    "Includes $4,382,745 of school-district, county and fire-district taxes the town collects on the property-tax bill and pays over to those governments (2025, the latest year the state reports). They are counted in money in and out but left out of the score, which uses the town's own budget.",
     "Insurance, pension and social-security contributions and shared-service payments ($255,504) are spread across departments in proportion to their size.",
     "The reserve for uncollected taxes ($366,675) is set aside, not spent, so it is not counted as spending.",
-    "Political money counts PAC, business and union contributions to candidates for Downe Township municipal office and mayor reported to NJ ELEC since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
+    "Political money counts PAC, business and union contributions to candidates for Downe Township municipal office and mayor reported to NJ ELEC since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
     "Contractor pay-to-play disclosures and transparency practices have not been loaded yet; transparency is not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-01. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
     "Red flags: 1 license-plate camera is mapped inside Downe Township's borders in OpenStreetMap (1 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the town is the recorded operator, since many have no operator recorded."
    ],
+   "reporting": {
+    "basis": "Adopted budget",
+    "scope": "Municipal operations, plus school, county and fire-district taxes collected and paid over",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
    "redFlags": [
     {
      "kind": "surveillance",
      "label": "Flock camera network",
      "vendor": "Flock Safety",
      "agency": "",
-     "date": "2026-10-01",
+     "date": "2026-10-20",
      "detail": "1 Flock Safety license-plate camera is mapped inside Downe Township's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
      "source": {
       "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
@@ -1572,7 +1562,7 @@
     "cameras": 1,
     "flock": 1,
     "townOperated": 0,
-    "asOf": "2026-10-01",
+    "asOf": "2026-10-20",
     "source": {
      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
      "url": "https://deflock.org/"
@@ -1590,7 +1580,7 @@
    "lng": -75.23872,
    "population": 5440,
    "fiscalYear": 2026,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "njMuniCode": "0605",
    "censusGeoid": "3401122350",
    "revenue": {
@@ -1599,7 +1589,8 @@
     "stateAid": 493980,
     "feesPermits": 59000,
     "otherRevenue": 13500,
-    "propertyTax": 2275934
+    "propertyTax": 2275934,
+    "taxesForOtherGovernments": 7982804
    },
    "spending": {
     "administration": 899202,
@@ -1608,80 +1599,81 @@
     "healthServices": 88674,
     "parks": 55421,
     "utilities": 227077,
-    "debtService": 528449
+    "debtService": 528449,
+    "paidToOtherGovernments": 7982804
    },
    "debt": 3560689,
    "history": [
     {
      "year": 2015,
-     "revenue": 3194929,
-     "spending": 2400986,
+     "revenue": 9092252,
+     "spending": 8298309,
      "basis": "actual"
     },
     {
      "year": 2016,
-     "revenue": 3424339,
-     "spending": 2541766,
+     "revenue": 9504027,
+     "spending": 8621454,
      "basis": "actual"
     },
     {
      "year": 2017,
-     "revenue": 3243245,
-     "spending": 2499738,
+     "revenue": 9776230,
+     "spending": 9032723,
      "basis": "actual"
     },
     {
      "year": 2018,
-     "revenue": 3600310,
-     "spending": 2808256,
+     "revenue": 9975969,
+     "spending": 9183915,
      "basis": "actual"
     },
     {
      "year": 2019,
-     "revenue": 4068489,
-     "spending": 3052981,
+     "revenue": 10356793,
+     "spending": 9341285,
      "basis": "actual"
     },
     {
      "year": 2020,
-     "revenue": 3769608,
-     "spending": 3275155,
+     "revenue": 10580986,
+     "spending": 10086533,
      "basis": "actual"
     },
     {
      "year": 2021,
-     "revenue": 3718596,
-     "spending": 2682251,
+     "revenue": 10672732,
+     "spending": 9636387,
      "basis": "actual"
     },
     {
      "year": 2022,
-     "revenue": 4531461,
-     "spending": 3713336,
+     "revenue": 11897226,
+     "spending": 11079101,
      "basis": "actual"
     },
     {
      "year": 2023,
-     "revenue": 5002223,
-     "spending": 4161082,
+     "revenue": 11894009,
+     "spending": 11052868,
      "basis": "actual"
     },
     {
      "year": 2024,
-     "revenue": 5316067,
-     "spending": 4656118,
+     "revenue": 11988094,
+     "spending": 11328145,
      "basis": "actual"
     },
     {
      "year": 2025,
-     "revenue": 4012665,
-     "spending": 3408470,
+     "revenue": 11995469,
+     "spending": 11391274,
      "basis": "actual"
     },
     {
      "year": 2026,
-     "revenue": 3650514,
-     "spending": 2919950,
+     "revenue": 11633318,
+     "spending": 10902754,
      "basis": "budget"
     }
    ],
@@ -1692,6 +1684,24 @@
    },
    "topDonors": [],
    "ledger": [
+    {
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "taxesForOtherGovernments",
+     "counterparty": "Property-tax bill: other governments' share",
+     "description": "School, county and fire-district taxes (2025 tax levy of $9,505,578, less the municipal share) collected",
+     "amount": 7982804,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "paidToOtherGovernments",
+     "counterparty": "School districts, county and fire districts",
+     "description": "School, county and fire-district taxes (2025 tax levy of $9,505,578, less the municipal share) paid over",
+     "amount": 7982804,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
     {
      "date": "2026-01-01",
      "flow": "in",
@@ -1880,15 +1890,6 @@
      "description": "Debt",
      "amount": 441000,
      "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
-    },
-    {
-     "date": "2026-01-01",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Adopted budget: appropriation",
-     "description": "Reserve for Uncollected Taxes (reserve, not counted as spending)",
-     "amount": 730564,
-     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
     }
    ],
    "sources": [
@@ -1905,7 +1906,7 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NJ ELEC campaign-finance filings: contributions to Fairfield Township municipal candidates since 2022-10-01 (ELEC location 0605)",
+     "label": "NJ ELEC campaign-finance filings: contributions to Fairfield Township municipal candidates since 2022-10-20 (ELEC location 0605)",
      "url": "https://www.njelecefilesearch.com/SearchContributionToEntity"
     },
     {
@@ -1915,13 +1916,19 @@
     }
    ],
    "notes": [
-    "Covers the municipal budget only. School-district and county taxes on the same property-tax bill belong to separate governments and are not included.",
+    "Includes $7,982,804 of school-district, county and fire-district taxes the town collects on the property-tax bill and pays over to those governments (2025, the latest year the state reports). They are counted in money in and out but left out of the score, which uses the town's own budget.",
     "Insurance, pension and social-security contributions and shared-service payments ($483,200) are spread across departments in proportion to their size.",
     "The reserve for uncollected taxes ($730,564) is set aside, not spent, so it is not counted as spending.",
-    "Political money counts PAC, business and union contributions to candidates for Fairfield Township municipal office and mayor reported to NJ ELEC since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
+    "Political money counts PAC, business and union contributions to candidates for Fairfield Township municipal office and mayor reported to NJ ELEC since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
     "Contractor pay-to-play disclosures and transparency practices have not been loaded yet; transparency is not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-01. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
+   "reporting": {
+    "basis": "Adopted budget",
+    "scope": "Municipal operations, plus school, county and fire-district taxes collected and paid over",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
    "redFlags": []
   },
   {
@@ -1935,7 +1942,7 @@
    "lng": -75.36755,
    "population": 779,
    "fiscalYear": 2026,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "njMuniCode": "0606",
    "censusGeoid": "3401128170",
    "revenue": {
@@ -1943,7 +1950,8 @@
     "localRevenue": 13725,
     "stateAid": 84452,
     "otherRevenue": 8825,
-    "propertyTax": 446062
+    "propertyTax": 446062,
+    "taxesForOtherGovernments": 2391705
    },
    "spending": {
     "administration": 259973,
@@ -1951,80 +1959,75 @@
     "roads": 149998,
     "healthServices": 48823,
     "parks": 411,
-    "utilities": 97782
+    "utilities": 97782,
+    "paidToOtherGovernments": 2391705
    },
    "debt": 0,
    "history": [
     {
      "year": 2015,
-     "revenue": 968794,
-     "spending": 542141,
+     "revenue": 3099488,
+     "spending": 2672835,
      "basis": "actual"
     },
     {
      "year": 2016,
-     "revenue": 1007070,
-     "spending": 520300,
+     "revenue": 3109697,
+     "spending": 2622927,
      "basis": "actual"
     },
     {
      "year": 2017,
-     "revenue": 815061,
-     "spending": 589378,
+     "revenue": 3154926,
+     "spending": 2929243,
      "basis": "actual"
     },
     {
      "year": 2018,
-     "revenue": 1018249,
-     "spending": 662518,
+     "revenue": 3162095,
+     "spending": 2806364,
      "basis": "actual"
     },
     {
      "year": 2019,
-     "revenue": 1244768,
-     "spending": 795008,
+     "revenue": 3466897,
+     "spending": 3017137,
      "basis": "actual"
     },
     {
      "year": 2020,
-     "revenue": 1006164,
-     "spending": 745826,
+     "revenue": 3088011,
+     "spending": 2827673,
      "basis": "actual"
     },
     {
      "year": 2021,
-     "revenue": 1068261,
-     "spending": 687740,
-     "basis": "actual"
-    },
-    {
-     "year": 2022,
-     "revenue": 618722,
-     "spending": 625046,
+     "revenue": 3264865,
+     "spending": 2884344,
      "basis": "actual"
     },
     {
      "year": 2023,
-     "revenue": 1083950,
-     "spending": 572760,
+     "revenue": 3197866,
+     "spending": 2686676,
      "basis": "actual"
     },
     {
      "year": 2024,
-     "revenue": 992646,
-     "spending": 700878,
+     "revenue": 3339753,
+     "spending": 3047985,
      "basis": "actual"
     },
     {
      "year": 2025,
-     "revenue": 888109,
-     "spending": 565170,
+     "revenue": 3279814,
+     "spending": 2956875,
      "basis": "actual"
     },
     {
      "year": 2026,
-     "revenue": 878103,
-     "spending": 570858,
+     "revenue": 3269808,
+     "spending": 2962563,
      "basis": "budget"
     }
    ],
@@ -2035,6 +2038,24 @@
    },
    "topDonors": [],
    "ledger": [
+    {
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "taxesForOtherGovernments",
+     "counterparty": "Property-tax bill: other governments' share",
+     "description": "School, county and fire-district taxes (2025 tax levy of $2,757,516, less the municipal share) collected",
+     "amount": 2391705,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "paidToOtherGovernments",
+     "counterparty": "School districts, county and fire districts",
+     "description": "School, county and fire-district taxes (2025 tax levy of $2,757,516, less the municipal share) paid over",
+     "amount": 2391705,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
     {
      "date": "2026-01-01",
      "flow": "in",
@@ -2205,15 +2226,6 @@
      "description": "Capital",
      "amount": 50000,
      "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
-    },
-    {
-     "date": "2026-01-01",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Adopted budget: appropriation",
-     "description": "Reserve for Uncollected Taxes (reserve, not counted as spending)",
-     "amount": 307245,
-     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
     }
    ],
    "sources": [
@@ -2230,7 +2242,7 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NJ ELEC campaign-finance filings: contributions to Greenwich Township municipal candidates since 2022-10-01 (ELEC location 0606)",
+     "label": "NJ ELEC campaign-finance filings: contributions to Greenwich Township municipal candidates since 2022-10-20 (ELEC location 0606)",
      "url": "https://www.njelecefilesearch.com/SearchContributionToEntity"
     },
     {
@@ -2240,13 +2252,19 @@
     }
    ],
    "notes": [
-    "Covers the municipal budget only. School-district and county taxes on the same property-tax bill belong to separate governments and are not included.",
+    "Includes $2,391,705 of school-district, county and fire-district taxes the town collects on the property-tax bill and pays over to those governments (2025, the latest year the state reports). They are counted in money in and out but left out of the score, which uses the town's own budget.",
     "Insurance, pension and social-security contributions and shared-service payments ($153,728) are spread across departments in proportion to their size.",
     "The reserve for uncollected taxes ($307,245) is set aside, not spent, so it is not counted as spending.",
-    "Political money counts PAC, business and union contributions to candidates for Greenwich Township municipal office and mayor reported to NJ ELEC since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
+    "Political money counts PAC, business and union contributions to candidates for Greenwich Township municipal office and mayor reported to NJ ELEC since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
     "Contractor pay-to-play disclosures and transparency practices have not been loaded yet; transparency is not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-01. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
+   "reporting": {
+    "basis": "Adopted budget",
+    "scope": "Municipal operations, plus school, county and fire-district taxes collected and paid over",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
    "redFlags": []
   },
   {
@@ -2260,7 +2278,7 @@
    "lng": -75.2817,
    "population": 4517,
    "fiscalYear": 2026,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "njMuniCode": "0607",
    "censusGeoid": "3401133120",
    "revenue": {
@@ -2270,7 +2288,8 @@
     "feesPermits": 60000,
     "otherRevenue": 125116,
     "grants": 159705,
-    "propertyTax": 1344363
+    "propertyTax": 1344363,
+    "taxesForOtherGovernments": 10062359
    },
    "spending": {
     "administration": 642057,
@@ -2279,74 +2298,69 @@
     "healthServices": 56613,
     "parks": 54726,
     "utilities": 392738,
-    "debtService": 530052
+    "debtService": 530052,
+    "paidToOtherGovernments": 10062359
    },
    "debt": 2116261,
    "history": [
     {
      "year": 2016,
-     "revenue": 3414831,
-     "spending": 2465144,
+     "revenue": 11582169,
+     "spending": 10632482,
      "basis": "actual"
     },
     {
      "year": 2017,
-     "revenue": 3567001,
-     "spending": 2764656,
+     "revenue": 12312957,
+     "spending": 11510612,
      "basis": "actual"
     },
     {
      "year": 2018,
-     "revenue": 3545183,
-     "spending": 2801360,
+     "revenue": 12607945,
+     "spending": 11864122,
      "basis": "actual"
     },
     {
      "year": 2019,
-     "revenue": 3565082,
-     "spending": 2684647,
+     "revenue": 12692005,
+     "spending": 11811570,
      "basis": "actual"
     },
     {
      "year": 2020,
-     "revenue": 3626917,
-     "spending": 2929406,
+     "revenue": 13002681,
+     "spending": 12305170,
      "basis": "actual"
     },
     {
      "year": 2021,
-     "revenue": 3722303,
-     "spending": 2855352,
-     "basis": "actual"
-    },
-    {
-     "year": 2022,
-     "revenue": 4599555,
-     "spending": 3848447,
+     "revenue": 12846850,
+     "spending": 11979899,
      "basis": "actual"
     },
     {
      "year": 2023,
-     "revenue": 3962058,
-     "spending": 2995768,
+     "revenue": 13441989,
+     "spending": 12475699,
      "basis": "actual"
     },
     {
      "year": 2024,
-     "revenue": 4799635,
-     "spending": 3871091,
+     "revenue": 14751649,
+     "spending": 13823105,
      "basis": "actual"
     },
     {
      "year": 2025,
-     "revenue": 4041171,
-     "spending": 3146731,
+     "revenue": 14103530,
+     "spending": 13209090,
      "basis": "actual"
     },
     {
      "year": 2026,
-     "revenue": 3687008,
-     "spending": 3157007,
+     "revenue": 13749367,
+     "spending": 13219366,
      "basis": "budget"
     }
    ],
@@ -2357,6 +2371,24 @@
    },
    "topDonors": [],
    "ledger": [
+    {
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "taxesForOtherGovernments",
+     "counterparty": "Property-tax bill: other governments' share",
+     "description": "School, county and fire-district taxes (2025 tax levy of $11,481,809, less the municipal share) collected",
+     "amount": 10062359,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "paidToOtherGovernments",
+     "counterparty": "School districts, county and fire districts",
+     "description": "School, county and fire-district taxes (2025 tax levy of $11,481,809, less the municipal share) paid over",
+     "amount": 10062359,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
     {
      "date": "2026-01-01",
      "flow": "in",
@@ -2563,15 +2595,6 @@
      "description": "Deferred Charges",
      "amount": 47000,
      "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
-    },
-    {
-     "date": "2026-01-01",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Adopted budget: appropriation",
-     "description": "Reserve for Uncollected Taxes (reserve, not counted as spending)",
-     "amount": 530000,
-     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
     }
    ],
    "sources": [
@@ -2588,7 +2611,7 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NJ ELEC campaign-finance filings: contributions to Hopewell Township municipal candidates since 2022-10-01 (ELEC location 0607)",
+     "label": "NJ ELEC campaign-finance filings: contributions to Hopewell Township municipal candidates since 2022-10-20 (ELEC location 0607)",
      "url": "https://www.njelecefilesearch.com/SearchContributionToEntity"
     },
     {
@@ -2598,13 +2621,19 @@
     }
    ],
    "notes": [
-    "Covers the municipal budget only. School-district and county taxes on the same property-tax bill belong to separate governments and are not included.",
+    "Includes $10,062,359 of school-district, county and fire-district taxes the town collects on the property-tax bill and pays over to those governments (2025, the latest year the state reports). They are counted in money in and out but left out of the score, which uses the town's own budget.",
     "Insurance, pension and social-security contributions and shared-service payments ($313,003) are spread across departments in proportion to their size.",
     "The reserve for uncollected taxes ($530,000) is set aside, not spent, so it is not counted as spending.",
-    "Political money counts PAC, business and union contributions to candidates for Hopewell Township municipal office and mayor reported to NJ ELEC since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
+    "Political money counts PAC, business and union contributions to candidates for Hopewell Township municipal office and mayor reported to NJ ELEC since 2022-10-20. Individual donors ($800 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
     "Contractor pay-to-play disclosures and transparency practices have not been loaded yet; transparency is not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-01. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
+   "reporting": {
+    "basis": "Adopted budget",
+    "scope": "Municipal operations, plus school, county and fire-district taxes collected and paid over",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
    "redFlags": []
   },
   {
@@ -2618,7 +2647,7 @@
    "lng": -75.18458,
    "population": 3167,
    "fiscalYear": 2026,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "njMuniCode": "0608",
    "censusGeoid": "3401139450",
    "revenue": {
@@ -2626,7 +2655,8 @@
     "localRevenue": 88960,
     "stateAid": 305945,
     "otherRevenue": 710044,
-    "propertyTax": 1853948
+    "propertyTax": 1853948,
+    "taxesForOtherGovernments": 5411768
    },
    "spending": {
     "administration": 530921,
@@ -2635,80 +2665,81 @@
     "healthServices": 48528,
     "parks": 30667,
     "utilities": 428888,
-    "debtService": 815454
+    "debtService": 815454,
+    "paidToOtherGovernments": 5411768
    },
    "debt": 1557494,
    "history": [
     {
      "year": 2015,
-     "revenue": 2150952,
-     "spending": 1725521,
+     "revenue": 6813685,
+     "spending": 6388254,
      "basis": "actual"
     },
     {
      "year": 2016,
-     "revenue": 2204022,
-     "spending": 1765180,
+     "revenue": 6855375,
+     "spending": 6416533,
      "basis": "actual"
     },
     {
      "year": 2017,
-     "revenue": 2029330,
-     "spending": 1639649,
+     "revenue": 6917934,
+     "spending": 6528253,
      "basis": "actual"
     },
     {
      "year": 2018,
-     "revenue": 2414698,
-     "spending": 1969664,
+     "revenue": 7560799,
+     "spending": 7115765,
      "basis": "actual"
     },
     {
      "year": 2019,
-     "revenue": 2516906,
-     "spending": 2038194,
+     "revenue": 7817727,
+     "spending": 7339015,
      "basis": "actual"
     },
     {
      "year": 2020,
-     "revenue": 2518503,
-     "spending": 2014831,
+     "revenue": 7903969,
+     "spending": 7400297,
      "basis": "actual"
     },
     {
      "year": 2021,
-     "revenue": 2716865,
-     "spending": 2150490,
+     "revenue": 8083802,
+     "spending": 7517427,
      "basis": "actual"
     },
     {
      "year": 2022,
-     "revenue": 2980928,
-     "spending": 2479148,
+     "revenue": 8412523,
+     "spending": 7910743,
      "basis": "actual"
     },
     {
      "year": 2023,
-     "revenue": 2792417,
-     "spending": 2247110,
+     "revenue": 8066169,
+     "spending": 7520862,
      "basis": "actual"
     },
     {
      "year": 2024,
-     "revenue": 2855944,
-     "spending": 2073779,
+     "revenue": 8088172,
+     "spending": 7306007,
      "basis": "actual"
     },
     {
      "year": 2025,
-     "revenue": 2873365,
-     "spending": 2078396,
+     "revenue": 8285133,
+     "spending": 7490164,
      "basis": "actual"
     },
     {
      "year": 2026,
-     "revenue": 3268757,
-     "spending": 2638015,
+     "revenue": 8680525,
+     "spending": 8049783,
      "basis": "budget"
     }
    ],
@@ -2719,6 +2750,24 @@
    },
    "topDonors": [],
    "ledger": [
+    {
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "taxesForOtherGovernments",
+     "counterparty": "Property-tax bill: other governments' share",
+     "description": "School, county and fire-district taxes (2025 tax levy of $6,962,874, less the municipal share) collected",
+     "amount": 5411768,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "paidToOtherGovernments",
+     "counterparty": "School districts, county and fire districts",
+     "description": "School, county and fire-district taxes (2025 tax levy of $6,962,874, less the municipal share) paid over",
+     "amount": 5411768,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
     {
      "date": "2026-01-01",
      "flow": "in",
@@ -2907,15 +2956,6 @@
      "description": "Debt",
      "amount": 704915,
      "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
-    },
-    {
-     "date": "2026-01-01",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Adopted budget: appropriation",
-     "description": "Reserve for Uncollected Taxes (reserve, not counted as spending)",
-     "amount": 399316,
-     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
     }
    ],
    "sources": [
@@ -2932,7 +2972,7 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NJ ELEC campaign-finance filings: contributions to Lawrence Township municipal candidates since 2022-10-01 (ELEC location 0608)",
+     "label": "NJ ELEC campaign-finance filings: contributions to Lawrence Township municipal candidates since 2022-10-20 (ELEC location 0608)",
      "url": "https://www.njelecefilesearch.com/SearchContributionToEntity"
     },
     {
@@ -2942,13 +2982,19 @@
     }
    ],
    "notes": [
-    "Covers the municipal budget only. School-district and county taxes on the same property-tax bill belong to separate governments and are not included.",
+    "Includes $5,411,768 of school-district, county and fire-district taxes the town collects on the property-tax bill and pays over to those governments (2025, the latest year the state reports). They are counted in money in and out but left out of the score, which uses the town's own budget.",
     "Insurance, pension and social-security contributions and shared-service payments ($357,598) are spread across departments in proportion to their size.",
     "The reserve for uncollected taxes ($399,316) is set aside, not spent, so it is not counted as spending.",
-    "Political money counts PAC, business and union contributions to candidates for Lawrence Township municipal office and mayor reported to NJ ELEC since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
+    "Political money counts PAC, business and union contributions to candidates for Lawrence Township municipal office and mayor reported to NJ ELEC since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
     "Contractor pay-to-play disclosures and transparency practices have not been loaded yet; transparency is not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-01. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
+   "reporting": {
+    "basis": "Adopted budget",
+    "scope": "Municipal operations, plus school, county and fire-district taxes collected and paid over",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
    "redFlags": []
   },
   {
@@ -2962,7 +3008,7 @@
    "lng": -74.92888,
    "population": 4780,
    "fiscalYear": 2026,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "njMuniCode": "0609",
    "censusGeoid": "3401144580",
    "revenue": {
@@ -2972,7 +3018,8 @@
     "feesPermits": 35000,
     "grants": 293833,
     "otherRevenue": 4930,
-    "propertyTax": 1731572
+    "propertyTax": 1731572,
+    "taxesForOtherGovernments": 7028090
    },
    "spending": {
     "administration": 1286253,
@@ -2980,80 +3027,81 @@
     "roads": 1309257,
     "healthServices": 131355,
     "parks": 26807,
-    "utilities": 576352
+    "utilities": 576352,
+    "paidToOtherGovernments": 7028090
    },
    "debt": 0,
    "history": [
     {
      "year": 2015,
-     "revenue": 4340862,
-     "spending": 3384046,
+     "revenue": 10935278,
+     "spending": 9978462,
      "basis": "actual"
     },
     {
      "year": 2016,
-     "revenue": 4443107,
-     "spending": 3418011,
+     "revenue": 10984262,
+     "spending": 9959166,
      "basis": "actual"
     },
     {
      "year": 2017,
-     "revenue": 4311731,
-     "spending": 3483711,
+     "revenue": 11138441,
+     "spending": 10310421,
      "basis": "actual"
     },
     {
      "year": 2018,
-     "revenue": 4634574,
-     "spending": 3754464,
+     "revenue": 11342416,
+     "spending": 10462306,
      "basis": "actual"
     },
     {
      "year": 2019,
-     "revenue": 4402151,
-     "spending": 3536742,
+     "revenue": 11329193,
+     "spending": 10463784,
      "basis": "actual"
     },
     {
      "year": 2020,
-     "revenue": 4404485,
-     "spending": 3648514,
+     "revenue": 11505428,
+     "spending": 10749457,
      "basis": "actual"
     },
     {
      "year": 2021,
-     "revenue": 4327968,
-     "spending": 3310111,
+     "revenue": 11297124,
+     "spending": 10279267,
      "basis": "actual"
     },
     {
      "year": 2022,
-     "revenue": 4524956,
-     "spending": 3653858,
+     "revenue": 11723293,
+     "spending": 10852195,
      "basis": "actual"
     },
     {
      "year": 2023,
-     "revenue": 6458818,
-     "spending": 5602897,
+     "revenue": 13660530,
+     "spending": 12804609,
      "basis": "actual"
     },
     {
      "year": 2024,
-     "revenue": 5536618,
-     "spending": 4602083,
+     "revenue": 12595516,
+     "spending": 11660981,
      "basis": "actual"
     },
     {
      "year": 2025,
-     "revenue": 5773095,
-     "spending": 4761436,
+     "revenue": 12801185,
+     "spending": 11789526,
      "basis": "actual"
     },
     {
      "year": 2026,
-     "revenue": 4409279,
-     "spending": 3768990,
+     "revenue": 11437369,
+     "spending": 10797080,
      "basis": "budget"
     }
    ],
@@ -3064,6 +3112,24 @@
    },
    "topDonors": [],
    "ledger": [
+    {
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "taxesForOtherGovernments",
+     "counterparty": "Property-tax bill: other governments' share",
+     "description": "School, county and fire-district taxes (2025 tax levy of $8,540,122, less the municipal share) collected",
+     "amount": 7028090,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "paidToOtherGovernments",
+     "counterparty": "School districts, county and fire districts",
+     "description": "School, county and fire-district taxes (2025 tax levy of $8,540,122, less the municipal share) paid over",
+     "amount": 7028090,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
     {
      "date": "2026-01-01",
      "flow": "in",
@@ -3252,15 +3318,6 @@
      "description": "Shared Services (spread across departments in totals)",
      "amount": 112000,
      "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
-    },
-    {
-     "date": "2026-01-01",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Adopted budget: appropriation",
-     "description": "Reserve for Uncollected Taxes (reserve, not counted as spending)",
-     "amount": 640289,
-     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
     }
    ],
    "sources": [
@@ -3277,7 +3334,7 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NJ ELEC campaign-finance filings: contributions to Maurice River Township municipal candidates since 2022-10-01 (ELEC location 0609)",
+     "label": "NJ ELEC campaign-finance filings: contributions to Maurice River Township municipal candidates since 2022-10-20 (ELEC location 0609)",
      "url": "https://www.njelecefilesearch.com/SearchContributionToEntity"
     },
     {
@@ -3287,13 +3344,19 @@
     }
    ],
    "notes": [
-    "Covers the municipal budget only. School-district and county taxes on the same property-tax bill belong to separate governments and are not included.",
+    "Includes $7,028,090 of school-district, county and fire-district taxes the town collects on the property-tax bill and pays over to those governments (2025, the latest year the state reports). They are counted in money in and out but left out of the score, which uses the town's own budget.",
     "Insurance, pension and social-security contributions and shared-service payments ($957,052) are spread across departments in proportion to their size.",
     "The reserve for uncollected taxes ($640,289) is set aside, not spent, so it is not counted as spending.",
-    "Political money counts PAC, business and union contributions to candidates for Maurice River Township municipal office and mayor reported to NJ ELEC since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
+    "Political money counts PAC, business and union contributions to candidates for Maurice River Township municipal office and mayor reported to NJ ELEC since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
     "Contractor pay-to-play disclosures and transparency practices have not been loaded yet; transparency is not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-01. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
+   "reporting": {
+    "basis": "Adopted budget",
+    "scope": "Municipal operations, plus school, county and fire-district taxes collected and paid over",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
    "redFlags": []
   },
   {
@@ -3307,7 +3370,7 @@
    "lng": -75.0548,
    "population": 28098,
    "fiscalYear": 2026,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "njMuniCode": "0610",
    "censusGeoid": "3401146680",
    "revenue": {
@@ -3317,7 +3380,8 @@
     "feesPermits": 590000,
     "otherRevenue": 2050790,
     "grants": 1858789,
-    "propertyTax": 23491470
+    "propertyTax": 23491470,
+    "taxesForOtherGovernments": 39372515
    },
    "spending": {
     "administration": 7596056,
@@ -3326,80 +3390,75 @@
     "healthServices": 424215,
     "parks": 2436594,
     "utilities": 21879672,
-    "debtService": 2810081
+    "debtService": 2810081,
+    "paidToOtherGovernments": 39372515
    },
    "debt": 19436556,
    "history": [
     {
      "year": 2015,
-     "revenue": 46795191,
-     "spending": 41479535,
+     "revenue": 74630208,
+     "spending": 69314552,
      "basis": "actual"
     },
     {
      "year": 2016,
-     "revenue": 46419743,
-     "spending": 41471050,
+     "revenue": 75174478,
+     "spending": 70225785,
      "basis": "actual"
     },
     {
      "year": 2017,
-     "revenue": 46771253,
-     "spending": 30438428,
+     "revenue": 76237770,
+     "spending": 59904945,
      "basis": "actual"
     },
     {
      "year": 2018,
-     "revenue": 47121930,
-     "spending": 31989071,
+     "revenue": 77419663,
+     "spending": 62286804,
      "basis": "actual"
     },
     {
      "year": 2019,
-     "revenue": 46152875,
-     "spending": 32692868,
+     "revenue": 77327037,
+     "spending": 63867030,
      "basis": "actual"
     },
     {
      "year": 2020,
-     "revenue": 46401285,
-     "spending": 32764730,
+     "revenue": 78078001,
+     "spending": 64441446,
      "basis": "actual"
     },
     {
      "year": 2021,
-     "revenue": 48487247,
-     "spending": 33121078,
+     "revenue": 80241628,
+     "spending": 64875459,
      "basis": "actual"
     },
     {
      "year": 2022,
-     "revenue": 49009919,
-     "spending": 33969987,
+     "revenue": 84915095,
+     "spending": 69875163,
      "basis": "actual"
     },
     {
      "year": 2023,
-     "revenue": 54966349,
-     "spending": 37234649,
-     "basis": "actual"
-    },
-    {
-     "year": 2024,
-     "revenue": 56939980,
-     "spending": 34519355,
+     "revenue": 91417777,
+     "spending": 73686077,
      "basis": "actual"
     },
     {
      "year": 2025,
-     "revenue": 56570691,
-     "spending": 51620727,
+     "revenue": 95943206,
+     "spending": 90993242,
      "basis": "actual"
     },
     {
      "year": 2026,
-     "revenue": 57039538,
-     "spending": 55034869,
+     "revenue": 96412053,
+     "spending": 94407384,
      "basis": "budget"
     }
    ],
@@ -3459,6 +3518,24 @@
     }
    ],
    "ledger": [
+    {
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "taxesForOtherGovernments",
+     "counterparty": "Property-tax bill: other governments' share",
+     "description": "School, county and fire-district taxes (2025 tax levy of $61,136,494, less the municipal share) collected",
+     "amount": 39372515,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "paidToOtherGovernments",
+     "counterparty": "School districts, county and fire districts",
+     "description": "School, county and fire-district taxes (2025 tax levy of $61,136,494, less the municipal share) paid over",
+     "amount": 39372515,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
     {
      "date": "2026-01-01",
      "flow": "in",
@@ -3694,15 +3771,6 @@
      "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
     },
     {
-     "date": "2026-01-01",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Adopted budget: appropriation",
-     "description": "Reserve for Uncollected Taxes (reserve, not counted as spending)",
-     "amount": 2004669,
-     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
-    },
-    {
      "date": "2025-10-16",
      "flow": "influence",
      "category": "developerContributions",
@@ -3807,7 +3875,7 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NJ ELEC campaign-finance filings: contributions to Millville City municipal candidates since 2022-10-01 (ELEC location 0610)",
+     "label": "NJ ELEC campaign-finance filings: contributions to Millville City municipal candidates since 2022-10-20 (ELEC location 0610)",
      "url": "https://www.njelecefilesearch.com/SearchContributionToEntity"
     },
     {
@@ -3822,21 +3890,27 @@
     }
    ],
    "notes": [
-    "Covers the municipal budget only. School-district and county taxes on the same property-tax bill belong to separate governments and are not included.",
+    "Includes $39,372,515 of school-district, county and fire-district taxes the town collects on the property-tax bill and pays over to those governments (2025, the latest year the state reports). They are counted in money in and out but left out of the score, which uses the town's own budget.",
     "Insurance, pension and social-security contributions and shared-service payments ($12,300,644) are spread across departments in proportion to their size.",
     "The reserve for uncollected taxes ($2,004,669) is set aside, not spent, so it is not counted as spending.",
-    "Political money counts PAC, business and union contributions to candidates for Millville City municipal office and mayor reported to NJ ELEC since 2022-10-01. Individual donors ($22,254 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
+    "Political money counts PAC, business and union contributions to candidates for Millville City municipal office and mayor reported to NJ ELEC since 2022-10-20. Individual donors ($21,944 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
     "Contractor pay-to-play disclosures and transparency practices have not been loaded yet; transparency is not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-01. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
     "Red flags: 9 license-plate cameras are mapped inside Millville City's borders in OpenStreetMap (3 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the town is the recorded operator, since many have no operator recorded."
    ],
+   "reporting": {
+    "basis": "Adopted budget",
+    "scope": "Municipal operations, plus school, county and fire-district taxes collected and paid over",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
    "redFlags": [
     {
      "kind": "surveillance",
      "label": "Flock camera network",
      "vendor": "Flock Safety",
      "agency": "",
-     "date": "2026-10-01",
+     "date": "2026-10-20",
      "detail": "3 Flock Safety license-plate cameras are mapped inside Millville City's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
      "source": {
       "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
@@ -3884,7 +3958,7 @@
     "cameras": 9,
     "flock": 3,
     "townOperated": 0,
-    "asOf": "2026-10-01",
+    "asOf": "2026-10-20",
     "source": {
      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
      "url": "https://deflock.org/"
@@ -3902,7 +3976,7 @@
    "lng": -75.29244,
    "population": 456,
    "fiscalYear": 2026,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "njMuniCode": "0611",
    "censusGeoid": "3401167020",
    "revenue": {
@@ -3910,7 +3984,8 @@
     "localRevenue": 68300,
     "stateAid": 33685,
     "grants": 8944,
-    "propertyTax": 133466
+    "propertyTax": 133466,
+    "taxesForOtherGovernments": 915883
    },
    "spending": {
     "administration": 118504,
@@ -3919,74 +3994,75 @@
     "healthServices": 17398,
     "parks": 2626,
     "utilities": 44119,
-    "debtService": 2789
+    "debtService": 2789,
+    "paidToOtherGovernments": 915883
    },
    "debt": 0,
    "history": [
     {
      "year": 2015,
-     "revenue": 382206,
-     "spending": 270304,
+     "revenue": 1156693,
+     "spending": 1044791,
      "basis": "actual"
     },
     {
      "year": 2016,
-     "revenue": 395818,
-     "spending": 263209,
+     "revenue": 1136291,
+     "spending": 1003682,
      "basis": "actual"
     },
     {
      "year": 2017,
-     "revenue": 460100,
-     "spending": 312220,
+     "revenue": 1209821,
+     "spending": 1061941,
      "basis": "actual"
     },
     {
      "year": 2018,
-     "revenue": 390590,
-     "spending": 260037,
+     "revenue": 1154566,
+     "spending": 1024013,
      "basis": "actual"
     },
     {
      "year": 2019,
-     "revenue": 418905,
-     "spending": 258056,
+     "revenue": 1222636,
+     "spending": 1061787,
      "basis": "actual"
     },
     {
      "year": 2021,
-     "revenue": 397315,
-     "spending": 253542,
+     "revenue": 1280717,
+     "spending": 1136944,
      "basis": "actual"
     },
     {
      "year": 2022,
-     "revenue": 442480,
-     "spending": 287374,
+     "revenue": 1406757,
+     "spending": 1251651,
      "basis": "actual"
     },
     {
      "year": 2023,
-     "revenue": 485307,
-     "spending": 271372,
+     "revenue": 1362092,
+     "spending": 1148157,
      "basis": "actual"
     },
     {
      "year": 2024,
-     "revenue": 396861,
-     "spending": 301164,
+     "revenue": 1338752,
+     "spending": 1243055,
      "basis": "actual"
     },
     {
      "year": 2025,
-     "revenue": 425035,
-     "spending": 287107,
+     "revenue": 1340918,
+     "spending": 1202990,
      "basis": "actual"
     },
     {
      "year": 2026,
-     "revenue": 346995,
-     "spending": 304857,
+     "revenue": 1262878,
+     "spending": 1220740,
      "basis": "budget"
     }
    ],
@@ -3997,6 +4073,24 @@
    },
    "topDonors": [],
    "ledger": [
+    {
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "taxesForOtherGovernments",
+     "counterparty": "Property-tax bill: other governments' share",
+     "description": "School, county and fire-district taxes (2025 tax levy of $1,044,768, less the municipal share) collected",
+     "amount": 915883,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "paidToOtherGovernments",
+     "counterparty": "School districts, county and fire districts",
+     "description": "School, county and fire-district taxes (2025 tax levy of $1,044,768, less the municipal share) paid over",
+     "amount": 915883,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
     {
      "date": "2026-01-01",
      "flow": "in",
@@ -4167,15 +4261,6 @@
      "description": "Deferred Charges",
      "amount": 2124,
      "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
-    },
-    {
-     "date": "2026-01-01",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Adopted budget: appropriation",
-     "description": "Reserve for Uncollected Taxes (reserve, not counted as spending)",
-     "amount": 42138,
-     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
     }
    ],
    "sources": [
@@ -4192,7 +4277,7 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NJ ELEC campaign-finance filings: contributions to Shiloh Borough municipal candidates since 2022-10-01 (ELEC location 0611)",
+     "label": "NJ ELEC campaign-finance filings: contributions to Shiloh Borough municipal candidates since 2022-10-20 (ELEC location 0611)",
      "url": "https://www.njelecefilesearch.com/SearchContributionToEntity"
     },
     {
@@ -4202,13 +4287,19 @@
     }
    ],
    "notes": [
-    "Covers the municipal budget only. School-district and county taxes on the same property-tax bill belong to separate governments and are not included.",
+    "Includes $915,883 of school-district, county and fire-district taxes the town collects on the property-tax bill and pays over to those governments (2025, the latest year the state reports). They are counted in money in and out but left out of the score, which uses the town's own budget.",
     "Insurance, pension and social-security contributions and shared-service payments ($72,684) are spread across departments in proportion to their size.",
     "The reserve for uncollected taxes ($42,138) is set aside, not spent, so it is not counted as spending.",
-    "Political money counts PAC, business and union contributions to candidates for Shiloh Borough municipal office and mayor reported to NJ ELEC since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
+    "Political money counts PAC, business and union contributions to candidates for Shiloh Borough municipal office and mayor reported to NJ ELEC since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
     "Contractor pay-to-play disclosures and transparency practices have not been loaded yet; transparency is not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-01. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
+   "reporting": {
+    "basis": "Adopted budget",
+    "scope": "Municipal operations, plus school, county and fire-district taxes collected and paid over",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
    "redFlags": []
   },
   {
@@ -4222,7 +4313,7 @@
    "lng": -75.35989,
    "population": 1356,
    "fiscalYear": 2026,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "njMuniCode": "0612",
    "censusGeoid": "3401171160",
    "revenue": {
@@ -4231,7 +4322,8 @@
     "stateAid": 140828,
     "otherRevenue": 36481,
     "grants": 8164,
-    "propertyTax": 336166
+    "propertyTax": 336166,
+    "taxesForOtherGovernments": 3045215
    },
    "spending": {
     "administration": 159872,
@@ -4239,68 +4331,63 @@
     "roads": 236436,
     "healthServices": 22708,
     "utilities": 84771,
-    "debtService": 10501
+    "debtService": 10501,
+    "paidToOtherGovernments": 3045215
    },
    "debt": 0,
    "history": [
     {
      "year": 2016,
-     "revenue": 686879,
-     "spending": 455548,
+     "revenue": 3523167,
+     "spending": 3291836,
      "basis": "actual"
     },
     {
      "year": 2017,
-     "revenue": 637331,
-     "spending": 454239,
+     "revenue": 3561133,
+     "spending": 3378041,
      "basis": "actual"
     },
     {
      "year": 2018,
-     "revenue": 678138,
-     "spending": 467608,
+     "revenue": 3911026,
+     "spending": 3700496,
      "basis": "actual"
     },
     {
      "year": 2019,
-     "revenue": 758532,
-     "spending": 484351,
+     "revenue": 3952222,
+     "spending": 3678041,
      "basis": "actual"
     },
     {
      "year": 2021,
-     "revenue": 968828,
-     "spending": 677548,
+     "revenue": 4273901,
+     "spending": 3982621,
      "basis": "actual"
     },
     {
      "year": 2022,
-     "revenue": 934925,
-     "spending": 688507,
-     "basis": "actual"
-    },
-    {
-     "year": 2023,
-     "revenue": 773261,
-     "spending": 559505,
+     "revenue": 4330168,
+     "spending": 4083750,
      "basis": "actual"
     },
     {
      "year": 2024,
-     "revenue": 711945,
-     "spending": 573877,
+     "revenue": 3839489,
+     "spending": 3701421,
      "basis": "actual"
     },
     {
      "year": 2025,
-     "revenue": 993785,
-     "spending": 844641,
+     "revenue": 4039000,
+     "spending": 3889856,
      "basis": "actual"
     },
     {
      "year": 2026,
-     "revenue": 699009,
-     "spending": 584064,
+     "revenue": 3744224,
+     "spending": 3629279,
      "basis": "budget"
     }
    ],
@@ -4311,6 +4398,24 @@
    },
    "topDonors": [],
    "ledger": [
+    {
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "taxesForOtherGovernments",
+     "counterparty": "Property-tax bill: other governments' share",
+     "description": "School, county and fire-district taxes (2025 tax levy of $3,322,923, less the municipal share) collected",
+     "amount": 3045215,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "paidToOtherGovernments",
+     "counterparty": "School districts, county and fire districts",
+     "description": "School, county and fire-district taxes (2025 tax levy of $3,322,923, less the municipal share) paid over",
+     "amount": 3045215,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
     {
      "date": "2026-01-01",
      "flow": "in",
@@ -4490,15 +4595,6 @@
      "description": "Deferred Charges",
      "amount": 8579,
      "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
-    },
-    {
-     "date": "2026-01-01",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Adopted budget: appropriation",
-     "description": "Reserve for Uncollected Taxes (reserve, not counted as spending)",
-     "amount": 114944,
-     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
     }
    ],
    "sources": [
@@ -4515,7 +4611,7 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NJ ELEC campaign-finance filings: contributions to Stow Creek Township municipal candidates since 2022-10-01 (ELEC location 0612)",
+     "label": "NJ ELEC campaign-finance filings: contributions to Stow Creek Township municipal candidates since 2022-10-20 (ELEC location 0612)",
      "url": "https://www.njelecefilesearch.com/SearchContributionToEntity"
     },
     {
@@ -4525,13 +4621,19 @@
     }
    ],
    "notes": [
-    "Covers the municipal budget only. School-district and county taxes on the same property-tax bill belong to separate governments and are not included.",
+    "Includes $3,045,215 of school-district, county and fire-district taxes the town collects on the property-tax bill and pays over to those governments (2025, the latest year the state reports). They are counted in money in and out but left out of the score, which uses the town's own budget.",
     "Insurance, pension and social-security contributions and shared-service payments ($106,941) are spread across departments in proportion to their size.",
     "The reserve for uncollected taxes ($114,944) is set aside, not spent, so it is not counted as spending.",
-    "Political money counts PAC, business and union contributions to candidates for Stow Creek Township municipal office and mayor reported to NJ ELEC since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
+    "Political money counts PAC, business and union contributions to candidates for Stow Creek Township municipal office and mayor reported to NJ ELEC since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
     "Contractor pay-to-play disclosures and transparency practices have not been loaded yet; transparency is not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-01. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
+   "reporting": {
+    "basis": "Adopted budget",
+    "scope": "Municipal operations, plus school, county and fire-district taxes collected and paid over",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
    "redFlags": []
   },
   {
@@ -4545,7 +4647,7 @@
    "lng": -75.21859,
    "population": 8111,
    "fiscalYear": 2026,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "njMuniCode": "0613",
    "censusGeoid": "3401174870",
    "revenue": {
@@ -4555,7 +4657,8 @@
     "feesPermits": 175000,
     "otherRevenue": 2028560,
     "grants": 133087,
-    "propertyTax": 1676328
+    "propertyTax": 1676328,
+    "taxesForOtherGovernments": 20642857
    },
    "spending": {
     "administration": 1050921,
@@ -4564,80 +4667,51 @@
     "healthServices": 148758,
     "parks": 209846,
     "utilities": 941491,
-    "debtService": 216411
+    "debtService": 216411,
+    "paidToOtherGovernments": 20642857
    },
    "debt": 2757181,
    "history": [
     {
      "year": 2015,
-     "revenue": 8059989,
-     "spending": 6356688,
-     "basis": "actual"
-    },
-    {
-     "year": 2016,
-     "revenue": 8108725,
-     "spending": 7315153,
-     "basis": "actual"
-    },
-    {
-     "year": 2017,
-     "revenue": 8108725,
-     "spending": 7315153,
-     "basis": "actual"
-    },
-    {
-     "year": 2018,
-     "revenue": 7819035,
-     "spending": 4756622,
-     "basis": "actual"
-    },
-    {
-     "year": 2019,
-     "revenue": 8262082,
-     "spending": 6056765,
+     "revenue": 25259947,
+     "spending": 23556646,
      "basis": "actual"
     },
     {
      "year": 2020,
-     "revenue": 5493383,
-     "spending": 4299457,
+     "revenue": 24847308,
+     "spending": 23653382,
      "basis": "actual"
     },
     {
      "year": 2021,
-     "revenue": 6008733,
-     "spending": 4201155,
+     "revenue": 26436445,
+     "spending": 24628867,
      "basis": "actual"
     },
     {
      "year": 2022,
-     "revenue": 7585675,
-     "spending": 4253323,
-     "basis": "actual"
-    },
-    {
-     "year": 2023,
-     "revenue": 6381670,
-     "spending": 4716199,
+     "revenue": 27988680,
+     "spending": 24656328,
      "basis": "actual"
     },
     {
      "year": 2024,
-     "revenue": 10152746,
-     "spending": 5333916,
+     "revenue": 30904690,
+     "spending": 26085860,
      "basis": "actual"
     },
     {
      "year": 2025,
-     "revenue": 8530529,
-     "spending": 5931875,
+     "revenue": 29173386,
+     "spending": 26574732,
      "basis": "actual"
     },
     {
      "year": 2026,
-     "revenue": 7307212,
-     "spending": 6314583,
+     "revenue": 27950069,
+     "spending": 26957440,
      "basis": "budget"
     }
    ],
@@ -4648,6 +4722,24 @@
    },
    "topDonors": [],
    "ledger": [
+    {
+     "date": "2025-12-31",
+     "flow": "in",
+     "category": "taxesForOtherGovernments",
+     "counterparty": "Property-tax bill: other governments' share",
+     "description": "School, county and fire-district taxes (2025 tax levy of $21,976,258, less the municipal share) collected",
+     "amount": 20642857,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
+    {
+     "date": "2025-12-31",
+     "flow": "out",
+     "category": "paidToOtherGovernments",
+     "counterparty": "School districts, county and fire districts",
+     "description": "School, county and fire-district taxes (2025 tax levy of $21,976,258, less the municipal share) paid over",
+     "amount": 20642857,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
     {
      "date": "2026-01-01",
      "flow": "in",
@@ -4881,15 +4973,6 @@
      "description": "Deferred Charges",
      "amount": 153662,
      "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
-    },
-    {
-     "date": "2026-01-01",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Adopted budget: appropriation",
-     "description": "Reserve for Uncollected Taxes (reserve, not counted as spending)",
-     "amount": 630000,
-     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
     }
    ],
    "sources": [
@@ -4906,7 +4989,7 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NJ ELEC campaign-finance filings: contributions to Upper Deerfield Township municipal candidates since 2022-10-01 (ELEC location 0613)",
+     "label": "NJ ELEC campaign-finance filings: contributions to Upper Deerfield Township municipal candidates since 2022-10-20 (ELEC location 0613)",
      "url": "https://www.njelecefilesearch.com/SearchContributionToEntity"
     },
     {
@@ -4916,13 +4999,19 @@
     }
    ],
    "notes": [
-    "Covers the municipal budget only. School-district and county taxes on the same property-tax bill belong to separate governments and are not included.",
+    "Includes $20,642,857 of school-district, county and fire-district taxes the town collects on the property-tax bill and pays over to those governments (2025, the latest year the state reports). They are counted in money in and out but left out of the score, which uses the town's own budget.",
     "Insurance, pension and social-security contributions and shared-service payments ($1,830,951) are spread across departments in proportion to their size.",
     "The reserve for uncollected taxes ($630,000) is set aside, not spent, so it is not counted as spending.",
-    "Political money counts PAC, business and union contributions to candidates for Upper Deerfield Township municipal office and mayor reported to NJ ELEC since 2022-10-01. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
+    "Political money counts PAC, business and union contributions to candidates for Upper Deerfield Township municipal office and mayor reported to NJ ELEC since 2022-10-20. Individual donors ($0 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
     "Contractor pay-to-play disclosures and transparency practices have not been loaded yet; transparency is not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-01. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending."
    ],
+   "reporting": {
+    "basis": "Adopted budget",
+    "scope": "Municipal operations, plus school, county and fire-district taxes collected and paid over",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
    "redFlags": []
   },
   {
@@ -4936,7 +5025,7 @@
    "lng": -74.99711,
    "population": 62703,
    "fiscalYear": 2026,
-   "asOf": "2026-10-01",
+   "asOf": "2026-10-20",
    "njMuniCode": "0614",
    "censusGeoid": "3401176070",
    "revenue": {
@@ -4946,7 +5035,8 @@
     "feesPermits": 1000000,
     "otherRevenue": 31276951,
     "grants": 7875621,
-    "propertyTax": 50955484
+    "propertyTax": 50955484,
+    "taxesForOtherGovernments": 78722905
    },
    "spending": {
     "administration": 157954970,
@@ -4955,74 +5045,57 @@
     "healthServices": 6973316,
     "parks": 4736383,
     "utilities": 3185235,
-    "debtService": 27766321
+    "debtService": 27766321,
+    "paidToOtherGovernments": 78722905
    },
    "debt": 105247654,
    "history": [
     {
-     "year": 2015,
-     "revenue": 66215627,
-     "spending": 160164623,
-     "basis": "actual"
-    },
-    {
      "year": 2017,
-     "revenue": 171823858,
-     "spending": 164132864,
+     "revenue": 239266905,
+     "spending": 231575911,
      "basis": "actual"
     },
     {
      "year": 2018,
-     "revenue": 183632971,
-     "spending": 178712584,
+     "revenue": 253841681,
+     "spending": 248921294,
      "basis": "actual"
     },
     {
      "year": 2019,
-     "revenue": 187239591,
-     "spending": 170735928,
+     "revenue": 259794487,
+     "spending": 243290824,
      "basis": "actual"
     },
     {
      "year": 2020,
-     "revenue": 190157243,
-     "spending": 189767520,
+     "revenue": 262623973,
+     "spending": 262234250,
      "basis": "actual"
     },
     {
      "year": 2021,
-     "revenue": 205049865,
-     "spending": 196141603,
+     "revenue": 279922194,
+     "spending": 271013932,
      "basis": "actual"
     },
     {
      "year": 2022,
-     "revenue": 217503353,
-     "spending": 174721709,
+     "revenue": 293331665,
+     "spending": 250550021,
      "basis": "actual"
     },
     {
      "year": 2023,
-     "revenue": 231828201,
-     "spending": 206008131,
-     "basis": "actual"
-    },
-    {
-     "year": 2024,
-     "revenue": 260907133,
-     "spending": 245851892,
-     "basis": "actual"
-    },
-    {
-     "year": 2025,
-     "revenue": 257358892,
-     "spending": 241691349,
+     "revenue": 310551106,
+     "spending": 284731036,
      "basis": "actual"
     },
     {
      "year": 2026,
-     "revenue": 262134385,
-     "spending": 259299750,
+     "revenue": 340857290,
+     "spending": 338022655,
      "basis": "budget"
     }
    ],
@@ -5033,6 +5106,24 @@
    },
    "topDonors": [],
    "ledger": [
+    {
+     "date": "2023-12-31",
+     "flow": "in",
+     "category": "taxesForOtherGovernments",
+     "counterparty": "Property-tax bill: other governments' share",
+     "description": "School, county and fire-district taxes (2023 tax levy of $124,259,986, less the municipal share) collected",
+     "amount": 78722905,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
+    {
+     "date": "2023-12-31",
+     "flow": "out",
+     "category": "paidToOtherGovernments",
+     "counterparty": "School districts, county and fire districts",
+     "description": "School, county and fire-district taxes (2023 tax levy of $124,259,986, less the municipal share) paid over",
+     "amount": 78722905,
+     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
+    },
     {
      "date": "2026-01-01",
      "flow": "in",
@@ -5284,15 +5375,6 @@
      "description": "Debt",
      "amount": 24062947,
      "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
-    },
-    {
-     "date": "2026-01-01",
-     "flow": "out",
-     "category": "administration",
-     "counterparty": "Adopted budget: appropriation",
-     "description": "Reserve for Uncollected Taxes (reserve, not counted as spending)",
-     "amount": 2834634,
-     "source": "https://datahub.dca.nj.gov/datasets/user-friendly-budget-database"
     }
    ],
    "sources": [
@@ -5309,7 +5391,7 @@
      "url": "https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.html"
     },
     {
-     "label": "NJ ELEC campaign-finance filings: contributions to Vineland City municipal candidates since 2022-10-01 (ELEC location 0614)",
+     "label": "NJ ELEC campaign-finance filings: contributions to Vineland City municipal candidates since 2022-10-20 (ELEC location 0614)",
      "url": "https://www.njelecefilesearch.com/SearchContributionToEntity"
     },
     {
@@ -5329,21 +5411,27 @@
     }
    ],
    "notes": [
-    "Covers the municipal budget only. School-district and county taxes on the same property-tax bill belong to separate governments and are not included.",
+    "Includes $78,722,905 of school-district, county and fire-district taxes the town collects on the property-tax bill and pays over to those governments (2023, the latest year the state reports). They are counted in money in and out but left out of the score, which uses the town's own budget.",
     "Insurance, pension and social-security contributions and shared-service payments ($34,584,484) are spread across departments in proportion to their size.",
     "The reserve for uncollected taxes ($2,834,634) is set aside, not spent, so it is not counted as spending.",
-    "Political money counts PAC, business and union contributions to candidates for Vineland City municipal office and mayor reported to NJ ELEC since 2022-10-01. Individual donors ($2,690 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
+    "Political money counts PAC, business and union contributions to candidates for Vineland City municipal office and mayor reported to NJ ELEC since 2022-10-20. Individual donors ($2,690 in the same period), candidates' own committees and party committees are not counted. Small campaigns may file without itemizing, so some contributions may not appear.",
     "Contractor pay-to-play disclosures and transparency practices have not been loaded yet; transparency is not scored.",
-    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-01. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
+    "Red flags: surveillance programs come from the EFF Atlas of Surveillance, a public database of news reports and public records, searched on 2026-10-20. Data center deals and corporate lobbying come from a hand-checked list of news reports and public records. A town with none listed may still have programs nobody has reported. Most records carry no dollar amount, so each documented program costs a quarter of the red-flag points instead of being counted as spending.",
     "Red flags: 10 license-plate cameras are mapped inside Vineland City's borders in OpenStreetMap (6 made by Flock Safety), not counting cameras tagged as run by stores, malls, schools or state and regional agencies. Flock cameras count as a red flag whoever runs them. Other brands count only when the town is the recorded operator, since many have no operator recorded."
    ],
+   "reporting": {
+    "basis": "Adopted budget",
+    "scope": "Municipal operations, plus school, county and fire-district taxes collected and paid over",
+    "politicalPeriod": "Since 2022-10-20; retrieved 2026-10-20",
+    "politicalScope": "Municipal candidate committees"
+   },
    "redFlags": [
     {
      "kind": "surveillance",
      "label": "Flock camera network",
      "vendor": "Flock Safety",
      "agency": "",
-     "date": "2026-10-01",
+     "date": "2026-10-20",
      "detail": "6 Flock Safety license-plate cameras are mapped inside Vineland City's borders in OpenStreetMap. Flock cameras photograph every passing car and feed a search network shared with police agencies across the country. Who runs each camera is not recorded; cameras tagged as run by stores, malls, schools or state and regional agencies are not counted.",
      "source": {
       "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock)",
@@ -5384,7 +5472,7 @@
     "cameras": 10,
     "flock": 6,
     "townOperated": 0,
-    "asOf": "2026-10-01",
+    "asOf": "2026-10-20",
     "source": {
      "label": "OpenStreetMap license-plate cameras (as mapped by DeFlock and other contributors)",
      "url": "https://deflock.org/"

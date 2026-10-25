@@ -14,15 +14,16 @@ Required fields: `id`, `name`, `state`, `lat`, `lng`, `population`, `revenue`, `
 | `population` | number | Used for all per-resident figures |
 | `fiscalYear` | number | Year the figures cover |
 | `asOf` | `YYYY-MM-DD` | When the data was pulled |
-| `revenue` | object of USD | `propertyTax`, `salesTax`, `stateAid`, `federalGrants`, `localRevenue`, `grants`, `feesPermits`, `utilityCharges`, `finesForfeitures`, `borrowing`, `otherRevenue`, `surplusUsed` (prior-year surplus; excluded from the non-property-tax share) |
-| `spending` | object of USD | `publicSafety`, `roads`, `utilities`, `parks`, `healthServices`, `education` (schools paid by the town, as in Connecticut; left out of the services and overhead shares), `administration`, `consultants`, `debtService`, `otherSpending` (spending reported only as a total; services and overhead are then not scored), `surveillance` (Flock/ALPR cameras, facial recognition, ShotSpotter), `corporateDeals` (data center contracts, private-developer subsidies). Set the last two to `0` once checked and none found; leave them out if unknown |
+| `revenue` | object of USD | `propertyTax`, `salesTax`, `stateAid`, `federalGrants`, `localRevenue`, `grants`, `feesPermits`, `utilityCharges`, `finesForfeitures`, `borrowing`, `otherRevenue`, `surplusUsed` (prior-year surplus; excluded from the non-property-tax share), `taxesForOtherGovernments` (school, county and fire-district taxes the town collects and pays over, as in New Jersey; counted in money in, left out of every score measure) |
+| `spending` | object of USD | `publicSafety`, `roads`, `utilities`, `parks`, `healthServices`, `education` (schools paid by the town, as in Connecticut; left out of the services and overhead shares), `administration`, `consultants`, `debtService`, `otherSpending` (spending reported only as a total; services and overhead are then not scored), `paidToOtherGovernments` (the same taxes paid over to those governments; counted in money out, left out of every score measure), `surveillance` (Flock/ALPR cameras, facial recognition, ShotSpotter), `corporateDeals` (data center contracts, private-developer subsidies). Set the last two to `0` once checked and none found; leave them out if unknown |
 | `taxBreaks` | object of USD | `dataCenterAbatements`, `corporateAbatements`. Revenue given up to corporations; not counted in revenue totals |
-| `redFlags` | array | Documented programs and deals with no dollar figure: `{ kind, label, vendor, agency, date, detail, source \| sources }`. `kind` is `surveillance`, `dataCenter`, `corporateSubsidy` or `corporateLobbying`. An empty array means checked and none found. `scored: false` shows a record without counting it |
+| `redFlags` | array | Documented programs and deals with no dollar figure: `{ kind, label, vendor, agency, date, detail, source \| sources }`. `kind` is `surveillance`, `dataCenter`, `corporateSubsidy` or `corporateLobbying`. An empty array means checked and none found. `scored: false` shows a record without counting it, with `unscoredReason` saying why (for example, access every police department has through a statewide contract) |
 | `surveillanceMap` | object | `{ cameras, flock, townOperated, asOf, source }`: license-plate cameras mapped inside the town. Shown on the report; Flock cameras are also added to `redFlags` |
 | `influence` | object of USD | `pacContributions`, `developerContributions`, `unionContributions`, `corporateLobbying` (companies lobbying town officials), `lobbyingPaid` (lobbyists the town hires) |
 | `topDonors` | array | `{ name, type, recipient, amount }` |
 | `transparency` | object of booleans | `budgetOnline`, `openCheckbook`, `auditOnTime`, `competitiveBidding`, `meetingsRecorded`, `conflictDisclosures` |
 | `debt` | number | Total outstanding debt, USD |
+| `borrowed` | number | New borrowing during the year that paid for spending (bond proceeds, not refinancing), USD. Not counted as revenue; the data checks count it when comparing money in with money out |
 | `history` | array | `{ year, revenue, spending }`. Two or more entries draw the trend chart |
 | `ledger` | array | `{ date, flow, category, counterparty, description, amount, source }` |
 | `sources` | array | `{ label, url }` |
@@ -31,3 +32,29 @@ Required fields: `id`, `name`, `state`, `lat`, `lng`, `population`, `revenue`, `
 `ledger[].flow` is one of `in` (into the treasury), `out` (paid by the town) or `influence` (political money around the town). `category` is one of the keys above. Amounts are always positive; the flow gives the direction.
 
 The canonical lists live in `js/engine/categories.js`. Validation is `validateDataset` in `js/engine/ledger.js`.
+
+## Reporting context and availability
+
+`reporting` is an optional object containing `basis`, `scope`, `politicalPeriod`,
+and `politicalScope` strings. These describe the financial reporting basis and
+fund coverage, and the political record window and recipient population. The
+county builders derive them from their existing source notes; the summary builder
+retains them. Older datasets remain supported and display **Not recorded** for
+missing metadata. Do not fill metadata from a state abbreviation alone.
+
+Missing fields differ from explicit zero. Displays use **Not available** for
+unknown figures and **Not graded** below the existing 50-point coverage threshold.
+A documented surveillance program with no price does not establish zero cost.
+Coverage shows both component count and the available original scoring weight.
+Comparison highlights require known, matching relevant reporting context and
+available values. Red-flag and tax-break comparisons do not declare winners,
+because the schema does not establish comparable investigation coverage.
+
+Imports validate unique URL-safe IDs, finite numeric amounts and population,
+coordinate bounds, object/array shapes, source URLs, and required ledger fields.
+Signed ledger adjustments remain supported because public filings include them.
+A top-level `demo: true` marks every imported town as fictional.
+
+Summary downloads omit ledger, history, donors, source notes and source lists.
+Complete downloads fetch all referenced county details before producing a file;
+a failed request identifies the town/file and produces no partial download.

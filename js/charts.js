@@ -20,7 +20,7 @@ export const gradeBadge = (grade, size = '') => {
 // Small pill marking a town whose figures come from real public records.
 export const isVerified = (town) => town.demo !== true && (Boolean(town.detailFile) || (town.sources || []).some((src) => src.url));
 export const verifiedPill = (town) =>
-  !isVerified(town) ? '' : '<span class="pill pill-verified" title="Figures come from public records listed under Sources">Verified data</span>';
+  !isVerified(town) ? '' : '<span class="pill pill-verified" title="Figures come from public records listed under Sources">Public-record data</span>';
 
 // Horizontal bar list. rows: [{ label, amount, share, color }]; bars scale to the largest row.
 export function barList(rows, { total } = {}) {
@@ -71,7 +71,7 @@ export function lineChart(host, series, { height = 220, format = (v) => money(v,
   }
   const xl = xs.map((v, i) => `<text class="axis-text" x="${x(i)}" y="${H - 6}" text-anchor="middle">FY${String(v).slice(-2)}</text>`).join('');
   const lines = series
-    .map((s) => `<path class="line" style="stroke:${s.color}" d="${s.values.map((v, i) => `${i ? 'L' : 'M'}${x(i)},${y(v.y)}`).join('')}"/>`)
+    .map((s) => `<path class="line" pathLength="1" style="stroke:${s.color}" d="${s.values.map((v, i) => `${i ? 'L' : 'M'}${x(i)},${y(v.y)}`).join('')}"/>`)
     .join('');
   const lastDots = series
     .map((s) => { const i = s.values.length - 1; return `<circle class="dot" r="4.5" style="fill:${s.color}" cx="${x(i)}" cy="${y(s.values[i].y)}"/>`; })
@@ -124,3 +124,19 @@ export function downloadFile(name, content, type = 'text/csv') {
 
 // Reads a CSS custom property's resolved value (for Leaflet, which needs real colors).
 export const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+// Slide elements in as they scroll into view. Marks each one .reveal, then adds .in when it
+// enters; elements arriving together get a short stagger (--i). Returns a cleanup function.
+export function revealOnScroll(elements) {
+  elements.forEach((el) => el.classList.add('reveal'));
+  if (!('IntersectionObserver' in window)) { elements.forEach((el) => el.classList.add('in')); return () => {}; }
+  const observer = new IntersectionObserver((entries) => {
+    entries.filter((e) => e.isIntersecting).forEach((e, i) => {
+      e.target.style.setProperty('--i', String(Math.min(i, 6)));
+      e.target.classList.add('in');
+      observer.unobserve(e.target);
+    });
+  }, { rootMargin: '0px 0px -40px 0px' });
+  elements.forEach((el) => observer.observe(el));
+  return () => observer.disconnect();
+}

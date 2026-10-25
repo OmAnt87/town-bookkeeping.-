@@ -12,7 +12,10 @@
 // Then re-run scripts/nj/red-flags.mjs: a rebuild drops the red-flag records.
 // Nothing is estimated: a town with no usable budget filing is left out and
 // reported, and sections without data (political money, transparency) are omitted.
+// Money in and out also include the school, county and fire-district taxes the
+// town collects and pays over (applyPassThrough in ufb-map.mjs).
 
+import { reportingFor } from '../../js/engine/reporting.js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
@@ -20,9 +23,10 @@ import { fileURLToPath } from 'node:url';
 import { parseArgs, slugify } from '../lib.mjs';
 import {
   groupFor, linesOf, totalOf, aggregateUFB, NJ_COUNTIES, countyFips, displayName, normName,
-  UFB_REVENUE, UFB_APPROPRIATION,
+  UFB_REVENUE, UFB_APPROPRIATION, applyPassThrough, filingsFor,
 } from './ufb-map.mjs';
 import { summarizeElec, ELEC_SEARCH_URL } from './elec-map.mjs';
+import { validateTown } from '../../js/engine/validate.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const RAW = join(ROOT, 'data', 'raw', 'nj');
@@ -93,8 +97,17 @@ const nameCounts = {};
 for (const r of ufb[YEARS[0]]) nameCounts[r['|Municipality'].toLowerCase()] = (nameCounts[r['|Municipality'].toLowerCase()] || 0) + 1;
 const townId = (name, county) => slugify(nameCounts[name.toLowerCase()] > 1 ? `${name} ${county} county nj` : `${name} nj`);
 
-const usable = (r) => r && !r['Status|No UFB Available'] && !r['Status|Sig. Data Missing']
-  && (totalOf(r, groupFor(r, 'appropriations')) || 0) > 0;
+// A filing is usable when it has appropriations and anticipated revenue close to
+// them: an adopted budget must balance by law. The two sides rarely match to the
+// dollar here (the service-type breakdown leaves out a few items), but some
+// current-year filings are still incomplete, with revenue entered for only a few
+// lines, and those are passed over for the year before.
+const usable = (r) => {
+  if (!r || r['Status|No UFB Available'] || r['Status|Sig. Data Missing']) return false;
+  const app = totalOf(r, groupFor(r, 'appropriations')) || 0;
+  const rev = totalOf(r, groupFor(r, 'anticipated')) || 0;
+  return app > 0 && rev / app >= 0.75 && rev / app <= 1.33;
+};
 
 function populationOf(r) {
   const k = Object.keys(r).find((x) => /^Population and Density\|Population \(/.test(x));
@@ -102,7 +115,23 @@ function populationOf(r) {
 }
 
 function buildTown(name, county, report) {
-  const year = YEARS.find((y) => usable(byYear[y].get(`${name}|${county}`)));
+  // Latest balanced filing whose size is in line with the town's other years
+  // (a few filings are complete but entered at a fraction of the real budget).
+  const sizes = YEARS.map((y) => byYear[y].get(`${name}|${county}`)).filter(usable)
+    .map((x) => totalOf(x, groupFor(x, 'appropriations')));
+  const typical = sizes.sort((a, b) => a - b)[sizes.length >> 1];
+  const inLine = (x) => { const v = totalOf(x, groupFor(x, 'appropriations')); return v / typical <= 4 && typical / v <= 4; };
+  // Our category totals must also reconcile with the filing's own totals.
+  const reconciles = (x) => {
+    const a = aggregateUFB(linesOf(x, groupFor(x, 'anticipated')), linesOf(x, groupFor(x, 'appropriations')));
+    const rev = Object.values(a.revenue).reduce((m, v) => m + v, 0);
+    const app = Object.values(a.spending).reduce((m, v) => m + v, 0) + a.excluded;
+    return Math.abs(rev - totalOf(x, groupFor(x, 'anticipated'))) <= 50 && Math.abs(app - totalOf(x, groupFor(x, 'appropriations'))) <= 50;
+  };
+  const year = YEARS.find((y) => { const x = byYear[y].get(`${name}|${county}`); return usable(x) && inLine(x) && reconciles(x); });
+  if (year && year !== YEARS.find((y) => byYear[y].get(`${name}|${county}`) && !byYear[y].get(`${name}|${county}`)['Status|No UFB Available'])) {
+    report.olderYear.push(`${displayName(name)} (${year})`);
+  }
   if (!year) { report.skipped.push(`${displayName(name)}: no usable budget filing in ${YEARS.at(-1)}-${YEARS[0]}`); return null; }
   const r = byYear[year].get(`${name}|${county}`);
   const place = findPlace(name, county);
@@ -124,20 +153,6 @@ function buildTown(name, county, report) {
     report.mismatch.push(`${displayName(name)} ${year}: revenue ${ourRev} vs ${revTotal}, appropriations ${ourApp} vs ${appTotal}`);
   }
 
-  // History: prior-year actual revenue and final appropriations from every year's filing.
-  const history = [];
-  for (const y of [...YEARS].reverse()) {
-    const h = byYear[y].get(`${name}|${county}`);
-    if (!h || h['Status|No UFB Available']) continue;
-    const real = totalOf(h, groupFor(h, 'realized'));
-    const modG = groupFor(h, 'modified');
-    const modLines = linesOf(h, modG);
-    const mod = modLines.filter((l) => UFB_APPROPRIATION[l.label] !== 'exclude').reduce((a, l) => a + l.amount, 0);
-    if (real > 0 && mod > 0) history.push({ year: y - 1, revenue: Math.round(real), spending: Math.round(mod), basis: 'actual' });
-  }
-  history.push({ year, revenue: Math.round(ourRev), spending: Math.round(ourApp - excluded), basis: 'budget' });
-  const dedup = Object.values(Object.fromEntries(history.map((h) => [h.year, h]))).sort((a, b) => a.year - b.year);
-
   const netDebt = Number(r['Net Debt|Net Debt']);
   const elec = elecFor(name, county);
   if (!elec) report.noElec.push(displayName(name));
@@ -148,17 +163,18 @@ function buildTown(name, county, report) {
       date: `${year}-01-01`, flow: 'in', category: UFB_REVENUE[l.label] || 'otherRevenue',
       counterparty: 'Adopted budget: anticipated revenue', description: l.label, amount: Math.round(l.amount), source: UFB_PAGE,
     })),
-    ...appLines.filter((l) => l.amount).map((l) => {
+    // The reserve for uncollected taxes is set aside, not spent, so it is not a ledger payment.
+    ...appLines.filter((l) => l.amount && UFB_APPROPRIATION[l.label] !== 'exclude').map((l) => {
       const k = UFB_APPROPRIATION[l.label];
       return {
-        date: `${year}-01-01`, flow: 'out', category: k === 'shared' || k === 'exclude' || !k ? 'administration' : k,
-        counterparty: 'Adopted budget: appropriation', description: l.label + (k === 'shared' ? ' (spread across departments in totals)' : k === 'exclude' ? ' (reserve, not counted as spending)' : ''),
+        date: `${year}-01-01`, flow: 'out', category: k === 'shared' || !k ? 'administration' : k,
+        counterparty: 'Adopted budget: appropriation', description: l.label + (k === 'shared' ? ' (spread across departments in totals)' : ''),
         amount: Math.round(l.amount), source: UFB_PAGE,
       };
     }),
   ];
 
-  return {
+  const town = {
     id: townId(name, county),
     name: displayName(name),
     state: 'NJ',
@@ -167,7 +183,8 @@ function buildTown(name, county, report) {
     type: kind ? displayName(kind) : 'Municipality',
     lat: Math.round(place.lat * 1e5) / 1e5,
     lng: Math.round(place.lng * 1e5) / 1e5,
-    population: populationOf(r),
+    // Older filings sometimes leave population blank; take the newest one on file.
+    population: populationOf(r) || YEARS.map((y) => populationOf(byYear[y].get(`${name}|${county}`) || {})).find((p) => p > 0) || 0,
     fiscalYear: year,
     asOf: new Date().toISOString().slice(0, 10),
     njMuniCode: String(r['|Muni-code']).padStart(4, '0'),
@@ -175,7 +192,7 @@ function buildTown(name, county, report) {
     revenue,
     spending,
     ...(Number.isFinite(netDebt) ? { debt: Math.round(netDebt) } : {}),
-    history: dedup,
+    history: [],
     ...(pol ? { influence: pol.influence, topDonors: pol.topDonors } : {}),
     ledger: [...ledger, ...(pol ? pol.ledger : [])],
     sources: [
@@ -185,7 +202,6 @@ function buildTown(name, county, report) {
       ...(pol ? [{ label: `NJ ELEC campaign-finance filings: contributions to ${displayName(name)} municipal candidates since ${ELEC_SINCE} (ELEC location ${elec.loc.code})`, url: ELEC_SEARCH_URL }] : []),
     ],
     notes: [
-      'Covers the municipal budget only. School-district and county taxes on the same property-tax bill belong to separate governments and are not included.',
       `Insurance, pension and social-security contributions and shared-service payments ($${Math.round(shared).toLocaleString('en-US')}) are spread across departments in proportion to their size.`,
       ...(excluded ? [`The reserve for uncollected taxes ($${Math.round(excluded).toLocaleString('en-US')}) is set aside, not spent, so it is not counted as spending.`] : []),
       ...(pol
@@ -194,20 +210,26 @@ function buildTown(name, county, report) {
       'Contractor pay-to-play disclosures and transparency practices have not been loaded yet; transparency is not scored.',
     ],
   };
+  const pt = applyPassThrough(town, filingsFor(byYear, town.njMuniCode), UFB_PAGE);
+  if (!pt.head) report.noPassThrough.push(displayName(name));
+  if (pt.dropped.length || pt.missingPass.length) report.history.push(`${displayName(name)}: dropped ${[...pt.dropped, ...pt.missingPass].sort().join(', ')}`);
+  return town;
 }
 
 const index = existsSync(join(OUT, 'index.json')) ? JSON.parse(readFileSync(join(OUT, 'index.json'), 'utf8')) : { files: [] };
 mkdirSync(OUT, { recursive: true });
 for (const county of counties) {
-  const report = { skipped: [], unmapped: [], mismatch: [], noElec: [] };
+  const report = { skipped: [], unmapped: [], mismatch: [], noElec: [], olderYear: [], history: [], issues: [], noPassThrough: [] };
   const names = [...new Set(YEARS.flatMap((y) => ufb[y].filter((r) => r['|County'] === county).map((r) => r['|Municipality'])))];
   const current = new Set(ufb[YEARS[0]].filter((r) => r['|County'] === county).map((r) => r['|Municipality']));
   const towns = names.filter((n) => current.has(n)).sort().map((n) => buildTown(n, county, report)).filter(Boolean);
+  for (const t of towns) for (const i of validateTown(t)) report.issues.push(`${t.name} [${i.severity} ${i.code}] ${i.message}`);
   const file = `nj-${slugify(county)}.json`;
+  for (const town of towns) town.reporting = reportingFor(town);
   writeFileSync(join(OUT, file), `${JSON.stringify({ towns }, null, 1)}\n`);
   if (!index.files.includes(file)) index.files.push(file);
   index.files.sort();
   writeFileSync(join(OUT, 'index.json'), `${JSON.stringify(index, null, 2)}\n`);
   const years = towns.reduce((a, t) => ({ ...a, [t.fiscalYear]: (a[t.fiscalYear] || 0) + 1 }), {});
-  console.log(JSON.stringify({ county, towns: towns.length, of: current.size, years, skipped: report.skipped, unmapped: [...new Set(report.unmapped)], mismatch: report.mismatch, noElec: report.noElec }));
+  console.log(JSON.stringify({ county, towns: towns.length, of: current.size, years, skipped: report.skipped, unmapped: [...new Set(report.unmapped)], mismatch: report.mismatch, noElec: report.noElec, olderYear: report.olderYear, history: report.history, noPassThrough: report.noPassThrough, issues: report.issues }));
 }

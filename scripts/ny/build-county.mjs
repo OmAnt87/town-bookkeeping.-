@@ -10,12 +10,14 @@
 // Figures are actual results from each government's Annual Financial Report to the
 // NY Office of the State Comptroller. Nothing is estimated.
 
+import { reportingFor } from '../../js/engine/reporting.js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs, parseCSV, slugify } from '../lib.mjs';
 import { aggregateOsc } from './osc-map.mjs';
 import { summarizeNyContributions, NY_CF_URL } from './politics-map.mjs';
+import { cleanHistory, historyOutliers, validateTown } from '../../js/engine/validate.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const RAW = join(ROOT, 'data', 'raw', 'ny');
@@ -81,7 +83,11 @@ const money = (n) => `$${Math.round(n).toLocaleString('en-US')}`;
 function buildGov(code, g, report, politics) {
   const years = Object.keys(g.years).sort();
   const usable = years.filter((y) => { const a = aggregateOsc(g.years[y].lines); return a.raw.revenue > 0 && a.raw.spending > 0; });
-  const year = usable.at(-1);
+  // Latest report whose totals are in line with the government's other years.
+  const sizes = usable.map((y) => { const a = aggregateOsc(g.years[y].lines); return { year: Number(y), revenue: a.raw.revenue - a.excluded.revenue, spending: a.raw.spending - a.excluded.spending }; });
+  const off = historyOutliers(sizes);
+  const year = usable.filter((y) => !off.has(Number(y))).at(-1);
+  if (year && year !== usable.at(-1)) report.old.push(`${g.name}: ${usable.at(-1)} report far off other years, using ${year}`);
   if (!year) { report.skipped.push(`${g.name}: no annual financial report with revenue and spending`); return null; }
   const census = censusFor(g);
   if (!census || !census.xy) { report.skipped.push(`${g.name}: not in the Census 2025 estimates (dissolved or renamed)`); return null; }
@@ -96,28 +102,31 @@ function buildGov(code, g, report, politics) {
     report.mismatch.push(`${g.name} ${year}: revenue ${revTotal}+${a.excluded.revenue} vs ${a.raw.revenue}; spending ${spTotal}+${a.excluded.spending} vs ${a.raw.spending}`);
   }
 
-  const history = usable.map((y) => {
+  const history = cleanHistory(usable.map((y) => {
     const h = aggregateOsc(g.years[y].lines);
     return { year: Number(y), revenue: Math.round(h.raw.revenue - h.excluded.revenue), spending: Math.round(h.raw.spending - h.excluded.spending), basis: 'actual' };
-  });
+  }));
 
   const debtYear = Object.keys(g.debt || {}).filter((y) => y <= year).sort().at(-1);
   const debt = debtYear ? Math.round(g.debt[debtYear]) : null;
 
-  // Ledger: one row per OSC category line actually counted.
+  // Ledger: one row per OSC category line actually counted. Each line is mapped
+  // with its own fund and function code, exactly as in the totals, so custodial
+  // funds, transfers and refinancing never show up as money in or out.
   const periodEnd = g.years[year].periodEnd;
+  const { mapOscLine } = report.map;
   const grouped = {};
   for (const [key, amount] of Object.entries(g.years[year].lines)) {
     if (!amount) continue;
     const [, section, l1, l2] = key.split('|');
-    const gk = `${section}|${l1}|${l2}`;
+    const cat = mapOscLine(key) || (section === 'REVENUE' ? 'otherRevenue' : 'administration');
+    if (cat.startsWith('exclude:')) continue;
+    const gk = `${section}|${l1}|${l2}|${cat}`;
     grouped[gk] = (grouped[gk] || 0) + amount;
   }
-  const { mapOscLine } = report.map;
   const ledger = Object.entries(grouped).map(([gk, amount]) => {
-    const [section, l1, l2] = gk.split('|');
-    const cat = mapOscLine(`A|${gk}|`);
-    if (!cat || cat.startsWith('exclude:') || Math.round(amount) === 0) return null;
+    const [section, l1, l2, cat] = gk.split('|');
+    if (Math.round(amount) === 0) return null;
     return {
       date: periodEnd,
       flow: section === 'REVENUE' ? 'in' : 'out',
@@ -165,6 +174,7 @@ function buildGov(code, g, report, politics) {
     notes: [
       `Actual results reported to the State Comptroller for the fiscal year ending ${periodEnd}, not an adopted budget.`,
       ...(Number(year) < 2023 ? [`This is the latest annual report ${g.name} has filed with the State Comptroller; newer years are not on file.`] : []),
+      ...(year !== usable.at(-1) ? [`The ${usable.at(-1)} report is on file but its totals are more than four times off ${g.name}'s other years, so the ${year} report is used until the newer figures can be checked.`] : []),
       kind === 'Village'
         ? `Covers the village government only. Village residents also pay the town that surrounds ${base}, which is listed separately, plus county and school taxes.`
         : 'Covers this government only. County, school-district and special-district taxes on the same bills belong to separate governments.',
@@ -188,17 +198,19 @@ const index = existsSync(join(OUT, 'index.json')) ? JSON.parse(readFileSync(join
 mkdirSync(OUT, { recursive: true });
 
 for (const county of counties) {
-  const report = { skipped: [], unmapped: [], mismatch: [], old: [], map: { mapOscLine } };
+  const report = { skipped: [], unmapped: [], mismatch: [], old: [], issues: [], map: { mapOscLine } };
   const politics = existsSync(politicsFile(county)) ? JSON.parse(readFileSync(politicsFile(county), 'utf8')) : null;
   const govs = Object.entries(osc).filter(([, g]) => g.county === county);
   const towns = govs.map(([code, g]) => buildGov(code, g, report, politics ? (politics.byGov[code] || []) : null)).filter(Boolean)
     .sort((x, y) => x.name.localeCompare(y.name));
+  for (const t of towns) for (const i of validateTown(t)) report.issues.push(`${t.name} [${i.severity} ${i.code}] ${i.message}`);
   if (!towns.length) { console.log(JSON.stringify({ county, towns: 0, of: govs.length, skipped: report.skipped })); continue; }
   const file = `ny-${slugify(county)}.json`;
+  for (const town of towns) town.reporting = reportingFor(town);
   writeFileSync(join(OUT, file), `${JSON.stringify({ towns }, null, 1)}\n`);
   if (!index.files.includes(file)) index.files.push(file);
   index.files.sort();
   writeFileSync(join(OUT, 'index.json'), `${JSON.stringify(index, null, 2)}\n`);
   const types = towns.reduce((m, t) => ({ ...m, [t.type]: (m[t.type] || 0) + 1 }), {});
-  console.log(JSON.stringify({ county, towns: towns.length, of: govs.length, types, old: report.old, skipped: report.skipped, unmapped: [...new Set(report.unmapped)], mismatch: report.mismatch }));
+  console.log(JSON.stringify({ county, towns: towns.length, of: govs.length, types, old: report.old, skipped: report.skipped, unmapped: [...new Set(report.unmapped)], mismatch: report.mismatch, issues: report.issues }));
 }

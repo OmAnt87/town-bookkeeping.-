@@ -9,6 +9,7 @@ import {
   TAX_BREAK_CATEGORIES,
   RED_FLAG_PATTERNS,
 } from './categories.js';
+import { validateTown } from './validate.js';
 
 export const sum = (obj = {}) => Object.values(obj).reduce((a, b) => a + (Number(b) || 0), 0);
 
@@ -22,6 +23,12 @@ export function totals(town) {
   const influence = sum(town.influence);
   const propertyTax = town.revenue?.propertyTax || 0;
   const reserves = REVENUE_CATEGORIES.filter((c) => c.reserve).reduce((a, c) => a + (town.revenue?.[c.key] || 0), 0);
+  // Taxes collected for and paid over to other governments: part of money in
+  // and out, but every share and per-resident measure uses the town's own money.
+  const passThroughIn = REVENUE_CATEGORIES.filter((c) => c.passThrough).reduce((a, c) => a + (town.revenue?.[c.key] || 0), 0);
+  const passThroughOut = SPENDING_CATEGORIES.filter((c) => c.passThrough).reduce((a, c) => a + (town.spending?.[c.key] || 0), 0);
+  const ownRevenue = revenue - passThroughIn;
+  const ownSpending = spending - passThroughOut;
   // Red-flag payments filed under a service line (a Flock contract under
   // police, say) are moved out of direct services and into red flags.
   const flaggedInDirect = redFlagEntries(town)
@@ -45,13 +52,17 @@ export function totals(town) {
     influence,
     propertyTax,
     reserves,
-    nonPropertyRevenue: revenue - propertyTax - reserves,
-    nonPropertyShare: revenue ? (revenue - propertyTax - reserves) / revenue : 0,
+    passThroughIn,
+    passThroughOut,
+    ownRevenue,
+    ownSpending,
+    nonPropertyRevenue: ownRevenue - propertyTax - reserves,
+    nonPropertyShare: ownRevenue ? (ownRevenue - propertyTax - reserves) / ownRevenue : 0,
     directSpending: directNet,
     redFlagSpending,
     taxBreaks,
     // Red-flag spending plus revenue given away, against what the town spends.
-    redFlagShare: spending ? (redFlagSpending + taxBreaks) / spending : 0,
+    redFlagShare: ownSpending ? (redFlagSpending + taxBreaks) / ownSpending : 0,
     redFlagPerResident: (redFlagSpending + taxBreaks) / pop,
     redFlagKnown: hasRedFlagData(town),
     documentedRedFlags: documented.length,
@@ -67,13 +78,19 @@ export function totals(town) {
     adminShare: municipal > 0
       ? ((town.spending?.administration || 0) + (town.spending?.consultants || 0)) / municipal
       : 0,
-    spendingPerResident: spending / pop,
+    spendingPerResident: ownSpending / pop,
     directPerResident: directNet / pop,
     influencePerResident: influence / pop,
     debtPerResident: (town.debt || 0) / pop,
-    balance: revenue - spending,
+    balance: ownRevenue - ownSpending,
   };
 }
+
+// What the services and overhead shares leave out, for the score breakdown.
+const leftOut = (t) => {
+  if (t.municipalSpending >= t.spending) return '';
+  return t.passThroughOut >= t.spending - t.municipalSpending ? ' (not counting school and county taxes paid over)' : ' (not counting schools)';
+};
 
 const notItemized = (_t, town) => (town.spending?.otherSpending > 0
   ? 'Not scored: part of this town\'s spending is reported only as a total, not by department'
@@ -85,28 +102,31 @@ export const COMPONENTS = [
   {
     key: 'services',
     label: 'Money reaching residents',
-    max: 25,
+    max: 30,
     available: (t, town) => t.municipalSpending > 0 && !(town.spending?.otherSpending > 0),
     measure: (t) => scale(t.directShare, 0.5, 0.88),
-    detail: (t) => `${pct(t.directShare)} of spending goes to direct services${t.municipalSpending < t.spending ? ' (not counting schools)' : ''}`,
+    detail: (t) => `${pct(t.directShare)} of spending goes to direct services${leftOut(t)}`,
     unavailable: notItemized,
   },
   {
     key: 'overhead',
     label: 'Low overhead',
-    max: 10,
+    max: 15,
     available: (t, town) => t.municipalSpending > 0 && !(town.spending?.otherSpending > 0),
     measure: (t) => scale(t.adminShare, 0.3, 0.06),
-    detail: (t) => `${pct(t.adminShare)} spent on administration and consultants${t.municipalSpending < t.spending ? ' (not counting schools)' : ''}`,
+    detail: (t) => `${pct(t.adminShare)} spent on administration and consultants${leftOut(t)}`,
     unavailable: notItemized,
   },
   {
+    // A penalty, not a scored part: red flags only ever take points away, so a
+    // town with nothing found (or not checked) keeps the score its other parts earn.
     key: 'redFlags',
-    label: 'No surveillance or corporate giveaways',
+    label: 'Surveillance & corporate giveaways',
     max: 10,
+    penalty: true,
     available: (_t, town) => hasRedFlagData(town),
     // Dollars and documented programs are both checked; the worse one counts.
-    // Each documented program or deal (most records carry no dollar figure) costs a quarter of the points.
+    // Each documented program or deal (most records carry no dollar figure) costs a quarter of the penalty.
     measure: (t) => Math.min(scale(t.redFlagShare, 0.05, 0), Math.max(0, 1 - 0.25 * t.documentedRedFlags)),
     detail: (t) => {
       const parts = [];
@@ -129,21 +149,26 @@ export const COMPONENTS = [
     key: 'transparency',
     label: 'Transparency',
     max: 20,
-    available: (_t, town) => Object.values(town.transparency || {}).some((v) => typeof v === 'boolean'),
-    measure: (_t, town) => transparencyCount(town) / TRANSPARENCY_CHECKS.length,
-    detail: (_t, town) => `${transparencyCount(town)} of ${TRANSPARENCY_CHECKS.length} transparency practices`,
+    available: (_t, town) => transparencyChecked(town) > 0,
+    // Only practices that were checked count; the part weighs in proportion to
+    // how many were checked, so one check can't swing all 20 points.
+    weight: (_t, town) => transparencyChecked(town) / TRANSPARENCY_CHECKS.length,
+    measure: (_t, town) => transparencyCount(town) / transparencyChecked(town),
+    detail: (_t, town) => transparencyChecked(town) === TRANSPARENCY_CHECKS.length
+      ? `${transparencyCount(town)} of ${TRANSPARENCY_CHECKS.length} transparency practices`
+      : `${transparencyCount(town)} of ${transparencyChecked(town)} checked transparency practice${transparencyChecked(town) === 1 ? '' : 's'} (${TRANSPARENCY_CHECKS.length - transparencyChecked(town)} not checked yet)`,
   },
   {
     key: 'fiscal',
     label: 'Fiscal health',
     max: 15,
-    available: (t, town) => typeof town.debt === 'number' && t.revenue > 0,
+    available: (t, town) => typeof town.debt === 'number' && t.ownRevenue > 0,
     measure: (t) =>
       0.65 * scale(t.debtPerResident, 6000, 300) +
-      0.35 * scale(t.revenue ? t.balance / t.revenue : 0, -0.1, 0.02),
+      0.35 * scale(t.ownRevenue ? t.balance / t.ownRevenue : 0, -0.1, 0.02),
     detail: (t) =>
       `$${Math.round(t.debtPerResident).toLocaleString('en-US')} debt per resident, ` +
-      `${t.balance >= 0 ? 'surplus' : 'deficit'} of ${pct(Math.abs(t.revenue ? t.balance / t.revenue : 0))}`,
+      `${t.balance >= 0 ? 'surplus' : 'deficit'} of ${pct(Math.abs(t.ownRevenue ? t.balance / t.ownRevenue : 0))}`,
   },
 ];
 
@@ -224,6 +249,11 @@ export function transparencyCount(town) {
   return TRANSPARENCY_CHECKS.filter((c) => town.transparency?.[c.key] === true).length;
 }
 
+// Practices with a yes or no answer; unchecked ones are neither.
+export function transparencyChecked(town) {
+  return TRANSPARENCY_CHECKS.filter((c) => typeof town.transparency?.[c.key] === 'boolean').length;
+}
+
 export function gradeFor(score) {
   if (score >= 85) return 'A';
   if (score >= 70) return 'B';
@@ -237,29 +267,41 @@ export function scoreTown(town) {
   const components = COMPONENTS.map((c) => {
     const available = c.available(t, town);
     const ratio = available ? clamp(c.measure(t, town)) : 0;
+    const max = available && c.weight ? Math.round(c.max * c.weight(t, town) * 10) / 10 : c.max;
     return {
       key: c.key,
       label: c.label,
-      max: c.max,
+      max,
+      penalty: Boolean(c.penalty),
       available,
-      points: available ? Math.round(ratio * c.max * 10) / 10 : null,
+      // A penalty's points are what it takes away: 0 or negative.
+      points: !available ? null : c.penalty ? -Math.round((1 - ratio) * max * 10) / 10 || 0 : Math.round(ratio * max * 10) / 10,
       ratio,
-      detail: available ? c.detail(t, town) : (c.unavailable?.(t, town) || 'Not scored: no data loaded for this part yet'),
+      detail: available ? c.detail(t, town) : (c.unavailable?.(t, town) || (c.penalty ? 'Not checked for red flags yet' : 'Not scored: no data loaded for this part yet')),
     };
   });
   // Parts with no data are left out and the rest are rescaled to 100, so
-  // missing records never count as good or bad.
-  const scored = components.filter((c) => c.available);
+  // missing records never count as good or bad. Penalties come off afterwards.
+  const scored = components.filter((c) => c.available && !c.penalty);
   const possible = scored.reduce((a, c) => a + c.max, 0);
   const earned = scored.reduce((a, c) => a + c.points, 0);
-  const score = possible ? Math.round((earned / possible) * 1000) / 10 : 0;
+  const deducted = components.filter((c) => c.available && c.penalty).reduce((a, c) => a - c.points, 0);
+  const base = possible ? (earned / possible) * 100 : 0;
+  const score = possible ? Math.round(Math.max(0, base - deducted) * 10) / 10 : 0;
+  const issues = validateTown(town);
+  // Records that fail a data check (no revenue, a budget that doesn't add up) are
+  // held back from grading until the source is fixed.
+  const review = issues.some((i) => i.severity === 'error');
   return {
     score,
     // A letter grade needs data behind at least half of the 100 points.
-    grade: possible >= 50 ? gradeFor(score) : '?',
+    grade: possible >= 50 && !review ? gradeFor(score) : '?',
+    review,
+    issues,
     components,
     totals: t,
-    coverage: { scored: scored.length, total: components.length, possible },
+    penalty: deducted,
+    coverage: { scored: scored.length, total: components.filter((c) => !c.penalty).length, possible },
   };
 }
 
@@ -297,6 +339,8 @@ export function influenceRows(town) {
 // Map metrics: `higherIsBetter` drives the color direction on the map.
 export const MAP_METRICS = [
   { key: 'score', label: 'Community Return Score', higherIsBetter: true, value: (s) => s.score, format: (v) => v.toFixed(0) },
+  // Filled in from engine/peers.js through metrics.js, since it depends on the other towns.
+  { key: 'peerPercentile', label: 'Score among peers (percentile)', higherIsBetter: true, value: () => null, format: (v) => `${Math.round(v)}th` },
   { key: 'directPerResident', label: 'Service dollars per resident', higherIsBetter: true, value: (s) => s.totals.directPerResident, format: (v) => `$${Math.round(v).toLocaleString('en-US')}` },
   { key: 'directShare', label: 'Share of spending on services', higherIsBetter: true, value: (s) => s.totals.directShare, format: (v) => pct(v) },
   { key: 'influencePerResident', label: 'Outside political money per resident', higherIsBetter: false, value: (s) => s.totals.influencePerResident, format: (v) => `$${v.toFixed(2)}` },

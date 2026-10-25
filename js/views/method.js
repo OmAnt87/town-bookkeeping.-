@@ -1,13 +1,14 @@
+import { MIN_PEERS, PROVISIONAL_BELOW } from '../engine/peers.js';
 import { COMPONENTS } from '../engine/scoring.js';
 import { TRANSPARENCY_CHECKS, SPENDING_CATEGORIES } from '../engine/categories.js';
-import { gradeBadge } from '../charts.js';
+import { gradeBadge, revealOnScroll } from '../charts.js';
 
 const HOW = {
   services: 'Share of all spending that pays for services residents use directly: police, fire and EMS, roads, water and sewer, parks and libraries, and health and human services. Full points at 88% or more, zero at 50% or less.',
-  redFlags: 'Money spent on mass surveillance (Flock license-plate cameras, facial recognition, ShotSpotter) and corporate deals (data center contracts, subsidies to private developers), plus corporate tax breaks the town gave away, as a share of spending. Full points at 0%, zero at 5% or more. Most public records only show that a town uses a technology or approved a deal, not what it paid, so each documented program or deal also costs a quarter of the points; the lower result counts. Known surveillance vendors and data center deals are flagged even when a town files them under police or general spending.',
+  redFlags: 'A penalty of up to 10 points, taken off after the other parts are added up, so red flags only ever lower a score: a town with nothing found keeps what its other parts earn. It counts money spent on mass surveillance (Flock license-plate cameras, facial recognition, ShotSpotter) and corporate deals (data center contracts, subsidies to private developers), plus corporate tax breaks the town gave away: the full 10 points at 5% of spending or more. Most public records only show that a town uses a technology or approved a deal, not what it paid, so each documented program or deal also takes off 2.5 points; the larger penalty counts. Known surveillance vendors and data center deals are flagged even when a town files them under police or general spending.',
   overhead: 'Share spent on general administration plus outside consultants and lawyers. Full points at 6% or less, zero at 30% or more.',
   influence: 'Dollars per resident from corporate lobbying of town officials, PACs, developers, contractors and unions given to local officials’ campaigns, plus lobbying the town pays for. Full points at $0.50 or less per resident, zero at $12 or more.',
-  transparency: 'One sixth of the points for each good-government practice the town follows (listed below).',
+  transparency: 'One sixth of the points for each good-government practice the town follows (listed below). Practices not checked yet are left out of the score rather than counted against the town.',
   fiscal: 'Mostly debt per resident (full points at $300 or less, zero at $6,000 or more), plus whether the town lives within its means this year.',
 };
 
@@ -17,10 +18,10 @@ export function renderMethod(root) {
     <h1>How scores work</h1>
     <p class="muted" style="margin-top:8px">The Community Return Score asks one question: <strong>how much of a town's money comes back to the people who live there?</strong> Every number behind a score is shown on the town's report so anyone can check it.</p>
 
-    <h2>The six parts (100 points)</h2>
+    <h2>The five parts (100 points) and the red-flag penalty</h2>
     <div class="table-wrap"><table>
       <thead><tr><th>Part</th><th class="r">Points</th><th>What it measures</th></tr></thead>
-      <tbody>${COMPONENTS.map((c) => `<tr><td><strong>${c.label}</strong></td><td class="r num">${c.max}</td><td style="white-space:normal">${HOW[c.key]}</td></tr>`).join('')}</tbody>
+      <tbody>${COMPONENTS.map((c) => `<tr><td><strong>${c.label}</strong></td><td class="r num">${c.penalty ? `up to −${c.max}` : c.max}</td><td style="white-space:normal">${HOW[c.key]}</td></tr>`).join('')}</tbody>
     </table></div>
 
     <h2>Grades</h2>
@@ -28,12 +29,19 @@ export function renderMethod(root) {
       ${[['A', '85 and up'], ['B', '70 to 84'], ['C', '55 to 69'], ['D', '40 to 54'], ['F', 'below 40']].map(([g, r]) => `<span style="display:flex;gap:8px;align-items:center">${gradeBadge(g)} <span class="small">${r}</span></span>`).join('')}
     </div>
 
+    <p class="small muted">A town whose records fail a data check (no revenue on file, say, or a budget whose two sides don't come close to matching) is shown as <strong>data under review</strong> and gets no grade until the source is fixed. Trend years far off a town's typical year are partial filings and are left out of its chart.</p>
+
+    <h2>Ranking among peers</h2>
+    <p>A township of 3,000 people and a city of 300,000 do different jobs, and states publish different records: political money is loaded for some and not others. So every town is also ranked <strong>among its peers</strong>: graded towns in the same state, of the same kind of government (county, city, town or village, township), and in the same population band (under 2,500; 2,500 to 10,000; 10,000 to 50,000; 50,000 to 250,000; 250,000 and up). When that group has fewer than ${MIN_PEERS} graded towns it is widened to the state's towns of that kind, then to towns of that kind and size in every state. The percentile says what share of its peers a town scores higher than (ties count half). Each report card marks the peer median on every part of the score.</p>
+    <p><strong>Provisional scores.</strong> A score built on less than ${PROVISIONAL_BELOW} of the 100 points of data is marked provisional. It is still shown, but ranked after towns with fuller records, so a town cannot top a list because most of its record is missing.</p>
+
     <h2>Direct services vs. overhead</h2>
     <ul>
       <li><strong>Direct services:</strong> ${SPENDING_CATEGORIES.filter((c) => c.direct).map((c) => c.label.toLowerCase()).join(', ')}.</li>
       <li><strong>Overhead:</strong> ${SPENDING_CATEGORIES.filter((c) => !c.direct && !c.outsideShares && !c.unitemized).map((c) => c.label.toLowerCase()).join(', ')}.</li>
     </ul>
-    <p><strong>Schools.</strong> In Connecticut the town pays for public schools. In most other states, school districts are separate governments with their own taxes. School spending is shown on Connecticut reports but left out of the services and overhead shares, so every town is measured on the same municipal services.</p>
+    <p><strong>Schools.</strong> In Connecticut, Massachusetts and Rhode Island the town pays for public schools, as do Virginia's counties and independent cities and North Carolina's counties. In most other states, school districts are separate governments with their own taxes. School spending (in Rhode Island, the town's appropriation to its schools) is shown on those reports but left out of the services and overhead shares, so every town is measured on the same municipal services.</p>
+    <p><strong>Taxes collected for other governments.</strong> New Jersey towns collect the whole property-tax bill and pay the school-district, county and fire-district shares over to those governments, often more than half of what the town takes in. That money is shown in money in and money out, because it passes through the town's treasury, but it is not the town's own money, so the score, the shares and the per-resident figures leave it out.</p>
     <p><strong>Spending reported only as a total.</strong> When a state reports part of a town's spending without a department breakdown, the services and overhead parts are not scored for that town.</p>
     <p>Overhead is not wasted money. Towns need clerks, audits and lawyers, and debt pays for roads and buildings. But when overhead grows faster than services, residents get less for what they pay.</p>
 
@@ -72,4 +80,6 @@ export function renderMethod(root) {
     <h2>Limits</h2>
     <p>Towns report finances in different formats, and many small townships publish only totals. A score is a starting point for questions, not a verdict. Check the sources on each report, and attend a budget hearing if something looks off.</p>
   </div>`;
+  // Each heading, paragraph, list and table slides in as it scrolls into view.
+  return revealOnScroll(root.querySelectorAll('.page > *'));
 }
