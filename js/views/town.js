@@ -4,6 +4,8 @@ import { filterLedger, summarizeLedger, sortLedger, ledgerToCSV, categoryLabel, 
 import { money, number, escapeHTML, formatDate } from '../engine/format.js';
 import { loadTownDetail } from '../app.js';
 import { gradeBadge, verifiedPill, isVerified, barList, splitBar, legendKey, lineChart, downloadFile, ICONS } from '../charts.js';
+import { followButton, wireFollow } from './follow-ui.js';
+import { isFollowing, hasChanged, markSeen } from '../follows.js';
 
 const PAGE = 15;
 
@@ -63,6 +65,8 @@ export function renderTown(root, state, id) {
   const infl = influenceRows(town).filter((r) => r.key in (town.influence || {})).map((r) => ({ ...r, color: r.key === 'corporateLobbying' ? 'var(--bad)' : 'var(--grade-f)' }));
   const pctOf = (v) => `${Math.round(v * 100)}%`;
   const biggestNonProp = rev.filter((r) => !r.propertyTax && !r.reserve).sort((a, b) => b.amount - a.amount)[0];
+  const updatedSinceSaved = isFollowing(town.id) && hasChanged(town);
+  if (updatedSinceSaved) markSeen(town);
 
   root.innerHTML = `
   <div class="page">
@@ -79,10 +83,12 @@ export function renderTown(root, state, id) {
         </div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${followButton(town)}
         <a class="btn" href="#/compare/${encodeURIComponent(town.id)}">Compare</a>
         <button class="btn" id="dl-report" type="button">${ICONS.download} Download data</button>
       </div>
     </div>
+    ${updatedSinceSaved ? '<div class="callout follow-note" role="status"><strong>Books updated since you saved this town.</strong> The figures below are the latest.</div>' : ''}
 
     <section class="scorecard" aria-label="Score">
       <div class="card g-${/^[A-F]$/.test(s.grade) ? s.grade : 'none'}">
@@ -266,6 +272,7 @@ export function renderTown(root, state, id) {
     downloadFile(`${town.id}.json`, JSON.stringify({ towns: [town] }, null, 2), 'application/json'),
   );
   drawLedger();
+  wireFollow(root, town);
 }
 
 // A box listing documented red flags, newest first, each with its source.
