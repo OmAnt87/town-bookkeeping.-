@@ -20,7 +20,7 @@ export function renderCompare(root, state, arg) {
   if (arg && state.byId.has(arg) && !picks.includes(arg)) picks = [arg, ...picks].slice(0, 3);
   const options = [...state.towns].sort((a, b) => a.town.name.localeCompare(b.town.name));
   const label = (t) => `${t.name}, ${t.county || 'County not recorded'}, ${t.state}`;
-  root.innerHTML = `<div class="page">
+  root.innerHTML = `<div class="page compare">
     <div class="page-head"><div><h1>Compare towns</h1><p>Choose up to three towns. Highlights appear only for available values with matching reporting context.</p></div></div>
     <div class="compare-pickers">${[0, 1, 2].map((i) => `<div class="field" style="--i:${i}">
       <label for="c-search-${i}">Find town ${i + 1}</label><input id="c-search-${i}" class="input" type="search" placeholder="Town, county or state">

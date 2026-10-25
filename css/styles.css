@@ -725,7 +725,15 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
   .search-wrap.has-text .search-clear { transform: translateY(-50%); }
   .check.switch input { transition: background 0.2s ease; }
   .check.switch input::before { transition: transform 0.22s cubic-bezier(0.3, 0.7, 0.4, 1); }
-  .compare-pickers > .field { animation: card-in 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; animation-delay: calc(var(--i, 0) * 70ms); }
+  .compare .page-head h1 { animation: card-in 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; }
+  .compare .page-head p { animation: card-in 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) 0.06s backwards; }
+  .compare-pickers > .field { animation: card-in 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; animation-delay: calc(var(--i, 0) * 70ms + 0.12s); }
+  #c-out > .empty { animation: card-in 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) 0.3s backwards; }
+  #c-out > p { animation: chart-fade 0.4s ease-out backwards; }
+  .compare-table thead .grade { animation: dot-pop 0.35s cubic-bezier(0.3, 1.4, 0.5, 1) 0.15s backwards; }
+  /* The winning cell flashes a soft green once its row lands. */
+  .compare-table td.best { animation: best-in 0.9s ease-out backwards; animation-delay: calc(var(--i, 0) * 18ms + 0.3s); }
+  @keyframes best-in { from { background: var(--good-soft); } }
   select.changed { animation: legend-l 0.3s cubic-bezier(0.2, 0.7, 0.3, 1); }
   #m-count.count-in { animation: legend-l 0.3s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; }
   .map-card { --pop-from: translateX(18px); }
