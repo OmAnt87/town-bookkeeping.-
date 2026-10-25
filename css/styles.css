@@ -534,6 +534,9 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
 .state-stats > div:nth-child(3) { --n: 2; }
 .state-stats > div:nth-child(4) { --n: 3; }
 .state-stats > div:nth-child(5) { --n: 4; }
+.data-actions > .btn:nth-child(2), .data-card li:nth-child(2) { --n: 1; }
+.data-actions > .btn:nth-child(3), .data-card li:nth-child(3) { --n: 2; }
+.data-actions > .btn:nth-child(4), .data-card li:nth-child(4) { --n: 3; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 1200px) {
@@ -611,6 +614,12 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
   .state-card.in .state-links { animation: legend-l 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; animation-delay: calc(var(--i, 0) * 60ms + 0.4s); }
   .state-card { transition: box-shadow 0.2s ease, transform 0.2s ease; }
   .state-card.in:hover { box-shadow: var(--shadow-lift); transform: translateY(-2px); }
+  .data-card.in .drop { animation: card-in 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; animation-delay: calc(var(--i, 0) * 60ms + 0.1s); }
+  .data-card.in .data-actions > .btn { animation: card-in 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; animation-delay: calc(var(--i, 0) * 60ms + 0.2s + var(--n, 0) * 50ms); }
+  .data-card.in li { animation: legend-l 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; animation-delay: calc(var(--i, 0) * 60ms + 0.1s + var(--n, 0) * 50ms); }
+  .data-card.in details > summary { animation: legend-l 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; animation-delay: calc(var(--i, 0) * 60ms + 0.1s); }
+  .drop { transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease; }
+  .drop.over { transform: scale(1.01); }
   .state-card.in .grade-dist { animation: wipe-in 0.7s ease-out both; animation-delay: calc(var(--i, 0) * 60ms + 0.15s); }
   @keyframes wipe-in { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
   .state-card.in .cov-bar > span { transform-origin: left; animation: grow-in 0.6s cubic-bezier(0.2, 0.7, 0.3, 1) both; animation-delay: calc(var(--i, 0) * 60ms + 0.15s); }
