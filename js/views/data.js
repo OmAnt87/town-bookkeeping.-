@@ -27,7 +27,7 @@ export function renderData(root, state) {
   <div class="page">
     <div class="page-head"><div><h1>Data</h1><p>Load your own town's numbers, download what is loaded now, or learn where real figures come from.</p></div></div>
     <div class="grid grid-2">
-      <section class="card">
+      <section class="card data-card">
         <h2 style="margin-bottom:6px">Load a dataset</h2>
         <p class="small muted">A JSON file with a <code>towns</code> array in the format below. It stays in this browser tab and is not uploaded anywhere.</p>
         <label class="drop" id="drop" for="file">
@@ -35,7 +35,7 @@ export function renderData(root, state) {
           <input id="file" type="file" accept="application/json,.json" hidden>
         </label>
         <div id="msg" role="status"></div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
+        <div class="data-actions" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
           <button class="btn" id="dl-all" type="button">${ICONS.download} Download summary</button>
           <button class="btn" id="dl-complete" type="button">Download complete records</button>
           <button class="btn" id="dl-sample" type="button">${ICONS.download} Sample file</button>
@@ -43,7 +43,7 @@ export function renderData(root, state) {
         </div>
         <p class="small muted">Summary exports omit ledgers, history, donors and source notes. Complete exports load every required county file; no partial file is downloaded if any request fails.</p><p class="small muted" style="margin:14px 0 0">Loaded now: <strong>${state.towns.length} town${state.towns.length === 1 ? '' : 's'}</strong> (${{ real: 'public-record towns', demo: 'fictional demo data', mixed: 'demo towns plus public-record towns', import: 'your imported file' }[state.source] || state.source}).</p>
       </section>
-      <section class="card prose">
+      <section class="card prose data-card">
         <h2 style="margin:0 0 8px">Where real numbers come from</h2>
         <ul class="small">
           <li><strong>Budgets and audits:</strong> each town's adopted budget and annual audit (ACFR), usually on the town website or the state comptroller's local-government portal.</li>
@@ -54,7 +54,7 @@ export function renderData(root, state) {
         <p class="small muted">Full field reference: <code>docs/DATA_SCHEMA.md</code> in the repository.</p>
       </section>
     </div>
-    <section class="card" style="margin-top:16px">
+    <section class="card data-card" style="margin-top:16px">
       <details>
         <summary><h2 style="display:inline">File format</h2> <span class="small muted">(show example)</span></summary>
         <pre>${escapeHTML(JSON.stringify(SAMPLE, null, 2))}</pre>
