@@ -22,7 +22,7 @@ export function renderForum(root, state, id) {
   const { town } = entry;
   const report = `#/town/${encodeURIComponent(town.id)}`;
   root.innerHTML = `
-  <div class="page">
+  <div class="page forum">
     <div class="report-head">
       <div>
         <div class="crumbs"><a href="#/map">Map</a> / <a href="#/rankings">Rankings</a> / <a href="${report}">${escapeHTML(town.name)}</a> / Forum</div>

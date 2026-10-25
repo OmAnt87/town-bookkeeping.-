@@ -737,6 +737,11 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
   @keyframes pop-out { to { opacity: 0; transform: var(--pop-from); } }
   .forum-card .giscus { opacity: 0; transform: translateY(8px); transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 0.7, 0.3, 1); }
   .forum-card.loaded .giscus { opacity: 1; transform: none; }
+  .forum .crumbs { animation: legend-l 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; }
+  .forum .report-head h1 { animation: card-in 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) 0.06s backwards; }
+  .forum .report-head p { animation: card-in 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) 0.12s backwards; }
+  .forum .report-head > .btn { animation: legend-r 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) 0.18s backwards; }
+  .forum .forum-card.reveal.in { animation-delay: calc(var(--i, 0) * 60ms + 0.2s); }
   #r-body tr.in, #l-body tr.in { animation: row-in 0.3s cubic-bezier(0.2, 0.7, 0.3, 1) both; animation-delay: calc(var(--i) * 18ms); }
   #r-body[data-dir="next"] tr.in, #l-body[data-dir="next"] tr.in { animation-name: row-in-next; }
   @keyframes row-in-next { from { opacity: 0; transform: translateX(10px); } }
