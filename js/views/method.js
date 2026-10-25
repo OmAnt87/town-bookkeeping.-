@@ -14,7 +14,7 @@ const HOW = {
 
 export function renderMethod(root) {
   root.innerHTML = `
-  <div class="page prose">
+  <div class="page prose method">
     <h1>How scores work</h1>
     <p class="muted" style="margin-top:8px">The Community Return Score asks one question: <strong>how much of a town's money comes back to the people who live there?</strong> Every number behind a score is shown on the town's report so anyone can check it.</p>
 
@@ -25,7 +25,7 @@ export function renderMethod(root) {
     </table></div>
 
     <h2>Grades</h2>
-    <div style="display:flex;flex-wrap:wrap;gap:16px">
+    <div class="grade-scale" style="display:flex;flex-wrap:wrap;gap:16px">
       ${[['A', '85 and up'], ['B', '70 to 84'], ['C', '55 to 69'], ['D', '40 to 54'], ['F', 'below 40']].map(([g, r]) => `<span style="display:flex;gap:8px;align-items:center">${gradeBadge(g)} <span class="small">${r}</span></span>`).join('')}
     </div>
 
@@ -80,6 +80,11 @@ export function renderMethod(root) {
     <h2>Limits</h2>
     <p>Towns report finances in different formats, and many small townships publish only totals. A score is a starting point for questions, not a verdict. Check the sources on each report, and attend a budget hearing if something looks off.</p>
   </div>`;
-  // Each heading, paragraph, list and table slides in as it scrolls into view.
+  // Each heading, paragraph, list and table slides in as it scrolls into view, then its rows, items and terms follow in order.
+  root.querySelectorAll('tbody, ul, .grade-scale, dl.glossary').forEach((list) => {
+    let n = -1;
+    // A glossary definition shares its term's step so the pair arrives together.
+    [...list.children].forEach((el) => el.style.setProperty('--n', String(el.tagName === 'DD' ? n : ++n)));
+  });
   return revealOnScroll(root.querySelectorAll('.page > *'));
 }
