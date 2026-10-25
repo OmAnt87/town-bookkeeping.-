@@ -14,6 +14,7 @@ import { renderData } from './views/data.js';
 import { renderForum } from './views/forum.js';
 
 const STORAGE_KEY = 'tl-dataset';
+const BANNER_KEY = 'tl-banner-dismissed';
 const main = document.getElementById('main');
 
 // Shared app state passed to every view.
@@ -38,13 +39,24 @@ export function setDataset(dataset, source) {
   const demoCount = dataset.towns.filter((t) => t.demo === true).length;
   const realCount = dataset.towns.length - demoCount;
   const banner = document.getElementById('demo-banner');
-  banner.hidden = demoCount === 0;
-  if (demoCount) {
-    banner.innerHTML = realCount
+  let dismissed = false;
+  try { dismissed = sessionStorage.getItem(BANNER_KEY) === '1'; } catch { /* ignore */ }
+  const show = demoCount > 0 && !dismissed;
+  banner.hidden = !show;
+  if (show) {
+    banner.innerHTML = `<span class="banner-text">${realCount
       ? `<strong>${realCount} town${realCount === 1 ? '' : 's'} use${realCount === 1 ? 's' : ''} real public records</strong> (marked Public-record data). The other ${demoCount} are <strong>fictional demo towns</strong> with illustrative figures.`
-      : 'Showing <strong>fictional demo towns</strong>. Figures are illustrative, not real records. Load real data on the <a href="#/data">Data</a> page.';
+      : 'Showing <strong>fictional demo towns</strong>. Figures are illustrative, not real records. Load real data on the <a href="#/data">Data</a> page.'}</span>
+      <button class="banner-close" type="button" aria-label="Dismiss notice">&times;</button>`;
+    banner.querySelector('.banner-close').addEventListener('click', () => {
+      banner.hidden = true;
+      document.body.classList.remove('has-banner');
+      try { sessionStorage.setItem(BANNER_KEY, '1'); } catch { /* ignore */ }
+      // The map sizes itself to the viewport; let it pick up the freed space.
+      window.dispatchEvent(new Event('resize'));
+    });
   }
-  document.body.classList.toggle('has-banner', demoCount > 0);
+  document.body.classList.toggle('has-banner', show);
   return [];
 }
 
@@ -157,7 +169,7 @@ export function route() {
   // The map fills the viewport, so the footer is hidden there (see [data-view="map"] in styles.css).
   document.body.dataset.view = views[view] ? view : 'map';
   cleanup = render(main, state, arg, query);
-  if (view !== 'map') window.scrollTo(0, 0);
+  window.scrollTo(0, 0);
   const titles = { map: 'Map', rankings: 'Rankings', states: 'States', compare: 'Compare', method: 'How scores work', data: 'Data' };
   const town = (view === 'town' || view === 'forum') && state.byId.get(arg);
   document.title = town ? `${town.town.name}, ${town.town.state}${view === 'forum' ? ' forum' : ''} - TownView` : `${titles[view] || 'Map'} - TownView`;

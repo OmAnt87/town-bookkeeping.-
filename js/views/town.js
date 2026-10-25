@@ -235,7 +235,8 @@ export function renderTown(root, state, id) {
           .filter((c) => (town.ledger || []).some((e) => e.category === c.key))
           .map((c) => `<option value="${c.key}">${c.label}</option>`).join('')}</select></div>
       </div>
-      <div class="table-wrap"><table>
+      <div class="ledger-sort"><span id="l-sort-l">Sort by</span><div class="segmented" role="group" aria-labelledby="l-sort-l"><button type="button" data-sort="date">Date</button><button type="button" data-sort="amount">Amount</button></div></div>
+      <div class="table-wrap"><table class="ledger-table">
         <thead><tr>
           <th><button type="button" data-sort="date">Date ${ICONS.sort}</button></th>
           <th>Type</th><th>Category</th><th>Counterparty</th><th>Description</th>
@@ -280,16 +281,17 @@ export function renderTown(root, state, id) {
     $('#l-body').innerHTML = slice.length
       ? slice
           .map((e, i) => `<tr class="in" style="--i:${Math.min(i, 12)}">
-            <td class="num">${formatDate(e.date)}</td>
-            <td><span class="pill pill-${e.flow}">${FLOWS[e.flow]}</span></td>
-            <td class="wrap">${escapeHTML(categoryLabel(e.category))}</td>
-            <td class="wrap">${escapeHTML(e.counterparty)}</td>
-            <td class="muted wrap">${escapeHTML(e.description)}</td>
-            <td class="r num">${e.flow === 'out' ? '-' : ''}${money(e.amount)}</td></tr>`)
+            <td class="num" data-label="Date">${formatDate(e.date)}</td>
+            <td data-label="Type"><span class="pill pill-${e.flow}">${FLOWS[e.flow]}</span></td>
+            <td class="wrap" data-label="Category">${escapeHTML(categoryLabel(e.category))}</td>
+            <td class="wrap" data-label="Counterparty">${escapeHTML(e.counterparty)}</td>
+            <td class="muted wrap" data-label="Description">${escapeHTML(e.description)}</td>
+            <td class="r num" data-label="Amount">${e.flow === 'out' ? '-' : ''}${money(e.amount)}</td></tr>`)
           .join('')
       : '<tr><td colspan="6" class="empty">No transactions match these filters.</td></tr>';
     const sum = summarizeLedger(rows);
     $('#l-sum').innerHTML = `${rows.length} transactions &middot; In ${money(sum.in, { compact: true })} &middot; Out ${money(sum.out, { compact: true })} &middot; Political ${money(sum.influence, { compact: true })} &middot; Page ${L.page + 1} of ${pages}`;
+    root.querySelectorAll('.ledger-sort [data-sort]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.sort === L.sort)));
     $('#l-prev').disabled = L.page === 0;
     $('#l-next').disabled = L.page >= pages - 1;
   }
