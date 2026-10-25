@@ -59,7 +59,7 @@ export function renderRankings(root, state, _arg, query) {
   if (!states.includes(ui.state)) ui.state = 'all';
   const option = (v, label, current) => `<option value="${escapeHTML(v)}" ${v === current ? 'selected' : ''}>${escapeHTML(label)}</option>`;
   root.innerHTML = `
-  <div class="page">
+  <div class="page rankings">
     <div class="page-head">
       <div><h1>Rankings</h1><p>Every town ranked by its Community Return Score. <strong>Among peers</strong> compares each town only with towns in the same state, of the same kind and size, which share its data sources. Select a column to sort.</p></div>
       <button class="btn" id="r-dl" type="button">${ICONS.download} Export CSV</button>

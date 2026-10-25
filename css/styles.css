@@ -546,6 +546,10 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
 .state-stats > div:nth-child(3) { --n: 2; }
 .state-stats > div:nth-child(4) { --n: 3; }
 .state-stats > div:nth-child(5) { --n: 4; }
+.rankings .toolbar > .field:nth-child(2) { --n: 1; }
+.rankings .toolbar > .field:nth-child(3) { --n: 2; }
+.rankings .toolbar > .field:nth-child(4) { --n: 3; }
+.rankings .toolbar > .field:nth-child(5) { --n: 4; }
 .data-actions > .btn:nth-child(2), .data-card li:nth-child(2) { --n: 1; }
 .data-actions > .btn:nth-child(3), .data-card li:nth-child(3) { --n: 2; }
 .data-actions > .btn:nth-child(4), .data-card li:nth-child(4) { --n: 3; }
@@ -752,6 +756,14 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
   .forum .forum-card.reveal.in { animation-delay: calc(var(--i, 0) * 60ms + 0.2s); }
   #r-body tr.in, #l-body tr.in { animation: row-in 0.3s cubic-bezier(0.2, 0.7, 0.3, 1) both; animation-delay: calc(var(--i) * 18ms); }
   #r-body[data-dir="next"] tr.in, #l-body[data-dir="next"] tr.in { animation-name: row-in-next; }
+  .rankings .page-head h1 { animation: card-in 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; }
+  .rankings .page-head p { animation: card-in 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) 0.06s backwards; }
+  .rankings #r-dl { animation: legend-r 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) 0.12s backwards; }
+  .rankings .toolbar > .field { animation: card-in 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; animation-delay: calc(var(--n, 0) * 50ms + 0.12s); }
+  .rankings .toolbar-row > * { animation: legend-l 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) 0.4s backwards; }
+  .rankings .rank-table thead th { animation: chart-fade 0.4s ease-out 0.35s backwards; }
+  #r-body tr.in .grade { animation: dot-pop 0.35s cubic-bezier(0.3, 1.4, 0.5, 1) backwards; animation-delay: calc(var(--i, 0) * 18ms + 0.1s); }
+  .rankings .pager { animation: card-in 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) 0.45s backwards; }
   @keyframes row-in-next { from { opacity: 0; transform: translateX(10px); } }
   .town-list button { transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease; }
   .town-list button:hover { transform: translateX(2px); }
