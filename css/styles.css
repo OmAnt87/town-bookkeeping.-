@@ -740,6 +740,10 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
   @keyframes best-in { from { background: var(--good-soft); } }
   select.changed { animation: legend-l 0.3s cubic-bezier(0.2, 0.7, 0.3, 1); }
   #m-count.count-in { animation: legend-l 0.3s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; }
+  .map-intro > * { animation: card-in 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; animation-delay: calc(var(--n, 0) * 60ms); }
+  .hero-stats > div { animation: card-in 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; animation-delay: calc(0.2s + var(--n, 0) * 70ms); }
+  .map-side > :not(.map-intro) { animation: legend-l 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; animation-delay: calc(0.25s + var(--n, 0) * 50ms); }
+  .map-wrap { animation: chart-fade 0.6s ease-out backwards; }
   .map-card { --pop-from: translateX(18px); }
   @media (max-width: 640px) { .map-card { --pop-from: translateY(18px); } }
   .map-card.in { animation: pop-in 0.3s cubic-bezier(0.2, 0.7, 0.3, 1); }
