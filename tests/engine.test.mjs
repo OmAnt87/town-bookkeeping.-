@@ -492,6 +492,8 @@ test('town fingerprint is stable across key order and changes with the books', (
   const b = { ...base(), revenue: Object.fromEntries(Object.entries(base().revenue).reverse()) };
   assert.equal(townFingerprint(a), townFingerprint(b));
   b.revenue.propertyTax += 1;
+  assert.equal(townFingerprint(a), townFingerprint(b), 'a $1 change does not count');
+  b.revenue.propertyTax += 500;
   assert.notEqual(townFingerprint(a), townFingerprint(b));
   assert.equal(followTag('city-of-hartford-ct'), 'town:city-of-hartford-ct');
 });
@@ -503,4 +505,13 @@ test('alert email lists what changed and links to the town', () => {
   assert.equal(mail.tag, 'town:t');
   assert.match(mail.body, /Money in: \$10\.0M → \$11\.0M/);
   assert.match(mail.body, /townview\.org\/#\/town\/t/);
+});
+
+test('change detection: dollar changes under $100 are ignored', () => {
+  const after = base();
+  after.spending.roads += 99;
+  after.debt += 50;
+  assert.equal(diffTown(base(), after), null);
+  after.spending.roads += 1;
+  assert.deepEqual(diffTown(base(), after).changes.filter((c) => c.kind === 'total').map((c) => c.key), ['spending']);
 });

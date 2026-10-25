@@ -6,13 +6,18 @@ import { scoreTown, sum } from './scoring.js';
 // Mailing-list tag that marks a town's followers.
 export const followTag = (id) => `town:${id}`;
 
+// Dollar changes smaller than this are rounding noise, not news.
+export const MIN_CHANGE = 100;
+
 // Short, stable hash of the parts of a town's books that summary data also
 // carries, so a followed town can be checked without loading its ledger.
+// Dollar figures are rounded to MIN_CHANGE so rounding noise does not count.
 export function townFingerprint(town) {
+  const r = (v) => (typeof v === 'number' ? Math.round(v / MIN_CHANGE) : v);
   const parts = [
-    town.fiscalYear, town.asOf, town.population, town.debt,
+    town.fiscalYear, town.asOf, town.population, r(town.debt),
     ...['revenue', 'spending', 'influence', 'taxBreaks'].flatMap((k) =>
-      Object.keys(town[k] || {}).sort().map((c) => `${k}.${c}=${town[k][c]}`)),
+      Object.keys(town[k] || {}).sort().map((c) => `${k}.${c}=${r(town[k][c])}`)),
   ];
   let h = 2166136261;
   for (const ch of parts.join('|')) h = Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0;
@@ -28,9 +33,10 @@ export function diffTown(before, after) {
   for (const key of ['revenue', 'spending', 'influence', 'taxBreaks']) {
     const a = sum(before[key]);
     const b = sum(after[key]);
-    if (a !== b) changes.push({ kind: 'total', key, before: a, after: b });
+    if (Math.abs(a - b) >= MIN_CHANGE) changes.push({ kind: 'total', key, before: a, after: b });
   }
-  if ((before.debt ?? null) !== (after.debt ?? null)) changes.push({ kind: 'total', key: 'debt', before: before.debt ?? 0, after: after.debt ?? 0 });
+  const debtReported = (before.debt == null) !== (after.debt == null);
+  if (debtReported || Math.abs((before.debt ?? 0) - (after.debt ?? 0)) >= MIN_CHANGE) changes.push({ kind: 'total', key: 'debt', before: before.debt ?? 0, after: after.debt ?? 0 });
   for (const key of ['fiscalYear', 'asOf']) {
     if (before[key] !== after[key]) changes.push({ kind: 'field', key, before: before[key], after: after[key] });
   }
