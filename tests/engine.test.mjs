@@ -6,6 +6,8 @@ import { filterLedger, summarizeLedger, sortLedger, toCSV, validateDataset } fro
 import { mapCensusItem } from '../scripts/census-codes.mjs';
 import { classifyContributor } from '../scripts/contributor-types.mjs';
 import { parseCSV } from '../scripts/lib.mjs';
+import { diffTown, diffDatasets, townFingerprint, followTag } from '../js/engine/changes.js';
+import { composeEmail } from '../scripts/notify-changes.mjs';
 
 const base = () => ({
   id: 't', name: 'Test Township', state: 'PA', lat: 40, lng: -77, population: 10000,
@@ -453,4 +455,52 @@ test('CT town committees match their town and SEEC receipts are classified', () 
   assert.equal(out.influence.pacContributions, 500);
   assert.equal(out.individuals, 40);
   assert.equal(out.counted, 1);
+});
+
+test('change detection: unchanged towns produce no alert', () => {
+  assert.equal(diffTown(base(), base()), null);
+  assert.deepEqual(diffDatasets({ towns: [base()] }, { towns: [base()] }), []);
+});
+
+test('change detection: a changed total and score are reported', () => {
+  const after = base();
+  after.spending.consultants = 2_000_000;
+  const d = diffTown(base(), after);
+  const total = d.changes.find((c) => c.kind === 'total' && c.key === 'spending');
+  assert.equal(total.after - total.before, 1_800_000);
+  assert.ok(d.changes.some((c) => c.kind === 'score'));
+});
+
+test('change detection: new ledger rows and red flags are listed', () => {
+  const before = { ...base(), ledger: [{ date: '2026-01-01', flow: 'out', category: 'roads', counterparty: 'Paving Co', amount: 100 }] };
+  const after = { ...before, ledger: [...before.ledger, { date: '2026-02-01', flow: 'out', category: 'consultants', counterparty: 'Advisors LLC', amount: 5000 }], redFlags: [{ kind: 'surveillance', label: 'Flock cameras', amount: 30000 }] };
+  const d = diffTown(before, after);
+  const ledger = d.changes.find((c) => c.kind === 'ledger');
+  assert.equal(ledger.added.length, 1);
+  assert.equal(ledger.removed.length, 0);
+  assert.equal(d.changes.find((c) => c.kind === 'redFlags').added[0].label, 'Flock cameras');
+});
+
+test('change detection: added towns are reported, removed towns are skipped', () => {
+  const other = { ...base(), id: 'u', name: 'Other' };
+  const out = diffDatasets({ towns: [base()] }, { towns: [other] });
+  assert.deepEqual(out.map((d) => [d.id, d.added]), [['u', true]]);
+});
+
+test('town fingerprint is stable across key order and changes with the books', () => {
+  const a = base();
+  const b = { ...base(), revenue: Object.fromEntries(Object.entries(base().revenue).reverse()) };
+  assert.equal(townFingerprint(a), townFingerprint(b));
+  b.revenue.propertyTax += 1;
+  assert.notEqual(townFingerprint(a), townFingerprint(b));
+  assert.equal(followTag('city-of-hartford-ct'), 'town:city-of-hartford-ct');
+});
+
+test('alert email lists what changed and links to the town', () => {
+  const after = base();
+  after.revenue.stateAid = 4_000_000;
+  const mail = composeEmail(diffTown(base(), after));
+  assert.equal(mail.tag, 'town:t');
+  assert.match(mail.body, /Money in: \$10\.0M → \$11\.0M/);
+  assert.match(mail.body, /townview\.org\/#\/town\/t/);
 });

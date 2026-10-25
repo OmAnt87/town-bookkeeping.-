@@ -26,7 +26,7 @@ export function renderData(root, state) {
     <div class="grid grid-2">
       <section class="card">
         <h2 style="margin-bottom:6px">Load a dataset</h2>
-        <p class="small muted">A JSON file with a <code>towns</code> array in the format below. It stays in this browser tab and is not uploaded anywhere.</p>
+        <p class="small muted">A JSON file with a <code>towns</code> array in the format below. It stays in this browser tab and is not uploaded anywhere. TownView keeps no tracking logs; the only thing that leaves your browser is the email you enter if you follow a town.</p>
         <label class="drop" id="drop" for="file">
           <strong>Choose a JSON file</strong> or drop it here
           <input id="file" type="file" accept="application/json,.json" hidden>

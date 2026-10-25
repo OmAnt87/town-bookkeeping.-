@@ -6,6 +6,7 @@ import { renderRankings } from './views/rankings.js';
 import { renderCompare } from './views/compare.js';
 import { renderMethod } from './views/method.js';
 import { renderData } from './views/data.js';
+import { renderFollowing } from './views/following.js';
 
 const STORAGE_KEY = 'tl-dataset';
 const main = document.getElementById('main');
@@ -133,13 +134,14 @@ export function route() {
     compare: renderCompare,
     method: renderMethod,
     data: renderData,
+    following: renderFollowing,
   };
   const render = views[view] || renderMap;
   // The map fills the viewport, so the footer is hidden there (see .view-map in styles.css).
   document.body.dataset.view = views[view] ? view : 'map';
   cleanup = render(main, state, arg);
   if (view !== 'map') window.scrollTo(0, 0);
-  const titles = { map: 'Map', rankings: 'Rankings', compare: 'Compare', method: 'How scores work', data: 'Data' };
+  const titles = { map: 'Map', rankings: 'Rankings', compare: 'Compare', method: 'How scores work', data: 'Data', following: 'Following' };
   const town = view === 'town' && state.byId.get(arg);
   document.title = town ? `${town.town.name}, ${town.town.state} - TownView` : `${titles[view] || 'Map'} - TownView`;
 }
