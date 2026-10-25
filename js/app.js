@@ -12,6 +12,7 @@ import { renderCompare } from './views/compare.js';
 import { renderMethod } from './views/method.js';
 import { renderData } from './views/data.js';
 import { renderForum } from './views/forum.js';
+import { renderFollowing } from './views/following.js';
 
 const STORAGE_KEY = 'tl-dataset';
 const BANNER_KEY = 'tl-banner-dismissed';
@@ -164,13 +165,14 @@ export function route() {
     method: renderMethod,
     data: renderData,
     forum: renderForum,
+    following: renderFollowing,
   };
   const render = views[view] || renderMap;
   // The map fills the viewport, so the footer is hidden there (see [data-view="map"] in styles.css).
   document.body.dataset.view = views[view] ? view : 'map';
   cleanup = render(main, state, arg, query);
   window.scrollTo(0, 0);
-  const titles = { map: 'Map', rankings: 'Rankings', states: 'States', compare: 'Compare', method: 'How scores work', data: 'Data' };
+  const titles = { map: 'Map', rankings: 'Rankings', states: 'States', compare: 'Compare', method: 'How scores work', data: 'Data', following: 'Following' };
   const town = (view === 'town' || view === 'forum') && state.byId.get(arg);
   document.title = town ? `${town.town.name}, ${town.town.state}${view === 'forum' ? ' forum' : ''} - TownView` : `${titles[view] || 'Map'} - TownView`;
 }
