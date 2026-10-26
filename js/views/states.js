@@ -9,13 +9,17 @@ export function renderStates(root, state) {
   const real = state.towns.filter((t) => isVerified(t.town));
   const list = stateSummary(real.length ? real : state.towns);
   root.innerHTML = `
-  <div class="page">
+  <div class="page states">
     <div class="page-head"><div><h1>States</h1><p>${real.length
       ? `Every state with verified data: how many governments are loaded, how they grade, and which parts of the score have data behind them. ${plural(real.length, 'government')} in ${plural(list.filter((x) => x.state !== 'DC').length, 'state')}${list.some((x) => x.state === 'DC') ? ' and DC' : ''}.`
       : 'No verified data is loaded, so this shows the fictional demo towns by state.'}</p></div></div>
     <div class="grid grid-2 states-grid">${list.map(card).join('')}</div>
   </div>`;
 
+  // Coverage rows follow each other down the card once it reveals.
+  root.querySelectorAll('.coverage').forEach((list) => {
+    [...list.children].forEach((el, n) => el.style.setProperty('--n', String(n)));
+  });
   return revealOnScroll(root.querySelectorAll('.state-card'));
 }
 
