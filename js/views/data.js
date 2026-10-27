@@ -24,7 +24,7 @@ const SAMPLE = {
 
 export function renderData(root, state) {
   root.innerHTML = `
-  <div class="page">
+  <div class="page data-page">
     <div class="page-head"><div><h1>Data</h1><p>Load your own town's numbers, download what is loaded now, or learn where real figures come from.</p></div></div>
     <div class="grid grid-2">
       <section class="card data-card">
