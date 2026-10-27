@@ -1,11 +1,11 @@
-// The towns this browser follows, with the email used for alerts.
+// The towns this browser follows.
 
 import { escapeHTML, formatDate } from '../engine/format.js';
-import { getFollows, unfollow, setEmail, isEmail, hasChanged } from '../follows.js';
+import { getFollows, unfollow, hasChanged } from '../follows.js';
 
 export function renderFollowing(root, state) {
   const draw = () => {
-    const { email, towns } = getFollows();
+    const { towns } = getFollows();
     const ids = Object.keys(towns).sort((a, b) => towns[a].name.localeCompare(towns[b].name));
     const rows = ids.map((id) => {
       const saved = towns[id];
@@ -19,32 +19,14 @@ export function renderFollowing(root, state) {
     });
     root.innerHTML = `
     <div class="page">
-      <div class="page-head"><div><h1>Following</h1><p>Towns you saved. We email you when their books change.</p></div></div>
-      <div class="grid grid-2">
-        <section class="card">
-          <h2 style="margin-bottom:6px">Your towns</h2>
-          ${rows.length ? `<ul class="follow-list">${rows.join('')}</ul>` : '<p class="muted">No towns yet. Open any town and press <strong>☆ Follow</strong>.</p>'}
-        </section>
-        <section class="card">
-          <h2 style="margin-bottom:6px">Email for alerts</h2>
-          <form id="email-form" class="follow-form">
-            <input class="input" type="email" name="email" autocomplete="email" value="${escapeHTML(email)}" placeholder="you@example.com">
-            <button class="btn" type="submit">Save email</button>
-            <div class="small" id="email-msg" role="status"></div>
-          </form>
-          <p class="small muted">This list is kept in this browser only. Your email goes to our mailing list (Buttondown) with a tag for each town you follow, and is used for nothing else. Unfollowing here only removes a town from this list; to stop its emails, use the unsubscribe link at the bottom of any alert.</p>
-        </section>
-      </div>
+      <div class="page-head"><div><h1>Following</h1><p>Towns you saved in this browser. A badge shows when a town's books changed since you last looked.</p></div></div>
+      <section class="card">
+        <h2 style="margin-bottom:6px">Your towns</h2>
+        ${rows.length ? `<ul class="follow-list">${rows.join('')}</ul>` : '<p class="muted">No towns yet. Open any town and press <strong>☆ Follow</strong>.</p>'}
+        <p class="small muted" style="margin:12px 0 0">This list is kept on this device only and is never sent anywhere.</p>
+      </section>
     </div>`;
     root.querySelectorAll('[data-unfollow]').forEach((b) => b.addEventListener('click', () => { unfollow(b.dataset.unfollow); draw(); }));
-    root.querySelector('#email-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const value = e.target.email.value;
-      const msg = root.querySelector('#email-msg');
-      if (!isEmail(value)) { msg.textContent = 'Enter a valid email address.'; return; }
-      setEmail(value);
-      msg.textContent = 'Saved. New follows will use this address.';
-    });
   };
   draw();
 }
