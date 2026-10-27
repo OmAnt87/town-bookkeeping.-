@@ -32,7 +32,7 @@ export function renderForum(root, state, id) {
       <a class="btn" href="${report}">Back to report</a>
     </div>
     <section class="card forum-card">
-      ${GISCUS.categoryId ? '<div class="giscus"></div>' : '<p class="muted">The forum is not set up yet.</p>'}
+      ${GISCUS.categoryId ? '<div class="forum-skeleton" aria-hidden="true"><span></span><span></span><span></span><span></span></div><div class="giscus"></div>' : '<p class="muted">The forum is not set up yet.</p>'}
     </section>
   </div>`;
   const card = root.querySelector('.forum-card');
@@ -65,13 +65,21 @@ export function renderForum(root, state, id) {
   };
   window.addEventListener('themechange', onTheme);
   // Fade the widget in once giscus has rendered (it posts a resize message), or after 4s regardless.
-  const onLoaded = (e) => { if (e.origin === 'https://giscus.app') card.classList.add('loaded'); };
+  // The loading placeholder fades out at the same time and is then removed.
+  let unskeleton;
+  const markLoaded = () => {
+    if (card.classList.contains('loaded')) return;
+    card.classList.add('loaded');
+    unskeleton = setTimeout(() => card.querySelector('.forum-skeleton')?.remove(), 400);
+  };
+  const onLoaded = (e) => { if (e.origin === 'https://giscus.app') markLoaded(); };
   window.addEventListener('message', onLoaded);
-  const fallback = setTimeout(() => card.classList.add('loaded'), 4000);
+  const fallback = setTimeout(markLoaded, 4000);
   return () => {
     window.removeEventListener('themechange', onTheme);
     window.removeEventListener('message', onLoaded);
     clearTimeout(fallback);
+    clearTimeout(unskeleton);
     unreveal();
   };
 }
