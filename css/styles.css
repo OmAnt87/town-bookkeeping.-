@@ -504,6 +504,14 @@ td a:hover { text-decoration: underline; }
 .compare-pickers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
 .compare-table td:first-child { color: var(--text-2); }
 .compare-table td { white-space: normal; }
+/* Placeholder lines shown in the forum card until the discussion loads. */
+.forum-card { position: relative; }
+.forum-card:not(.loaded) { min-height: 180px; }
+.forum-skeleton { position: absolute; inset: 20px 20px auto; display: grid; gap: 12px; }
+.forum-skeleton span { height: 14px; border-radius: 7px; background: var(--surface-2); }
+.forum-skeleton span:first-child { width: 40%; }
+.forum-skeleton span:last-child { width: 70%; }
+.forum-card.loaded .forum-skeleton { display: none; }
 .best { font-weight: 700; color: var(--good); }
 
 /* Prose */
@@ -632,6 +640,7 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
   .tile { padding: 14px; }
   .tile .v { font-size: 22px; }
   .card { padding: 16px; }
+  .forum-skeleton { inset: 16px 16px auto; }
   .pager .btn { flex: 1; }
   .map-side { padding: 20px 16px 24px; }
   /* Ledger: each transaction becomes a compact stacked row. */
@@ -768,6 +777,13 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
   @keyframes pop-out { to { opacity: 0; transform: var(--pop-from); } }
   .forum-card .giscus { opacity: 0; transform: translateY(8px); transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 0.7, 0.3, 1); }
   .forum-card.loaded .giscus { opacity: 1; transform: none; }
+  .forum-skeleton span { background: linear-gradient(90deg, var(--surface-2) 30%, var(--border) 50%, var(--surface-2) 70%) 0 0 / 200% 100%; animation: card-in 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) backwards, skel-shimmer 1.2s linear infinite; }
+  .forum-skeleton span:nth-child(1) { animation-delay: 0.25s, 0s; }
+  .forum-skeleton span:nth-child(2) { animation-delay: 0.31s, 0s; }
+  .forum-skeleton span:nth-child(3) { animation-delay: 0.37s, 0s; }
+  .forum-skeleton span:nth-child(4) { animation-delay: 0.43s, 0s; }
+  @keyframes skel-shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+  .forum-card.loaded .forum-skeleton { display: grid; animation: chart-fade 0.3s ease-in reverse forwards; }
   .forum .crumbs { animation: legend-l 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; }
   .forum .report-head h1 { animation: card-in 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) 0.06s backwards; }
   .forum .report-head p { animation: card-in 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) 0.12s backwards; }
