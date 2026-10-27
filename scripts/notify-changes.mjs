@@ -8,16 +8,33 @@ import { execFileSync } from 'node:child_process';
 import { parseArgs } from './lib.mjs';
 import { diffDatasets, followTag } from '../js/engine/changes.js';
 import { money } from '../js/engine/format.js';
-import { sendToTag } from './notifiers/buttondown.mjs';
+import { sendToTag, followedTags } from './notifiers/buttondown.mjs';
 
 const SITE = 'https://townview.org/';
 const SKIP = new Set(['data/real/summary.json', 'data/real/index.json']);
 const LABELS = { revenue: 'Money in', spending: 'Money out', influence: 'Political money', taxBreaks: 'Tax breaks', debt: 'Debt', fiscalYear: 'Fiscal year', asOf: 'Data as of' };
 
-const git = (...args) => execFileSync('git', args, { encoding: 'utf8', maxBuffer: 1 << 28 });
+const git = (...args) => execFileSync('git', args, { encoding: 'utf8', maxBuffer: 1 << 28, stdio: ['ignore', 'pipe', 'ignore'] });
 
+// A file that did not exist at `sha` reads as an empty dataset.
 function readAt(sha, path) {
   try { return JSON.parse(git('show', `${sha}:${path}`)); } catch { return { towns: [] }; }
+}
+
+// Each town at `head` in the changed files, paired with its record at `base`.
+// A town whose file was renamed or split is found through the base summary,
+// so it is compared with its old record rather than reported as new.
+export function townVersions(base, head, files, read = readAt) {
+  const before = new Map();
+  for (const p of files) for (const t of read(base, p).towns || []) before.set(t.id, t);
+  const after = files.flatMap((p) => read(head, p).towns || []);
+  const missing = after.filter((t) => !before.has(t.id));
+  if (missing.length) {
+    const where = new Map((read(base, 'data/real/summary.json').towns || []).map((t) => [t.id, t.detailFile]));
+    const extra = new Set(missing.map((t) => where.get(t.id)).filter((f) => f && !files.includes(`data/real/${f}`)));
+    for (const f of extra) for (const t of read(base, `data/real/${f}`).towns || []) if (!before.has(t.id)) before.set(t.id, t);
+  }
+  return { before: { towns: [...before.values()] }, after: { towns: after } };
 }
 
 export function changedFiles(base, head) {
@@ -60,10 +77,16 @@ async function main() {
   const key = process.env.BUTTONDOWN_API_KEY;
   const dry = Boolean(args['dry-run']) || !key;
   const files = changedFiles(args.base, args.head);
-  const diffs = files.flatMap((p) => diffDatasets(readAt(args.base, p), readAt(args.head, p)));
+  const { before, after } = townVersions(args.base, args.head, files);
+  // A town new to the site has no followers yet.
+  const diffs = diffDatasets(before, after).filter((d) => !d.added);
   console.log(`${files.length} data file(s) changed, ${diffs.length} town(s) with changed books${dry ? ' (dry run)' : ''}`);
+  // Only towns someone follows get an email; a bulk data refresh must not send thousands.
+  const tags = dry ? null : await followedTags(key);
+  const targets = tags ? diffs.filter((d) => tags.has(followTag(d.id))) : diffs;
+  if (tags) console.log(`${targets.length} of them have followers`);
   let failed = 0;
-  for (const d of diffs) {
+  for (const d of targets) {
     const email = composeEmail(d);
     if (dry) { console.log(`\n--- to tag ${email.tag}\nSubject: ${email.subject}\n${email.body}`); continue; }
     try { await sendToTag(key, email); console.log(`sent: ${email.tag}`); } catch (err) { failed++; console.error(`failed: ${email.tag}: ${err.message}`); }

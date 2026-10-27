@@ -8,7 +8,7 @@ import { mapCensusItem } from '../scripts/census-codes.mjs';
 import { classifyContributor } from '../scripts/contributor-types.mjs';
 import { parseCSV } from '../scripts/lib.mjs';
 import { diffTown, diffDatasets, townFingerprint, followTag } from '../js/engine/changes.js';
-import { composeEmail } from '../scripts/notify-changes.mjs';
+import { composeEmail, townVersions } from '../scripts/notify-changes.mjs';
 import { stateSummary } from '../js/engine/states.js';
 
 const base = () => ({
@@ -1672,4 +1672,18 @@ test('change detection: dollar changes under $100 are ignored', () => {
   assert.equal(diffTown(base(), after), null);
   after.spending.roads += 1;
   assert.deepEqual(diffTown(base(), after).changes.filter((c) => c.kind === 'total').map((c) => c.key), ['spending']);
+});
+
+test('alert diff finds a town whose county file was renamed through the base summary', () => {
+  const old = { ...base(), id: 'a', detailFile: 'pa-old.json' };
+  const files = {
+    'b:data/real/summary.json': { towns: [{ id: 'a', detailFile: 'pa-old.json' }] },
+    'b:data/real/pa-old.json': { towns: [old] },
+    'h:data/real/pa-new.json': { towns: [{ ...old, debt: 6_000_000 }, { ...base(), id: 'new' }] },
+  };
+  const read = (sha, p) => files[`${sha}:${p}`] || { towns: [] };
+  const { before, after } = townVersions('b', 'h', ['data/real/pa-new.json'], read);
+  const diffs = diffDatasets(before, after);
+  assert.deepEqual(diffs.map((d) => [d.id, Boolean(d.added)]), [['a', false], ['new', true]]);
+  assert.ok(diffs[0].changes.some((c) => c.key === 'debt'));
 });

@@ -14,9 +14,12 @@ town's books change.
   first (double opt-in).
 - **On data pushes** (`.github/workflows/notify-followers.yml`): when a push to
   the default branch changes `data/real/**`, `scripts/notify-changes.mjs`
-  compares each changed county file with the previous commit (`diffDatasets`)
-  and sends one email per changed town, only to subscribers with that town's
-  tag (`scripts/notifiers/buttondown.mjs`).
+  compares each town in the changed county files with its record at the
+  previous commit (`townVersions`, `diffDatasets`; a renamed file is matched
+  through the old `summary.json`). It then lists the tags subscribers carry and
+  sends one email per changed town that someone follows, only to subscribers
+  with that town's tag (`scripts/notifiers/buttondown.mjs`). Towns new to the
+  site are skipped, since nobody can follow them yet.
 
 No IP addresses or visit logs are recorded. The only personal data is the
 email address a reader enters, held by Buttondown.
