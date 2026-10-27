@@ -762,6 +762,11 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
   /* The winning cell flashes a soft green once its row lands. */
   .compare-table td.best { animation: best-in 0.9s ease-out backwards; animation-delay: calc(var(--i, 0) * 18ms + 0.3s); }
   @keyframes best-in { from { background: var(--good-soft); } }
+  /* After the first draw, only a newly picked town's column slides in; the rest stays still. */
+  #c-out.update > p, #c-out.update .compare-table thead th, #c-out.update .compare-table thead .grade { animation: none; }
+  #c-out.update .compare-table .col-new { animation: legend-r 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; animation-delay: calc(var(--i, 0) * 15ms); }
+  #c-out.update .compare-table td.best.col-new { animation: legend-r 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) backwards, best-in 0.9s ease-out backwards; animation-delay: calc(var(--i, 0) * 15ms), calc(var(--i, 0) * 15ms + 0.3s); }
+  #c-out.update .compare-table thead .col-new .grade { animation: dot-pop 0.35s cubic-bezier(0.3, 1.4, 0.5, 1) 0.1s backwards; }
   select.changed { animation: legend-l 0.3s cubic-bezier(0.2, 0.7, 0.3, 1); }
   #m-count.count-in { animation: legend-l 0.3s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; }
   .map-intro > * { animation: card-in 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; animation-delay: calc(var(--n, 0) * 60ms); }
