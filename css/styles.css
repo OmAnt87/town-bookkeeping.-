@@ -688,6 +688,9 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
   /* Inside each new row the grade pops and the value slides in from the right just after the row lands. */
   .town-list li.in .grade { animation: dot-pop 0.35s cubic-bezier(0.3, 1.4, 0.5, 1) backwards; animation-delay: calc(var(--i) * 18ms + 0.08s); }
   .town-list li.in .t-val { animation: legend-r 0.3s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; animation-delay: calc(var(--i) * 18ms + 0.12s); }
+  /* A town picked on the map flashes a soft ring once its row scrolls into view. */
+  .town-list button.row-flash { animation: row-flash 0.9s ease-out; }
+  @keyframes row-flash { from { box-shadow: inset 3px 0 0 var(--accent-2), 0 0 0 4px var(--accent-soft); } }
   .town-list li:has(> [data-more]), .town-list li.empty { animation: card-in 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) 0.2s backwards; }
   @keyframes row-in { from { opacity: 0; transform: translateX(-10px); } }
   /* Fill backwards only, so hover lifts on tiles still work after the slide. */
