@@ -126,17 +126,42 @@ export function downloadFile(name, content, type = 'text/csv') {
 export const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
 // Slide elements in as they scroll into view. Marks each one .reveal, then adds .in when it
-// enters; elements arriving together get a short stagger (--i). Returns a cleanup function.
-export function revealOnScroll(elements) {
+// enters; elements arriving together get a short stagger (--i). onReveal(el, i) runs as each
+// one is revealed. Returns a cleanup function.
+export function revealOnScroll(elements, onReveal = () => {}) {
   elements.forEach((el) => el.classList.add('reveal'));
-  if (!('IntersectionObserver' in window)) { elements.forEach((el) => el.classList.add('in')); return () => {}; }
+  if (!('IntersectionObserver' in window)) { elements.forEach((el, i) => { el.classList.add('in'); onReveal(el, 0); }); return () => {}; }
   const observer = new IntersectionObserver((entries) => {
     entries.filter((e) => e.isIntersecting).forEach((e, i) => {
       e.target.style.setProperty('--i', String(Math.min(i, 6)));
       e.target.classList.add('in');
       observer.unobserve(e.target);
+      onReveal(e.target, Math.min(i, 6));
     });
   }, { rootMargin: '0px 0px -40px 0px' });
   elements.forEach((el) => observer.observe(el));
   return () => observer.disconnect();
+}
+
+// Counts a formatted number ("$12.3M", "$1,234", "$0.45") up from zero to its current text,
+// keeping its prefix, suffix, decimals and comma grouping. Skipped when motion is reduced.
+export function countUp(el, delay = 0, duration = 700) {
+  const final = el?.textContent;
+  const m = final?.match(/^(.*?)(\d[\d,]*(?:\.\d+)?)(.*)$/s);
+  if (!m || !matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+  const [, pre, num, post] = m;
+  const target = Number(num.replace(/,/g, ''));
+  const decimals = (num.split('.')[1] || '').length;
+  const fmt = (v) => v.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals, useGrouping: num.includes(',') });
+  el.setAttribute('aria-label', final);
+  el.textContent = pre + fmt(0) + post;
+  let start;
+  const step = (now) => {
+    start ??= now;
+    const t = Math.min(1, (now - start) / duration);
+    if (t < 1) { el.textContent = pre + fmt(target * (1 - (1 - t) ** 3)) + post; requestAnimationFrame(step); return; }
+    el.textContent = final;
+    el.removeAttribute('aria-label');
+  };
+  setTimeout(() => requestAnimationFrame(step), delay);
 }
