@@ -32,6 +32,12 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The town RSS feeds are built from main's data history.
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
       - name: Assemble site
         run: |
           mkdir _site
@@ -39,6 +45,8 @@ jobs:
           cp CNAME robots.txt sitemap.xml site.webmanifest _site/
           rm _site/data/towns.json
           touch _site/.nojekyll
+      - name: Build town RSS feeds
+        run: node scripts/build-feeds.mjs --out _site/feeds
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

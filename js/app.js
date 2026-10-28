@@ -149,6 +149,7 @@ export function route() {
   const arg = decodeURIComponent(rest.join('/'));
   if (typeof cleanup === 'function') cleanup();
   cleanup = null;
+  document.querySelectorAll('link[data-town-feed]').forEach((l) => l.remove());
   main.innerHTML = '';
   document.querySelectorAll('[data-nav]').forEach((a) => {
     const active = a.dataset.nav === view || ((view === 'town' || view === 'forum') && a.dataset.nav === 'rankings');

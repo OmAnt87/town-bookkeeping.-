@@ -2,6 +2,7 @@
 
 import { escapeHTML, formatDate } from '../engine/format.js';
 import { getFollows, unfollow, hasChanged } from '../follows.js';
+import { feedUrl } from './follow-ui.js';
 
 export function renderFollowing(root, state) {
   const draw = () => {
@@ -15,7 +16,8 @@ export function renderFollowing(root, state) {
         <div><a href="#/town/${encodeURIComponent(id)}"><strong>${escapeHTML(saved.name)}</strong></a>${saved.state ? `, ${escapeHTML(saved.state)}` : ''}
           ${updated ? '<span class="pill pill-out">Books updated</span>' : ''}
           <div class="small muted">Saved ${formatDate(saved.savedAt.slice(0, 10))}${entry ? '' : ' · not in the loaded data'}</div></div>
-        <button class="btn" type="button" data-unfollow="${escapeHTML(id)}">Unfollow</button></li>`;
+        <div class="follow-actions"><a class="btn" href="${feedUrl(id)}" type="application/rss+xml">RSS</a>
+          <button class="btn" type="button" data-unfollow="${escapeHTML(id)}">Unfollow</button></div></li>`;
     });
     root.innerHTML = `
     <div class="page">
@@ -23,7 +25,7 @@ export function renderFollowing(root, state) {
       <section class="card">
         <h2 style="margin-bottom:6px">Your towns</h2>
         ${rows.length ? `<ul class="follow-list">${rows.join('')}</ul>` : '<p class="muted">No towns yet. Open any town and press <strong>☆ Follow</strong>.</p>'}
-        <p class="small muted" style="margin:12px 0 0">This list is kept on this device only and is never sent anywhere.</p>
+        <p class="small muted" style="margin:12px 0 0">This list is kept on this device only and is never sent anywhere. To hear about changes without visiting, add a town's <strong>RSS</strong> feed to a feed reader.</p>
       </section>
     </div>`;
     root.querySelectorAll('[data-unfollow]').forEach((b) => b.addEventListener('click', () => { unfollow(b.dataset.unfollow); draw(); }));

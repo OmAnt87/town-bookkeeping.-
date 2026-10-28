@@ -9,7 +9,7 @@ import { loadTownDetail } from '../app.js';
 import { validateTown, cleanHistory } from '../engine/validate.js';
 import { percentileText, PROVISIONAL_BELOW } from '../engine/peers.js';
 import { gradeBadge, verifiedPill, isVerified, barList, splitBar, legendKey, lineChart, downloadFile, revealOnScroll, ICONS } from '../charts.js';
-import { followButton, wireFollow } from './follow-ui.js';
+import { followButton, feedLink, advertiseFeed, wireFollow } from './follow-ui.js';
 import { isFollowing, hasChanged, markSeen } from '../follows.js';
 
 const PAGE = 15;
@@ -114,6 +114,7 @@ export function renderTown(root, state, id) {
       </div>
       <div class="report-actions" style="display:flex;gap:8px;flex-wrap:wrap">
         ${followButton(town)}
+        ${feedLink(town)}
         <a class="btn" href="#/forum/${encodeURIComponent(town.id)}">Forum</a>
         <a class="btn" href="#/compare/${encodeURIComponent(town.id)}">Compare</a>
         <button class="btn" id="dl-report" type="button">${ICONS.download} Download data</button>
@@ -320,6 +321,7 @@ export function renderTown(root, state, id) {
   );
   drawLedger();
   wireFollow(root, town);
+  advertiseFeed(town);
   // Header details, score parts and their bars follow each other in order.
   root.querySelectorAll('.meta-row, .report-actions, .completeness, .components').forEach((list) => {
     [...list.children].forEach((el, n) => el.style.setProperty('--n', String(n)));

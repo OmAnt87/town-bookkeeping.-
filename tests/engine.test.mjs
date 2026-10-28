@@ -7,7 +7,8 @@ import { validateTown, historyOutliers, cleanHistory } from '../js/engine/valida
 import { mapCensusItem } from '../scripts/census-codes.mjs';
 import { classifyContributor } from '../scripts/contributor-types.mjs';
 import { parseCSV } from '../scripts/lib.mjs';
-import { townFingerprint } from '../js/engine/changes.js';
+import { townFingerprint, diffTown, diffDatasets } from '../js/engine/changes.js';
+import { townVersions, feedItem, renderFeed } from '../scripts/build-feeds.mjs';
 import { stateSummary } from '../js/engine/states.js';
 
 const base = () => ({
@@ -1622,4 +1623,51 @@ test('town fingerprint is stable across key order and changes with the books', (
   assert.equal(townFingerprint(a), townFingerprint(b), 'a $1 change does not count');
   b.revenue.propertyTax += 500;
   assert.notEqual(townFingerprint(a), townFingerprint(b));
+});
+
+test('change detection: unchanged towns and sub-$100 changes produce nothing', () => {
+  assert.equal(diffTown(base(), base()), null);
+  const after = base();
+  after.spending.roads += 99;
+  after.debt += 50;
+  assert.equal(diffTown(base(), after), null);
+  after.spending.roads += 1;
+  assert.deepEqual(diffTown(base(), after).changes.filter((c) => c.kind === 'total').map((c) => c.key), ['spending']);
+});
+
+test('change detection: new ledger rows and red flags are listed', () => {
+  const before = { ...base(), ledger: [{ date: '2026-01-01', flow: 'out', category: 'roads', counterparty: 'Paving Co', amount: 100 }] };
+  const after = { ...before, ledger: [...before.ledger, { date: '2026-02-01', flow: 'out', category: 'consultants', counterparty: 'Advisors LLC', amount: 5000 }], redFlags: [{ kind: 'surveillance', label: 'Flock cameras', amount: 30000 }] };
+  const d = diffTown(before, after);
+  assert.equal(d.changes.find((c) => c.kind === 'ledger').added.length, 1);
+  assert.equal(d.changes.find((c) => c.kind === 'redFlags').added[0].label, 'Flock cameras');
+});
+
+test('feed diff finds a town whose county file was renamed through the base summary', () => {
+  const old = { ...base(), id: 'a', detailFile: 'pa-old.json' };
+  const files = {
+    'b:data/real/summary.json': { towns: [{ id: 'a', detailFile: 'pa-old.json' }] },
+    'b:data/real/pa-old.json': { towns: [old] },
+    'h:data/real/pa-new.json': { towns: [{ ...old, debt: 6_000_000 }, { ...base(), id: 'new' }] },
+  };
+  const read = (sha, p) => files[`${sha}:${p}`] || { towns: [] };
+  const { before, after } = townVersions('b', 'h', ['data/real/pa-new.json'], read);
+  const diffs = diffDatasets(before, after);
+  assert.deepEqual(diffs.map((d) => [d.id, Boolean(d.added)]), [['a', false], ['new', true]]);
+  assert.ok(diffs[0].changes.some((c) => c.key === 'debt'));
+});
+
+test('town feed is valid RSS that lists what changed, data date last', () => {
+  const after = { ...base(), asOf: '2026-10-21' };
+  after.revenue.stateAid = 4_000_000;
+  const item = feedItem(diffTown({ ...base(), asOf: '2026-10-14' }, after), 'abc123', '2026-10-21T02:20:41Z');
+  assert.match(item.title, /^Books updated: Money in: \$10\.0M → \$11\.0M/);
+  assert.equal(item.guid, 'townview:t:abc123');
+  assert.equal(item.date, 'Wed, 21 Oct 2026 02:20:41 GMT');
+  const xml = renderFeed({ id: 't', name: 'A & B Township', state: 'PA' }, [item]);
+  assert.match(xml, /<title>A &amp; B Township, PA - TownView<\/title>/);
+  assert.match(xml, /<link>https:\/\/townview\.org\/#\/town\/t<\/link>/);
+  assert.match(xml, /&lt;li&gt;Data as of: 2026-10-14 → 2026-10-21&lt;\/li&gt;&lt;\/ul&gt;/);
+  assert.equal((xml.match(/<item>/g) || []).length, 1);
+  assert.doesNotMatch(renderFeed({ id: 't', name: 'T' }, []), /<item>|lastBuildDate/);
 });
