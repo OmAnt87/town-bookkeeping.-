@@ -8,7 +8,7 @@ import { money, number, escapeHTML, formatDate } from '../engine/format.js';
 import { loadTownDetail } from '../app.js';
 import { validateTown, cleanHistory } from '../engine/validate.js';
 import { percentileText, PROVISIONAL_BELOW } from '../engine/peers.js';
-import { gradeBadge, verifiedPill, isVerified, barList, splitBar, legendKey, lineChart, downloadFile, revealOnScroll, ICONS } from '../charts.js';
+import { gradeBadge, verifiedPill, isVerified, barList, splitBar, legendKey, lineChart, downloadFile, revealOnScroll, countUp, ICONS } from '../charts.js';
 import { followButton, wireFollow } from './follow-ui.js';
 import { isFollowing, hasChanged, markSeen } from '../follows.js';
 
@@ -325,7 +325,10 @@ export function renderTown(root, state, id) {
     [...list.children].forEach((el, n) => el.style.setProperty('--n', String(n)));
   });
   // Report sections slide in as they scroll into view.
-  return revealOnScroll(root.querySelectorAll('.scorecard > .card, .tiles > .tile, section.card'));
+  // Key-number tiles count up from zero as they land.
+  return revealOnScroll(root.querySelectorAll('.scorecard > .card, .tiles > .tile, section.card'), (el, i) => {
+    if (el.matches('.tile')) countUp(el.querySelector('.v.num'), i * 60 + 150);
+  });
 }
 
 // A box listing documented red flags, newest first, each with its source.
