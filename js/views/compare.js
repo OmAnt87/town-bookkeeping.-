@@ -1,7 +1,7 @@
 import { escapeHTML } from '../engine/format.js';
 import { metric, metricText, coverageText, comparable } from '../engine/metrics.js';
 import { reportingText } from '../engine/reporting.js';
-import { gradeBadge } from '../charts.js';
+import { gradeBadge, countUp } from '../charts.js';
 
 let picks = ['', '', ''];
 const ROWS = [
@@ -65,7 +65,13 @@ export function renderCompare(root, state, arg) {
         ${entries[0].s.components.map((c, i) => `<tr><th scope="row">${c.penalty ? `${c.label} (penalty)` : c.label}</th>${entries.map((e, j) => { const x = e.s.components[i]; return `<td class="${fresh[j]}">${!x.available ? (c.penalty ? 'Not checked' : 'Not scored') : c.penalty ? (x.points ? `−${Math.abs(x.points)}` : 'No penalty') : `${x.points} / ${c.max}`}</td>`; }).join('')}</tr>`).join('')}
         </tbody></table></div>`;
     // On a fresh table every row slides in; on an update only the new column's cells do, staggered down the rows.
-    out.querySelectorAll('tbody tr').forEach((tr, n) => { tr.classList.toggle('in', !update); tr.style.setProperty('--i', String(Math.min(n, 12))); });
+    out.querySelectorAll('tbody tr').forEach((tr, n) => {
+      const i = Math.min(n, 12);
+      tr.classList.toggle('in', !update);
+      tr.style.setProperty('--i', String(i));
+      // Measure values count up as their row (or, on an update, the new column) slides in.
+      tr.querySelectorAll(update ? 'td.num.col-new' : 'td.num').forEach((td) => countUp(td, i * (update ? 15 : 18) + 100));
+    });
   }
   for (let i = 0; i < 3; i++) {
     root.querySelector(`#c-search-${i}`).addEventListener('input', choices);
