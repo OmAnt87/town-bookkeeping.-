@@ -17,7 +17,7 @@ const PAGE = 15;
 export function renderTown(root, state, id) {
   const entry = state.byId.get(id);
   if (!entry) {
-    root.innerHTML = `<div class="page"><div class="card empty"><h2>Town not found</h2><p>It may not be in the loaded dataset.</p><a class="btn" href="#/rankings">Browse all towns</a></div></div>`;
+    root.innerHTML = `<div class="page"><div class="card empty notice-card"><h2>Town not found</h2><p>It may not be in the loaded dataset.</p><a class="btn" href="#/rankings">Browse all towns</a></div></div>`;
     return;
   }
   const { town, s } = entry;
@@ -32,7 +32,7 @@ export function renderTown(root, state, id) {
         .then(() => { if (current()) renderTown(root, state, id); })
         .catch((err) => {
           if (!current()) return;
-          root.innerHTML = `<div class="page"><div class="card empty"><h2>Could not load this town's records</h2><p class="muted">${escapeHTML(err.message)}</p><button class="btn" id="retry-town">Retry</button></div></div>`;
+          root.innerHTML = `<div class="page"><div class="card empty notice-card"><h2>Could not load this town's records</h2><p class="muted">${escapeHTML(err.message)}</p><button class="btn" id="retry-town">Retry</button></div></div>`;
           root.querySelector('#retry-town').onclick = load;
         });
     };

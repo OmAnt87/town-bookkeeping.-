@@ -16,7 +16,7 @@ const theme = () => (isDark() ? 'dark' : 'light');
 export function renderForum(root, state, id) {
   const entry = state.byId.get(id);
   if (!entry) {
-    root.innerHTML = `<div class="page"><div class="card empty"><h2>Town not found</h2><p>It may not be in the loaded dataset.</p><a class="btn" href="#/rankings">Browse all towns</a></div></div>`;
+    root.innerHTML = `<div class="page"><div class="card empty notice-card"><h2>Town not found</h2><p>It may not be in the loaded dataset.</p><a class="btn" href="#/rankings">Browse all towns</a></div></div>`;
     return;
   }
   const { town } = entry;

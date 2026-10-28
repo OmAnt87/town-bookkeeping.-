@@ -765,6 +765,11 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
   /* The winning cell flashes a soft green once its row lands. */
   .compare-table td.best { animation: best-in 0.9s ease-out backwards; animation-delay: calc(var(--i, 0) * 18ms + 0.3s); }
   @keyframes best-in { from { background: var(--good-soft); } }
+  /* "Town not found" and load-error cards slide in, then their heading, message and button follow. */
+  .notice-card { animation: card-in 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; }
+  .notice-card > h2 { animation: card-in 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) 0.08s backwards; }
+  .notice-card > p { animation: card-in 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) 0.14s backwards; }
+  .notice-card > .btn { animation: card-in 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) 0.2s backwards; }
   th > button { transition: color 0.2s ease; }
   th > button svg path { transition: opacity 0.2s ease; }
   th[aria-sort="descending"] .sort-down { animation: nudge-down 0.3s cubic-bezier(0.3, 1.4, 0.5, 1); }
