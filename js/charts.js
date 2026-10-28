@@ -9,7 +9,8 @@ export const ICONS = {
   download: '<svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v10m0 0l-4-4m4 4l4-4M4 16h12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   close: '<svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
   arrow: '<svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12m0 0l-5-5m5 5l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  sort: '<svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 4l3-3 3 3M2 6l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>',
+  // Two chevrons; a sorted column (th[aria-sort]) dims the one it is not sorting by.
+  sort: '<svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.3"><path class="sort-up" d="M2 4l3-3 3 3"/><path class="sort-down" d="M2 6l3 3 3-3"/></svg>',
 };
 
 export const gradeBadge = (grade, size = '') => {
