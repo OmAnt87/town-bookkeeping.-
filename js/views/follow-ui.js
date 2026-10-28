@@ -18,5 +18,9 @@ export function wireFollow(root, town) {
     btn.textContent = label(on);
     btn.setAttribute('aria-pressed', String(on));
     btn.classList.toggle('btn-following', on);
+    // A quick press-pop confirms the change.
+    btn.classList.remove('follow-pop');
+    void btn.offsetWidth;
+    btn.classList.add('follow-pop');
   });
 }
