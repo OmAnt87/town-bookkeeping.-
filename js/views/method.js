@@ -1,7 +1,7 @@
 import { MIN_PEERS, PROVISIONAL_BELOW } from '../engine/peers.js';
 import { COMPONENTS } from '../engine/scoring.js';
 import { TRANSPARENCY_CHECKS, SPENDING_CATEGORIES } from '../engine/categories.js';
-import { gradeBadge, revealOnScroll } from '../charts.js';
+import { gradeBadge, revealOnScroll, countUp } from '../charts.js';
 
 const HOW = {
   services: 'Share of all spending that pays for services residents use directly: police, fire and EMS, roads, water and sewer, parks and libraries, and health and human services. Full points at 88% or more, zero at 50% or less.',
@@ -86,5 +86,8 @@ export function renderMethod(root) {
     // A glossary definition shares its term's step so the pair arrives together.
     [...list.children].forEach((el) => el.style.setProperty('--n', String(el.tagName === 'DD' ? n : ++n)));
   });
-  return revealOnScroll(root.querySelectorAll('.page > *'));
+  // The Points column counts up as each score-table row slides in (0.15s + 50ms per row, as in styles.css).
+  return revealOnScroll(root.querySelectorAll('.page > *'), (el, i) => {
+    el.querySelectorAll('tbody tr').forEach((tr, n) => tr.querySelectorAll('td.num').forEach((td) => countUp(td, i * 60 + 250 + n * 50)));
+  });
 }
