@@ -762,6 +762,17 @@ dl.glossary dd { margin: 2px 0 0; color: var(--text-2); }
   /* The winning cell flashes a soft green once its row lands. */
   .compare-table td.best { animation: best-in 0.9s ease-out backwards; animation-delay: calc(var(--i, 0) * 18ms + 0.3s); }
   @keyframes best-in { from { background: var(--good-soft); } }
+  .following:not(.still) .page-head h1 { animation: card-in 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; }
+  .following:not(.still) .page-head p { animation: card-in 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) 0.06s backwards; }
+  .following:not(.still) .card { animation: card-in 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) 0.12s backwards; }
+  .following:not(.still) .card > h2 { animation: legend-l 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) 0.2s backwards; }
+  .following:not(.still) .card > p { animation: chart-fade 0.4s ease-out 0.35s backwards; }
+  .following:not(.still) .follow-row { animation: row-in 0.3s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; animation-delay: calc(0.25s + var(--i, 0) * 40ms); }
+  .following:not(.still) .follow-row .pill { animation: dot-pop 0.35s cubic-bezier(0.3, 1.4, 0.5, 1) backwards; animation-delay: calc(0.4s + var(--i, 0) * 40ms); }
+  .following .follow-row.leaving { animation: row-out 0.25s ease-in forwards; }
+  @keyframes row-out { to { opacity: 0; transform: translateX(16px); } }
+  #follow-btn.follow-pop { animation: press-pop 0.3s ease-out; }
+  @keyframes press-pop { 50% { transform: scale(1.06); } }
   /* After the first draw, only a newly picked town's column slides in; the rest stays still. */
   #c-out.update > p, #c-out.update .compare-table thead th, #c-out.update .compare-table thead .grade { animation: none; }
   #c-out.update .compare-table .col-new { animation: legend-r 0.35s cubic-bezier(0.2, 0.7, 0.3, 1) backwards; animation-delay: calc(var(--i, 0) * 15ms); }
