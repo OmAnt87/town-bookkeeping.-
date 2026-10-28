@@ -1,7 +1,7 @@
 import { metric as displayMetric, metricText, coverageText, compareValues } from '../engine/metrics.js';
 import { MAP_METRICS } from '../engine/scoring.js';
 import { money, number, escapeHTML } from '../engine/format.js';
-import { gradeBadge, verifiedPill, isVerified, ICONS, cssVar } from '../charts.js';
+import { gradeBadge, verifiedPill, isVerified, ICONS, cssVar, countUp } from '../charts.js';
 import { isDark } from '../app.js';
 
 // Diverging scale (poor = red, middle = gray, good = teal) and a navy
@@ -181,6 +181,8 @@ export function renderMap(root, state, _arg, query) {
   root.querySelectorAll('.map-side, .map-intro, .hero-stats').forEach((list) => {
     [...list.children].forEach((el, n) => el.style.setProperty('--n', String(n)));
   });
+  // The headline numbers count up as their tiles slide in (0.2s + 70ms per tile, as in styles.css).
+  root.querySelectorAll('.hero-stats strong').forEach((el, n) => countUp(el, 200 + n * 70));
 
   if (!window.L) {
     root.querySelector('#map').innerHTML = '<div class="empty">The map library could not load. Check your connection; the list and reports still work.</div>';
