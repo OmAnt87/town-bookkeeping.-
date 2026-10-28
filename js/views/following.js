@@ -26,7 +26,7 @@ export function renderFollowing(root, state) {
       <div class="page-head"><div><h1>Following</h1><p>Towns you saved in this browser. A badge shows when a town's books changed since you last looked.</p></div></div>
       <section class="card">
         <h2 style="margin-bottom:6px">Your towns</h2>
-        ${rows.length ? `<ul class="follow-list">${rows.join('')}</ul>` : '<p class="muted">No towns yet. Open any town and press <strong>☆ Follow</strong>.</p>'}
+        ${rows.length ? `<ul class="follow-list">${rows.join('')}</ul>` : '<p class="muted follow-empty">No towns yet. Open any town and press <strong>☆ Follow</strong>.</p>'}
         <p class="small muted" style="margin:12px 0 0">This list is kept on this device only and is never sent anywhere. To hear about changes without visiting, add a town's <strong>RSS</strong> feed to a feed reader.</p>
       </section>
     </div>`;
