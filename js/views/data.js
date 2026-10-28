@@ -1,7 +1,7 @@
 import { completeDataset, summaryDataset } from '../data/loading.js';
 import { loadTownDetail } from '../app.js';
 import { setDataset, persistDataset, resetToDefault } from '../app.js';
-import { downloadFile, revealOnScroll, ICONS } from '../charts.js';
+import { downloadFile, revealOnScroll, countUp, ICONS } from '../charts.js';
 import { escapeHTML } from '../engine/format.js';
 
 const SAMPLE = {
@@ -41,7 +41,7 @@ export function renderData(root, state) {
           <button class="btn" id="dl-sample" type="button">${ICONS.download} Sample file</button>
           <button class="btn" id="reset" type="button">Restore default data</button>
         </div>
-        <p class="small muted">Summary exports omit ledgers, history, donors and source notes. Complete exports load every required county file; no partial file is downloaded if any request fails.</p><p class="small muted" style="margin:14px 0 0">Loaded now: <strong>${state.towns.length} town${state.towns.length === 1 ? '' : 's'}</strong> (${{ real: 'public-record towns', demo: 'fictional demo data', mixed: 'demo towns plus public-record towns', import: 'your imported file' }[state.source] || state.source}).</p>
+        <p class="small muted">Summary exports omit ledgers, history, donors and source notes. Complete exports load every required county file; no partial file is downloaded if any request fails.</p><p class="small muted" style="margin:14px 0 0">Loaded now: <strong id="loaded-count">${state.towns.length} town${state.towns.length === 1 ? '' : 's'}</strong> (${{ real: 'public-record towns', demo: 'fictional demo data', mixed: 'demo towns plus public-record towns', import: 'your imported file' }[state.source] || state.source}).</p>
       </section>
       <section class="card prose data-card">
         <h2 style="margin:0 0 8px">Where real numbers come from</h2>
@@ -110,6 +110,10 @@ export function renderData(root, state) {
     } catch (error) { if (root.contains(button)) say(escapeHTML(error.message), false); }
     finally { button.disabled = false; }
   });
-  // Cards slide in as they scroll into view, like the other pages.
-  return revealOnScroll(root.querySelectorAll('section.card'));
+  // Cards slide in as they scroll into view, like the other pages; the loaded-town count
+  // counts up as its note fades in (0.35s after the card, as in styles.css).
+  return revealOnScroll(root.querySelectorAll('section.card'), (card, i) => {
+    const count = card.querySelector('#loaded-count');
+    if (count) countUp(count, i * 60 + 350);
+  });
 }
