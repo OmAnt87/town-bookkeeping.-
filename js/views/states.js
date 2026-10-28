@@ -1,6 +1,6 @@
 import { number, escapeHTML } from '../engine/format.js';
 import { stateSummary, GRADES } from '../engine/states.js';
-import { isVerified, revealOnScroll } from '../charts.js';
+import { isVerified, revealOnScroll, countUp } from '../charts.js';
 
 const pct = (v) => (v == null ? '—' : `${Math.round(v * 100)}%`);
 const plural = (n, one, many = `${one}s`) => `${number(n)} ${n === 1 ? one : many}`;
@@ -20,7 +20,10 @@ export function renderStates(root, state) {
   root.querySelectorAll('.coverage').forEach((list) => {
     [...list.children].forEach((el, n) => el.style.setProperty('--n', String(n)));
   });
-  return revealOnScroll(root.querySelectorAll('.state-card'));
+  // Each card's stat tiles count up as they land (0.1s + 50ms per tile after the card, as in styles.css).
+  return revealOnScroll(root.querySelectorAll('.state-card'), (card, i) => {
+    card.querySelectorAll('.state-stats .v').forEach((v, n) => countUp(v, i * 60 + 200 + n * 50));
+  });
 }
 
 function card(s) {
