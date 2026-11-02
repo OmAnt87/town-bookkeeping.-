@@ -133,10 +133,19 @@ export function renderRankings(root, state, _arg, query) {
     $('#r-page').max = String(pages);
     $('#r-pages').textContent = number(pages);
     const provisional = list.filter((t) => t.provisional).length;
-    $('#r-count').textContent = `Showing ${list.length ? start + 1 : 0}–${Math.min(start + PAGE, list.length)} of ${number(list.length)} matching towns. Missing values sort last.`;
-    $('#r-note').textContent = ui.sort === 'peer'
+    slideText('#r-count', `Showing ${list.length ? start + 1 : 0}–${Math.min(start + PAGE, list.length)} of ${number(list.length)} matching towns. Missing values sort last.`);
+    slideText('#r-note', ui.sort === 'peer'
       ? `Ranked by percentile among peers: 90th means a town scores higher than 90% of comparable towns. Peers share state, kind of government and population band; groups under 8 graded towns are widened.${provisional ? ` ${number(provisional)} provisional towns (less than ${PROVISIONAL_BELOW} of 100 points of data) are listed last.` : ''}`
-      : provisional && ui.sort === 'score' ? `${number(provisional)} provisional towns (scored on less than ${PROVISIONAL_BELOW} of 100 points of data) are listed after the rest.` : '';
+      : provisional && ui.sort === 'score' ? `${number(provisional)} provisional towns (scored on less than ${PROVISIONAL_BELOW} of 100 points of data) are listed after the rest.` : '');
+  }
+  // The count and note slide in when their text changes, like the map's town count.
+  function slideText(sel, text) {
+    const el = $(sel);
+    if (el.textContent === text) return;
+    el.textContent = text;
+    el.classList.remove('count-in');
+    void el.offsetWidth;
+    if (text) el.classList.add('count-in');
   }
   function reset() {
     Object.assign(ui, DEFAULTS, { realOnly: anyReal });
