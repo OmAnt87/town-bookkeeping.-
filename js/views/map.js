@@ -418,6 +418,22 @@ export function renderMap(root, state, _arg, query) {
       card.addEventListener('animationend', () => { if (card.classList.contains('closing')) card.hidden = true; }, { once: true });
     });
     root.querySelectorAll('#m-list button').forEach((b) => b.classList.toggle('active', b.dataset.id === id));
+    // Glide the sidebar to the picked town's row and flash it, so a town picked on the map is easy to
+    // spot in the list. Only where the sidebar scrolls on its own (desktop); on phones it scrolls with
+    // the page, and moving the page would push the map out of view.
+    const row = [...root.querySelectorAll('#m-list button[data-id]')].find((b) => b.dataset.id === id);
+    const side = root.querySelector('.map-side');
+    if (row && getComputedStyle(side).overflowY === 'auto') {
+      const r = row.getBoundingClientRect();
+      const box = side.getBoundingClientRect();
+      if (r.top < box.top || r.bottom > box.bottom) {
+        const smooth = matchMedia('(prefers-reduced-motion: no-preference)').matches;
+        side.scrollBy({ top: r.top - box.top - (box.height - r.height) / 2, behavior: smooth ? 'smooth' : 'auto' });
+      }
+      row.classList.remove('row-flash');
+      void row.offsetWidth;
+      row.classList.add('row-flash');
+    }
     if (map) {
       clearPulse();
       pulse = L.marker([town.lat, town.lng], { pane: 'pulse', interactive: false, keyboard: false, icon: L.divIcon({ className: 'dot-pulse', html: '<span></span>', iconSize: [22, 22] }) }).addTo(map);
