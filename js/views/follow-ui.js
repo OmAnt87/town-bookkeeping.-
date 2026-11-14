@@ -6,14 +6,14 @@ const label = (on) => (on ? '★ Following' : '☆ Follow');
 
 export const followButton = (town) => {
   const on = isFollowing(town.id);
-  return `<button class="btn${on ? ' btn-following' : ''}" id="follow-btn" type="button" aria-pressed="${on}" title="Save this town to your Following list">${label(on)}</button>`;
+  return `<button class="btn${on ? ' btn-following' : ''}" id="follow-btn" type="button" data-track="follow" aria-pressed="${on}" title="Save this town to your Following list">${label(on)}</button>`;
 };
 
 // Built at deploy by scripts/build-feeds.mjs.
 export const feedUrl = (id) => `feeds/${encodeURIComponent(id)}.xml`;
 
 export const feedLink = (town) =>
-  `<a class="btn" href="${feedUrl(town.id)}" type="application/rss+xml" title="RSS feed of changes to this town's books">RSS feed</a>`;
+  `<a class="btn" href="${feedUrl(town.id)}" type="application/rss+xml" data-track="rss" title="RSS feed of changes to this town's books">RSS feed</a>`;
 
 // Lets feed readers and browser extensions find the town's feed.
 export function advertiseFeed(town) {

@@ -24,7 +24,7 @@ export function renderCompare(root, state, arg) {
     <div class="page-head"><div><h1>Compare towns</h1><p>Choose up to three towns. Highlights appear only for available values with matching reporting context.</p></div></div>
     <div class="compare-pickers">${[0, 1, 2].map((i) => `<div class="field" style="--i:${i}">
       <label for="c-search-${i}">Find town ${i + 1}</label><input id="c-search-${i}" class="input" type="search" placeholder="Town, county or state">
-      <label for="c-${i}">Town ${i + 1}</label><select class="select" id="c-${i}" data-slot="${i}"></select></div>`).join('')}</div>
+      <label for="c-${i}">Town ${i + 1}</label><select class="select" id="c-${i}" data-track="compare-pick" data-slot="${i}"></select></div>`).join('')}</div>
     <div id="c-out"></div></div>`;
   // Each list shows the current pick plus up to MAX matches once two letters are typed:
   // tens of thousands of options per list make the page slow to build and to open.

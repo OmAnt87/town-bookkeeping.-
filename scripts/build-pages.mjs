@@ -66,6 +66,7 @@ export function layout({ title, description, path, body, data }) {
 <link rel="stylesheet" href="/css/styles.css">
 <script>try{var t=localStorage.getItem('tl-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 ${data ? jsonLd(data) : ''}
+<script type="module">import{pageview,wireEvents}from'/js/track.js';pageview(location.pathname);wireEvents()</script>
 </head>
 <body class="static">
 <a class="skip-link" href="#main">Skip to content</a>
@@ -76,7 +77,7 @@ ${data ? jsonLd(data) : ''}
 <main id="main">
 ${body}
 </main>
-<footer class="site-footer"><div class="footer-base"><span>&copy; ${new Date().getFullYear()} TownView. Open data from public records. <a href="/#/method">How scores work</a></span><a href="https://github.com/OmAnt87/town-bookkeeping.-" rel="noopener">Source on GitHub</a></div></footer>
+<footer class="site-footer"><div class="footer-base"><span>&copy; ${new Date().getFullYear()} TownView. Open data, no cookies, no personal data. <a href="/privacy.html">Privacy</a> · <a href="/#/method">How scores work</a></span><a href="https://github.com/OmAnt87/town-bookkeeping.-" rel="noopener">Source on GitHub</a></div></footer>
 </body>
 </html>
 `;
@@ -130,7 +131,7 @@ export function renderTownPage(entry, neighbors = []) {
 <div class="score-main">${badge(s, 'lg')}<div class="score-text"><div class="score-value num">${graded(s) ? `${s.score.toFixed(1)}<small> / 100</small>` : 'Not graded'}</div>
 ${graded(s) ? '' : '<p class="small muted">A letter grade needs data for at least half of the score.</p>'}${peerLine}</div></div>
 <div class="callout">${plainSummary(town, s)}</div>
-<p class="static-cta"><a class="btn btn-primary" href="${appTown(town.id)}">Open the full interactive report</a><a class="btn" href="/feeds/${encodeURIComponent(town.id)}.xml" type="application/rss+xml">RSS feed of changes</a></p>
+<p class="static-cta"><a class="btn btn-primary" href="${appTown(town.id)}" data-track="full-report">Open the full interactive report</a><a class="btn" href="/feeds/${encodeURIComponent(town.id)}.xml" type="application/rss+xml" data-track="rss">RSS feed of changes</a></p>
 <p class="small muted">The full report adds the transaction ledger, multi-year trend, political donors, transparency checks and side-by-side comparison with other towns.</p>
 </section>
 <section class="tiles" aria-label="Key numbers">

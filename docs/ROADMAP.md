@@ -5,16 +5,19 @@ What is planned for TownView, in order. Shipped releases are in [CHANGELOG.md](.
 | Release | Theme | Outcome | Status |
 |---|---|---|---|
 | 0.2.0 | Findability | A crawlable page per town and state, full sitemap, share button | Built |
-| 0.3.0 | Measurement | Cookieless page and event counts, Search Console | Next |
-| 0.4.0 | Email alerts | Opt-in follow-by-email, sent when a town's books change | Planned |
+| 0.3.0 | Measurement | Cookieless page and event counts, Search Console | Built; waits on owner steps |
+| 0.4.0 | Email alerts | Opt-in follow-by-email, sent when a town's books change | Next |
 | 0.5.0 | First visit | Find my town by ZIP or location, faster first load, clearer landing | Planned |
 | 0.6.0 | Reach | Per-town preview images, embeddable score badge, "report an error", state stories | Planned |
 
 ## 0.3.0 Measurement
 
-- `js/track.js`: a page view on every route change and events for search, Follow, Share, RSS, CSV export, Compare, forum and state filter. Cookieless counter (GoatCounter), no personal data, honors Do Not Track and Global Privacy Control. The static town pages carry the same snippet so search landings are counted.
-- Footer and How scores work change from "no tracking" to "no cookies, no personal data"; add `docs/PRIVACY.md`.
-- Owner: create the GoatCounter site; verify townview.org in Google Search Console and submit `sitemap.xml`.
+Built: `js/track.js`, `privacy.html`, `data-track` events across the views. See CHANGELOG.md.
+
+Owner steps before it counts anything:
+
+1. Create a site at goatcounter.com (free for non-commercial use) and set `GOATCOUNTER_CODE` in `js/track.js` to its code.
+2. Verify townview.org in Google Search Console with a DNS TXT record at IONOS, then submit `https://townview.org/sitemap.xml`.
 - Numbers to watch: search impressions and clicks, visits per week, most-viewed towns, share and follow clicks per visit.
 
 ## 0.4.0 Email alerts

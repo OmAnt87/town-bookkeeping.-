@@ -62,11 +62,11 @@ export function renderRankings(root, state, _arg, query) {
   <div class="page rankings">
     <div class="page-head">
       <div><h1>Rankings</h1><p>Every town ranked by its Community Return Score. <strong>Among peers</strong> compares each town only with towns in the same state, of the same kind and size, which share its data sources. Select a column to sort.</p></div>
-      <button class="btn" id="r-dl" type="button">${ICONS.download} Export CSV</button>
+      <button class="btn" id="r-dl" type="button" data-track="download-rankings">${ICONS.download} Export CSV</button>
     </div>
     <div class="toolbar">
-      <div class="field field-wide"><label for="r-q">Search</label><input id="r-q" class="input" type="search" placeholder="Town or county" value="${escapeHTML(ui.q)}"></div>
-      <div class="field"><label for="r-state">State</label><select id="r-state" class="select">${option('all', 'All states', ui.state)}${states.map((s) => option(s, s, ui.state)).join('')}</select></div>
+      <div class="field field-wide"><label for="r-q">Search</label><input id="r-q" class="input" type="search" data-track="search-rankings" placeholder="Town or county" value="${escapeHTML(ui.q)}"></div>
+      <div class="field"><label for="r-state">State</label><select id="r-state" class="select" data-track="filter-state-rankings">${option('all', 'All states', ui.state)}${states.map((s) => option(s, s, ui.state)).join('')}</select></div>
       <div class="field"><label for="r-kind">Government</label><select id="r-kind" class="select">${option('all', 'All kinds', ui.kind)}${GOV_KINDS.map((k) => option(k.key, k.label, ui.kind)).join('')}</select></div>
       <div class="field"><label for="r-band">Population</label><select id="r-band" class="select">${option('all', 'Any size', ui.band)}${POP_BANDS.map((b) => option(b.key, b.label, ui.band)).join('')}</select></div>
       <div class="field"><label for="r-grade">Grade</label><select id="r-grade" class="select">${option('all', 'All grades', ui.grade)}${['A', 'B', 'C', 'D', 'F', '?'].map((g) => option(g, g === '?' ? 'Not graded' : g, ui.grade)).join('')}</select></div>

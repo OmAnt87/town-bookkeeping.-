@@ -138,14 +138,14 @@ export function renderMap(root, state, _arg, query) {
       <div class="field">
         <label for="m-search">Find a town</label>
         <div class="search-wrap${ui.query ? ' has-text' : ''}">
-          <input id="m-search" class="input" type="search" placeholder="Town, county or state" value="${escapeHTML(ui.query)}">
+          <input id="m-search" class="input" type="search" data-track="search-map" placeholder="Town, county or state" value="${escapeHTML(ui.query)}">
           <button type="button" class="search-clear" id="m-clear" aria-label="Clear search">${ICONS.close}</button>
         </div>
       </div>
       <div class="grid grid-2" style="gap:10px">
         <div class="field">
           <label for="m-state">State</label>
-          <select id="m-state" class="select"><option value="all">All states</option>${states
+          <select id="m-state" class="select" data-track="filter-state-map"><option value="all">All states</option>${states
             .map((s) => `<option ${ui.state === s ? 'selected' : ''}>${s}</option>`)
             .join('')}</select>
         </div>

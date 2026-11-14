@@ -35,7 +35,8 @@ test('town page escapes names and keeps JSON-LD from closing its script', () => 
   const html = renderTownPage(entry);
   assert.ok(!html.includes('<b>&"Town"'));
   assert.ok(!html.includes('<i>County</i>'));
-  assert.equal(html.match(/<\/script>/g).length, 2);
+  // The theme script, the JSON-LD and the visit counter: the name added none.
+  assert.equal(html.match(/<\/script>/g).length, 3);
   assert.equal(ldOf(html)['@graph'][1].spatialCoverage.name, 'O\'Neil </script><b>&"Town", Pennsylvania');
 });
 
@@ -82,4 +83,12 @@ test('share link is the town page for public-record towns, the current address o
   const loc = { origin: 'https://townview.org', href: 'https://townview.org/#/town/x' };
   assert.equal(shareUrl({ id: 'test-town-pa' }, 'real', loc), 'https://townview.org/town/test-town-pa/');
   assert.equal(shareUrl({ id: 'test-town-pa' }, 'import', loc), loc.href);
+});
+
+test('static pages count their landing view and the button into the report', () => {
+  const [entry] = scoreAll([town()]);
+  const html = renderTownPage(entry);
+  assert.match(html, /import\{pageview,wireEvents\}from'\/js\/track\.js';pageview\(location\.pathname\);wireEvents\(\)/);
+  assert.match(html, /data-track="full-report"/);
+  assert.match(html, /href="\/privacy\.html"/);
 });

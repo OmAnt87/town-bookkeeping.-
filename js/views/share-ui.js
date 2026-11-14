@@ -3,7 +3,7 @@
 
 const LABEL = 'Share';
 
-export const shareButton = () => `<button class="btn" id="share-btn" type="button" title="Share a link to this report">${LABEL}</button>`;
+export const shareButton = () => `<button class="btn" id="share-btn" type="button" data-track="share" title="Share a link to this report">${LABEL}</button>`;
 
 // Public-record towns have a page of their own; an imported dataset does not.
 export const shareUrl = (town, source, loc = location) =>

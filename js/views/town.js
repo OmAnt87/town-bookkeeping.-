@@ -118,9 +118,9 @@ export function renderTown(root, state, id) {
         ${followButton(town)}
         ${shareButton()}
         ${feedLink(town)}
-        <a class="btn" href="#/forum/${encodeURIComponent(town.id)}">Forum</a>
-        <a class="btn" href="#/compare/${encodeURIComponent(town.id)}">Compare</a>
-        <button class="btn" id="dl-report" type="button">${ICONS.download} Download data</button>
+        <a class="btn" href="#/forum/${encodeURIComponent(town.id)}" data-track="forum-open">Forum</a>
+        <a class="btn" href="#/compare/${encodeURIComponent(town.id)}" data-track="compare-open">Compare</a>
+        <button class="btn" id="dl-report" type="button" data-track="download-report">${ICONS.download} Download data</button>
       </div>
     </div>
     ${updatedSinceSaved ? '<div class="callout follow-note" role="status"><strong>Books updated since you saved this town.</strong> The figures below are the latest.</div>' : ''}
@@ -237,7 +237,7 @@ export function renderTown(root, state, id) {
 
     <section class="card" aria-labelledby="h-ledger" style="margin-bottom:16px">
       <div class="card-head"><div><h2 id="h-ledger">Ledger</h2><p>Budget lines, financial report entries and political filings. Political records may cover a different period from fiscal year ${town.fiscalYear}. Search, filter, or export to a spreadsheet.</p></div>
-        <button class="btn" id="dl-ledger" type="button">${ICONS.download} Export CSV</button></div>
+        <button class="btn" id="dl-ledger" type="button" data-track="download-ledger">${ICONS.download} Export CSV</button></div>
       <div class="toolbar">
         <div class="field"><label for="l-q">Search</label><input id="l-q" class="input" type="search" placeholder="Vendor, donor or description"></div>
         <div class="field"><label for="l-flow">Type</label><select id="l-flow" class="select"><option value="all">All types</option>${Object.entries(FLOWS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select></div>
