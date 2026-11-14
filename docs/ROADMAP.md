@@ -8,7 +8,7 @@ What is planned for TownView, in order. Shipped releases are in [CHANGELOG.md](.
 | 0.3.0 | Measurement | Cookieless page and event counts, Search Console | Built; waits on owner steps |
 | 0.4.0 | Email alerts | Opt-in follow-by-email, sent when a town's books change | Next |
 | 0.5.0 | First visit | Find my town by ZIP or location, faster first load, clearer landing | Built |
-| 0.6.0 | Reach | Per-town preview images, embeddable score badge, "report an error", state stories | Planned |
+| 0.6.0 | Reach | Grade preview images, embeddable score badge, "report an error", state standouts | Built |
 
 ## 0.3.0 Measurement
 
@@ -34,14 +34,16 @@ Still open: scoring 28,844 towns at startup takes about 0.7 s on a desktop and s
 
 ## 0.6.0 Reach
 
-- Per-town social preview images built at deploy.
-- Embeddable score badge and a "cite this" link for local news.
-- "Report an error" on every town report, as a prefilled GitHub issue.
-- State stories (highest debt per resident, most surveillance programs) as shareable pages.
-- A way to comment without a GitHub account.
+Built: grade preview images, score badges and citations, report-an-error form, state standouts. See CHANGELOG.md.
+
+Left for later:
+
+- **Preview image per town.** A 1200x630 image for each of 28,844 towns would add 1 to 2 GB, past the GitHub Pages limit. The grade cards stand in for now.
+- **A national standouts page.** Across states, the extremes were mostly gaps in the records (counties with only school spending on file, debt figures in the hundreds of thousands per resident). It needs a data-quality pass first; error reports will help find the gaps.
+- **Commenting without a GitHub account.** It needs a server or a hosted comment service.
 
 ## Housekeeping
 
 - Set the repository's default branch to `main`. It is still `claude/hopeful-gates-zi03ou`, an old four-state copy of the site.
 - Merge or close the open state-rebuild pull requests (18, 19, 20, 27, 28, 29, 30, 31, 64).
-- Deployed size is about 690 MB against the GitHub Pages limit of 1 GB. The county detail files (about 360 MB) are the place to slim next.
+- Deployed size is about 780 MB against the GitHub Pages limit of 1 GB (data about 395 MB, town and state pages with badges about 350 MB, feeds). The county detail files are the place to slim next.

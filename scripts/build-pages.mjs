@@ -19,6 +19,9 @@ import { reportingText } from '../js/engine/reporting.js';
 import { plainSummary } from '../js/engine/summary.js';
 import { money, number, escapeHTML as esc, formatDate } from '../js/engine/format.js';
 import { unpackSummary } from '../js/data/summary-format.js';
+import { badgeSVG } from '../js/engine/badge.js';
+import { citationText, reportErrorUrl, badgeAlt } from '../js/engine/cite.js';
+import { standouts } from '../js/engine/standouts.js';
 
 export const SITE = 'https://townview.org/';
 // Other governments in the same county linked from a town page.
@@ -41,7 +44,7 @@ const jsonLd = (data) => `<script type="application/ld+json">${JSON.stringify(da
 const BRAND_MARK = '<svg class="brand-mark" viewBox="0 0 32 32" width="34" height="34" aria-hidden="true"><rect width="32" height="32" rx="8" fill="var(--brand)"/><path d="M6.5 23v-8l4.25-3.75L15 15v8z" fill="#fff"/><path d="M16.5 23V8.5h4.5V23z" fill="#fff"/><path d="M22.5 23v-6.5h3V23z" fill="var(--accent-2)"/><rect x="5.5" y="24.5" width="21" height="1.8" rx=".9" fill="var(--accent-2)"/></svg>';
 
 // The shell every static page shares. `path` is site-relative ("town/x/").
-export function layout({ title, description, path, body, data }) {
+export function layout({ title, description, path, body, data, image = 'img/og-image.png', imageAlt = '' }) {
   const url = `${SITE}${path}`;
   return `<!doctype html>
 <html lang="en">
@@ -58,7 +61,9 @@ export function layout({ title, description, path, body, data }) {
 <meta property="og:url" content="${esc(url)}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
-<meta property="og:image" content="${SITE}img/og-image.png">
+<meta property="og:image" content="${SITE}${image}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">${imageAlt ? `\n<meta property="og:image:alt" content="${esc(imageAlt)}">` : ''}
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -148,7 +153,9 @@ ${moneyTable('Money in', revenueRows(town), t.revenue)}
 ${moneyTable('Money out', spendingRows(town), t.spending)}
 </div>
 ${flags.length ? `<section class="card"><h2>Red flags in public records</h2><ul class="static-flags">${flags.slice(0, 8).map((f) => `<li><strong>${esc(f.label)}</strong>${f.vendor ? ` (${esc(f.vendor)})` : ''}</li>`).join('')}</ul><p class="small muted">Surveillance programs, data center deals and corporate tax breaks cost points. Sources are listed in the <a href="${appTown(town.id)}">full report</a>.</p></section>` : ''}
-<section class="card"><h2>About these figures</h2><p class="small">${esc(reportingText(town))}</p><p class="small muted">Figures come from public records. See <a href="/#/method">how scores work</a>.</p></section>
+<section class="card"><h2>About these figures</h2><p class="small">${esc(reportingText(town))}</p><p class="small muted">Figures come from public records. See <a href="/#/method">how scores work</a>.</p>
+<p class="small"><strong>Cite:</strong> ${esc(citationText(town))}</p>
+<p class="small">Spot a wrong figure? <a href="${esc(reportErrorUrl(town))}" rel="noopener" data-track="report-error">Report an error</a> (needs a GitHub account; reports are public).</p></section>
 ${others.length ? `<section class="card"><h2>Also in ${esc(town.county || stateName)}</h2><ul class="static-list">${others.map(listItem).join('')}</ul><p class="small"><a href="/${statePath(town.state)}">Every government in ${esc(stateName)}</a></p></section>` : ''}
 </div>`;
 
@@ -174,11 +181,21 @@ ${others.length ? `<section class="card"><h2>Also in ${esc(town.county || stateN
       },
     ],
   };
-  return layout({ title, description, path: townPath(town.id), body, data });
+  return layout({ title, description, path: townPath(town.id), body, data, image: `img/og/grade-${graded(s) ? s.grade : 'none'}.png`, imageAlt: badgeAlt(town, s) });
 }
 
 const listItem = ({ town, s }) =>
   `<li><a href="/${townPath(town.id)}">${esc(town.name)}</a> <span class="muted">${graded(s) ? `${s.grade} · ${s.score.toFixed(0)}` : 'not graded'}</span></li>`;
+
+// The ends of a few measures for one state, among towns whose records look complete.
+export function standoutsSection(entries) {
+  const lists = standouts(entries);
+  if (!lists.length) return '';
+  return `<section class="card"><div class="card-head"><h2>Standouts</h2></div>
+<p class="small muted">Among places of 2,500 people or more whose records pass every data check and back at least 80% of the score. Figures far outside the state's typical range are left out as likely gaps in the records. <a href="/#/method">How scores work</a>.</p>
+<div class="standouts">${lists.map((l) => `<div><h3>${esc(l.title)}</h3><ol>${l.rows.map((r) => `<li><a href="/${townPath(r.entry.town.id)}">${esc(r.entry.town.name)}</a> <span class="num">${esc(r.text)}</span></li>`).join('')}</ol></div>`).join('')}</div>
+</section>`;
+}
 
 // sum: one stateSummary() row. entries: that state's scored towns.
 export function renderStatePage(sum, entries) {
@@ -203,6 +220,7 @@ ${tile('Median score', sum.medianScore == null ? 'Not available' : `${sum.median
 ${tile('Median spent on services', sum.medianDirectShare == null ? 'Not available' : pct(sum.medianDirectShare), 'of spending')}
 ${tile('With red flags', sum.redFlagTowns == null ? 'Not checked' : number(sum.redFlagTowns), sum.redFlagTowns == null ? '' : `of ${number(sum.redFlagChecked)} checked`)}
 </section>
+${standoutsSection(entries)}
 <section class="card"><h2>Every government, by county</h2>
 ${groups}
 </section>
@@ -269,6 +287,7 @@ function main() {
     (byCounty.get(k) || byCounty.set(k, []).get(k)).push(e);
   }
   const sums = stateSummary(entries);
+  mkdirSync(join(out, 'badge'), { recursive: true });
   const urls = [{ path: '' }, { path: 'state/' }];
   let bytes = write(out, 'state', renderStateIndex(sums));
   for (const sum of sums) {
@@ -278,6 +297,9 @@ function main() {
   for (const e of entries) {
     const neighbors = e.town.county ? byCounty.get(`${e.town.state}|${e.town.county}`) : [];
     bytes += write(out, townPath(e.town.id), renderTownPage(e, neighbors));
+    const badge = badgeSVG(e);
+    writeFileSync(join(out, 'badge', `${e.town.id}.svg`), badge);
+    bytes += badge.length;
     urls.push({ path: townPath(e.town.id), lastmod: e.town.asOf });
   }
   writeFileSync(join(out, 'sitemap.xml'), renderSitemap(urls));

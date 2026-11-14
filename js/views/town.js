@@ -13,6 +13,7 @@ import { gradeBadge, verifiedPill, isVerified, barList, splitBar, legendKey, lin
 import { followButton, feedLink, advertiseFeed, wireFollow } from './follow-ui.js';
 import { shareButton, shareUrl, wireShare } from './share-ui.js';
 import { rememberTown } from './finder.js';
+import { citationText, embedHTML, reportErrorUrl } from '../engine/cite.js';
 import { isFollowing, hasChanged, markSeen } from '../follows.js';
 
 const PAGE = 15;
@@ -159,6 +160,8 @@ export function renderTown(root, state, id) {
           .join('')}</div>
       </div>
     </section>
+
+    ${state.source === 'real' ? citeBox(town, s) : ''}
 
     <section class="tiles" aria-label="Key numbers">
       <div class="tile"><div class="k">Total money in</div><div class="v num">${money(t.revenue, { compact: true })}</div><div class="s">${t.passThroughIn ? `${money(t.ownRevenue, { compact: true })} for the town itself` : `${money(t.revenue / town.population)} per resident`}</div></div>
@@ -326,6 +329,7 @@ export function renderTown(root, state, id) {
   drawLedger();
   wireFollow(root, town);
   rememberTown(town.id);
+  wireCopy(root);
   wireShare(root, town, shareUrl(town, state.source));
   advertiseFeed(town);
   // Header details, score parts and their bars follow each other in order.
@@ -359,6 +363,34 @@ function componentValue(c) {
   if (!c.available) return c.penalty ? 'Not checked' : 'Not scored';
   if (c.penalty) return c.points ? `−${Math.abs(c.points)}` : 'No penalty';
   return `${c.points} / ${c.max}`;
+}
+
+// Embed badge, citation and error report, for public-record towns (they have a page of their own).
+function citeBox(town, s) {
+  return `<details class="card cite-box">
+      <summary>Embed, cite or report an error</summary>
+      <div class="cite-grid">
+        <div><h3>Embed the score</h3><p class="small muted">A small badge that links to this town's page. It updates when the figures do.</p>
+          <p><img src="badge/${encodeURIComponent(town.id)}.svg" alt="" height="20" onerror="this.parentNode.hidden=true"></p>
+          <textarea class="input cite-text" readonly rows="4" id="embed-text">${escapeHTML(embedHTML(town, s))}</textarea>
+          <button class="btn" type="button" data-copy="embed-text" data-track="embed-copy">Copy embed code</button></div>
+        <div><h3>Cite this report</h3>
+          <textarea class="input cite-text" readonly rows="4" id="cite-text">${escapeHTML(citationText(town))}</textarea>
+          <button class="btn" type="button" data-copy="cite-text" data-track="cite-copy">Copy citation</button></div>
+        <div><h3>Spot a wrong figure?</h3><p class="small">Tell us on GitHub and we'll check it against the public record. You need a GitHub account, and reports are public.</p>
+          <a class="btn" href="${escapeHTML(reportErrorUrl(town))}" target="_blank" rel="noopener" data-track="report-error">Report an error</a></div>
+      </div>
+    </details>`;
+}
+
+function wireCopy(root) {
+  root.querySelectorAll('[data-copy]').forEach((btn) => btn.addEventListener('click', async () => {
+    const field = root.querySelector(`#${btn.dataset.copy}`);
+    const label = btn.textContent;
+    try { await navigator.clipboard.writeText(field.value); btn.textContent = 'Copied'; }
+    catch { field.select(); btn.textContent = 'Press Ctrl+C to copy'; }
+    setTimeout(() => { btn.textContent = label; }, 2000);
+  }));
 }
 
 // Where the town stands among comparable towns (engine/peers.js): same state, kind of

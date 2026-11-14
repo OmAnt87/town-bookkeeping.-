@@ -2,6 +2,14 @@
 
 Releases of TownView (townview.org). Newest first.
 
+## 0.6.0 - Reach
+
+- **Link previews show the grade.** Each town page's preview image is the card for its grade (`img/og/grade-*.png`, rendered once by `scripts/build-og-images.mjs`), with alt text naming the town and score.
+- **Embeddable score badge** for every town at `/badge/<id>.svg`, built at deploy. Town reports have an "Embed, cite or report an error" panel with copy buttons for the badge code and a citation; the plain town pages carry the citation too.
+- **Report an error**: a link on every town report and town page opens a GitHub issue form (`.github/ISSUE_TEMPLATE/data-error.yml`) with the town filled in.
+- **Standouts** on state pages: the top five towns on score (high and low), debt per resident, share spent on services, political money per resident and documented red flags. Only places of 2,500 people or more whose records pass every data check and back at least 80% of the score are listed, and towns with a figure more than five times the state's typical one are left off as likely gaps in the records. 21 states have enough such towns to show lists.
+- Counted actions: `embed-copy`, `cite-copy`, `report-error`.
+
 ## 0.5.0 - First visit
 
 - **Find your town** at the top of the map: type a ZIP code or use your location to see the five nearest governments with their grades and distances, plus their county where it has a report. It works in the browser; the only request is for one small table of ZIP areas named by the ZIP's first three digits (`data/zip/`, built from the Census 2024 ZIP Code Tabulation Areas by `scripts/build-zips.mjs`).

@@ -92,3 +92,20 @@ test('static pages count their landing view and the button into the report', () 
   assert.match(html, /data-track="full-report"/);
   assert.match(html, /href="\/privacy\.html"/);
 });
+
+test('town pages use the preview image for their grade, cite and link to error reports', async () => {
+  const { reportErrorUrl } = await import('../js/engine/cite.js');
+  const [entry] = scoreAll([town()]);
+  const html = renderTownPage(entry);
+  const img = html.match(/<meta property="og:image" content="([^"]+)">/)[1];
+  assert.match(img, /^https:\/\/townview\.org\/img\/og\/grade-(A|B|C|D|F|none)\.png$/);
+  assert.ok(img.endsWith(`grade-${/^[A-F]$/.test(entry.s.grade) ? entry.s.grade : 'none'}.png`));
+  assert.match(html, /<meta property="og:image:alt" content="Test Town, PA/);
+  assert.match(html, /<strong>Cite:<\/strong> TownView, &quot;Test Town, PA: where the money goes,&quot; fiscal year 2024, data as of 2026-10-01, https:\/\/townview\.org\/town\/test-town-pa\//);
+  const url = new URL(reportErrorUrl(entry.town));
+  assert.equal(url.origin + url.pathname, 'https://github.com/OmAnt87/town-bookkeeping.-/issues/new');
+  assert.equal(url.searchParams.get('template'), 'data-error.yml');
+  assert.equal(url.searchParams.get('title'), 'Data error: Test Town, PA');
+  assert.match(url.searchParams.get('town'), /test-town-pa.*fiscal year 2024\nhttps:\/\/townview\.org\/town\/test-town-pa\//s);
+  assert.ok(html.includes(reportErrorUrl(entry.town).replace(/&/g, '&amp;')));
+});

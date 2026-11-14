@@ -55,7 +55,8 @@ The live site is published by `.github/workflows/pages.yml`: every push to `main
 
 The workflow also builds, without committing them:
 
-- **Town and state pages** (`scripts/build-pages.mjs`): a plain HTML page for every government at `/town/<id>/` and every state at `/state/<st>/`, plus the full `sitemap.xml`. Search engines and link previews cannot read `#/` routes, so these are what gets indexed and shared; each links into the interactive report. They add about 300 MB to the deployed site (GitHub Pages allows 1 GB). Preview with `npm run build:pages`, which writes to `_site/`.
+- **Town and state pages** (`scripts/build-pages.mjs`): a plain HTML page for every government at `/town/<id>/` and every state at `/state/<st>/`, plus the full `sitemap.xml`. Search engines and link previews cannot read `#/` routes, so these are what gets indexed and shared; each links into the interactive report. Together with the badges they add about 350 MB to the deployed site (GitHub Pages allows 1 GB). Preview with `npm run build:pages`, which writes to `_site/`.
+- **Score badges** (also `scripts/build-pages.mjs`): an SVG badge per town at `/badge/<id>.svg` for news sites and blogs to embed. Town pages use the grade preview images in `img/og/`, which `node scripts/build-og-images.mjs` re-renders (needs Playwright; run it only when the design changes).
 - **RSS feeds** (`scripts/build-feeds.mjs`): one per town, at `/feeds/<id>.xml`.
 
 Netlify and Vercel run no build command, so a deploy there has neither.
