@@ -3,6 +3,7 @@ import { MAP_METRICS } from '../engine/scoring.js';
 import { money, number, escapeHTML } from '../engine/format.js';
 import { gradeBadge, verifiedPill, isVerified, ICONS, cssVar, countUp } from '../charts.js';
 import { isDark } from '../app.js';
+import { finderCard, wireFinder } from './finder.js';
 
 // Diverging scale (poor = red, middle = gray, good = teal) and a navy
 // sequential scale for metrics that are neither good nor bad.
@@ -135,8 +136,9 @@ export function renderMap(root, state, _arg, query) {
           <div><strong>${residents >= 1e6 ? `${Math.round(residents / 1e6)}M` : number(residents)}</strong><span>residents</span></div>
         </div>
       </div>
+      ${finderCard(state)}
       <div class="field">
-        <label for="m-search">Find a town</label>
+        <label for="m-search">Or search by name</label>
         <div class="search-wrap${ui.query ? ' has-text' : ''}">
           <input id="m-search" class="input" type="search" data-track="search-map" placeholder="Town, county or state" value="${escapeHTML(ui.query)}">
           <button type="button" class="search-clear" id="m-clear" aria-label="Clear search">${ICONS.close}</button>
@@ -485,6 +487,8 @@ export function renderMap(root, state, _arg, query) {
     // On phones the map sits above the list; bring it back into view to show the selection.
     if (isStacked()) window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   });
+
+  wireFinder(root, state);
 
   const onZoom = () => { if (ui.layer === 'heat') drawGrid(visible(), colorScale()); };
   if (map) map.on('zoomend', onZoom);

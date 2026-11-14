@@ -18,6 +18,7 @@ import { metric, metricText } from '../js/engine/metrics.js';
 import { reportingText } from '../js/engine/reporting.js';
 import { plainSummary } from '../js/engine/summary.js';
 import { money, number, escapeHTML as esc, formatDate } from '../js/engine/format.js';
+import { unpackSummary } from '../js/data/summary-format.js';
 
 export const SITE = 'https://townview.org/';
 // Other governments in the same county linked from a town page.
@@ -258,7 +259,7 @@ function write(out, path, content) {
 function main() {
   const args = parseArgs();
   const out = args.out || '_site';
-  const { towns } = JSON.parse(readFileSync(args.summary || 'data/real/summary.json', 'utf8'));
+  const { towns } = unpackSummary(JSON.parse(readFileSync(args.summary || 'data/real/summary.json', 'utf8')));
   const entries = scoreAll(towns);
   const byState = new Map();
   const byCounty = new Map();

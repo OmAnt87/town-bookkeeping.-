@@ -67,7 +67,11 @@ Visit counting (`js/track.js`, see `privacy.html`) is off until you turn it on:
 1. Create a site at [goatcounter.com](https://www.goatcounter.com) and set `GOATCOUNTER_CODE` in `js/track.js` to its code (the part before `.goatcounter.com`). Counts are sent only from townview.org, so local and preview runs stay silent.
 2. In [Google Search Console](https://search.google.com/search-console), add the domain `townview.org`, verify it with the DNS TXT record it gives you (at IONOS), and submit `https://townview.org/sitemap.xml`. Search Console then shows which searches lead to which town pages.
 
-To count a new action, add `data-track="<name>"` to the button, link or field; nothing else is needed. Releases are listed in [CHANGELOG.md](CHANGELOG.md) and planned work in [docs/ROADMAP.md](docs/ROADMAP.md).
+To count a new action, add `data-track="<name>"` to the button, link or field; nothing else is needed.
+
+### ZIP lookup
+
+`data/zip/` holds the center point of every ZIP code area for **Find your town**, split by the ZIP's first three digits. Rebuild it from the Census gazetteer with `node scripts/build-zips.mjs` (about a minute; it changes only when the Census publishes new ZIP areas). Releases are listed in [CHANGELOG.md](CHANGELOG.md) and planned work in [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ### Forum setup
 

@@ -12,6 +12,7 @@ import { plainSummary } from '../engine/summary.js';
 import { gradeBadge, verifiedPill, isVerified, barList, splitBar, legendKey, lineChart, downloadFile, revealOnScroll, countUp, ICONS } from '../charts.js';
 import { followButton, feedLink, advertiseFeed, wireFollow } from './follow-ui.js';
 import { shareButton, shareUrl, wireShare } from './share-ui.js';
+import { rememberTown } from './finder.js';
 import { isFollowing, hasChanged, markSeen } from '../follows.js';
 
 const PAGE = 15;
@@ -324,6 +325,7 @@ export function renderTown(root, state, id) {
   );
   drawLedger();
   wireFollow(root, town);
+  rememberTown(town.id);
   wireShare(root, town, shareUrl(town, state.source));
   advertiseFeed(town);
   // Header details, score parts and their bars follow each other in order.

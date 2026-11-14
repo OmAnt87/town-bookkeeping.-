@@ -1,5 +1,6 @@
 import { reportingFor } from './engine/reporting.js';
 import { createDetailLoader } from './data/loading.js';
+import { unpackSummary } from './data/summary-format.js';
 import { escapeHTML } from './engine/format.js';
 import { scoreTown } from './engine/scoring.js';
 import { assignPeers } from './engine/peers.js';
@@ -80,7 +81,7 @@ export function resetToDefault() {
 async function loadRealTowns() {
   const summary = await fetch('data/real/summary.json');
   if (summary.ok) {
-    const data = await summary.json();
+    const data = unpackSummary(await summary.json());
     if (!data.towns?.length) throw new Error('Public-record summary is empty');
     const errors = validateDataset(data);
     if (errors.length) throw new Error(errors.join(' '));

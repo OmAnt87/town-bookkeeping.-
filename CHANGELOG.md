@@ -2,6 +2,16 @@
 
 Releases of TownView (townview.org). Newest first.
 
+## 0.5.0 - First visit
+
+- **Find your town** at the top of the map: type a ZIP code or use your location to see the five nearest governments with their grades and distances, plus their county where it has a report. It works in the browser; the only request is for one small table of ZIP areas named by the ZIP's first three digits (`data/zip/`, built from the Census 2024 ZIP Code Tabulation Areas by `scripts/build-zips.mjs`).
+- The map offers to **continue** with the last town you viewed, or shows an example town on a first visit.
+- A **loading screen** shows at once instead of a blank page while the data loads, with a link to browse by state.
+- `data/real/summary.json` stores repeated reporting notes, camera-map sources and state names once: 18 MB instead of 26 MB to parse, with the same content.
+- Counted actions: `find-zip`, `find-location`, `find-result`, `continue-last`, `example-town`. ZIP codes and locations are never sent.
+
+0.4.0 (email alerts) is still to come; it waits on a Buttondown account.
+
 ## 0.3.0 - Measurement
 
 - Cookieless visit counts with GoatCounter. Each count is one request holding a path or action name, the page title and, on the first page only, the referring site. No cookies, no identifiers, and nothing typed into the site is sent. No third-party script is loaded.

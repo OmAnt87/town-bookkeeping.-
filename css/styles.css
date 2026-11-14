@@ -959,3 +959,34 @@ body.static { padding-bottom: 0; }
 .privacy ul { padding-left: 20px; }
 .privacy li { margin: 4px 0; }
 .privacy-toggle { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 14px; }
+
+/* ---------- Find your town (js/views/finder.js) ---------- */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.finder { padding: 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); border-top: 3px solid var(--accent-2); }
+.finder h2 { font-size: 17px; margin: 0 0 10px; }
+.finder-form { display: flex; gap: 8px; }
+.finder-form .input { flex: 1; min-width: 0; font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
+.finder-locate { width: 100%; margin-top: 8px; }
+.finder-out:empty { display: none; }
+.finder-out { margin-top: 10px; }
+.finder-out p { margin: 0 0 6px; }
+.finder-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.finder-list a { display: grid; grid-template-columns: 32px 1fr; align-items: center; gap: 10px; padding: 6px; border-radius: 8px; color: var(--text); text-decoration: none; }
+.finder-list a:hover { background: var(--surface-2); }
+.finder-list a > span { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.finder-list strong { font-size: 14px; overflow-wrap: anywhere; }
+.finder-shortcut { margin: 10px 0 0; color: var(--text-2); }
+.finder-shortcut a { font-weight: 600; }
+
+/* ---------- First paint, before the data loads (index.html) ---------- */
+.boot { max-width: 520px; margin: 12vh auto; padding: 0 16px; text-align: center; }
+.boot h1 { font-size: 26px; margin: 0 0 8px; }
+.boot p { color: var(--text-2); margin: 0 0 18px; }
+.boot-bar { height: 4px; border-radius: 4px; background: var(--surface-2); overflow: hidden; margin: 0 auto 18px; max-width: 280px; }
+.boot-bar span { display: block; height: 100%; width: 40%; border-radius: 4px; background: linear-gradient(90deg, var(--brand), var(--accent-2)); animation: boot-slide 1.2s ease-in-out infinite; }
+@keyframes boot-slide { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+@media (prefers-reduced-motion: reduce) { .boot-bar span { animation: none; width: 100%; opacity: 0.5; } }
+/* Where the map sits above the sidebar, put the finder first so it shows without scrolling past the intro. */
+@media (max-width: 860px) {
+  .map-side .finder { order: -1; }
+}

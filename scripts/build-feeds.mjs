@@ -11,6 +11,7 @@ import { join } from 'node:path';
 import { parseArgs } from './lib.mjs';
 import { diffDatasets } from '../js/engine/changes.js';
 import { money } from '../js/engine/format.js';
+import { unpackSummary } from '../js/data/summary-format.js';
 
 const SITE = 'https://townview.org/';
 const SKIP = new Set(['data/real/summary.json', 'data/real/index.json']);
@@ -133,7 +134,7 @@ function main() {
   const ref = args.ref || 'HEAD';
   const maxCommits = Number(args.commits) || 60;
   const days = Number(args.days) || 90;
-  const towns = readAt(ref, 'data/real/summary.json').towns || [];
+  const towns = unpackSummary(readAt(ref, 'data/real/summary.json')).towns || [];
   // Newest first, so each feed lists its latest change first.
   const commits = git('log', '--first-parent', `--since=${days} days ago`, `-n${maxCommits}`, '--format=%H %cI', ref, '--', 'data/real')
     .trim().split('\n').filter(Boolean).map((l) => l.split(' '));

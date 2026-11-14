@@ -11,6 +11,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { reportingFor } from '../js/engine/reporting.js';
 import { redFlagEntries } from '../js/engine/scoring.js';
+import { packSummary } from '../js/data/summary-format.js';
 
 const DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'data', 'real');
 const DETAIL_ONLY = ['ledger', 'history', 'topDonors', 'notes', 'sources'];
@@ -29,5 +30,6 @@ for (const file of files) {
     towns.push(light);
   }
 }
-writeFileSync(join(DIR, 'summary.json'), JSON.stringify({ generated: new Date().toISOString().slice(0, 10), towns }));
+// Shared notes, sources and state names are stored once (js/data/summary-format.js).
+writeFileSync(join(DIR, 'summary.json'), JSON.stringify(packSummary({ generated: new Date().toISOString().slice(0, 10), towns })));
 console.log(`data/real/summary.json: ${towns.length} towns from ${files.length} files`);

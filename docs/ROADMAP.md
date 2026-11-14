@@ -7,7 +7,7 @@ What is planned for TownView, in order. Shipped releases are in [CHANGELOG.md](.
 | 0.2.0 | Findability | A crawlable page per town and state, full sitemap, share button | Built |
 | 0.3.0 | Measurement | Cookieless page and event counts, Search Console | Built; waits on owner steps |
 | 0.4.0 | Email alerts | Opt-in follow-by-email, sent when a town's books change | Next |
-| 0.5.0 | First visit | Find my town by ZIP or location, faster first load, clearer landing | Planned |
+| 0.5.0 | First visit | Find my town by ZIP or location, faster first load, clearer landing | Built |
 | 0.6.0 | Reach | Per-town preview images, embeddable score badge, "report an error", state stories | Planned |
 
 ## 0.3.0 Measurement
@@ -28,9 +28,9 @@ Owner steps before it counts anything:
 
 ## 0.5.0 First visit
 
-- Find my town: nearest town from browser location (computed in the browser) and ZIP lookup.
-- First load: `data/real/summary.json` is 26 MB before compression. Split it by state or cut it to the fields the map needs.
-- Landing copy that explains the site in one screen; reopen the last viewed town.
+Built: ZIP and location finder, continue-where-you-left-off, loading screen, compact summary file. See CHANGELOG.md.
+
+Still open: scoring 28,844 towns at startup takes about 0.7 s on a desktop and several times that on a phone. Moving it to a background worker, or precomputing scores at build time, is the next step if first-load time matters in the counts.
 
 ## 0.6.0 Reach
 
@@ -44,4 +44,4 @@ Owner steps before it counts anything:
 
 - Set the repository's default branch to `main`. It is still `claude/hopeful-gates-zi03ou`, an old four-state copy of the site.
 - Merge or close the open state-rebuild pull requests (18, 19, 20, 27, 28, 29, 30, 31, 64).
-- Deployed size is about 690 MB against the GitHub Pages limit of 1 GB. Slimming the data (0.5.0) keeps room for more states' detail.
+- Deployed size is about 690 MB against the GitHub Pages limit of 1 GB. The county detail files (about 360 MB) are the place to slim next.
