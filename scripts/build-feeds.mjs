@@ -11,6 +11,7 @@ import { join } from 'node:path';
 import { parseArgs } from './lib.mjs';
 import { diffDatasets } from '../js/engine/changes.js';
 import { money } from '../js/engine/format.js';
+import { unpackSummary } from '../js/data/summary-format.js';
 
 const SITE = 'https://townview.org/';
 const SKIP = new Set(['data/real/summary.json', 'data/real/index.json']);
@@ -21,7 +22,7 @@ const MAX_ITEMS = 20;
 const git = (...args) => execFileSync('git', args, { encoding: 'utf8', maxBuffer: 1 << 28, stdio: ['ignore', 'pipe', 'ignore'] });
 
 // A file that did not exist at `sha` reads as an empty dataset.
-function readAt(sha, path) {
+export function readAt(sha, path) {
   try { return JSON.parse(git('show', `${sha}:${path}`)); } catch { return { towns: [] }; }
 }
 
@@ -43,7 +44,7 @@ function readMany(specs) {
   return out;
 }
 
-function changedFiles(base, head) {
+export function changedFiles(base, head) {
   return git('diff', '--name-only', base, head, '--', 'data/real/')
     .split('\n').filter((p) => p.endsWith('.json') && !SKIP.has(p));
 }
@@ -68,7 +69,8 @@ const fmt = (key, v) => (['fiscalYear', 'asOf'].includes(key) ? String(v ?? 'n/a
 // Exact dollars when the rounded figures would look the same.
 const change = (key, a, b) => (fmt(key, a) === fmt(key, b) && a !== b ? `${money(a)} → ${money(b)}` : `${fmt(key, a)} → ${fmt(key, b)}`);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[c]);
-const townUrl = (id) => `${SITE}#/town/${encodeURIComponent(id)}`;
+// The town's plain page (scripts/build-pages.mjs), which links on to the full report.
+const townUrl = (id) => `${SITE}town/${encodeURIComponent(id)}/`;
 
 // Plain-text lines describing one town's changes.
 export function changeLines(d) {
@@ -132,7 +134,7 @@ function main() {
   const ref = args.ref || 'HEAD';
   const maxCommits = Number(args.commits) || 60;
   const days = Number(args.days) || 90;
-  const towns = readAt(ref, 'data/real/summary.json').towns || [];
+  const towns = unpackSummary(readAt(ref, 'data/real/summary.json')).towns || [];
   // Newest first, so each feed lists its latest change first.
   const commits = git('log', '--first-parent', `--since=${days} days ago`, `-n${maxCommits}`, '--format=%H %cI', ref, '--', 'data/real')
     .trim().split('\n').filter(Boolean).map((l) => l.split(' '));

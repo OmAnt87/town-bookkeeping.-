@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Page not found - TownView</title>
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script type="module">import { pageview } from '/js/track.js'; pageview('/404');</script>
+  <script>
+    try { var t = localStorage.getItem('tl-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    // A town or state address with no page of its own (a town added since the last
+    // deploy, a mistyped link) opens in the app, which says so if it does not know it either.
+    var m = location.pathname.match(/^\/(town|state)\/([^/]+)\/?$/);
+    if (m) location.replace(m[1] === 'town' ? '/#/town/' + m[2] : '/#/rankings?state=' + m[2].toUpperCase());
+  </script>
+</head>
+<body class="static">
+  <main class="page" id="main">
+    <div class="card empty notice-card">
+      <h1>Page not found</h1>
+      <p class="muted">That address is not on TownView.</p>
+      <p class="static-cta" style="justify-content:center"><a class="btn btn-primary" href="/">Open the map</a><a class="btn" href="/state/">Browse by state</a></p>
+    </div>
+  </main>
+</body>
+</html>

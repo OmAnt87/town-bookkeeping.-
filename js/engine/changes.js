@@ -4,6 +4,9 @@
 
 import { scoreTown, sum } from './scoring.js';
 
+// Mailing-list tag that marks a town's email followers (Buttondown).
+export const followTag = (id) => `town:${id}`;
+
 // Dollar changes smaller than this are rounding noise, not news.
 export const MIN_CHANGE = 100;
 

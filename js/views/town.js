@@ -8,8 +8,12 @@ import { money, number, escapeHTML, formatDate } from '../engine/format.js';
 import { loadTownDetail } from '../app.js';
 import { validateTown, cleanHistory } from '../engine/validate.js';
 import { percentileText, PROVISIONAL_BELOW } from '../engine/peers.js';
+import { plainSummary } from '../engine/summary.js';
 import { gradeBadge, verifiedPill, isVerified, barList, splitBar, legendKey, lineChart, downloadFile, revealOnScroll, countUp, ICONS } from '../charts.js';
 import { followButton, feedLink, advertiseFeed, wireFollow } from './follow-ui.js';
+import { shareButton, shareUrl, wireShare } from './share-ui.js';
+import { rememberTown } from './finder.js';
+import { citationText, embedHTML, reportErrorUrl } from '../engine/cite.js';
 import { isFollowing, hasChanged, markSeen } from '../follows.js';
 
 const PAGE = 15;
@@ -114,10 +118,11 @@ export function renderTown(root, state, id) {
       </div>
       <div class="report-actions" style="display:flex;gap:8px;flex-wrap:wrap">
         ${followButton(town)}
+        ${shareButton()}
         ${feedLink(town)}
-        <a class="btn" href="#/forum/${encodeURIComponent(town.id)}">Forum</a>
-        <a class="btn" href="#/compare/${encodeURIComponent(town.id)}">Compare</a>
-        <button class="btn" id="dl-report" type="button">${ICONS.download} Download data</button>
+        <a class="btn" href="#/forum/${encodeURIComponent(town.id)}" data-track="forum-open">Forum</a>
+        <a class="btn" href="#/compare/${encodeURIComponent(town.id)}" data-track="compare-open">Compare</a>
+        <button class="btn" id="dl-report" type="button" data-track="download-report">${ICONS.download} Download data</button>
       </div>
     </div>
     ${updatedSinceSaved ? '<div class="callout follow-note" role="status"><strong>Books updated since you saved this town.</strong> The figures below are the latest.</div>' : ''}
@@ -155,6 +160,8 @@ export function renderTown(root, state, id) {
           .join('')}</div>
       </div>
     </section>
+
+    ${state.source === 'real' ? citeBox(town, s) : ''}
 
     <section class="tiles" aria-label="Key numbers">
       <div class="tile"><div class="k">Total money in</div><div class="v num">${money(t.revenue, { compact: true })}</div><div class="s">${t.passThroughIn ? `${money(t.ownRevenue, { compact: true })} for the town itself` : `${money(t.revenue / town.population)} per resident`}</div></div>
@@ -234,7 +241,7 @@ export function renderTown(root, state, id) {
 
     <section class="card" aria-labelledby="h-ledger" style="margin-bottom:16px">
       <div class="card-head"><div><h2 id="h-ledger">Ledger</h2><p>Budget lines, financial report entries and political filings. Political records may cover a different period from fiscal year ${town.fiscalYear}. Search, filter, or export to a spreadsheet.</p></div>
-        <button class="btn" id="dl-ledger" type="button">${ICONS.download} Export CSV</button></div>
+        <button class="btn" id="dl-ledger" type="button" data-track="download-ledger">${ICONS.download} Export CSV</button></div>
       <div class="toolbar">
         <div class="field"><label for="l-q">Search</label><input id="l-q" class="input" type="search" placeholder="Vendor, donor or description"></div>
         <div class="field"><label for="l-flow">Type</label><select id="l-flow" class="select"><option value="all">All types</option>${Object.entries(FLOWS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select></div>
@@ -321,6 +328,9 @@ export function renderTown(root, state, id) {
   );
   drawLedger();
   wireFollow(root, town);
+  rememberTown(town.id);
+  wireCopy(root);
+  wireShare(root, town, shareUrl(town, state.source));
   advertiseFeed(town);
   // Header details, score parts and their bars follow each other in order.
   root.querySelectorAll('.meta-row, .report-actions, .completeness, .components').forEach((list) => {
@@ -355,23 +365,32 @@ function componentValue(c) {
   return `${c.points} / ${c.max}`;
 }
 
-function plainSummary(town, s) {
-  const t = s.totals;
-  const scored = s.components.filter((c) => c.available && !c.penalty);
-  if (!scored.length) return '<strong>In plain terms:</strong> not enough data is loaded to judge this town yet.';
-  const strongest = [...scored].sort((a, b) => b.ratio - a.ratio)[0];
-  const weakest = [...scored].sort((a, b) => a.ratio - b.ratio)[0];
-  const per100 = Math.round(t.directShare * 100);
-  const school = town.spending?.education > 0;
-  return `<strong>In plain terms:</strong> ${town.spending?.otherSpending > 0
-    ? `${escapeHTML(town.name)} reports part of its spending only as a total, so how much reaches residents directly is not known.`
-    : `for every $100 ${escapeHTML(town.name)} spends${school ? ' outside its schools' : t.passThroughOut ? ' of its own money' : ''}, about $${per100} pays for services residents use directly.`}
-    ${strongest.ratio === weakest.ratio ? 'The available components have the same relative score.' : `Among measured components, its strongest area is <strong>${strongest.label.toLowerCase()}</strong>; its weakest is <strong>${weakest.label.toLowerCase()}</strong>.`}${
-    t.redFlagSpending + t.taxBreaks > 0
-      ? ` It also put <strong>$${(t.redFlagShare * 100).toFixed(2)} of every $100</strong> toward surveillance, corporate deals or corporate tax breaks${s.penalty ? `, which cost it <strong>${s.penalty} points</strong>` : ''}.`
-      : t.documentedRedFlags
-        ? ` Public records show <strong>${documentedRedFlags(town).map((f) => f.label.toLowerCase()).join(', ')}</strong>, which cost it <strong>${s.penalty} points</strong>.`
-        : ''}`;
+// Embed badge, citation and error report, for public-record towns (they have a page of their own).
+function citeBox(town, s) {
+  return `<details class="card cite-box">
+      <summary>Embed, cite or report an error</summary>
+      <div class="cite-grid">
+        <div><h3>Embed the score</h3><p class="small muted">A small badge that links to this town's page. It updates when the figures do.</p>
+          <p><img src="badge/${encodeURIComponent(town.id)}.svg" alt="" height="20" onerror="this.parentNode.hidden=true"></p>
+          <textarea class="input cite-text" readonly rows="4" id="embed-text">${escapeHTML(embedHTML(town, s))}</textarea>
+          <button class="btn" type="button" data-copy="embed-text" data-track="embed-copy">Copy embed code</button></div>
+        <div><h3>Cite this report</h3>
+          <textarea class="input cite-text" readonly rows="4" id="cite-text">${escapeHTML(citationText(town))}</textarea>
+          <button class="btn" type="button" data-copy="cite-text" data-track="cite-copy">Copy citation</button></div>
+        <div><h3>Spot a wrong figure?</h3><p class="small">Tell us on GitHub and we'll check it against the public record. You need a GitHub account, and reports are public.</p>
+          <a class="btn" href="${escapeHTML(reportErrorUrl(town))}" target="_blank" rel="noopener" data-track="report-error">Report an error</a></div>
+      </div>
+    </details>`;
+}
+
+function wireCopy(root) {
+  root.querySelectorAll('[data-copy]').forEach((btn) => btn.addEventListener('click', async () => {
+    const field = root.querySelector(`#${btn.dataset.copy}`);
+    const label = btn.textContent;
+    try { await navigator.clipboard.writeText(field.value); btn.textContent = 'Copied'; }
+    catch { field.select(); btn.textContent = 'Press Ctrl+C to copy'; }
+    setTimeout(() => { btn.textContent = label; }, 2000);
+  }));
 }
 
 // Where the town stands among comparable towns (engine/peers.js): same state, kind of

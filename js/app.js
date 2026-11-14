@@ -1,5 +1,6 @@
 import { reportingFor } from './engine/reporting.js';
 import { createDetailLoader } from './data/loading.js';
+import { unpackSummary } from './data/summary-format.js';
 import { escapeHTML } from './engine/format.js';
 import { scoreTown } from './engine/scoring.js';
 import { assignPeers } from './engine/peers.js';
@@ -13,6 +14,7 @@ import { renderMethod } from './views/method.js';
 import { renderData } from './views/data.js';
 import { renderForum } from './views/forum.js';
 import { renderFollowing } from './views/following.js';
+import { pageview, appPath, wireEvents } from './track.js';
 
 const STORAGE_KEY = 'tl-dataset';
 const BANNER_KEY = 'tl-banner-dismissed';
@@ -79,7 +81,7 @@ export function resetToDefault() {
 async function loadRealTowns() {
   const summary = await fetch('data/real/summary.json');
   if (summary.ok) {
-    const data = await summary.json();
+    const data = unpackSummary(await summary.json());
     if (!data.towns?.length) throw new Error('Public-record summary is empty');
     const errors = validateDataset(data);
     if (errors.length) throw new Error(errors.join(' '));
@@ -136,6 +138,7 @@ async function init() {
       return;
     }
   }
+  wireEvents();
   window.addEventListener('hashchange', route);
   route();
 }
@@ -176,6 +179,10 @@ export function route() {
   const titles = { map: 'Map', rankings: 'Rankings', states: 'States', compare: 'Compare', method: 'How scores work', data: 'Data', following: 'Following' };
   const town = (view === 'town' || view === 'forum') && state.byId.get(arg);
   document.title = town ? `${town.town.name}, ${town.town.state}${view === 'forum' ? ' forum' : ''} - TownView` : `${titles[view] || 'Map'} - TownView`;
+  // A public-record town's own page (scripts/build-pages.mjs) is the address to index and share.
+  document.querySelector('link[rel="canonical"]').href = view === 'town' && town && state.source === 'real'
+    ? `https://townview.org/town/${encodeURIComponent(arg)}/` : 'https://townview.org/';
+  pageview(appPath(views[view] ? view : 'map', ['town', 'forum', 'compare'].includes(view) ? arg : ''));
 }
 
 // Slide the nav underline under the active tab, inset by the tab's padding like the hover hint.

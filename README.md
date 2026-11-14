@@ -24,7 +24,7 @@ Plain-language bookkeeping for U.S. towns and townships. TownView shows where a 
 - **Compare.** Up to three towns side by side.
 - **Town forums.** Each town has a discussion page (Forum button on its report), backed by GitHub Discussions through [giscus](https://giscus.app).
 - **Bring your own data.** Import a JSON file in the browser, or build one with the scripts below.
-- Light and dark themes, works on phones, no build step, no tracking.
+- Light and dark themes, works on phones, no build step, no cookies and no personal data (cookieless visit counts, see `privacy.html`).
 
 ## Run it
 
@@ -52,6 +52,31 @@ The live site is published by `.github/workflows/pages.yml`: every push to `main
 3. Optional: verify `townview.org` under your GitHub profile's Settings > Pages to protect it from takeover.
 
 `robots.txt`, `sitemap.xml`, `site.webmanifest` and the social preview image (`img/og-image.png`) assume the townview.org domain.
+
+The workflow also builds, without committing them:
+
+- **Town and state pages** (`scripts/build-pages.mjs`): a plain HTML page for every government at `/town/<id>/` and every state at `/state/<st>/`, plus the full `sitemap.xml`. Search engines and link previews cannot read `#/` routes, so these are what gets indexed and shared; each links into the interactive report. Together with the badges they add about 350 MB to the deployed site (GitHub Pages allows 1 GB). Preview with `npm run build:pages`, which writes to `_site/`.
+- **Score badges** (also `scripts/build-pages.mjs`): an SVG badge per town at `/badge/<id>.svg` for news sites and blogs to embed. Town pages use the grade preview images in `img/og/`, which `node scripts/build-og-images.mjs` re-renders (needs Playwright; run it only when the design changes).
+- **RSS feeds** (`scripts/build-feeds.mjs`): one per town, at `/feeds/<id>.xml`.
+
+Netlify and Vercel run no build command, so a deploy there has neither.
+
+### Visit counts and Search Console
+
+Visit counting (`js/track.js`, see `privacy.html`) is off until you turn it on:
+
+1. Create a site at [goatcounter.com](https://www.goatcounter.com) and set `GOATCOUNTER_CODE` in `js/track.js` to its code (the part before `.goatcounter.com`). Counts are sent only from townview.org, so local and preview runs stay silent.
+2. In [Google Search Console](https://search.google.com/search-console), add the domain `townview.org`, verify it with the DNS TXT record it gives you (at IONOS), and submit `https://townview.org/sitemap.xml`. Search Console then shows which searches lead to which town pages.
+
+To count a new action, add `data-track="<name>"` to the button, link or field; nothing else is needed.
+
+### Email alerts
+
+Following a town can also sign a reader up for email when its books change. It is off until you create a Buttondown newsletter, set `BUTTONDOWN_USER` in `js/follows.js` and add the `BUTTONDOWN_API_KEY` repository secret. Steps and a test plan are in [docs/FOLLOWING.md](docs/FOLLOWING.md).
+
+### ZIP lookup
+
+`data/zip/` holds the center point of every ZIP code area for **Find your town**, split by the ZIP's first three digits. Rebuild it from the Census gazetteer with `node scripts/build-zips.mjs` (about a minute; it changes only when the Census publishes new ZIP areas). Releases are listed in [CHANGELOG.md](CHANGELOG.md) and planned work in [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ### Forum setup
 

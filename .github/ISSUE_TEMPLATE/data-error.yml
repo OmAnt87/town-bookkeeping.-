@@ -1,0 +1,32 @@
+name: Data error
+description: A figure on a town's report looks wrong or out of date.
+title: "Data error: "
+labels: ["data error"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for checking the numbers. Issues are public, so please don't include personal details.
+  - type: textarea
+    id: town
+    attributes:
+      label: Town
+      description: Filled in when you use "Report an error" on a town page.
+    validations:
+      required: true
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What looks wrong
+      description: Which figure, what TownView shows, and what you think it should be.
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Where the right figure is published
+      description: A link to the budget, audit or filing, if you have one.
+  - type: textarea
+    id: note
+    attributes:
+      label: Anything else

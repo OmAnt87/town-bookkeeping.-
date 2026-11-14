@@ -1,0 +1,37 @@
+name: Notify followers
+
+# Emails people who follow a town by email when a push to main changes that
+# town's books. Does nothing until the BUTTONDOWN_API_KEY secret is set.
+on:
+  push:
+    branches: [main]
+    paths: ['data/real/**']
+  workflow_dispatch:
+    inputs:
+      base:
+        description: 'Compare from this commit'
+        default: 'HEAD~1'
+      dry_run:
+        description: 'Print the emails instead of sending them'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Email followers of changed towns
+        env:
+          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+          BASE: ${{ github.event_name == 'push' && github.event.before || inputs.base }}
+          DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '--dry-run' || '' }}
+        run: node scripts/notify-changes.mjs --base "$BASE" --head "$GITHUB_SHA" $DRY

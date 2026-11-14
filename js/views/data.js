@@ -36,8 +36,8 @@ export function renderData(root, state) {
         </label>
         <div id="msg" role="status"></div>
         <div class="data-actions" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px">
-          <button class="btn" id="dl-all" type="button">${ICONS.download} Download summary</button>
-          <button class="btn" id="dl-complete" type="button">Download complete records</button>
+          <button class="btn" id="dl-all" type="button" data-track="download-all">${ICONS.download} Download summary</button>
+          <button class="btn" id="dl-complete" type="button" data-track="download-all">Download complete records</button>
           <button class="btn" id="dl-sample" type="button">${ICONS.download} Sample file</button>
           <button class="btn" id="reset" type="button">Restore default data</button>
         </div>

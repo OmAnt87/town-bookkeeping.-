@@ -932,3 +932,88 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .follow-row:last-child { border-bottom: 0; }
 .follow-row .pill { margin-left: 6px; }
 .follow-actions { display: flex; gap: 8px; flex: none; }
+
+/* ---------- Static town and state pages (scripts/build-pages.mjs) ---------- */
+/* These pages have no tab bar, so the phone layout needs no room for one. */
+body.static { padding-bottom: 0; }
+.static-nav { display: flex; gap: 20px; margin-left: auto; font-size: 14px; font-weight: 600; }
+.static-nav a { color: var(--text-2); text-decoration: none; }
+.static-nav a:hover { color: var(--text); }
+.static-page .card { margin-bottom: 16px; }
+.static-page .card > h2 { margin-bottom: 12px; }
+.static-page h3 { font-size: 15px; margin: 18px 0 8px; }
+.static-page td.wrap { min-width: 0; }
+.static-score .score-main { margin-top: 12px; }
+.static-cta { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 10px; }
+.static-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.static-list { list-style: none; margin: 0 0 12px; padding: 0; columns: 3 240px; column-gap: 28px; font-size: 14px; }
+.static-list li { break-inside: avoid; padding: 3px 0; }
+.static-list a { font-weight: 600; text-decoration: none; }
+.static-list a:hover { text-decoration: underline; }
+.static-list span { font-size: 12.5px; white-space: nowrap; }
+.static-flags { margin: 0 0 10px; padding-left: 18px; font-size: 14px; }
+@media (max-width: 640px) {
+  .static-tiles { grid-template-columns: 1fr; }
+  .static-page td, .static-page th { padding: 8px; font-size: 13px; }
+}
+.privacy ul { padding-left: 20px; }
+.privacy li { margin: 4px 0; }
+.privacy-toggle { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 14px; }
+
+/* ---------- Find your town (js/views/finder.js) ---------- */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.finder { padding: 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); border-top: 3px solid var(--accent-2); }
+.finder h2 { font-size: 17px; margin: 0 0 10px; }
+.finder-form { display: flex; gap: 8px; }
+.finder-form .input { flex: 1; min-width: 0; font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
+.finder-locate { width: 100%; margin-top: 8px; }
+.finder-out:empty { display: none; }
+.finder-out { margin-top: 10px; }
+.finder-out p { margin: 0 0 6px; }
+.finder-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.finder-list a { display: grid; grid-template-columns: 32px 1fr; align-items: center; gap: 10px; padding: 6px; border-radius: 8px; color: var(--text); text-decoration: none; }
+.finder-list a:hover { background: var(--surface-2); }
+.finder-list a > span { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.finder-list strong { font-size: 14px; overflow-wrap: anywhere; }
+.finder-shortcut { margin: 10px 0 0; color: var(--text-2); }
+.finder-shortcut a { font-weight: 600; }
+
+/* ---------- First paint, before the data loads (index.html) ---------- */
+.boot { max-width: 520px; margin: 12vh auto; padding: 0 16px; text-align: center; }
+.boot h1 { font-size: 26px; margin: 0 0 8px; }
+.boot p { color: var(--text-2); margin: 0 0 18px; }
+.boot-bar { height: 4px; border-radius: 4px; background: var(--surface-2); overflow: hidden; margin: 0 auto 18px; max-width: 280px; }
+.boot-bar span { display: block; height: 100%; width: 40%; border-radius: 4px; background: linear-gradient(90deg, var(--brand), var(--accent-2)); animation: boot-slide 1.2s ease-in-out infinite; }
+@keyframes boot-slide { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+@media (prefers-reduced-motion: reduce) { .boot-bar span { animation: none; width: 100%; opacity: 0.5; } }
+/* Where the map sits above the sidebar, put the finder first so it shows without scrolling past the intro. */
+@media (max-width: 860px) {
+  .map-side .finder { order: -1; }
+}
+
+/* ---------- Embed, cite, report an error (town report) ---------- */
+.cite-box { margin-bottom: 16px; }
+.cite-box > summary { font-size: 15px; }
+.cite-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 14px; }
+.cite-grid h3 { font-size: 15px; margin: 0 0 6px; }
+.cite-grid p { margin: 0 0 8px; }
+.cite-text { width: 100%; height: auto; min-height: 64px; padding: 8px 10px; font: 12.5px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; resize: vertical; margin-bottom: 8px; }
+@media (max-width: 860px) { .cite-grid { grid-template-columns: 1fr; } }
+
+/* ---------- Standouts (state pages) ---------- */
+.standouts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 28px; }
+.standouts h3 { font-size: 15px; margin: 0 0 6px; }
+.standouts ol { margin: 0; padding-left: 20px; font-size: 14px; }
+.standouts li { padding: 2px 0; }
+.standouts li a { font-weight: 600; text-decoration: none; }
+.standouts li a:hover { text-decoration: underline; }
+.standouts .num { color: var(--text-2); white-space: nowrap; }
+@media (max-width: 640px) { .standouts { grid-template-columns: 1fr; } }
+
+/* ---------- Email offer after Follow (js/views/follow-ui.js) ---------- */
+.follow-dialog { border: 1px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); padding: 22px; width: min(440px, calc(100vw - 32px)); box-shadow: var(--shadow); }
+.follow-dialog::backdrop { background: rgba(0, 0, 0, 0.45); }
+.follow-dialog h2 { margin: 0 0 6px; font-size: 20px; }
+.follow-form { display: flex; flex-direction: column; gap: 10px; }
+.follow-form p { margin: 0; }
+.follow-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }

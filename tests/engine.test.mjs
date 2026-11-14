@@ -1666,7 +1666,7 @@ test('town feed is valid RSS that lists what changed, data date last', () => {
   assert.equal(item.date, 'Wed, 21 Oct 2026 02:20:41 GMT');
   const xml = renderFeed({ id: 't', name: 'A & B Township', state: 'PA' }, [item]);
   assert.match(xml, /<title>A &amp; B Township, PA - TownView<\/title>/);
-  assert.match(xml, /<link>https:\/\/townview\.org\/#\/town\/t<\/link>/);
+  assert.match(xml, /<link>https:\/\/townview\.org\/town\/t\/<\/link>/);
   assert.match(xml, /&lt;li&gt;Data as of: 2026-10-14 → 2026-10-21&lt;\/li&gt;&lt;\/ul&gt;/);
   assert.equal((xml.match(/<item>/g) || []).length, 1);
   assert.doesNotMatch(renderFeed({ id: 't', name: 'T' }, []), /<item>|lastBuildDate/);

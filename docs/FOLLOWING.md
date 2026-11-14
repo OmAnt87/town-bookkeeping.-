@@ -1,43 +1,34 @@
-# Following towns
+# Following towns and email alerts
 
-Readers can press **☆ Follow** on any town report to save it to their
-**Following** page.
+Readers press **☆ Follow** on a town report. That always saves the town to the
+**Following** page in their browser (`localStorage['tv-follows']`, never sent
+anywhere), which marks towns whose books changed since they last looked. Every
+town also has an RSS feed of changes (`scripts/build-feeds.mjs`).
 
-## How it works
+Email alerts are an optional extra, switched off until you set them up.
 
-- Followed towns are kept in this browser only, in `localStorage['tv-follows']`
-  (`js/follows.js`). Nothing is sent to a server or third party, and no email
-  or other personal data is collected.
-- Each saved town stores a fingerprint of its books (`townFingerprint` in
-  `js/engine/changes.js`): fiscal year, data date, population, debt and the
-  revenue, spending, political-money and tax-break figures, rounded to the
-  nearest $100 so rounding noise does not count.
-- When the published data changes, the fingerprint no longer matches. The
-  Following page then marks the town **Books updated**, and its report shows a
-  note. Opening the report marks it as seen.
+## How email alerts work
 
-The fingerprint uses only fields that `data/real/summary.json` also carries,
-so the Following page can check every saved town without loading its ledger.
+- **Signing up** (`offerEmail` in `js/views/follow-ui.js`): after a Follow, a dialog offers email. The address is posted straight to the Buttondown signup form in a new tab, tagged `town:<id>`, and is not kept by TownView. Buttondown sends a confirmation email first (double opt-in).
+- **Sending** (`.github/workflows/notify-followers.yml`): when a push to `main` changes `data/real/**`, `scripts/notify-changes.mjs` compares the changed county files with the previous commit. It uses the same comparison and change lines as the RSS feeds. A town gets an email only if its books changed (not just the retrieval date) and it has at least one confirmed follower. The email goes to that town's tag (`scripts/notifiers/buttondown.mjs`).
+- **Safety stop:** a single push that would email more than 300 towns is stopped for a look (a statewide rebuild can change thousands at once). Run the workflow by hand once you have checked the push.
+- **Unsubscribing:** every email carries Buttondown's unsubscribe link. Unfollowing in the browser does not touch the email list.
 
-## RSS feeds
+## Setup
 
-Every town also has an RSS feed at `feeds/<town id>.xml` (for example
-`https://townview.org/feeds/city-and-borough-of-juneau-ak.xml`), linked from
-its report and from the Following page. Readers who want to hear about
-changes without visiting can add it to any feed reader; nothing about them
-reaches TownView.
+1. Create a [Buttondown](https://buttondown.com) newsletter. Keep double opt-in on (the default).
+2. Set `BUTTONDOWN_USER` in `js/follows.js` to the newsletter's username. This turns the email offer on.
+3. Add the repository secret `BUTTONDOWN_API_KEY` (Buttondown > Settings > API; GitHub > Settings > Secrets and variables > Actions).
+4. Test it:
+   1. Follow a town yourself and confirm the email. The subscriber should show the tag `town:<id>` in Buttondown.
+   2. Follow a second town with the same address and check that Buttondown added the second tag to the existing subscriber.
+   3. Run **Notify followers** from the Actions tab with `dry_run` on, and read the printed emails.
+   4. Run it once with `dry_run` off against a commit that changed your test town.
 
-The feeds are not stored in the repository. At each deploy,
-`.github/workflows/pages.yml` runs `scripts/build-feeds.mjs`, which walks the
-recent data commits on main (first-parent history, last 90 days, up to 60
-commits), compares each changed town with its record before that commit
-(`diffDatasets` in `js/engine/changes.js`) and writes one item per change,
-newest first, up to 20 per feed. Each item's id is the town and commit, so
-rebuilding never shows a reader the same change twice. Towns new to the site
-and changes that only move the data date are left out.
-
-Build them locally (needs full git history; writes the ignored `feeds/`):
+Preview locally without sending:
 
 ```sh
-node scripts/build-feeds.mjs
+node scripts/notify-changes.mjs --base HEAD~1 --head HEAD --dry-run
 ```
+
+One email goes out per changed town. Someone following three towns that change in the same push gets three emails: Buttondown sends to tags rather than to individual people, so a combined digest per person would need a different provider.

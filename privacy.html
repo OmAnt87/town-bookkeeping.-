@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Privacy - TownView</title>
+  <meta name="description" content="What TownView counts and what it never collects: no cookies, no personal data, cookieless visit counts you can turn off.">
+  <link rel="canonical" href="https://townview.org/privacy.html">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script>try { var t = localStorage.getItem('tl-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <script type="module">import { pageview } from '/js/track.js'; pageview('/privacy');</script>
+</head>
+<body class="static">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="TownView home"><span class="brand-text"><span class="brand-name">Town<span>View</span></span><span class="brand-tag">Public money, in plain view</span></span></a>
+    <nav class="static-nav" aria-label="Main"><a href="/#/map">Map</a><a href="/#/rankings">Rankings</a><a href="/state/">States</a></nav>
+  </header>
+  <main id="main" class="page static-page privacy">
+    <div class="report-head"><div><div class="crumbs"><a href="/">TownView</a> / Privacy</div><h1>Privacy</h1>
+      <p class="muted">No cookies, no accounts, no personal data. Here is everything TownView keeps.</p></div></div>
+
+    <section class="card">
+      <h2>Visit counts</h2>
+      <p>To learn which towns people look up and whether the site is useful, TownView counts visits with <a href="https://www.goatcounter.com" rel="noopener">GoatCounter</a>, an open-source counter that sets no cookies. A count is one request that holds only:</p>
+      <ul>
+        <li>the page, such as <code>/town/city-of-hartford-ct/</code>, and its title;</li>
+        <li>the name of an action, such as <code>share</code>, <code>follow</code> or <code>search-map</code>. What you type into a search box is never sent, only that a search happened;</li>
+        <li>the website that linked you here, on your first page only.</li>
+      </ul>
+      <p>GoatCounter also sees what any website sees: your browser type, screen size and rough location from your IP address. GoatCounter says it turns these into totals and does not store your IP address or build a profile of you. See <a href="https://www.goatcounter.com/help/privacy" rel="noopener">GoatCounter's privacy policy</a>.</p>
+      <p>Nothing is counted if your browser sends <strong>Do Not Track</strong> or <strong>Global Privacy Control</strong>, or if you turn counting off below.</p>
+      <p class="privacy-toggle"><span id="count-state" role="status">Checking this browser…</span> <button class="btn" id="count-toggle" type="button" hidden></button></p>
+    </section>
+
+    <section class="card">
+      <h2>What stays in your browser</h2>
+      <ul>
+        <li><strong>Followed towns</strong> and your light or dark theme are saved in your browser's storage. They are never sent anywhere. Clearing your site data removes them.</li>
+        <li>A file you load on the Data page stays in your browser until you close the tab.</li>
+        <li><strong>Find your town</strong> works out the nearest towns in your browser. A ZIP code you type is used to fetch one small table of ZIP areas from townview.org, named after its first three digits; the full ZIP is never sent. If you use your location, it is read once and never leaves your browser.</li>
+        <li>The <strong>last town you viewed</strong> is saved so the map can offer to take you back.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Email alerts</h2>
+      <ul>
+        <li>If you ask for email when you follow a town, your address goes to <a href="https://buttondown.com" rel="noopener">Buttondown</a>, the mailing list that sends the alerts, tagged with the towns you follow. TownView does not keep it anywhere else.</li>
+        <li>You get a confirmation email first, then an email only when a followed town's books change. Every email has an unsubscribe link. See <a href="https://buttondown.com/legal/privacy" rel="noopener">Buttondown's privacy policy</a>.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Other services</h2>
+      <ul>
+        <li><strong>Map tiles</strong> come from Esri and <strong>fonts</strong> from Google Fonts. Your browser requests them directly, as with any website that uses them.</li>
+        <li><strong>Town forums</strong> run on GitHub Discussions through giscus. They load only when you open a forum, and posting needs a GitHub account under GitHub's own privacy terms.</li>
+        <li><strong>RSS feeds</strong> are plain files. Fetching one is not counted.</li>
+      </ul>
+      <p class="small muted">Questions or concerns: open an issue on <a href="https://github.com/OmAnt87/town-bookkeeping.-/issues" rel="noopener">GitHub</a>.</p>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="footer-base"><span>&copy; 2026 TownView. Open data, no cookies, no personal data.</span><a href="https://github.com/OmAnt87/town-bookkeeping.-" rel="noopener">Source on GitHub</a></div></footer>
+  <script type="module">
+    import { OPT_OUT_KEY, GOATCOUNTER_CODE } from '/js/track.js';
+    const state = document.getElementById('count-state');
+    const btn = document.getElementById('count-toggle');
+    const signal = navigator.doNotTrack === '1' || window.doNotTrack === '1' || navigator.globalPrivacyControl === true;
+    const read = () => { try { return localStorage.getItem(OPT_OUT_KEY) === '1'; } catch { return null; } };
+    function show() {
+      const off = read();
+      btn.hidden = !GOATCOUNTER_CODE || signal || off === null;
+      if (!GOATCOUNTER_CODE) state.textContent = 'Visit counting is not switched on for this site yet.';
+      else if (signal) state.textContent = 'Your browser asks not to be tracked, so nothing is counted.';
+      else if (off === null) state.textContent = 'This browser blocks site storage, so the switch below cannot be saved.';
+      else state.textContent = off ? 'Counting is off in this browser.' : 'Counting is on in this browser.';
+      btn.textContent = off ? 'Turn counting back on' : 'Turn counting off';
+    }
+    btn.addEventListener('click', () => {
+      try { if (read()) localStorage.removeItem(OPT_OUT_KEY); else localStorage.setItem(OPT_OUT_KEY, '1'); } catch { /* blocked */ }
+      show();
+    });
+    show();
+  </script>
+</body>
+</html>
