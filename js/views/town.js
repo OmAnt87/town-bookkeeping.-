@@ -8,8 +8,10 @@ import { money, number, escapeHTML, formatDate } from '../engine/format.js';
 import { loadTownDetail } from '../app.js';
 import { validateTown, cleanHistory } from '../engine/validate.js';
 import { percentileText, PROVISIONAL_BELOW } from '../engine/peers.js';
+import { plainSummary } from '../engine/summary.js';
 import { gradeBadge, verifiedPill, isVerified, barList, splitBar, legendKey, lineChart, downloadFile, revealOnScroll, countUp, ICONS } from '../charts.js';
 import { followButton, feedLink, advertiseFeed, wireFollow } from './follow-ui.js';
+import { shareButton, shareUrl, wireShare } from './share-ui.js';
 import { isFollowing, hasChanged, markSeen } from '../follows.js';
 
 const PAGE = 15;
@@ -114,6 +116,7 @@ export function renderTown(root, state, id) {
       </div>
       <div class="report-actions" style="display:flex;gap:8px;flex-wrap:wrap">
         ${followButton(town)}
+        ${shareButton()}
         ${feedLink(town)}
         <a class="btn" href="#/forum/${encodeURIComponent(town.id)}">Forum</a>
         <a class="btn" href="#/compare/${encodeURIComponent(town.id)}">Compare</a>
@@ -321,6 +324,7 @@ export function renderTown(root, state, id) {
   );
   drawLedger();
   wireFollow(root, town);
+  wireShare(root, town, shareUrl(town, state.source));
   advertiseFeed(town);
   // Header details, score parts and their bars follow each other in order.
   root.querySelectorAll('.meta-row, .report-actions, .completeness, .components').forEach((list) => {
@@ -353,25 +357,6 @@ function componentValue(c) {
   if (!c.available) return c.penalty ? 'Not checked' : 'Not scored';
   if (c.penalty) return c.points ? `−${Math.abs(c.points)}` : 'No penalty';
   return `${c.points} / ${c.max}`;
-}
-
-function plainSummary(town, s) {
-  const t = s.totals;
-  const scored = s.components.filter((c) => c.available && !c.penalty);
-  if (!scored.length) return '<strong>In plain terms:</strong> not enough data is loaded to judge this town yet.';
-  const strongest = [...scored].sort((a, b) => b.ratio - a.ratio)[0];
-  const weakest = [...scored].sort((a, b) => a.ratio - b.ratio)[0];
-  const per100 = Math.round(t.directShare * 100);
-  const school = town.spending?.education > 0;
-  return `<strong>In plain terms:</strong> ${town.spending?.otherSpending > 0
-    ? `${escapeHTML(town.name)} reports part of its spending only as a total, so how much reaches residents directly is not known.`
-    : `for every $100 ${escapeHTML(town.name)} spends${school ? ' outside its schools' : t.passThroughOut ? ' of its own money' : ''}, about $${per100} pays for services residents use directly.`}
-    ${strongest.ratio === weakest.ratio ? 'The available components have the same relative score.' : `Among measured components, its strongest area is <strong>${strongest.label.toLowerCase()}</strong>; its weakest is <strong>${weakest.label.toLowerCase()}</strong>.`}${
-    t.redFlagSpending + t.taxBreaks > 0
-      ? ` It also put <strong>$${(t.redFlagShare * 100).toFixed(2)} of every $100</strong> toward surveillance, corporate deals or corporate tax breaks${s.penalty ? `, which cost it <strong>${s.penalty} points</strong>` : ''}.`
-      : t.documentedRedFlags
-        ? ` Public records show <strong>${documentedRedFlags(town).map((f) => f.label.toLowerCase()).join(', ')}</strong>, which cost it <strong>${s.penalty} points</strong>.`
-        : ''}`;
 }
 
 // Where the town stands among comparable towns (engine/peers.js): same state, kind of

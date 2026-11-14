@@ -68,7 +68,8 @@ const fmt = (key, v) => (['fiscalYear', 'asOf'].includes(key) ? String(v ?? 'n/a
 // Exact dollars when the rounded figures would look the same.
 const change = (key, a, b) => (fmt(key, a) === fmt(key, b) && a !== b ? `${money(a)} → ${money(b)}` : `${fmt(key, a)} → ${fmt(key, b)}`);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[c]);
-const townUrl = (id) => `${SITE}#/town/${encodeURIComponent(id)}`;
+// The town's plain page (scripts/build-pages.mjs), which links on to the full report.
+const townUrl = (id) => `${SITE}town/${encodeURIComponent(id)}/`;
 
 // Plain-text lines describing one town's changes.
 export function changeLines(d) {

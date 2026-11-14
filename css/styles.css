@@ -932,3 +932,27 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .follow-row:last-child { border-bottom: 0; }
 .follow-row .pill { margin-left: 6px; }
 .follow-actions { display: flex; gap: 8px; flex: none; }
+
+/* ---------- Static town and state pages (scripts/build-pages.mjs) ---------- */
+/* These pages have no tab bar, so the phone layout needs no room for one. */
+body.static { padding-bottom: 0; }
+.static-nav { display: flex; gap: 20px; margin-left: auto; font-size: 14px; font-weight: 600; }
+.static-nav a { color: var(--text-2); text-decoration: none; }
+.static-nav a:hover { color: var(--text); }
+.static-page .card { margin-bottom: 16px; }
+.static-page .card > h2 { margin-bottom: 12px; }
+.static-page h3 { font-size: 15px; margin: 18px 0 8px; }
+.static-page td.wrap { min-width: 0; }
+.static-score .score-main { margin-top: 12px; }
+.static-cta { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 10px; }
+.static-tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.static-list { list-style: none; margin: 0 0 12px; padding: 0; columns: 3 240px; column-gap: 28px; font-size: 14px; }
+.static-list li { break-inside: avoid; padding: 3px 0; }
+.static-list a { font-weight: 600; text-decoration: none; }
+.static-list a:hover { text-decoration: underline; }
+.static-list span { font-size: 12.5px; white-space: nowrap; }
+.static-flags { margin: 0 0 10px; padding-left: 18px; font-size: 14px; }
+@media (max-width: 640px) {
+  .static-tiles { grid-template-columns: 1fr; }
+  .static-page td, .static-page th { padding: 8px; font-size: 13px; }
+}

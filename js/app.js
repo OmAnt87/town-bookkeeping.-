@@ -176,6 +176,9 @@ export function route() {
   const titles = { map: 'Map', rankings: 'Rankings', states: 'States', compare: 'Compare', method: 'How scores work', data: 'Data', following: 'Following' };
   const town = (view === 'town' || view === 'forum') && state.byId.get(arg);
   document.title = town ? `${town.town.name}, ${town.town.state}${view === 'forum' ? ' forum' : ''} - TownView` : `${titles[view] || 'Map'} - TownView`;
+  // A public-record town's own page (scripts/build-pages.mjs) is the address to index and share.
+  document.querySelector('link[rel="canonical"]').href = view === 'town' && town && state.source === 'real'
+    ? `https://townview.org/town/${encodeURIComponent(arg)}/` : 'https://townview.org/';
 }
 
 // Slide the nav underline under the active tab, inset by the tab's padding like the hover hint.

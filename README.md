@@ -53,6 +53,13 @@ The live site is published by `.github/workflows/pages.yml`: every push to `main
 
 `robots.txt`, `sitemap.xml`, `site.webmanifest` and the social preview image (`img/og-image.png`) assume the townview.org domain.
 
+The workflow also builds, without committing them:
+
+- **Town and state pages** (`scripts/build-pages.mjs`): a plain HTML page for every government at `/town/<id>/` and every state at `/state/<st>/`, plus the full `sitemap.xml`. Search engines and link previews cannot read `#/` routes, so these are what gets indexed and shared; each links into the interactive report. They add about 300 MB to the deployed site (GitHub Pages allows 1 GB). Preview with `npm run build:pages`, which writes to `_site/`.
+- **RSS feeds** (`scripts/build-feeds.mjs`): one per town, at `/feeds/<id>.xml`.
+
+Netlify and Vercel run no build command, so a deploy there has neither. Releases are listed in [CHANGELOG.md](CHANGELOG.md) and planned work in [docs/ROADMAP.md](docs/ROADMAP.md).
+
 ### Forum setup
 
 Forum posts live in this repo's GitHub Discussions, in the **Announcements** category (only maintainers and giscus can start threads there; anyone signed in to GitHub can reply). giscus creates a town's thread, titled with the town id, on its first comment. The repo and category ids are in `GISCUS` in `js/views/forum.js`; get new ones from [giscus.app](https://giscus.app) if the repo or category changes. Comments are moderated on GitHub.
