@@ -6,7 +6,7 @@ What is planned for TownView, in order. Shipped releases are in [CHANGELOG.md](.
 |---|---|---|---|
 | 0.2.0 | Findability | A crawlable page per town and state, full sitemap, share button | Built |
 | 0.3.0 | Measurement | Cookieless page and event counts, Search Console | Built; waits on owner steps |
-| 0.4.0 | Email alerts | Opt-in follow-by-email, sent when a town's books change | Next |
+| 0.4.0 | Email alerts | Opt-in follow-by-email, sent when a town's books change | Built; waits on owner steps |
 | 0.5.0 | First visit | Find my town by ZIP or location, faster first load, clearer landing | Built |
 | 0.6.0 | Reach | Grade preview images, embeddable score badge, "report an error", state standouts | Built |
 
@@ -22,9 +22,11 @@ Owner steps before it counts anything:
 
 ## 0.4.0 Email alerts
 
-- Port the Buttondown flow from the old `claude/hopeful-gates-zi03ou` branch (`scripts/notify-changes.mjs`, `scripts/notifiers/buttondown.mjs`, the workflow, the email dialog). Email is an optional step after Follow; browser-only follow and RSS stay.
-- Emails reuse `changeLines` from `scripts/build-feeds.mjs`, and each subscriber gets one digest per data push rather than one email per town.
-- Owner: Buttondown newsletter with double opt-in; `BUTTONDOWN_API_KEY` repository secret.
+Built: email offer after Follow, `scripts/notify-changes.mjs` and its workflow. See CHANGELOG.md and docs/FOLLOWING.md.
+
+Owner steps before it sends anything: create a Buttondown newsletter, set `BUTTONDOWN_USER` in `js/follows.js`, add the `BUTTONDOWN_API_KEY` repository secret, and run the test in docs/FOLLOWING.md.
+
+Changed from the plan: alerts go out one per changed town, not one digest per person, because Buttondown sends to tags rather than to individual subscribers.
 
 ## 0.5.0 First visit
 

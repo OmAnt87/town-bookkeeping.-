@@ -22,7 +22,7 @@ const MAX_ITEMS = 20;
 const git = (...args) => execFileSync('git', args, { encoding: 'utf8', maxBuffer: 1 << 28, stdio: ['ignore', 'pipe', 'ignore'] });
 
 // A file that did not exist at `sha` reads as an empty dataset.
-function readAt(sha, path) {
+export function readAt(sha, path) {
   try { return JSON.parse(git('show', `${sha}:${path}`)); } catch { return { towns: [] }; }
 }
 
@@ -44,7 +44,7 @@ function readMany(specs) {
   return out;
 }
 
-function changedFiles(base, head) {
+export function changedFiles(base, head) {
   return git('diff', '--name-only', base, head, '--', 'data/real/')
     .split('\n').filter((p) => p.endsWith('.json') && !SKIP.has(p));
 }

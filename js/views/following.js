@@ -1,7 +1,7 @@
 // The towns this browser follows.
 
 import { escapeHTML, formatDate } from '../engine/format.js';
-import { getFollows, unfollow, hasChanged } from '../follows.js';
+import { getFollows, unfollow, hasChanged, BUTTONDOWN_USER } from '../follows.js';
 import { feedUrl } from './follow-ui.js';
 
 export function renderFollowing(root, state) {
@@ -27,7 +27,7 @@ export function renderFollowing(root, state) {
       <section class="card">
         <h2 style="margin-bottom:6px">Your towns</h2>
         ${rows.length ? `<ul class="follow-list">${rows.join('')}</ul>` : '<p class="muted follow-empty">No towns yet. Open any town and press <strong>☆ Follow</strong>.</p>'}
-        <p class="small muted" style="margin:12px 0 0">This list is kept on this device only and is never sent anywhere. To hear about changes without visiting, add a town's <strong>RSS</strong> feed to a feed reader.</p>
+        <p class="small muted" style="margin:12px 0 0">This list is kept on this device only and is never sent anywhere. To hear about changes without visiting, add a town's <strong>RSS</strong> feed to a feed reader${BUTTONDOWN_USER ? ', or ask for email when you follow a town. To stop emails, use the unsubscribe link in any of them' : ''}.</p>
       </section>
     </div>`;
     first = false;

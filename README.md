@@ -70,6 +70,10 @@ Visit counting (`js/track.js`, see `privacy.html`) is off until you turn it on:
 
 To count a new action, add `data-track="<name>"` to the button, link or field; nothing else is needed.
 
+### Email alerts
+
+Following a town can also sign a reader up for email when its books change. It is off until you create a Buttondown newsletter, set `BUTTONDOWN_USER` in `js/follows.js` and add the `BUTTONDOWN_API_KEY` repository secret. Steps and a test plan are in [docs/FOLLOWING.md](docs/FOLLOWING.md).
+
 ### ZIP lookup
 
 `data/zip/` holds the center point of every ZIP code area for **Find your town**, split by the ZIP's first three digits. Rebuild it from the Census gazetteer with `node scripts/build-zips.mjs` (about a minute; it changes only when the Census publishes new ZIP areas). Releases are listed in [CHANGELOG.md](CHANGELOG.md) and planned work in [docs/ROADMAP.md](docs/ROADMAP.md).

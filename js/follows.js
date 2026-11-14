@@ -6,6 +6,12 @@ import { townFingerprint } from './engine/changes.js';
 
 const KEY = 'tv-follows';
 
+// Email alerts (optional, on top of following in this browser) go through the
+// Buttondown newsletter with this username. Empty turns the email offer off.
+// scripts/notify-changes.mjs sends the alerts; see docs/FOLLOWING.md.
+export const BUTTONDOWN_USER = '';
+export const subscribeUrl = (user = BUTTONDOWN_USER) => `https://buttondown.com/api/emails/embed-subscribe/${encodeURIComponent(user)}`;
+
 export function getFollows() {
   try {
     const v = JSON.parse(localStorage.getItem(KEY));

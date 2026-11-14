@@ -2,6 +2,13 @@
 
 Releases of TownView (townview.org). Newest first.
 
+## 0.4.0 - Email alerts
+
+- After **Follow**, readers can ask for an email when the town's books change. Their address goes straight to the Buttondown signup form, tagged with the town, with a confirmation email first. TownView does not keep the address.
+- `scripts/notify-changes.mjs` (run by `.github/workflows/notify-followers.yml` on data pushes to `main`) emails each changed town's confirmed followers. It uses the same change lines as the RSS feeds and links to the town page. Towns without followers are skipped, and a push that would email more than 300 towns stops for a manual check.
+- The privacy page explains email alerts. Counted action: `email-signup`.
+- Ships switched off: set `BUTTONDOWN_USER` in `js/follows.js` and the `BUTTONDOWN_API_KEY` secret (see docs/FOLLOWING.md).
+
 ## 0.6.0 - Reach
 
 - **Link previews show the grade.** Each town page's preview image is the card for its grade (`img/og/grade-*.png`, rendered once by `scripts/build-og-images.mjs`), with alt text naming the town and score.
